@@ -1,0 +1,10 @@
+#!/usr/bin/env python
+
+Import("env")
+Import("env_modules")
+
+env_gif_exporter = env_modules.Clone()
+
+# Module files
+env_gif_exporter.add_source_files(env.modules_sources, "*.cpp")
+env_gif_exporter.add_source_files(env.modules_sources, "gifanim/*.cpp")
