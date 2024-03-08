@@ -57,6 +57,8 @@ private:
 	float _internal_margin[4] = {};
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> normal;
 		Ref<StyleBox> normal_mirrored;
 		Ref<StyleBox> pressed;
@@ -69,23 +71,73 @@ private:
 		Ref<StyleBox> disabled_mirrored;
 		Ref<StyleBox> focus;
 
+		Color font_color_scale;
+		Ref<ColorScheme> font_color_scheme;
+		ColorRole font_color_role;
 		Color font_color;
-		Color font_focus_color;
+
+		Color font_pressed_color_scale;
+		Ref<ColorScheme> font_pressed_color_scheme;
+		ColorRole font_pressed_color_role;
 		Color font_pressed_color;
+
+		Color font_hover_color_scale;
+		Ref<ColorScheme> font_hover_color_scheme;
+		ColorRole font_hover_color_role;
 		Color font_hover_color;
+
+		Color font_focus_color_scale;
+		Ref<ColorScheme> font_focus_color_scheme;
+		ColorRole font_focus_color_role;
+		Color font_focus_color;
+
+		Color font_hover_pressed_color_scale;
+		Ref<ColorScheme> font_hover_pressed_color_scheme;
+		ColorRole font_hover_pressed_color_role;
 		Color font_hover_pressed_color;
+
+		Color font_disabled_color_scale;
+		Ref<ColorScheme> font_disabled_color_scheme;
+		ColorRole font_disabled_color_role;
 		Color font_disabled_color;
 
 		Ref<Font> font;
 		int font_size = 0;
 		int outline_size = 0;
+
+		Color font_outline_color_scale;
+		Ref<ColorScheme> font_outline_color_scheme;
+		ColorRole font_outline_color_role;
 		Color font_outline_color;
 
+		Color icon_normal_color_scale;
+		Ref<ColorScheme> icon_normal_color_scheme;
+		ColorRole icon_normal_color_role;
 		Color icon_normal_color;
-		Color icon_focus_color;
+
+		Color icon_pressed_color_scale;
+		Ref<ColorScheme> icon_pressed_color_scheme;
+		ColorRole icon_pressed_color_role;
 		Color icon_pressed_color;
+
+		Color icon_hover_color_scale;
+		Ref<ColorScheme> icon_hover_color_scheme;
+		ColorRole icon_hover_color_role;
 		Color icon_hover_color;
+
+		Color icon_focus_color_scale;
+		Ref<ColorScheme> icon_focus_color_scheme;
+		ColorRole icon_focus_color_role;
+		Color icon_focus_color;
+
+		Color icon_hover_pressed_color_scale;
+		Ref<ColorScheme> icon_hover_pressed_color_scheme;
+		ColorRole icon_hover_pressed_color_role;
 		Color icon_hover_pressed_color;
+
+		Color icon_disabled_color_scale;
+		Ref<ColorScheme> icon_disabled_color_scheme;
+		ColorRole icon_disabled_color_role;
 		Color icon_disabled_color;
 
 		Ref<Texture2D> icon;

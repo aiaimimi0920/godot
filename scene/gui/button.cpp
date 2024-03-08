@@ -722,6 +722,8 @@ void Button::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "text_direction", PROPERTY_HINT_ENUM, "Auto,Left-to-Right,Right-to-Left,Inherited"), "set_text_direction", "get_text_direction");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "language", PROPERTY_HINT_LOCALE_ID, ""), "set_language", "get_language");
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, OptionButton, default_color_scheme);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, normal);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, normal_mirrored);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, pressed);
@@ -734,11 +736,34 @@ void Button::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, disabled_mirrored);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, focus);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, font_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, font_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_color);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_focus_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_pressed_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, font_pressed_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, font_pressed_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_pressed_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_hover_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, font_hover_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, font_hover_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_hover_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_focus_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, font_focus_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, font_focus_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_focus_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_hover_pressed_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, font_hover_pressed_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, font_hover_pressed_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_hover_pressed_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_disabled_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, font_disabled_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, font_disabled_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_disabled_color);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, Button, font);
@@ -746,11 +771,34 @@ void Button::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Button, outline_size);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_outline_color);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, icon_normal_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, icon_normal_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, icon_normal_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, icon_normal_color);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, icon_focus_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, icon_pressed_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, icon_pressed_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, icon_pressed_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, icon_pressed_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, icon_hover_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, icon_hover_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, icon_hover_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, icon_hover_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, icon_focus_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, icon_focus_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, icon_focus_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, icon_focus_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, icon_hover_pressed_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, icon_hover_pressed_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, icon_hover_pressed_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, icon_hover_pressed_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, icon_disabled_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, icon_disabled_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, icon_disabled_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, icon_disabled_color);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, Button, icon);
