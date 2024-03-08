@@ -42,6 +42,7 @@
 #include "drivers/unix/net_socket_posix.h"
 #include "drivers/windows/dir_access_windows.h"
 #include "drivers/windows/file_access_windows.h"
+#include "drivers/windows/process_windows.h"
 #include "main/main.h"
 #include "servers/audio_server.h"
 #include "servers/rendering/rendering_server_default.h"
@@ -182,6 +183,7 @@ void OS_Windows::initialize() {
 	DirAccess::make_default<DirAccessWindows>(DirAccess::ACCESS_USERDATA);
 	DirAccess::make_default<DirAccessWindows>(DirAccess::ACCESS_FILESYSTEM);
 
+    ProcessWindows::make_default();
 	NetSocketPosix::make_default();
 
 	// We need to know how often the clock is updated

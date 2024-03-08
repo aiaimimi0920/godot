@@ -107,6 +107,20 @@ if env["builtin_clipper2"]:
 
     env_thirdparty.add_source_files(thirdparty_obj, thirdparty_clipper_sources)
 
+# Tiny-process-library
+thirdparty_tiny_process_library_dir = "#thirdparty/tiny-process-library/"
+thirdparty_tiny_process_library_sources = []
+
+if env["platform"] in ["linuxbsd", "macos", "android"]:
+    thirdparty_tiny_process_library_sources = ["process.cpp", "process_unix.cpp"]
+elif env["platform"] == "windows":
+    thirdparty_tiny_process_library_sources = ["process.cpp", "process_win.cpp"]
+
+thirdparty_tiny_process_library_sources = [
+    thirdparty_tiny_process_library_dir + file for file in thirdparty_tiny_process_library_sources
+]
+env_thirdparty.add_source_files(thirdparty_obj, thirdparty_tiny_process_library_sources)
+
 # Zlib library, can be unbundled
 if env["builtin_zlib"]:
     thirdparty_zlib_dir = "#thirdparty/zlib/"
