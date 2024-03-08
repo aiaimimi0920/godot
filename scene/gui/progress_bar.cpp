@@ -269,14 +269,23 @@ void ProgressBar::_bind_methods() {
 	BIND_ENUM_CONSTANT(FILL_TOP_TO_BOTTOM);
 	BIND_ENUM_CONSTANT(FILL_BOTTOM_TO_TOP);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ProgressBar, default_color_scheme);
+
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ProgressBar, background_style, "background");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ProgressBar, fill_style, "fill");
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ProgressBar, font_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ProgressBar, font_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ProgressBar, font_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ProgressBar, font_color);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, ProgressBar, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, ProgressBar, font_size);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ProgressBar, font_color);
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, ProgressBar, font_outline_size, "outline_size");
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ProgressBar, font_outline_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ProgressBar, font_outline_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ProgressBar, font_outline_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ProgressBar, font_outline_color);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, ProgressBar, font_outline_size, "outline_size");
 }
 
 ProgressBar::ProgressBar() {

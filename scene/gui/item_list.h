@@ -130,6 +130,8 @@ private:
 	bool do_autoscroll_to_bottom = false;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		int h_separation = 0;
 		int v_separation = 0;
 
@@ -138,10 +140,27 @@ private:
 
 		Ref<Font> font;
 		int font_size = 0;
+
+		Color font_color_scale;
+		Ref<ColorScheme> font_color_scheme;
+		ColorRole font_color_role;
 		Color font_color;
+
+		Color font_hovered_color_scale;
+		Ref<ColorScheme> font_hovered_color_scheme;
+		ColorRole font_hovered_color_role;
 		Color font_hovered_color;
+
+		Color font_selected_color_scale;
+		Ref<ColorScheme> font_selected_color_scheme;
+		ColorRole font_selected_color_role;
 		Color font_selected_color;
+
 		int font_outline_size = 0;
+
+		Color font_outline_color_scale;
+		Ref<ColorScheme> font_outline_color_scheme;
+		ColorRole font_outline_color_role;
 		Color font_outline_color;
 
 		int line_separation = 0;
@@ -151,6 +170,10 @@ private:
 		Ref<StyleBox> selected_focus_style;
 		Ref<StyleBox> cursor_style;
 		Ref<StyleBox> cursor_focus_style;
+
+		Color guide_color_scale;
+		Ref<ColorScheme> guide_color_scheme;
+		ColorRole guide_color_role;
 		Color guide_color;
 	} theme_cache;
 

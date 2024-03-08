@@ -32,6 +32,7 @@
 #define THEME_H
 
 #include "core/io/resource.h"
+#include "modules/color_scheme/color_scheme.h"
 #include "scene/resources/font.h"
 #include "scene/resources/style_box.h"
 #include "scene/resources/texture.h"
@@ -53,6 +54,8 @@ public:
 	using ThemeFontSizeMap = HashMap<StringName, int>;
 	using ThemeColorMap = HashMap<StringName, Color>;
 	using ThemeConstantMap = HashMap<StringName, int>;
+	using ThemeColorRoleMap = HashMap<StringName, ColorRole>;
+	using ThemeColorSchemeMap = HashMap<StringName, Ref<ColorScheme>>;
 
 	enum DataType {
 		DATA_TYPE_COLOR,
@@ -61,6 +64,8 @@ public:
 		DATA_TYPE_FONT_SIZE,
 		DATA_TYPE_ICON,
 		DATA_TYPE_STYLEBOX,
+		DATA_TYPE_COLOR_ROLE,
+		DATA_TYPE_COLOR_SCHEME,
 		DATA_TYPE_MAX
 	};
 
@@ -81,6 +86,10 @@ private:
 	Vector<String> _get_color_type_list() const;
 	Vector<String> _get_constant_list(const String &p_theme_type) const;
 	Vector<String> _get_constant_type_list() const;
+	Vector<String> _get_color_role_list(const String &p_theme_type) const;
+	Vector<String> _get_color_role_type_list() const;
+	Vector<String> _get_color_scheme_list(const String &p_theme_type) const;
+	Vector<String> _get_color_scheme_type_list() const;
 
 	Vector<String> _get_theme_item_list(DataType p_data_type, const String &p_theme_type) const;
 	Vector<String> _get_theme_item_type_list(DataType p_data_type) const;
@@ -97,6 +106,7 @@ protected:
 	float default_base_scale = 0.0;
 	Ref<Font> default_font;
 	int default_font_size = -1;
+	Ref<ColorScheme> default_color_scheme;
 
 	HashMap<StringName, ThemeIconMap> icon_map;
 	HashMap<StringName, ThemeStyleMap> style_map;
@@ -104,6 +114,8 @@ protected:
 	HashMap<StringName, ThemeFontSizeMap> font_size_map;
 	HashMap<StringName, ThemeColorMap> color_map;
 	HashMap<StringName, ThemeConstantMap> constant_map;
+	HashMap<StringName, ThemeColorRoleMap> color_role_map;
+	HashMap<StringName, ThemeColorSchemeMap> color_scheme_map;
 	HashMap<StringName, StringName> variation_map;
 	HashMap<StringName, List<StringName>> variation_base_map;
 
@@ -129,6 +141,10 @@ public:
 	void set_default_font_size(int p_font_size);
 	int get_default_font_size() const;
 	bool has_default_font_size() const;
+
+	void set_default_color_scheme(const Ref<ColorScheme> &p_default_color_scheme);
+	Ref<ColorScheme> get_default_color_scheme() const;
+	bool has_default_color_scheme() const;
 
 	void set_icon(const StringName &p_name, const StringName &p_theme_type, const Ref<Texture2D> &p_icon);
 	virtual Ref<Texture2D> get_icon(const StringName &p_name, const StringName &p_theme_type) const;
@@ -195,6 +211,28 @@ public:
 	void add_constant_type(const StringName &p_theme_type);
 	void remove_constant_type(const StringName &p_theme_type);
 	void get_constant_type_list(List<StringName> *p_list) const;
+
+	void set_color_role(const StringName &p_name, const StringName &p_theme_type, ColorRole p_color_role);
+	virtual ColorRole get_color_role(const StringName &p_name, const StringName &p_theme_type) const;
+	bool has_color_role(const StringName &p_name, const StringName &p_theme_type) const;
+	bool has_color_role_nocheck(const StringName &p_name, const StringName &p_theme_type) const;
+	void rename_color_role(const StringName &p_old_name, const StringName &p_name, const StringName &p_theme_type);
+	void clear_color_role(const StringName &p_name, const StringName &p_theme_type);
+	void get_color_role_list(const StringName &p_theme_type, List<StringName> *p_list) const;
+	void add_color_role_type(const StringName &p_theme_type);
+	void remove_color_role_type(const StringName &p_theme_type);
+	void get_color_role_type_list(List<StringName> *p_list) const;
+
+	void set_color_scheme(const StringName &p_name, const StringName &p_theme_type, const Ref<ColorScheme> &p_color_scheme);
+	virtual Ref<ColorScheme> get_color_scheme(const StringName &p_name, const StringName &p_theme_type) const;
+	bool has_color_scheme(const StringName &p_name, const StringName &p_theme_type) const;
+	bool has_color_scheme_nocheck(const StringName &p_name, const StringName &p_theme_type) const;
+	void rename_color_scheme(const StringName &p_old_name, const StringName &p_name, const StringName &p_theme_type);
+	void clear_color_scheme(const StringName &p_name, const StringName &p_theme_type);
+	void get_color_scheme_list(const StringName &p_theme_type, List<StringName> *p_list) const;
+	void add_color_scheme_type(const StringName &p_theme_type);
+	void remove_color_scheme_type(const StringName &p_theme_type);
+	void get_color_scheme_type_list(List<StringName> *p_list) const;
 
 	void set_theme_item(DataType p_data_type, const StringName &p_name, const StringName &p_theme_type, const Variant &p_value);
 	Variant get_theme_item(DataType p_data_type, const StringName &p_name, const StringName &p_theme_type) const;

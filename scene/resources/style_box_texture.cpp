@@ -41,7 +41,7 @@ void StyleBoxTexture::set_texture(Ref<Texture2D> p_texture) {
 		return;
 	}
 	texture = p_texture;
-	emit_changed();
+	custom_emit_changed();
 }
 
 Ref<Texture2D> StyleBoxTexture::get_texture() const {
@@ -52,14 +52,14 @@ void StyleBoxTexture::set_texture_margin(Side p_side, float p_size) {
 	ERR_FAIL_INDEX((int)p_side, 4);
 
 	texture_margin[p_side] = p_size;
-	emit_changed();
+	custom_emit_changed();
 }
 
 void StyleBoxTexture::set_texture_margin_all(float p_size) {
 	for (int i = 0; i < 4; i++) {
 		texture_margin[i] = p_size;
 	}
-	emit_changed();
+	custom_emit_changed();
 }
 
 void StyleBoxTexture::set_texture_margin_individual(float p_left, float p_top, float p_right, float p_bottom) {
@@ -67,7 +67,7 @@ void StyleBoxTexture::set_texture_margin_individual(float p_left, float p_top, f
 	texture_margin[SIDE_TOP] = p_top;
 	texture_margin[SIDE_RIGHT] = p_right;
 	texture_margin[SIDE_BOTTOM] = p_bottom;
-	emit_changed();
+	custom_emit_changed();
 }
 
 float StyleBoxTexture::get_texture_margin(Side p_side) const {
@@ -79,14 +79,14 @@ float StyleBoxTexture::get_texture_margin(Side p_side) const {
 void StyleBoxTexture::set_expand_margin(Side p_side, float p_size) {
 	ERR_FAIL_INDEX((int)p_side, 4);
 	expand_margin[p_side] = p_size;
-	emit_changed();
+	custom_emit_changed();
 }
 
 void StyleBoxTexture::set_expand_margin_all(float p_expand_margin_size) {
 	for (int i = 0; i < 4; i++) {
 		expand_margin[i] = p_expand_margin_size;
 	}
-	emit_changed();
+	custom_emit_changed();
 }
 
 void StyleBoxTexture::set_expand_margin_individual(float p_left, float p_top, float p_right, float p_bottom) {
@@ -94,7 +94,7 @@ void StyleBoxTexture::set_expand_margin_individual(float p_left, float p_top, fl
 	expand_margin[SIDE_TOP] = p_top;
 	expand_margin[SIDE_RIGHT] = p_right;
 	expand_margin[SIDE_BOTTOM] = p_bottom;
-	emit_changed();
+	custom_emit_changed();
 }
 
 float StyleBoxTexture::get_expand_margin(Side p_side) const {
@@ -108,7 +108,7 @@ void StyleBoxTexture::set_region_rect(const Rect2 &p_region_rect) {
 	}
 
 	region_rect = p_region_rect;
-	emit_changed();
+	custom_emit_changed();
 }
 
 Rect2 StyleBoxTexture::get_region_rect() const {
@@ -117,7 +117,7 @@ Rect2 StyleBoxTexture::get_region_rect() const {
 
 void StyleBoxTexture::set_draw_center(bool p_enabled) {
 	draw_center = p_enabled;
-	emit_changed();
+	custom_emit_changed();
 }
 
 bool StyleBoxTexture::is_draw_center_enabled() const {
@@ -127,7 +127,7 @@ bool StyleBoxTexture::is_draw_center_enabled() const {
 void StyleBoxTexture::set_h_axis_stretch_mode(AxisStretchMode p_mode) {
 	ERR_FAIL_INDEX((int)p_mode, 3);
 	axis_h = p_mode;
-	emit_changed();
+	custom_emit_changed();
 }
 
 StyleBoxTexture::AxisStretchMode StyleBoxTexture::get_h_axis_stretch_mode() const {
@@ -137,7 +137,7 @@ StyleBoxTexture::AxisStretchMode StyleBoxTexture::get_h_axis_stretch_mode() cons
 void StyleBoxTexture::set_v_axis_stretch_mode(AxisStretchMode p_mode) {
 	ERR_FAIL_INDEX((int)p_mode, 3);
 	axis_v = p_mode;
-	emit_changed();
+	custom_emit_changed();
 }
 
 StyleBoxTexture::AxisStretchMode StyleBoxTexture::get_v_axis_stretch_mode() const {
@@ -149,11 +149,35 @@ void StyleBoxTexture::set_modulate(const Color &p_modulate) {
 		return;
 	}
 	modulate = p_modulate;
-	emit_changed();
+	custom_emit_changed();
 }
 
 Color StyleBoxTexture::get_modulate() const {
 	return modulate;
+}
+
+void StyleBoxTexture::set_color_role(const ColorRole p_color_role) {
+	color_role = p_color_role;
+	_update_color();
+	custom_emit_changed();
+}
+
+ColorRole StyleBoxTexture::get_color_role() const {
+	return color_role;
+}
+
+void StyleBoxTexture::_update_color() {
+	if (color_scheme.is_valid()) {
+		const Color target_color = color_scheme->get_color(color_role) * color_scale;
+		if (target_color != modulate) {
+			set_modulate(target_color);
+		}
+	} else if (default_color_scheme.is_valid()) {
+		const Color target_color = default_color_scheme->get_color(color_role) * color_scale;
+		if (target_color != modulate) {
+			set_modulate(target_color);
+		}
+	}
 }
 
 Rect2 StyleBoxTexture::get_draw_rect(const Rect2 &p_rect) const {
@@ -181,6 +205,15 @@ void StyleBoxTexture::draw(RID p_canvas_item, const Rect2 &p_rect) const {
 	RenderingServer::get_singleton()->canvas_item_add_nine_patch(p_canvas_item, rect, src_rect, texture->get_rid(), start_offset, end_offset, RS::NinePatchAxisMode(axis_h), RS::NinePatchAxisMode(axis_v), draw_center, modulate);
 }
 
+void StyleBoxTexture::set_color_scale(const Color &p_color) {
+	color_scale = p_color;
+	custom_emit_changed();
+}
+
+Color StyleBoxTexture::get_color_scale() const {
+	return color_scale;
+}
+
 void StyleBoxTexture::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_texture", "texture"), &StyleBoxTexture::set_texture);
 	ClassDB::bind_method(D_METHOD("get_texture"), &StyleBoxTexture::get_texture);
@@ -201,6 +234,12 @@ void StyleBoxTexture::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_modulate", "color"), &StyleBoxTexture::set_modulate);
 	ClassDB::bind_method(D_METHOD("get_modulate"), &StyleBoxTexture::get_modulate);
+
+	ClassDB::bind_method(D_METHOD("set_color_role", "color_role"), &StyleBoxTexture::set_color_role);
+	ClassDB::bind_method(D_METHOD("get_color_role"), &StyleBoxTexture::get_color_role);
+
+	ClassDB::bind_method(D_METHOD("set_color_scale", "color"), &StyleBoxTexture::set_color_scale);
+	ClassDB::bind_method(D_METHOD("get_color_scale"), &StyleBoxTexture::get_color_scale);
 
 	ClassDB::bind_method(D_METHOD("set_h_axis_stretch_mode", "mode"), &StyleBoxTexture::set_h_axis_stretch_mode);
 	ClassDB::bind_method(D_METHOD("get_h_axis_stretch_mode"), &StyleBoxTexture::get_h_axis_stretch_mode);
@@ -231,6 +270,8 @@ void StyleBoxTexture::_bind_methods() {
 
 	ADD_GROUP("Modulate", "modulate_");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "modulate_color"), "set_modulate", "get_modulate");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "color_role", PROPERTY_HINT_ENUM, color_role_hint), "set_color_role", "get_color_role");
+	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color_scale"), "set_color_scale", "get_color_scale");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "draw_center"), "set_draw_center", "is_draw_center_enabled");
 
 	BIND_ENUM_CONSTANT(AXIS_STRETCH_MODE_STRETCH);

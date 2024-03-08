@@ -592,17 +592,41 @@ void OptionButton::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("item_selected", PropertyInfo(Variant::INT, "index")));
 	ADD_SIGNAL(MethodInfo("item_focused", PropertyInfo(Variant::INT, "index")));
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, OptionButton, default_color_scheme);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, OptionButton, normal);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, OptionButton, font_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, OptionButton, font_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_color);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_focus_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_pressed_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, OptionButton, font_pressed_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, OptionButton, font_pressed_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_pressed_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_hover_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, OptionButton, font_hover_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, OptionButton, font_hover_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_hover_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_focus_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, OptionButton, font_focus_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, OptionButton, font_focus_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_focus_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_hover_pressed_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, OptionButton, font_hover_pressed_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, OptionButton, font_hover_pressed_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_hover_pressed_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_disabled_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, OptionButton, font_disabled_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, OptionButton, font_disabled_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_disabled_color);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, OptionButton, h_separation);
-
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, OptionButton, arrow_icon, "arrow");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, OptionButton, arrow_margin);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, OptionButton, modulate_arrow);

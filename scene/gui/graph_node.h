@@ -79,6 +79,8 @@ class GraphNode : public GraphElement {
 	Vector<int> slot_y_cache;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> panel;
 		Ref<StyleBox> panel_selected;
 		Ref<StyleBox> titlebar;
@@ -87,10 +89,14 @@ class GraphNode : public GraphElement {
 
 		int separation = 0;
 		int port_h_offset = 0;
-
+		
 		Ref<Texture2D> port;
 		Ref<Texture2D> resizer;
-		Color resizer_color;
+
+		Color resizer_color_scale;
+		Ref<ColorScheme> resizer_color_scheme;
+		ColorRole resizer_color_role;
+		Color resizer_color;		
 	} theme_cache;
 
 	bool port_pos_dirty = true;

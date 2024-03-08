@@ -181,25 +181,66 @@ private:
 	bool select_all_on_focus = false;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> normal;
 		Ref<StyleBox> read_only;
 		Ref<StyleBox> focus;
 
 		Ref<Font> font;
 		int font_size = 0;
+
+		Color font_color_scale;
+		Ref<ColorScheme> font_color_scheme;
+		ColorRole font_color_role;
 		Color font_color;
+
+		Color font_uneditable_color_scale;
+		Ref<ColorScheme> font_uneditable_color_scheme;
+		ColorRole font_uneditable_color_role;
 		Color font_uneditable_color;
+
+		Color font_selected_color_scale;
+		Ref<ColorScheme> font_selected_color_scheme;
+		ColorRole font_selected_color_role;
 		Color font_selected_color;
+
 		int font_outline_size;
+
+		Color font_outline_color_scale;
+		Ref<ColorScheme> font_outline_color_scheme;
+		ColorRole font_outline_color_role;
 		Color font_outline_color;
+
+		Color font_placeholder_color_scale;
+		Ref<ColorScheme> font_placeholder_color_scheme;
+		ColorRole font_placeholder_color_role;
 		Color font_placeholder_color;
+
 		int caret_width = 0;
+
+		Color caret_color_scale;
+		Ref<ColorScheme> caret_color_scheme;
+		ColorRole caret_color_role;
 		Color caret_color;
+
 		int minimum_character_width = 0;
+
+		Color selection_color_scale;
+		Ref<ColorScheme> selection_color_scheme;
+		ColorRole selection_color_role;
 		Color selection_color;
 
 		Ref<Texture2D> clear_icon;
+
+		Color clear_button_color_scale;
+		Ref<ColorScheme> clear_button_color_scheme;
+		ColorRole clear_button_color_role;
 		Color clear_button_color;
+
+		Color clear_button_color_pressed_scale;
+		Ref<ColorScheme> clear_button_color_pressed_scheme;
+		ColorRole clear_button_color_pressed_role;
 		Color clear_button_color_pressed;
 
 		float base_scale = 1.0;

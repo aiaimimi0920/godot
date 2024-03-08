@@ -1218,15 +1218,28 @@ void Label::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "structured_text_bidi_override", PROPERTY_HINT_ENUM, "Default,URI,File,Email,List,None,Custom"), "set_structured_text_bidi_override", "get_structured_text_bidi_override");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "structured_text_bidi_override_options"), "set_structured_text_bidi_override_options", "get_structured_text_bidi_override_options");
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Label, default_color_scheme);
+
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, Label, normal_style, "normal");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Label, line_spacing);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, Label, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, Label, font_size);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Label, font_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Label, font_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_shadow_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Label, font_shadow_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Label, font_shadow_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_shadow_color);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, Label, font_shadow_offset.x, "shadow_offset_x");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, Label, font_shadow_offset.y, "shadow_offset_y");
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_outline_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Label, font_outline_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Label, font_outline_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_outline_color);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, Label, font_outline_size, "outline_size");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, Label, font_shadow_outline_size, "shadow_outline_size");

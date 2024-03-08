@@ -874,6 +874,8 @@ void GraphNode::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "title"), "set_title", "get_title");
 	ADD_SIGNAL(MethodInfo("slot_updated", PropertyInfo(Variant::INT, "slot_index")));
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphNode, default_color_scheme);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphNode, panel);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphNode, panel_selected);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphNode, titlebar);
@@ -885,6 +887,10 @@ void GraphNode::_bind_methods() {
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, GraphNode, port);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, GraphNode, resizer);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphNode, resizer_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphNode, resizer_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphNode, resizer_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphNode, resizer_color);
 }
 

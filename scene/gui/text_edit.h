@@ -549,19 +549,43 @@ private:
 
 	/* Visual. */
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		float base_scale = 1.0;
 
 		/* Search */
+		Color search_result_color_scale;
+		Ref<ColorScheme> search_result_color_scheme;
+		ColorRole search_result_color_role;
 		Color search_result_color = Color(1, 1, 1);
+
+		Color search_result_border_color_scale;
+		Ref<ColorScheme> search_result_border_color_scheme;
+		ColorRole search_result_border_color_role;
 		Color search_result_border_color = Color(1, 1, 1);
 
 		/* Caret */
 		int caret_width = 1;
+
+		Color caret_color_scale;
+		Ref<ColorScheme> caret_color_scheme;
+		ColorRole caret_color_role;
 		Color caret_color = Color(1, 1, 1);
+
+		Color caret_background_color_scale;
+		Ref<ColorScheme> caret_background_color_scheme;
+		ColorRole caret_background_color_role;
 		Color caret_background_color = Color(0, 0, 0);
 
 		/* Selection */
+		Color font_selected_color_scale;
+		Ref<ColorScheme> font_selected_color_scheme;
+		ColorRole font_selected_color_role;
 		Color font_selected_color = Color(0, 0, 0, 0);
+
+		Color selection_color_scale;
+		Ref<ColorScheme> selection_color_scheme;
+		ColorRole selection_color_role;
 		Color selection_color = Color(1, 1, 1);
 
 		/* Other visuals */
@@ -574,17 +598,44 @@ private:
 
 		Ref<Font> font;
 		int font_size = 16;
+
+		Color font_color_scale;
+		Ref<ColorScheme> font_color_scheme;
+		ColorRole font_color_role;
 		Color font_color = Color(1, 1, 1);
+
+		Color font_readonly_color_scale;
+		Ref<ColorScheme> font_readonly_color_scheme;
+		ColorRole font_readonly_color_role;
 		Color font_readonly_color = Color(1, 1, 1);
+
+		Color font_placeholder_color_scale;
+		Ref<ColorScheme> font_placeholder_color_scheme;
+		ColorRole font_placeholder_color_role;
 		Color font_placeholder_color = Color(1, 1, 1, 0.6);
 
 		int outline_size = 0;
+
+		Color outline_color_scale;
+		Ref<ColorScheme> outline_color_scheme;
+		ColorRole outline_color_role;
 		Color outline_color = Color(1, 1, 1);
 
 		int line_spacing = 1;
 
+		Color background_color_scale;
+		Ref<ColorScheme> background_color_scheme;
+		ColorRole background_color_role;
 		Color background_color = Color(1, 1, 1);
+
+		Color current_line_color_scale;
+		Ref<ColorScheme> current_line_color_scheme;
+		ColorRole current_line_color_role;
 		Color current_line_color = Color(1, 1, 1);
+
+		Color word_highlighted_color_scale;
+		Ref<ColorScheme> word_highlighted_color_scheme;
+		ColorRole word_highlighted_color_role;
 		Color word_highlighted_color = Color(1, 1, 1);
 	} theme_cache;
 

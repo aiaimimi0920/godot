@@ -51,6 +51,7 @@ void ThemeDB::initialize_theme() {
 
 	String project_theme_path = GLOBAL_DEF_RST_BASIC(PropertyInfo(Variant::STRING, "gui/theme/custom", PROPERTY_HINT_FILE, "*.tres,*.res,*.theme", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED), "");
 	String project_font_path = GLOBAL_DEF_RST_BASIC(PropertyInfo(Variant::STRING, "gui/theme/custom_font", PROPERTY_HINT_FILE, "*.tres,*.res,*.otf,*.ttf,*.woff,*.woff2,*.fnt,*.font,*.pfb,*.pfm", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED), "");
+    Color project_color_scheme_source_color = GLOBAL_DEF_RST(PropertyInfo(Variant::COLOR, "gui/theme/custom_color_scheme_source_color", PROPERTY_HINT_COLOR_NO_ALPHA, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED), Color("#6750A4"));
 
 	TextServer::FontAntialiasing font_antialiasing = (TextServer::FontAntialiasing)(int)GLOBAL_DEF_RST(PropertyInfo(Variant::INT, "gui/theme/default_font_antialiasing", PROPERTY_HINT_ENUM, "None,Grayscale,LCD Subpixel", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED), 1);
 	TextServer::Hinting font_hinting = (TextServer::Hinting)(int)GLOBAL_DEF_RST(PropertyInfo(Variant::INT, "gui/theme/default_font_hinting", PROPERTY_HINT_ENUM, "None,Light,Normal", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED), TextServer::HINTING_LIGHT);
@@ -83,18 +84,25 @@ void ThemeDB::initialize_theme() {
 		}
 	}
 
+    Ref<ColorScheme> project_color_scheme;
+	project_color_scheme.instantiate();
+	project_color_scheme->set_source_color(project_color_scheme_source_color);
+    set_fallback_color_scheme(project_color_scheme);
+
 	// Always generate the default theme to serve as a fallback for all required theme definitions.
 
 	if (RenderingServer::get_singleton()) {
-		make_default_theme(default_theme_scale, project_font, font_subpixel_positioning, font_hinting, font_antialiasing, font_msdf, font_generate_mipmaps);
+        make_default_theme(default_theme_scale, project_font, project_color_scheme, font_subpixel_positioning, font_hinting, font_antialiasing, font_msdf, font_generate_mipmaps);
 	}
-
 	_init_default_theme_context();
 }
 
 void ThemeDB::initialize_theme_noproject() {
 	if (RenderingServer::get_singleton()) {
-		make_default_theme(1.0, Ref<Font>());
+        Ref<ColorScheme> cur_color_scheme;
+		cur_color_scheme.instantiate();
+		cur_color_scheme->set_source_color(Color("#6750A4"));
+        make_default_theme(1.0, Ref<Font>(), cur_color_scheme);
 	}
 
 	_init_default_theme_context();
@@ -111,6 +119,7 @@ void ThemeDB::finalize_theme() {
 	fallback_font.unref();
 	fallback_icon.unref();
 	fallback_stylebox.unref();
+	fallback_color_scheme.unref();
 }
 
 // Global Theme resources.
@@ -171,6 +180,20 @@ void ThemeDB::set_fallback_font_size(int p_font_size) {
 int ThemeDB::get_fallback_font_size() {
 	return fallback_font_size;
 }
+
+void ThemeDB::set_fallback_color_scheme(const Ref<ColorScheme> p_color_scheme) {
+    if (fallback_color_scheme == p_color_scheme) {
+        return;
+    }
+
+    fallback_color_scheme = p_color_scheme;
+    emit_signal(SNAME("fallback_changed"));
+}
+
+Ref<ColorScheme> ThemeDB::get_fallback_color_scheme() {
+    return fallback_color_scheme;
+}
+
 
 void ThemeDB::set_fallback_icon(const Ref<Texture2D> &p_icon) {
 	if (fallback_icon == p_icon) {
@@ -396,15 +419,15 @@ void ThemeDB::get_class_items(const StringName &p_class_name, List<ThemeItemBind
 					inherited_props.insert(F.item_name);
 
 					if (!p_include_inherited) {
-						continue; // Track properties defined in parent classes, and skip them.
-					}
+					continue; // Track properties defined in parent classes, and skip them.
+				}
 				}
 
 				r_list->push_back(F);
 			}
+			}
 		}
 	}
-}
 
 void ThemeDB::_sort_theme_items() {
 	for (KeyValue<StringName, List<ThemeDB::ThemeItemBind>> &E : theme_item_binds_list) {
@@ -424,6 +447,8 @@ void ThemeDB::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_fallback_font"), &ThemeDB::get_fallback_font);
 	ClassDB::bind_method(D_METHOD("set_fallback_font_size", "font_size"), &ThemeDB::set_fallback_font_size);
 	ClassDB::bind_method(D_METHOD("get_fallback_font_size"), &ThemeDB::get_fallback_font_size);
+	ClassDB::bind_method(D_METHOD("set_fallback_color_scheme", "color_scheme"), &ThemeDB::set_fallback_color_scheme);
+    ClassDB::bind_method(D_METHOD("get_fallback_color_scheme"), &ThemeDB::get_fallback_color_scheme);
 	ClassDB::bind_method(D_METHOD("set_fallback_icon", "icon"), &ThemeDB::set_fallback_icon);
 	ClassDB::bind_method(D_METHOD("get_fallback_icon"), &ThemeDB::get_fallback_icon);
 	ClassDB::bind_method(D_METHOD("set_fallback_stylebox", "stylebox"), &ThemeDB::set_fallback_stylebox);
@@ -433,6 +458,7 @@ void ThemeDB::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fallback_base_scale", PROPERTY_HINT_RANGE, "0.0,2.0,0.01,or_greater"), "set_fallback_base_scale", "get_fallback_base_scale");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fallback_font", PROPERTY_HINT_RESOURCE_TYPE, "Font", PROPERTY_USAGE_NONE), "set_fallback_font", "get_fallback_font");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "fallback_font_size", PROPERTY_HINT_RANGE, "0,256,1,or_greater,suffix:px"), "set_fallback_font_size", "get_fallback_font_size");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fallback_color_scheme", PROPERTY_HINT_RESOURCE_TYPE, "ColorScheme", PROPERTY_USAGE_NONE), "set_fallback_color_scheme", "get_fallback_color_scheme");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fallback_icon", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D", PROPERTY_USAGE_NONE), "set_fallback_icon", "get_fallback_icon");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fallback_stylebox", PROPERTY_HINT_RESOURCE_TYPE, "StyleBox", PROPERTY_USAGE_NONE), "set_fallback_stylebox", "get_fallback_stylebox");
 
@@ -467,6 +493,7 @@ ThemeDB::~ThemeDB() {
 	fallback_font.unref();
 	fallback_icon.unref();
 	fallback_stylebox.unref();
+	fallback_color_scheme.unref();
 
 	singleton = nullptr;
 }

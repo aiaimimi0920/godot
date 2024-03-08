@@ -76,6 +76,8 @@ void ThemeItemImportTree::_update_items_tree() {
 	int font_size_amount = 0;
 	int icon_amount = 0;
 	int stylebox_amount = 0;
+	int color_role_amount = 0;
+	int color_scheme_amount = 0;
 
 	tree_color_items.clear();
 	tree_constant_items.clear();
@@ -83,6 +85,8 @@ void ThemeItemImportTree::_update_items_tree() {
 	tree_font_size_items.clear();
 	tree_icon_items.clear();
 	tree_stylebox_items.clear();
+	tree_color_role_items.clear();
+	tree_color_scheme_items.clear();
 
 	for (const StringName &E : types) {
 		String type_name = (String)E;
@@ -197,6 +201,22 @@ void ThemeItemImportTree::_update_items_tree() {
 
 					item_list = &tree_stylebox_items;
 					stylebox_amount += filtered_names.size();
+					break;
+
+				case Theme::DATA_TYPE_COLOR_ROLE:
+					data_type_node->set_icon(0, get_editor_theme_icon(SNAME("StyleBoxFlat")));
+					data_type_node->set_text(0, TTR("Color Roles"));
+
+					item_list = &tree_color_role_items;
+					color_role_amount += filtered_names.size();
+					break;
+
+				case Theme::DATA_TYPE_COLOR_SCHEME:
+					data_type_node->set_icon(0, get_editor_theme_icon(SNAME("StyleBoxFlat")));
+					data_type_node->set_text(0, TTR("Color Schemes"));
+
+					item_list = &tree_color_scheme_items;
+					color_scheme_amount += filtered_names.size();
 					break;
 
 				case Theme::DATA_TYPE_MAX:
@@ -321,6 +341,34 @@ void ThemeItemImportTree::_update_items_tree() {
 		select_full_styleboxes_button->set_visible(false);
 		deselect_all_styleboxes_button->set_visible(false);
 	}
+
+	if (color_role_amount > 0) {
+		Array arr;
+		arr.push_back(color_role_amount);
+		select_color_roles_label->set_text(TTRN("1 color role", "{num} color roles", color_role_amount).format(arr, "{num}"));
+		select_all_color_roles_button->set_visible(true);
+		select_full_color_roles_button->set_visible(true);
+		deselect_all_color_roles_button->set_visible(true);
+	} else {
+		select_color_roles_label->set_text(TTR("No color roles found."));
+		select_all_color_roles_button->set_visible(false);
+		select_full_color_roles_button->set_visible(false);
+		deselect_all_color_roles_button->set_visible(false);
+	}
+
+	if (color_scheme_amount > 0) {
+		Array arr;
+		arr.push_back(color_scheme_amount);
+		select_color_schemes_label->set_text(TTRN("1 color scheme", "{num} color schemes", color_scheme_amount).format(arr, "{num}"));
+		select_all_color_schemes_button->set_visible(true);
+		select_full_color_schemes_button->set_visible(true);
+		deselect_all_color_schemes_button->set_visible(true);
+	} else {
+		select_color_schemes_label->set_text(TTR("No color schemes found."));
+		select_all_color_schemes_button->set_visible(false);
+		select_full_color_schemes_button->set_visible(false);
+		deselect_all_color_schemes_button->set_visible(false);
+	}
 }
 
 void ThemeItemImportTree::_toggle_type_items(bool p_collapse) {
@@ -436,6 +484,14 @@ void ThemeItemImportTree::_update_total_selected(Theme::DataType p_data_type) {
 
 		case Theme::DATA_TYPE_STYLEBOX:
 			total_selected_items_label = total_selected_styleboxes_label;
+			break;
+
+		case Theme::DATA_TYPE_COLOR_ROLE:
+			total_selected_items_label = total_selected_color_roles_label;
+			break;
+
+		case Theme::DATA_TYPE_COLOR_SCHEME:
+			total_selected_items_label = total_selected_color_schemes_label;
 			break;
 
 		case Theme::DATA_TYPE_MAX:
@@ -603,6 +659,14 @@ void ThemeItemImportTree::_select_all_data_type_pressed(int p_data_type) {
 			item_list = &tree_stylebox_items;
 			break;
 
+		case Theme::DATA_TYPE_COLOR_ROLE:
+			item_list = &tree_color_role_items;
+			break;
+
+		case Theme::DATA_TYPE_COLOR_SCHEME:
+			item_list = &tree_color_scheme_items;
+			break;
+
 		case Theme::DATA_TYPE_MAX:
 			return; // Can't happen, but silences warning.
 	}
@@ -656,6 +720,14 @@ void ThemeItemImportTree::_select_full_data_type_pressed(int p_data_type) {
 
 		case Theme::DATA_TYPE_STYLEBOX:
 			item_list = &tree_stylebox_items;
+			break;
+
+		case Theme::DATA_TYPE_COLOR_ROLE:
+			item_list = &tree_color_role_items;
+			break;
+
+		case Theme::DATA_TYPE_COLOR_SCHEME:
+			item_list = &tree_color_scheme_items;
 			break;
 
 		case Theme::DATA_TYPE_MAX:
@@ -713,6 +785,14 @@ void ThemeItemImportTree::_deselect_all_data_type_pressed(int p_data_type) {
 
 		case Theme::DATA_TYPE_STYLEBOX:
 			item_list = &tree_stylebox_items;
+			break;
+
+		case Theme::DATA_TYPE_COLOR_ROLE:
+			item_list = &tree_color_role_items;
+			break;
+
+		case Theme::DATA_TYPE_COLOR_SCHEME:
+			item_list = &tree_color_scheme_items;
 			break;
 
 		case Theme::DATA_TYPE_MAX:
@@ -793,6 +873,14 @@ void ThemeItemImportTree::_import_selected() {
 						item_value = Ref<StyleBox>();
 						break;
 
+					case Theme::DATA_TYPE_COLOR_ROLE:
+						item_value = ColorRole();
+						break;
+
+					case Theme::DATA_TYPE_COLOR_SCHEME:
+						item_value = Ref<ColorScheme>();
+						break;
+
 					case Theme::DATA_TYPE_MAX:
 						break; // Can't happen, but silences warning.
 				}
@@ -844,7 +932,9 @@ void ThemeItemImportTree::reset_item_tree() {
 	total_selected_font_sizes_label->hide();
 	total_selected_icons_label->hide();
 	total_selected_styleboxes_label->hide();
-
+	total_selected_color_roles_label->hide();
+	total_selected_color_schemes_label->hide();
+	
 	_update_items_tree();
 }
 
@@ -898,6 +988,16 @@ void ThemeItemImportTree::_notification(int p_what) {
 			deselect_all_styleboxes_button->set_icon(get_editor_theme_icon(SNAME("ThemeDeselectAll")));
 			select_all_styleboxes_button->set_icon(get_editor_theme_icon(SNAME("ThemeSelectAll")));
 			select_full_styleboxes_button->set_icon(get_editor_theme_icon(SNAME("ThemeSelectFull")));
+
+			select_color_roles_icon->set_texture(get_editor_theme_icon(SNAME("StyleBoxFlat")));
+			deselect_all_color_roles_button->set_icon(get_editor_theme_icon(SNAME("ThemeDeselectAll")));
+			select_all_color_roles_button->set_icon(get_editor_theme_icon(SNAME("ThemeSelectAll")));
+			select_full_color_roles_button->set_icon(get_editor_theme_icon(SNAME("ThemeSelectFull")));
+
+			select_color_schemes_icon->set_texture(get_editor_theme_icon(SNAME("StyleBoxFlat")));
+			deselect_all_color_schemes_button->set_icon(get_editor_theme_icon(SNAME("ThemeDeselectAll")));
+			select_all_color_schemes_button->set_icon(get_editor_theme_icon(SNAME("ThemeSelectAll")));
+			select_full_color_schemes_button->set_icon(get_editor_theme_icon(SNAME("ThemeSelectFull")));
 		} break;
 	}
 }
@@ -991,6 +1091,20 @@ ThemeItemImportTree::ThemeItemImportTree() {
 	select_all_styleboxes_button = memnew(Button);
 	select_full_styleboxes_button = memnew(Button);
 	total_selected_styleboxes_label = memnew(Label);
+
+	select_color_roles_icon = memnew(TextureRect);
+	select_color_roles_label = memnew(Label);
+	deselect_all_color_roles_button = memnew(Button);
+	select_all_color_roles_button = memnew(Button);
+	select_full_color_roles_button = memnew(Button);
+	total_selected_color_roles_label = memnew(Label);
+
+	select_color_schemes_icon = memnew(TextureRect);
+	select_color_schemes_label = memnew(Label);
+	deselect_all_color_schemes_button = memnew(Button);
+	select_all_color_schemes_button = memnew(Button);
+	select_full_color_schemes_button = memnew(Button);
+	total_selected_color_schemes_label = memnew(Label);
 
 	for (int i = 0; i < Theme::DATA_TYPE_MAX; i++) {
 		Theme::DataType dt = (Theme::DataType)i;
@@ -1090,6 +1204,34 @@ ThemeItemImportTree::ThemeItemImportTree() {
 				select_all_items_tooltip = TTR("Select all visible stylebox items.");
 				select_full_items_tooltip = TTR("Select all visible stylebox items and their data.");
 				deselect_all_items_tooltip = TTR("Deselect all visible stylebox items.");
+				break;
+
+			case Theme::DATA_TYPE_COLOR_ROLE:
+				select_items_icon = select_color_roles_icon;
+				select_items_label = select_color_roles_label;
+				deselect_all_items_button = deselect_all_color_roles_button;
+				select_all_items_button = select_all_color_roles_button;
+				select_full_items_button = select_full_color_roles_button;
+				total_selected_items_label = total_selected_color_roles_label;
+
+				items_title = TTR("Color roles");
+				select_all_items_tooltip = TTR("Select all visible color role items.");
+				select_full_items_tooltip = TTR("Select all visible color role items and their data.");
+				deselect_all_items_tooltip = TTR("Deselect all visible color role items.");
+				break;
+
+			case Theme::DATA_TYPE_COLOR_SCHEME:
+				select_items_icon = select_color_schemes_icon;
+				select_items_label = select_color_schemes_label;
+				deselect_all_items_button = deselect_all_color_schemes_button;
+				select_all_items_button = select_all_color_schemes_button;
+				select_full_items_button = select_full_color_schemes_button;
+				total_selected_items_label = total_selected_color_schemes_label;
+
+				items_title = TTR("Color schemes");
+				select_all_items_tooltip = TTR("Select all visible color scheme items.");
+				select_full_items_tooltip = TTR("Select all visible color scheme items and their data.");
+				deselect_all_items_tooltip = TTR("Deselect all visible color scheme items.");
 				break;
 
 			case Theme::DATA_TYPE_MAX:
@@ -1278,6 +1420,8 @@ void ThemeItemEditorDialog::_update_edit_types() {
 		edit_items_add_font_size->set_disabled(false);
 		edit_items_add_icon->set_disabled(false);
 		edit_items_add_stylebox->set_disabled(false);
+		edit_items_add_color_role->set_disabled(false);
+		edit_items_add_color_scheme->set_disabled(false);
 
 		edit_items_remove_class->set_disabled(false);
 		edit_items_remove_custom->set_disabled(false);
@@ -1292,6 +1436,8 @@ void ThemeItemEditorDialog::_update_edit_types() {
 		edit_items_add_font_size->set_disabled(true);
 		edit_items_add_icon->set_disabled(true);
 		edit_items_add_stylebox->set_disabled(true);
+		edit_items_add_color_role->set_disabled(true);
+		edit_items_add_color_scheme->set_disabled(true);
 
 		edit_items_remove_class->set_disabled(true);
 		edit_items_remove_custom->set_disabled(true);
@@ -1475,6 +1621,52 @@ void ThemeItemEditorDialog::_update_edit_item_tree(String p_item_type) {
 		}
 	}
 
+	{ // Color roles.
+		names.clear();
+		edited_theme->get_color_role_list(p_item_type, &names);
+
+		if (names.size() > 0) {
+			TreeItem *color_role_root = edit_items_tree->create_item(root);
+			color_role_root->set_metadata(0, Theme::DATA_TYPE_COLOR_ROLE);
+			color_role_root->set_icon(0, get_editor_theme_icon(SNAME("StyleBoxFlat")));
+			color_role_root->set_text(0, TTR("Color Roles"));
+			color_role_root->add_button(0, get_editor_theme_icon(SNAME("Clear")), ITEMS_TREE_REMOVE_DATA_TYPE, false, TTR("Remove All Color Role Items"));
+
+			names.sort_custom<StringName::AlphCompare>();
+			for (const StringName &E : names) {
+				TreeItem *item = edit_items_tree->create_item(color_role_root);
+				item->set_text(0, E);
+				item->add_button(0, get_editor_theme_icon(SNAME("Edit")), ITEMS_TREE_RENAME_ITEM, false, TTR("Rename Item"));
+				item->add_button(0, get_editor_theme_icon(SNAME("Remove")), ITEMS_TREE_REMOVE_ITEM, false, TTR("Remove Item"));
+			}
+
+			has_any_items = true;
+		}
+	}
+
+	{ // Color schemes.
+		names.clear();
+		edited_theme->get_color_scheme_list(p_item_type, &names);
+
+		if (names.size() > 0) {
+			TreeItem *color_scheme_root = edit_items_tree->create_item(root);
+			color_scheme_root->set_metadata(0, Theme::DATA_TYPE_COLOR_SCHEME);
+			color_scheme_root->set_icon(0, get_editor_theme_icon(SNAME("StyleBoxFlat")));
+			color_scheme_root->set_text(0, TTR("Color Schemes"));
+			color_scheme_root->add_button(0, get_editor_theme_icon(SNAME("Clear")), ITEMS_TREE_REMOVE_DATA_TYPE, false, TTR("Remove All Color Scheme Items"));
+
+			names.sort_custom<StringName::AlphCompare>();
+			for (const StringName &E : names) {
+				TreeItem *item = edit_items_tree->create_item(color_scheme_root);
+				item->set_text(0, E);
+				item->add_button(0, get_editor_theme_icon(SNAME("Edit")), ITEMS_TREE_RENAME_ITEM, false, TTR("Rename Item"));
+				item->add_button(0, get_editor_theme_icon(SNAME("Remove")), ITEMS_TREE_REMOVE_ITEM, false, TTR("Remove Item"));
+			}
+
+			has_any_items = true;
+		}
+	}
+
 	// If some type is selected, but it doesn't seem to have any items, show a guiding message.
 	TreeItem *selected_item = edit_type_list->get_selected();
 	if (selected_item) {
@@ -1571,6 +1763,14 @@ void ThemeItemEditorDialog::_add_theme_item(Theme::DataType p_data_type, String 
 		case Theme::DATA_TYPE_CONSTANT:
 			ur->add_do_method(*edited_theme, "set_constant", p_item_name, p_item_type, 0);
 			ur->add_undo_method(*edited_theme, "clear_constant", p_item_name, p_item_type);
+			break;
+		case Theme::DATA_TYPE_COLOR_ROLE:
+			ur->add_do_method(*edited_theme, "set_color_role", p_item_name, p_item_type, -1);
+			ur->add_undo_method(*edited_theme, "clear_color_role", p_item_name, p_item_type);
+			break;
+		case Theme::DATA_TYPE_COLOR_SCHEME:
+			ur->add_do_method(*edited_theme, "set_color_scheme", p_item_name, p_item_type, -1);
+			ur->add_undo_method(*edited_theme, "clear_color_scheme", p_item_name, p_item_type);
 			break;
 		case Theme::DATA_TYPE_MAX:
 			break; // Can't happen, but silences warning.
@@ -1762,6 +1962,12 @@ void ThemeItemEditorDialog::_open_add_theme_item_dialog(int p_data_type) {
 		case Theme::DATA_TYPE_STYLEBOX:
 			edit_theme_item_dialog->set_title(TTR("Add Stylebox Item"));
 			break;
+		case Theme::DATA_TYPE_COLOR_ROLE:
+			edit_theme_item_dialog->set_title(TTR("Add Color Role Item"));
+			break;
+		case Theme::DATA_TYPE_COLOR_SCHEME:
+			edit_theme_item_dialog->set_title(TTR("Add Color Scheme Item"));
+			break;
 		case Theme::DATA_TYPE_MAX:
 			break; // Can't happen, but silences warning.
 	}
@@ -1797,6 +2003,12 @@ void ThemeItemEditorDialog::_open_rename_theme_item_dialog(Theme::DataType p_dat
 			break;
 		case Theme::DATA_TYPE_STYLEBOX:
 			edit_theme_item_dialog->set_title(TTR("Rename Stylebox Item"));
+			break;
+		case Theme::DATA_TYPE_COLOR_ROLE:
+			edit_theme_item_dialog->set_title(TTR("Rename Color Role Item"));
+			break;
+		case Theme::DATA_TYPE_COLOR_SCHEME:
+			edit_theme_item_dialog->set_title(TTR("Rename Color Scheme Item"));
 			break;
 		case Theme::DATA_TYPE_MAX:
 			break; // Can't happen, but silences warning.
@@ -1882,6 +2094,8 @@ void ThemeItemEditorDialog::_notification(int p_what) {
 			edit_items_add_font_size->set_icon(get_editor_theme_icon(SNAME("FontSize")));
 			edit_items_add_icon->set_icon(get_editor_theme_icon(SNAME("ImageTexture")));
 			edit_items_add_stylebox->set_icon(get_editor_theme_icon(SNAME("StyleBoxFlat")));
+			edit_items_add_color_role->set_icon(get_editor_theme_icon(SNAME("ColorRole")));
+			edit_items_add_color_scheme->set_icon(get_editor_theme_icon(SNAME("ColorScheme")));
 
 			edit_items_remove_class->set_icon(get_editor_theme_icon(SNAME("Control")));
 			edit_items_remove_custom->set_icon(get_editor_theme_icon(SNAME("ThemeRemoveCustomItems")));
@@ -2002,6 +2216,20 @@ ThemeItemEditorDialog::ThemeItemEditorDialog(ThemeTypeEditor *p_theme_type_edito
 	edit_items_add_stylebox->set_disabled(true);
 	edit_items_toolbar->add_child(edit_items_add_stylebox);
 	edit_items_add_stylebox->connect("pressed", callable_mp(this, &ThemeItemEditorDialog::_open_add_theme_item_dialog).bind(Theme::DATA_TYPE_STYLEBOX));
+
+	edit_items_add_color_role = memnew(Button);
+	edit_items_add_color_role->set_tooltip_text(TTR("Add Color Role Item"));
+	edit_items_add_color_role->set_flat(true);
+	edit_items_add_color_role->set_disabled(true);
+	edit_items_toolbar->add_child(edit_items_add_color_role);
+	edit_items_add_color_role->connect("pressed", callable_mp(this, &ThemeItemEditorDialog::_open_add_theme_item_dialog).bind(Theme::DATA_TYPE_COLOR_ROLE));
+
+	edit_items_add_color_scheme = memnew(Button);
+	edit_items_add_color_scheme->set_tooltip_text(TTR("Add Color Scheme Item"));
+	edit_items_add_color_scheme->set_flat(true);
+	edit_items_add_color_scheme->set_disabled(true);
+	edit_items_toolbar->add_child(edit_items_add_color_scheme);
+	edit_items_add_color_scheme->connect("pressed", callable_mp(this, &ThemeItemEditorDialog::_open_add_theme_item_dialog).bind(Theme::DATA_TYPE_COLOR_SCHEME));
 
 	edit_items_toolbar->add_child(memnew(VSeparator));
 
@@ -2750,6 +2978,133 @@ void ThemeTypeEditor::_update_type_items() {
 		}
 	}
 
+	// Color roles.
+	{
+		for (int i = color_role_items_list->get_child_count() - 1; i >= 0; i--) {
+			Node *node = color_role_items_list->get_child(i);
+			node->queue_free();
+			color_role_items_list->remove_child(node);
+		}
+
+		HashMap<StringName, bool> color_role_items = _get_type_items(edited_type, Theme::DATA_TYPE_COLOR_ROLE, show_default);
+		List<String> color_role_keys;
+		color_role_keys.push_back("static_color");
+		color_role_keys.push_back("primary_palette_key");
+		color_role_keys.push_back("secondary_palette_key");
+		color_role_keys.push_back("tertiary_palette_key");
+		color_role_keys.push_back("neutral_palette_key");
+		color_role_keys.push_back("neutral_variant_palette_key");
+		color_role_keys.push_back("background");
+		color_role_keys.push_back("on_background");
+		color_role_keys.push_back("surface");
+		color_role_keys.push_back("surface_dim");
+		color_role_keys.push_back("surface_bright");
+		color_role_keys.push_back("surface_container_lowest");
+		color_role_keys.push_back("surface_container_low");
+		color_role_keys.push_back("surface_container");
+		color_role_keys.push_back("surface_container_high");
+		color_role_keys.push_back("surface_container_highest");
+		color_role_keys.push_back("on_surface");
+		color_role_keys.push_back("surface_variant");
+		color_role_keys.push_back("on_surface_variant");
+		color_role_keys.push_back("inverse_surface");
+		color_role_keys.push_back("inverse_on_surface");
+		color_role_keys.push_back("outline");
+		color_role_keys.push_back("outline_variant");
+		color_role_keys.push_back("shadow");
+		color_role_keys.push_back("scrim");
+		color_role_keys.push_back("surface_tint");
+		color_role_keys.push_back("primary");
+		color_role_keys.push_back("on_primary");
+		color_role_keys.push_back("primary_container");
+		color_role_keys.push_back("on_primary_container");
+		color_role_keys.push_back("inverse_primary");
+		color_role_keys.push_back("secondary");
+		color_role_keys.push_back("on_secondary");
+		color_role_keys.push_back("secondary_container");
+		color_role_keys.push_back("on_secondary_container");
+		color_role_keys.push_back("tertiary");
+		color_role_keys.push_back("on_tertiary");
+		color_role_keys.push_back("tertiary_container");
+		color_role_keys.push_back("on_tertiary_container");
+		color_role_keys.push_back("error");
+		color_role_keys.push_back("on_error");
+		color_role_keys.push_back("error_container");
+		color_role_keys.push_back("on_error_container");
+		color_role_keys.push_back("primary_fixed");
+		color_role_keys.push_back("primary_fixed_dim");
+		color_role_keys.push_back("on_primary_fixed");
+		color_role_keys.push_back("on_primary_fixed_variant");
+		color_role_keys.push_back("secondary_fixed");
+		color_role_keys.push_back("secondary_fixed_dim");
+		color_role_keys.push_back("on_secondary_fixed");
+		color_role_keys.push_back("on_secondary_fixed_variant");
+		color_role_keys.push_back("tertiary_fixed");
+		color_role_keys.push_back("tertiary_fixed_dim");
+		color_role_keys.push_back("on_tertiary_fixed");
+		color_role_keys.push_back("on_tertiary_fixed_variant");
+
+		for (const KeyValue<StringName, bool> &E : color_role_items) {
+			HBoxContainer *item_control = _create_property_control(Theme::DATA_TYPE_COLOR_ROLE, E.key, E.value);
+			OptionButton *item_editor = memnew(OptionButton);
+			item_editor->set_h_size_flags(SIZE_EXPAND_FILL);
+			for (int i = 0; i < color_role_keys.size(); i++) {
+				item_editor->add_item(color_role_keys[i]);
+			}
+			item_control->add_child(item_editor);
+
+			if (E.value) {
+				item_editor->select(int(edited_theme->get_color_role(E.key, edited_type)));
+				item_editor->connect("item_selected", callable_mp(this, &ThemeTypeEditor::_color_role_item_changed).bind(E.key));
+				item_editor->set_disabled(false);
+			} else {
+				item_editor->select(int(ThemeDB::get_singleton()->get_default_theme()->get_color_role(E.key, edited_type)));
+				item_editor->set_disabled(true);
+			}
+
+			_add_focusable(item_editor);
+			color_role_items_list->add_child(item_control);
+		}
+	}
+
+	// Color Schemes.
+	{
+		for (int i = color_scheme_items_list->get_child_count() - 1; i >= 0; i--) {
+			Node *node = color_scheme_items_list->get_child(i);
+			node->queue_free();
+			color_scheme_items_list->remove_child(node);
+		}
+
+		HashMap<StringName, bool> color_schemes = _get_type_items(edited_type, Theme::DATA_TYPE_COLOR_SCHEME, show_default);
+		for (const KeyValue<StringName, bool> &E : color_schemes) {
+			HBoxContainer *item_control = _create_property_control(Theme::DATA_TYPE_COLOR_SCHEME, E.key, E.value);
+			EditorResourcePicker *item_editor = memnew(EditorResourcePicker);
+			item_editor->set_h_size_flags(SIZE_EXPAND_FILL);
+			item_editor->set_base_type("ColorScheme");
+			item_control->add_child(item_editor);
+
+			if (E.value) {
+				if (edited_theme->has_color_scheme(E.key, edited_type)) {
+					item_editor->set_edited_resource(edited_theme->get_color_scheme(E.key, edited_type));
+				} else {
+					item_editor->set_edited_resource(Ref<Resource>());
+				}
+				item_editor->connect("resource_selected", callable_mp(this, &ThemeTypeEditor::_edit_resource_item));
+				item_editor->connect("resource_changed", callable_mp(this, &ThemeTypeEditor::_color_scheme_item_changed).bind(E.key));
+			} else {
+				if (ThemeDB::get_singleton()->get_default_theme()->has_color_scheme(E.key, edited_type)) {
+					item_editor->set_edited_resource(ThemeDB::get_singleton()->get_default_theme()->get_color_scheme(E.key, edited_type));
+				} else {
+					item_editor->set_edited_resource(Ref<Resource>());
+				}
+				item_editor->set_editable(false);
+			}
+
+			_add_focusable(item_editor);
+			color_scheme_items_list->add_child(item_control);
+		}
+	}
+
 	// Various type settings.
 	if (edited_type.is_empty() || ClassDB::class_exists(edited_type)) {
 		type_variation_edit->set_editable(false);
@@ -2826,6 +3181,25 @@ void ThemeTypeEditor::_add_default_type_items() {
 			}
 		}
 	}
+	{
+		names.clear();
+		ThemeDB::get_singleton()->get_default_theme()->get_color_role_list(default_type, &names);
+		for (const StringName &E : names) {
+			if (!new_snapshot->has_color_role(E, edited_type)) {
+				new_snapshot->set_color_role(E, edited_type, ThemeDB::get_singleton()->get_default_theme()->get_color_role(E, edited_type));
+			}
+		}
+	}
+	{
+		names.clear();
+		ThemeDB::get_singleton()->get_default_theme()->get_color_scheme_list(default_type, &names);
+		for (const StringName &E : names) {
+			if (!new_snapshot->has_color_scheme(E, edited_type)) {
+				new_snapshot->set_color_scheme(E, edited_type, ThemeDB::get_singleton()->get_default_theme()->get_color_scheme(E, edited_type));
+			}
+		}
+	}
+
 	{
 		names.clear();
 		ThemeDB::get_singleton()->get_default_theme()->get_color_list(default_type, &names);
@@ -2905,6 +3279,14 @@ void ThemeTypeEditor::_item_add_cbk(int p_data_type, Control *p_control) {
 				ur->add_undo_method(this, "_unpin_leading_stylebox");
 			}
 		} break;
+		case Theme::DATA_TYPE_COLOR_ROLE: {
+			ur->add_do_method(*edited_theme, "set_color_role", item_name, edited_type, -1);
+			ur->add_undo_method(*edited_theme, "clear_color_role", item_name, edited_type);
+		} break;
+		case Theme::DATA_TYPE_COLOR_SCHEME: {
+			ur->add_do_method(*edited_theme, "set_color_scheme", item_name, edited_type, -1);
+			ur->add_undo_method(*edited_theme, "clear_color_scheme", item_name, edited_type);
+		} break;
 	}
 
 	ur->commit_action();
@@ -2950,6 +3332,14 @@ void ThemeTypeEditor::_item_override_cbk(int p_data_type, String p_item_name) {
 			if (is_stylebox_pinned(sb)) {
 				ur->add_undo_method(this, "_unpin_leading_stylebox");
 			}
+		} break;
+		case Theme::DATA_TYPE_COLOR_ROLE: {
+			ur->add_do_method(*edited_theme, "set_color_role", p_item_name, edited_type, ThemeDB::get_singleton()->get_default_theme()->get_color_role(p_item_name, edited_type));
+			ur->add_undo_method(*edited_theme, "clear_color_role", p_item_name, edited_type);
+		} break;
+		case Theme::DATA_TYPE_COLOR_SCHEME: {
+			ur->add_do_method(*edited_theme, "set_color_scheme", p_item_name, edited_type, ThemeDB::get_singleton()->get_default_theme()->get_color_scheme(p_item_name, edited_type));
+			ur->add_undo_method(*edited_theme, "clear_color_scheme", p_item_name, edited_type);
 		} break;
 	}
 
@@ -3002,6 +3392,14 @@ void ThemeTypeEditor::_item_remove_cbk(int p_data_type, String p_item_name) {
 				ur->add_do_method(this, "_unpin_leading_stylebox");
 				ur->add_undo_method(this, "_pin_leading_stylebox", p_item_name, sb);
 			}
+		} break;
+		case Theme::DATA_TYPE_COLOR_ROLE: {
+			ur->add_do_method(*edited_theme, "clear_color_role", p_item_name, edited_type);
+			ur->add_undo_method(*edited_theme, "set_color_role", p_item_name, edited_type, edited_theme->get_color_role(p_item_name, edited_type));
+		} break;
+		case Theme::DATA_TYPE_COLOR_SCHEME: {
+			ur->add_do_method(*edited_theme, "clear_color_scheme", p_item_name, edited_type);
+			ur->add_undo_method(*edited_theme, "set_color_scheme", p_item_name, edited_type, edited_theme->get_color_scheme(p_item_name, edited_type));
 		} break;
 	}
 
@@ -3066,6 +3464,14 @@ void ThemeTypeEditor::_item_rename_confirmed(int p_data_type, String p_item_name
 			if (leading_stylebox.pinned && leading_stylebox.item_name == p_item_name) {
 				leading_stylebox.item_name = new_name;
 			}
+		} break;
+		case Theme::DATA_TYPE_COLOR_ROLE: {
+			ur->add_do_method(*edited_theme, "rename_color_role", p_item_name, new_name, edited_type);
+			ur->add_undo_method(*edited_theme, "rename_color_role", new_name, p_item_name, edited_type);
+		} break;
+		case Theme::DATA_TYPE_COLOR_SCHEME: {
+			ur->add_do_method(*edited_theme, "rename_color_scheme", p_item_name, new_name, edited_type);
+			ur->add_undo_method(*edited_theme, "rename_color_scheme", new_name, p_item_name, edited_type);
 		} break;
 	}
 
@@ -3169,6 +3575,22 @@ void ThemeTypeEditor::_stylebox_item_changed(Ref<StyleBox> p_value, String p_ite
 	ur->add_do_method(this, "call_deferred", "_update_type_items");
 	ur->add_undo_method(this, "call_deferred", "_update_type_items");
 
+	ur->commit_action();
+}
+
+void ThemeTypeEditor::_color_role_item_changed(ColorRole p_value, String p_item_name) {
+	EditorUndoRedoManager *ur = EditorUndoRedoManager::get_singleton();
+	ur->create_action(TTR("Set Color Role Item in Theme"));
+	ur->add_do_method(*edited_theme, "set_color_role", p_item_name, edited_type, p_value);
+	ur->add_undo_method(*edited_theme, "set_color_role", p_item_name, edited_type, edited_theme->get_color_role(p_item_name, edited_type));
+	ur->commit_action();
+}
+
+void ThemeTypeEditor::_color_scheme_item_changed(Ref<ColorScheme> p_value, String p_item_name) {
+	EditorUndoRedoManager *ur = EditorUndoRedoManager::get_singleton();
+	ur->create_action(TTR("Set Color Scheme Item in Theme"));
+	ur->add_do_method(*edited_theme, "set_color_scheme", p_item_name, edited_type, p_value);
+	ur->add_undo_method(*edited_theme, "set_color_scheme", p_item_name, edited_type, edited_theme->get_color_scheme(p_item_name, edited_type));
 	ur->commit_action();
 }
 
@@ -3345,7 +3767,9 @@ void ThemeTypeEditor::_notification(int p_what) {
 			data_type_tabs->set_tab_icon(3, get_editor_theme_icon(SNAME("FontSize")));
 			data_type_tabs->set_tab_icon(4, get_editor_theme_icon(SNAME("ImageTexture")));
 			data_type_tabs->set_tab_icon(5, get_editor_theme_icon(SNAME("StyleBoxFlat")));
-			data_type_tabs->set_tab_icon(6, get_editor_theme_icon(SNAME("Tools")));
+			data_type_tabs->set_tab_icon(6, get_editor_theme_icon(SNAME("ColorRole")));
+			data_type_tabs->set_tab_icon(7, get_editor_theme_icon(SNAME("ColorScheme")));
+			data_type_tabs->set_tab_icon(8, get_editor_theme_icon(SNAME("Tools")));
 
 			type_variation_button->set_icon(get_editor_theme_icon(SNAME("Add")));
 		} break;
@@ -3395,6 +3819,8 @@ void ThemeTypeEditor::select_type(String p_type_name) {
 		edited_theme->add_font_size_type(edited_type);
 		edited_theme->add_color_type(edited_type);
 		edited_theme->add_constant_type(edited_type);
+		edited_theme->add_color_role_type(edited_type);
+		edited_theme->add_color_scheme_type(edited_type);
 
 		_update_type_list();
 	}
@@ -3458,6 +3884,8 @@ ThemeTypeEditor::ThemeTypeEditor() {
 	font_size_items_list = _create_item_list(Theme::DATA_TYPE_FONT_SIZE);
 	icon_items_list = _create_item_list(Theme::DATA_TYPE_ICON);
 	stylebox_items_list = _create_item_list(Theme::DATA_TYPE_STYLEBOX);
+	color_role_items_list = _create_item_list(Theme::DATA_TYPE_COLOR_ROLE);
+	color_scheme_items_list = _create_item_list(Theme::DATA_TYPE_COLOR_SCHEME);
 
 	VBoxContainer *type_settings_tab = memnew(VBoxContainer);
 	type_settings_tab->set_custom_minimum_size(Size2(0, 160) * EDSCALE);
@@ -3837,6 +4265,25 @@ bool ThemeEditorPlugin::can_auto_hide() const {
 		}
 		return true;
 	}
+
+	Ref<ColorScheme> color_scheme = edited_resource;
+	if (color_scheme.is_valid()) {
+		List<StringName> type_list;
+		edited_theme->get_color_scheme_type_list(&type_list);
+
+		for (const StringName &E : type_list) {
+			List<StringName> list;
+			edited_theme->get_color_scheme_list(E, &list);
+
+			for (const StringName &F : list) {
+				if (edited_theme->get_color_scheme(F, E) == color_scheme) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	return true;
 }
 

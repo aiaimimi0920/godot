@@ -1353,6 +1353,8 @@ void FileDialog::_bind_methods() {
 	BIND_ENUM_CONSTANT(ACCESS_USERDATA);
 	BIND_ENUM_CONSTANT(ACCESS_FILESYSTEM);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, default_color_scheme);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, parent_folder);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, forward_folder);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, back_folder);
@@ -1362,14 +1364,41 @@ void FileDialog::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, file);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, create_folder);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, folder_icon_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, folder_icon_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, folder_icon_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, folder_icon_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, file_icon_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, file_icon_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, file_icon_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, file_icon_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, file_disabled_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, file_disabled_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, file_disabled_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, file_disabled_color);
 
+
 	// TODO: Define own colors?
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_normal_color_scale, "font_color_scale", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, icon_normal_color_scheme, "font_color_scheme", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_normal_color_role, "font_color_role", "Button");
 	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_normal_color, "font_color", "Button");
+
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_hover_color_scale, "font_hover_color_scale", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, icon_hover_color_scheme, "font_hover_color_scheme", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_hover_color_role, "font_hover_color_role", "Button");
 	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_hover_color, "font_hover_color", "Button");
+
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_focus_color_scale, "font_focus_color_scale", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, icon_focus_color_scheme, "font_focus_color_scheme", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_focus_color_role, "font_focus_color_role", "Button");
 	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_focus_color, "font_focus_color", "Button");
+
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_pressed_color_scale, "font_pressed_color_scale", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, icon_pressed_color_scheme, "font_pressed_color_scheme", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_pressed_color_role, "font_pressed_color_role", "Button");
 	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_pressed_color, "font_pressed_color", "Button");
 }
 

@@ -42,6 +42,7 @@ class Node;
 class StyleBox;
 class Texture2D;
 class ThemeContext;
+class ColorScheme;
 
 // Macros for binding theme items of this class. This information is used for the documentation, theme
 // overrides, etc. This is also the basis for theme cache.
@@ -84,6 +85,7 @@ class ThemeDB : public Object {
 	int fallback_font_size = 16;
 	Ref<Texture2D> fallback_icon;
 	Ref<StyleBox> fallback_stylebox;
+    Ref<ColorScheme> fallback_color_scheme;
 
 	// Global theme contexts used to scope global Theme resources.
 
@@ -147,6 +149,9 @@ public:
 
 	void set_fallback_font_size(int p_font_size);
 	int get_fallback_font_size();
+
+    void set_fallback_color_scheme(const Ref<ColorScheme> p_color_scheme);
+    Ref<ColorScheme> get_fallback_color_scheme();
 
 	void set_fallback_icon(const Ref<Texture2D> &p_icon);
 	Ref<Texture2D> get_fallback_icon();

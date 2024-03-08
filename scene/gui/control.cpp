@@ -189,8 +189,8 @@ Size2 Control::_edit_get_minimum_size() const {
 void Control::reparent(Node *p_parent, bool p_keep_global_transform) {
 	ERR_MAIN_THREAD_GUARD;
 	if (p_keep_global_transform) {
-		Transform2D temp = get_global_transform();
-		Node::reparent(p_parent);
+	Transform2D temp = get_global_transform();
+	Node::reparent(p_parent);
 		set_global_position(temp.get_origin());
 	} else {
 		Node::reparent(p_parent);
@@ -223,6 +223,10 @@ void Control::get_argument_options(const StringName &p_function, int p_idx, List
 			ThemeDB::get_singleton()->get_default_theme()->get_font_size_list(get_class(), &sn);
 		} else if (pf == "add_theme_constant_override" || pf == "has_theme_constant" || pf == "has_theme_constant_override" || pf == "get_theme_constant") {
 			ThemeDB::get_singleton()->get_default_theme()->get_constant_list(get_class(), &sn);
+		} else if (pf == "add_theme_color_role_override" || pf == "has_theme_color_role" || pf == "has_theme_color_role_override" || pf == "get_theme_color_role") {
+            ThemeDB::get_singleton()->get_default_theme()->get_color_role_list(get_class(), &sn);
+        } else if (pf == "add_theme_color_scheme_override" || pf == "has_theme_color_scheme" || pf == "has_theme_color_scheme_override" || pf == "get_theme_color_scheme") {
+            ThemeDB::get_singleton()->get_default_theme()->get_color_scheme_list(get_class(), &sn);
 		}
 
 		sn.sort_custom<StringName::AlphCompare>();
@@ -312,6 +316,17 @@ bool Control::_set(const StringName &p_name, const Variant &p_value) {
 			String dname = name.get_slicec('/', 1);
 			data.theme_constant_override.erase(dname);
 			_notify_theme_override_changed();
+		} else if (name.begins_with("theme_override_color_roles/")) {
+            String dname = name.get_slicec('/', 1);
+            data.theme_color_role_override.erase(dname);
+            _notify_theme_override_changed();
+        } else if (name.begins_with("theme_override_color_schemes/")) {
+            String dname = name.get_slicec('/', 1);
+			if (data.theme_color_scheme_override.has(dname)) {
+				data.theme_color_scheme_override[dname]->disconnect_changed(callable_mp(this, &Control::_notify_theme_override_changed));
+			}
+            data.theme_color_scheme_override.erase(dname);
+            _notify_theme_override_changed();
 		} else {
 			return false;
 		}
@@ -334,6 +349,12 @@ bool Control::_set(const StringName &p_name, const Variant &p_value) {
 		} else if (name.begins_with("theme_override_constants/")) {
 			String dname = name.get_slicec('/', 1);
 			add_theme_constant_override(dname, p_value);
+		} else if (name.begins_with("theme_override_color_roles/")) {
+            String dname = name.get_slicec('/', 1);
+            add_theme_color_role_override(dname, p_value);
+        } else if (name.begins_with("theme_override_color_schemes/")) {
+            String dname = name.get_slicec('/', 1);
+            add_theme_color_scheme_override(dname, p_value);
 		} else {
 			return false;
 		}
@@ -368,6 +389,12 @@ bool Control::_get(const StringName &p_name, Variant &r_ret) const {
 	} else if (sname.begins_with("theme_override_constants/")) {
 		String name = sname.get_slicec('/', 1);
 		r_ret = data.theme_constant_override.has(name) ? Variant(data.theme_constant_override[name]) : Variant();
+	} else if (sname.begins_with("theme_override_color_roles/")) {
+        String name = sname.get_slicec('/', 1);
+        r_ret = data.theme_color_role_override.has(name) ? Variant(data.theme_color_role_override[name]) : Variant();
+    } else if (sname.begins_with("theme_override_color_schemes/")) {
+        String name = sname.get_slicec('/', 1);
+        r_ret = data.theme_color_scheme_override.has(name) ? Variant(data.theme_color_scheme_override[name]) : Variant();
 	} else {
 		return false;
 	}
@@ -383,57 +410,71 @@ void Control::_get_property_list(List<PropertyInfo> *p_list) const {
 	p_list->push_back(PropertyInfo(Variant::NIL, GNAME("Theme Overrides", "theme_override_"), PROPERTY_HINT_NONE, "theme_override_", PROPERTY_USAGE_GROUP));
 
 	for (const ThemeDB::ThemeItemBind &E : theme_items) {
-		uint32_t usage = PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_CHECKABLE;
+			uint32_t usage = PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_CHECKABLE;
 
 		switch (E.data_type) {
 			case Theme::DATA_TYPE_COLOR: {
 				if (data.theme_color_override.has(E.item_name)) {
-					usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
-				}
+				usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
+			}
 				p_list->push_back(PropertyInfo(Variant::COLOR, PNAME("theme_override_colors") + String("/") + E.item_name, PROPERTY_HINT_NONE, "", usage));
 			} break;
 
 			case Theme::DATA_TYPE_CONSTANT: {
 				if (data.theme_constant_override.has(E.item_name)) {
-					usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
-				}
+				usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
+			}
 				p_list->push_back(PropertyInfo(Variant::INT, PNAME("theme_override_constants") + String("/") + E.item_name, PROPERTY_HINT_RANGE, "-16384,16384", usage));
 			} break;
 
 			case Theme::DATA_TYPE_FONT: {
 				if (data.theme_font_override.has(E.item_name)) {
-					usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
-				}
+				usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
+			}
 				p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("theme_override_fonts") + String("/") + E.item_name, PROPERTY_HINT_RESOURCE_TYPE, "Font", usage));
 			} break;
 
 			case Theme::DATA_TYPE_FONT_SIZE: {
 				if (data.theme_font_size_override.has(E.item_name)) {
-					usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
-				}
+				usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
+			}
 				p_list->push_back(PropertyInfo(Variant::INT, PNAME("theme_override_font_sizes") + String("/") + E.item_name, PROPERTY_HINT_RANGE, "1,256,1,or_greater,suffix:px", usage));
 			} break;
 
 			case Theme::DATA_TYPE_ICON: {
 				if (data.theme_icon_override.has(E.item_name)) {
-					usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
-				}
+				usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
+			}
 				p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("theme_override_icons") + String("/") + E.item_name, PROPERTY_HINT_RESOURCE_TYPE, "Texture2D", usage));
 			} break;
 
 			case Theme::DATA_TYPE_STYLEBOX: {
 				if (data.theme_style_override.has(E.item_name)) {
-					usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
-				}
+                usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
+            }
 				p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("theme_override_styles") + String("/") + E.item_name, PROPERTY_HINT_RESOURCE_TYPE, "StyleBox", usage));
+			} break;
+
+			case Theme::DATA_TYPE_COLOR_ROLE: {
+				if (data.theme_color_role_override.has(E.item_name)) {
+				usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
+			}
+				p_list->push_back(PropertyInfo(Variant::INT, PNAME("theme_override_color_roles") + String("/") + E.item_name, PROPERTY_HINT_ENUM, color_role_hint, usage));
+			} break;
+
+			case Theme::DATA_TYPE_COLOR_SCHEME: {
+				if (data.theme_color_scheme_override.has(E.item_name)) {
+				usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
+			}
+				p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("theme_override_color_schemes") + String("/") + E.item_name, PROPERTY_HINT_RESOURCE_TYPE, "ColorScheme", usage));
 			} break;
 
 			default: {
 				// Silences warning.
 			} break;
-		}
-	}
-}
+            }
+        }
+    }
 
 void Control::_validate_property(PropertyInfo &p_property) const {
 	// Update theme type variation options.
@@ -2453,6 +2494,8 @@ void Control::_invalidate_theme_cache() {
 	data.theme_font_size_cache.clear();
 	data.theme_color_cache.clear();
 	data.theme_constant_cache.clear();
+    data.theme_color_role_cache.clear();
+    data.theme_color_scheme_cache.clear();
 }
 
 void Control::_update_theme_item_cache() {
@@ -2579,6 +2622,17 @@ Ref<StyleBox> Control::get_theme_stylebox(const StringName &p_name, const String
 	data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
 	Ref<StyleBox> style = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_STYLEBOX, p_name, theme_types);
 	data.theme_style_cache[p_theme_type][p_name] = style;
+
+	if(style.is_valid()){
+		const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
+		const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
+		if(color_scheme.is_valid()){
+			style->set_emit_changed_signal_flag(false);
+			style->set_default_color_scheme(color_scheme);
+			style->set_emit_changed_signal_flag(true);
+		}
+	}
+
 	return style;
 }
 
@@ -2631,27 +2685,53 @@ int Control::get_theme_font_size(const StringName &p_name, const StringName &p_t
 }
 
 Color Control::get_theme_color(const StringName &p_name, const StringName &p_theme_type) const {
-	ERR_READ_THREAD_GUARD_V(Color());
-	if (!data.initialized) {
-		WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
+    ERR_READ_THREAD_GUARD_V(Color());
+    if (!data.initialized) {
+        WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
+    }
+
+    if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
+		const StringName targe_color_role_name = String(p_name) + String("_role");
+        const ColorRole *color_role = data.theme_color_role_override.getptr(targe_color_role_name);
+		if (color_role && *color_role!=ColorRole::STATIC_COLOR) {
+			const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
+            const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
+            Color color = color_scheme->get_color(*color_role);
+			const StringName targe_color_scale_name = String(p_name) + String("_scale");
+			Color color_scale = get_theme_color(targe_color_scale_name);
+            return color*color_scale;
+        }
+    }
+    if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
+        const Color *color = data.theme_color_override.getptr(p_name);
+        if (color) {
+            return *color;
+        }
+    }
+
+    if (data.theme_color_cache.has(p_theme_type) && data.theme_color_cache[p_theme_type].has(p_name)) {
+        return data.theme_color_cache[p_theme_type][p_name];
+    }
+
+    List<StringName> theme_types;
+    data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
+    Variant color = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR, p_name, theme_types);
+	Color target_color;
+	if(color.get_type() == Variant::BOOL){
+		const StringName targe_color_role_name = String(p_name) + String("_role");
+		ColorRole color_role = get_theme_color_role(targe_color_role_name, p_theme_type);
+		const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
+		const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
+		target_color = color_scheme->get_color(color_role);
+		const StringName targe_color_scale_name = String(p_name) + String("_scale");
+		Color color_scale = get_theme_color(targe_color_scale_name);
+		target_color = target_color * color_scale;
+	} else{
+		target_color = Color(color);
 	}
 
-	if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
-		const Color *color = data.theme_color_override.getptr(p_name);
-		if (color) {
-			return *color;
-		}
-	}
-
-	if (data.theme_color_cache.has(p_theme_type) && data.theme_color_cache[p_theme_type].has(p_name)) {
-		return data.theme_color_cache[p_theme_type][p_name];
-	}
-
-	List<StringName> theme_types;
-	data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
-	Color color = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR, p_name, theme_types);
-	data.theme_color_cache[p_theme_type][p_name] = color;
-	return color;
+    data.theme_color_cache[p_theme_type][p_name] = target_color;
+    return color;
 }
 
 int Control::get_theme_constant(const StringName &p_name, const StringName &p_theme_type) const {
@@ -2678,6 +2758,68 @@ int Control::get_theme_constant(const StringName &p_name, const StringName &p_th
 	return constant;
 }
 
+ColorRole Control::get_theme_color_role(const StringName &p_name, const StringName &p_theme_type) const {
+    ERR_READ_THREAD_GUARD_V(ColorRole());
+    if (!data.initialized) {
+        WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
+    }
+
+    if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
+        const ColorRole *color_role = data.theme_color_role_override.getptr(p_name);
+        if (color_role) {
+            return *color_role;
+        }
+    }
+
+    if (data.theme_color_role_cache.has(p_theme_type) && data.theme_color_role_cache[p_theme_type].has(p_name)) {
+        return data.theme_color_role_cache[p_theme_type][p_name];
+    }
+
+    List<StringName> theme_types;
+    data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
+    ColorRole color_role = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR_ROLE, p_name, theme_types);
+    data.theme_color_role_cache[p_theme_type][p_name] = color_role;
+	const StringName targe_color_name = String(p_name).trim_suffix("_role");
+	get_theme_color(targe_color_name, p_theme_type);
+	return color_role;
+}
+
+Ref<ColorScheme> Control::get_theme_color_scheme(const StringName &p_name, const StringName &p_theme_type) const {
+    ERR_READ_THREAD_GUARD_V(Ref<ColorScheme>());
+    if (!data.initialized) {
+        WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
+    }
+
+
+    if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
+        const Ref<ColorScheme> *color_scheme = data.theme_color_scheme_override.getptr(p_name);
+        if (color_scheme) {
+            return *color_scheme;
+        } else{
+			const Ref<ColorScheme> *default_color_scheme = data.theme_color_scheme_override.getptr("default_color_scheme");
+			if (default_color_scheme) {
+            	return *default_color_scheme;
+			}
+		}
+    }
+
+    if (data.theme_color_scheme_cache.has(p_theme_type) && data.theme_color_scheme_cache[p_theme_type].has(p_name)) {
+        return data.theme_color_scheme_cache[p_theme_type][p_name];
+    }
+
+    List<StringName> theme_types;
+    data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
+
+	Ref<ColorScheme> color_scheme = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR_SCHEME, p_name, theme_types);
+    
+	data.theme_color_scheme_cache[p_theme_type][p_name] = color_scheme;
+
+	const StringName targe_color_name = String(p_name).trim_suffix("_scheme");
+	Color color = get_theme_color(targe_color_name, p_theme_type);
+    return color_scheme;
+}
+
+
 Variant Control::get_theme_item(Theme::DataType p_data_type, const StringName &p_name, const StringName &p_theme_type) const {
 	switch (p_data_type) {
 		case Theme::DATA_TYPE_COLOR:
@@ -2692,6 +2834,10 @@ Variant Control::get_theme_item(Theme::DataType p_data_type, const StringName &p
 			return get_theme_icon(p_name, p_theme_type);
 		case Theme::DATA_TYPE_STYLEBOX:
 			return get_theme_stylebox(p_name, p_theme_type);
+		case Theme::DATA_TYPE_COLOR_ROLE:
+            return get_theme_color_role(p_name, p_theme_type);
+        case Theme::DATA_TYPE_COLOR_SCHEME:
+            return get_theme_color_scheme(p_name, p_theme_type);
 		case Theme::DATA_TYPE_MAX:
 			break; // Can't happen, but silences warning.
 	}
@@ -2807,6 +2953,42 @@ bool Control::has_theme_constant(const StringName &p_name, const StringName &p_t
 	return data.theme_owner->has_theme_item_in_types(Theme::DATA_TYPE_CONSTANT, p_name, theme_types);
 }
 
+bool Control::has_theme_color_role(const StringName &p_name, const StringName &p_theme_type) const {
+    ERR_READ_THREAD_GUARD_V(false);
+    if (!data.initialized) {
+        WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
+    }
+
+    if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
+        if (has_theme_color_role_override(p_name)) {
+            return true;
+        }
+    }
+
+    List<StringName> theme_types;
+    data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
+    return data.theme_owner->has_theme_item_in_types(Theme::DATA_TYPE_COLOR_ROLE, p_name, theme_types);
+}
+
+bool Control::has_theme_color_scheme(const StringName &p_name, const StringName &p_theme_type) const {
+    ERR_READ_THREAD_GUARD_V(false);
+    if (!data.initialized) {
+        WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
+    }
+
+    if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
+        if (has_theme_color_scheme_override(p_name)) {
+            return true;
+        }
+    }
+
+    List<StringName> theme_types;
+    data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
+    return data.theme_owner->has_theme_item_in_types(Theme::DATA_TYPE_COLOR_SCHEME, p_name, theme_types);
+}
+
+
+
 /// Local property overrides.
 
 void Control::add_theme_icon_override(const StringName &p_name, const Ref<Texture2D> &p_icon) {
@@ -2866,6 +3048,26 @@ void Control::add_theme_constant_override(const StringName &p_name, int p_consta
 	_notify_theme_override_changed();
 }
 
+void Control::add_theme_color_role_override(const StringName &p_name, ColorRole p_color_role) {
+    ERR_MAIN_THREAD_GUARD;
+    data.theme_color_role_override[p_name] = p_color_role;
+    _notify_theme_override_changed();
+}
+
+void Control::add_theme_color_scheme_override(const StringName &p_name, const Ref<ColorScheme> &p_color_scheme) {
+	ERR_MAIN_THREAD_GUARD;
+	ERR_FAIL_COND(!p_color_scheme.is_valid());
+
+	if (data.theme_color_scheme_override.has(p_name)) {
+		data.theme_color_scheme_override[p_name]->disconnect_changed(callable_mp(this, &Control::_notify_theme_override_changed));
+	}
+
+	data.theme_color_scheme_override[p_name] = p_color_scheme;
+	data.theme_color_scheme_override[p_name]->connect_changed(callable_mp(this, &Control::_notify_theme_override_changed), CONNECT_REFERENCE_COUNTED);
+	_notify_theme_override_changed();
+
+}
+
 void Control::remove_theme_icon_override(const StringName &p_name) {
 	ERR_MAIN_THREAD_GUARD;
 	if (data.theme_icon_override.has(p_name)) {
@@ -2914,6 +3116,24 @@ void Control::remove_theme_constant_override(const StringName &p_name) {
 	_notify_theme_override_changed();
 }
 
+void Control::remove_theme_color_role_override(const StringName &p_name) {
+    ERR_MAIN_THREAD_GUARD;
+    data.theme_color_role_override.erase(p_name);
+    _notify_theme_override_changed();
+}
+
+void Control::remove_theme_color_scheme_override(const StringName &p_name) {
+    ERR_MAIN_THREAD_GUARD;
+	if (data.theme_color_scheme_override.has(p_name)) {
+		data.theme_color_scheme_override[p_name]->disconnect_changed(callable_mp(this, &Control::_notify_theme_override_changed));
+	}
+
+	data.theme_color_scheme_override.erase(p_name);
+	_notify_theme_override_changed();
+
+}
+
+
 bool Control::has_theme_icon_override(const StringName &p_name) const {
 	ERR_READ_THREAD_GUARD_V(false);
 	const Ref<Texture2D> *tex = data.theme_icon_override.getptr(p_name);
@@ -2950,6 +3170,18 @@ bool Control::has_theme_constant_override(const StringName &p_name) const {
 	return constant != nullptr;
 }
 
+bool Control::has_theme_color_role_override(const StringName &p_name) const {
+    ERR_READ_THREAD_GUARD_V(false);
+    const ColorRole *color_role = data.theme_color_role_override.getptr(p_name);
+    return color_role != nullptr;
+}
+
+bool Control::has_theme_color_scheme_override(const StringName &p_name) const {
+    ERR_READ_THREAD_GUARD_V(false);
+    const Ref<ColorScheme> *color_scheme = data.theme_color_scheme_override.getptr(p_name);
+    return color_scheme != nullptr;
+}
+
 /// Default theme properties.
 
 float Control::get_theme_default_base_scale() const {
@@ -2965,6 +3197,11 @@ Ref<Font> Control::get_theme_default_font() const {
 int Control::get_theme_default_font_size() const {
 	ERR_READ_THREAD_GUARD_V(0);
 	return data.theme_owner->get_theme_default_font_size();
+}
+
+Ref<ColorScheme> Control::get_theme_default_color_scheme() const {
+	ERR_READ_THREAD_GUARD_V(Ref<ColorScheme>());
+	return data.theme_owner->get_theme_default_color_scheme();
 }
 
 /// Bulk actions.
@@ -3415,6 +3652,8 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_theme_font_size_override", "name", "font_size"), &Control::add_theme_font_size_override);
 	ClassDB::bind_method(D_METHOD("add_theme_color_override", "name", "color"), &Control::add_theme_color_override);
 	ClassDB::bind_method(D_METHOD("add_theme_constant_override", "name", "constant"), &Control::add_theme_constant_override);
+	ClassDB::bind_method(D_METHOD("add_theme_color_role_override", "name", "color_role"), &Control::add_theme_color_role_override);
+	ClassDB::bind_method(D_METHOD("add_theme_color_scheme_override", "name", "color_scheme"), &Control::add_theme_color_scheme_override);
 
 	ClassDB::bind_method(D_METHOD("remove_theme_icon_override", "name"), &Control::remove_theme_icon_override);
 	ClassDB::bind_method(D_METHOD("remove_theme_stylebox_override", "name"), &Control::remove_theme_style_override);
@@ -3422,6 +3661,8 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("remove_theme_font_size_override", "name"), &Control::remove_theme_font_size_override);
 	ClassDB::bind_method(D_METHOD("remove_theme_color_override", "name"), &Control::remove_theme_color_override);
 	ClassDB::bind_method(D_METHOD("remove_theme_constant_override", "name"), &Control::remove_theme_constant_override);
+	ClassDB::bind_method(D_METHOD("remove_theme_color_role_override", "color_role"), &Control::remove_theme_color_role_override);
+	ClassDB::bind_method(D_METHOD("remove_theme_color_scheme_override", "color_scheme"), &Control::remove_theme_color_scheme_override);
 
 	ClassDB::bind_method(D_METHOD("get_theme_icon", "name", "theme_type"), &Control::get_theme_icon, DEFVAL(StringName()));
 	ClassDB::bind_method(D_METHOD("get_theme_stylebox", "name", "theme_type"), &Control::get_theme_stylebox, DEFVAL(StringName()));
@@ -3429,6 +3670,8 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_theme_font_size", "name", "theme_type"), &Control::get_theme_font_size, DEFVAL(StringName()));
 	ClassDB::bind_method(D_METHOD("get_theme_color", "name", "theme_type"), &Control::get_theme_color, DEFVAL(StringName()));
 	ClassDB::bind_method(D_METHOD("get_theme_constant", "name", "theme_type"), &Control::get_theme_constant, DEFVAL(StringName()));
+	ClassDB::bind_method(D_METHOD("get_theme_color_role", "name", "theme_type"), &Control::get_theme_color_role, DEFVAL(StringName()));
+	ClassDB::bind_method(D_METHOD("get_theme_color_scheme", "name", "theme_type"), &Control::get_theme_color_scheme, DEFVAL(StringName()));
 
 	ClassDB::bind_method(D_METHOD("has_theme_icon_override", "name"), &Control::has_theme_icon_override);
 	ClassDB::bind_method(D_METHOD("has_theme_stylebox_override", "name"), &Control::has_theme_stylebox_override);
@@ -3436,6 +3679,8 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("has_theme_font_size_override", "name"), &Control::has_theme_font_size_override);
 	ClassDB::bind_method(D_METHOD("has_theme_color_override", "name"), &Control::has_theme_color_override);
 	ClassDB::bind_method(D_METHOD("has_theme_constant_override", "name"), &Control::has_theme_constant_override);
+	ClassDB::bind_method(D_METHOD("has_theme_color_role_override", "name"), &Control::has_theme_color_role_override);
+	ClassDB::bind_method(D_METHOD("has_theme_color_scheme_override", "name"), &Control::has_theme_color_scheme_override);
 
 	ClassDB::bind_method(D_METHOD("has_theme_icon", "name", "theme_type"), &Control::has_theme_icon, DEFVAL(StringName()));
 	ClassDB::bind_method(D_METHOD("has_theme_stylebox", "name", "theme_type"), &Control::has_theme_stylebox, DEFVAL(StringName()));
@@ -3443,10 +3688,13 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("has_theme_font_size", "name", "theme_type"), &Control::has_theme_font_size, DEFVAL(StringName()));
 	ClassDB::bind_method(D_METHOD("has_theme_color", "name", "theme_type"), &Control::has_theme_color, DEFVAL(StringName()));
 	ClassDB::bind_method(D_METHOD("has_theme_constant", "name", "theme_type"), &Control::has_theme_constant, DEFVAL(StringName()));
+	ClassDB::bind_method(D_METHOD("has_theme_color_role", "name", "theme_type"), &Control::has_theme_color_role, DEFVAL(StringName()));
+	ClassDB::bind_method(D_METHOD("has_theme_color_scheme", "name", "theme_type"), &Control::has_theme_color_scheme, DEFVAL(StringName()));
 
 	ClassDB::bind_method(D_METHOD("get_theme_default_base_scale"), &Control::get_theme_default_base_scale);
 	ClassDB::bind_method(D_METHOD("get_theme_default_font"), &Control::get_theme_default_font);
 	ClassDB::bind_method(D_METHOD("get_theme_default_font_size"), &Control::get_theme_default_font_size);
+	ClassDB::bind_method(D_METHOD("get_theme_default_color_scheme"), &Control::get_theme_default_color_scheme);
 
 	ClassDB::bind_method(D_METHOD("get_parent_control"), &Control::get_parent_control);
 
@@ -3710,6 +3958,10 @@ Control::~Control() {
 		E.value->disconnect_changed(callable_mp(this, &Control::_notify_theme_override_changed));
 	}
 
+	for (KeyValue<StringName, Ref<ColorScheme>> &E : data.theme_color_scheme_override) {
+		E.value->disconnect_changed(callable_mp(this, &Control::_notify_theme_override_changed));
+	}
+
 	// Then override maps can be simply cleared.
 	data.theme_icon_override.clear();
 	data.theme_style_override.clear();
@@ -3717,4 +3969,6 @@ Control::~Control() {
 	data.theme_font_size_override.clear();
 	data.theme_color_override.clear();
 	data.theme_constant_override.clear();
+	data.theme_color_role_override.clear();
+	data.theme_color_scheme_override.clear();
 }

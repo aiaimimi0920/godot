@@ -6553,17 +6553,42 @@ void TextEdit::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("gutter_removed"));
 
 	/* Theme items */
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, default_color_scheme);
+
 	/* Search */
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, search_result_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, search_result_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, search_result_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, search_result_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, search_result_border_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, search_result_border_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, search_result_border_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, search_result_border_color);
 
 	/* Caret */
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextEdit, caret_width);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, caret_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, caret_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, caret_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, caret_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, caret_background_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, caret_background_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, caret_background_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, caret_background_color);
 
 	/* Selection */
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_selected_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, font_selected_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_selected_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_selected_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, selection_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, selection_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, selection_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, selection_color);
 
 	/* Other visuals */
@@ -6576,17 +6601,44 @@ void TextEdit::_bind_methods() {
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, TextEdit, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, TextEdit, font_size);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, font_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_readonly_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, font_readonly_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_readonly_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_readonly_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_placeholder_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, font_placeholder_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_placeholder_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_placeholder_color);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextEdit, outline_size);
+
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, TextEdit, outline_color_scale, "font_outline_color_scale");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, outline_color_scheme, "font_outline_color_scheme");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, outline_color_role, "font_outline_color_role");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, TextEdit, outline_color, "font_outline_color");
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextEdit, line_spacing);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, background_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, background_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, background_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, background_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, current_line_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, current_line_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, current_line_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, current_line_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, word_highlighted_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, word_highlighted_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, word_highlighted_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, word_highlighted_color);
 
 	/* Settings. */

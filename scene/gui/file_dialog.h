@@ -113,6 +113,8 @@ private:
 	bool is_invalidating = false;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<Texture2D> parent_folder;
 		Ref<Texture2D> forward_folder;
 		Ref<Texture2D> back_folder;
@@ -122,13 +124,39 @@ private:
 		Ref<Texture2D> file;
 		Ref<Texture2D> create_folder;
 
+		Color folder_icon_color_scale;
+		Ref<ColorScheme> folder_icon_color_scheme;
+		ColorRole folder_icon_color_role;
 		Color folder_icon_color;
+
+		Color file_icon_color_scale;
+		Ref<ColorScheme> file_icon_color_scheme;
+		ColorRole file_icon_color_role;
 		Color file_icon_color;
+
+		Color file_disabled_color_scale;
+		Ref<ColorScheme> file_disabled_color_scheme;
+		ColorRole file_disabled_color_role;
 		Color file_disabled_color;
 
+		Color icon_normal_color_scale;
+		Ref<ColorScheme> icon_normal_color_scheme;
+		ColorRole icon_normal_color_role;
 		Color icon_normal_color;
+
+		Color icon_hover_color_scale;
+		Ref<ColorScheme> icon_hover_color_scheme;
+		ColorRole icon_hover_color_role;
 		Color icon_hover_color;
+
+		Color icon_focus_color_scale;
+		Ref<ColorScheme> icon_focus_color_scheme;
+		ColorRole icon_focus_color_role;
 		Color icon_focus_color;
+
+		Color icon_pressed_color_scale;
+		Ref<ColorScheme> icon_pressed_color_scheme;
+		ColorRole icon_pressed_color_role;
 		Color icon_pressed_color;
 	} theme_cache;
 

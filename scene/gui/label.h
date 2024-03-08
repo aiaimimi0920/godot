@@ -71,15 +71,31 @@ private:
 	Ref<LabelSettings> settings;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> normal_style;
 		Ref<Font> font;
 
 		int font_size = 0;
 		int line_spacing = 0;
+
+		Color font_color_scale;
+		Ref<ColorScheme> font_color_scheme;
+		ColorRole font_color_role;
 		Color font_color;
+
+		Color font_shadow_color_scale;
+		Ref<ColorScheme> font_shadow_color_scheme;
+		ColorRole font_shadow_color_role;
 		Color font_shadow_color;
+
 		Point2 font_shadow_offset;
+
+		Color font_outline_color_scale;
+		Ref<ColorScheme> font_outline_color_scheme;
+		ColorRole font_outline_color_role;
 		Color font_outline_color;
+
 		int font_outline_size;
 		int font_shadow_outline_size;
 	} theme_cache;

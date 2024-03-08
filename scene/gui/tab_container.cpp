@@ -72,13 +72,13 @@ void TabContainer::gui_input(const Ref<InputEvent> &p_event) {
 				Vector2 popup_pos = get_screen_position();
 				if (!is_layout_rtl()) {
 					popup_pos.x += size.width - popup->get_size().width;
-				}
+			}
 				popup_pos.y += _get_tab_height() / 2.0;
 				if (tabs_position == POSITION_BOTTOM) {
 					popup_pos.y += content_height;
 					popup_pos.y -= popup->get_size().height;
 					popup_pos.y -= theme_cache.menu_icon->get_height() / 2.0;
-				} else {
+		} else {
 					popup_pos.y += theme_cache.menu_icon->get_height() / 2.0;
 				}
 
@@ -1027,6 +1027,8 @@ void TabContainer::_bind_methods() {
 	BIND_ENUM_CONSTANT(POSITION_BOTTOM);
 	BIND_ENUM_CONSTANT(POSITION_MAX);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TabContainer, default_color_scheme);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TabContainer, side_margin);
 
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, TabContainer, panel_style, "panel");
@@ -1038,6 +1040,7 @@ void TabContainer::_bind_methods() {
 	// TabBar overrides.
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TabContainer, icon_separation);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TabContainer, icon_max_width);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TabContainer, outline_size);
 
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, TabContainer, tab_unselected_style, "tab_unselected");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, TabContainer, tab_hovered_style, "tab_hovered");
@@ -1050,17 +1053,39 @@ void TabContainer::_bind_methods() {
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, TabContainer, decrement_icon, "decrement");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, TabContainer, decrement_hl_icon, "decrement_highlight");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, TabContainer, drop_mark_icon, "drop_mark");
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabContainer, drop_mark_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TabContainer, drop_mark_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabContainer, drop_mark_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabContainer, drop_mark_color);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabContainer, font_selected_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TabContainer, font_selected_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabContainer, font_selected_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabContainer, font_selected_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabContainer, font_hovered_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TabContainer, font_hovered_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabContainer, font_hovered_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabContainer, font_hovered_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabContainer, font_unselected_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TabContainer, font_unselected_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabContainer, font_unselected_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabContainer, font_unselected_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabContainer, font_disabled_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TabContainer, font_disabled_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabContainer, font_disabled_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabContainer, font_disabled_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabContainer, font_outline_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TabContainer, font_outline_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabContainer, font_outline_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabContainer, font_outline_color);
 
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_FONT, TabContainer, tab_font, "font");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_FONT_SIZE, TabContainer, tab_font_size, "font_size");
-	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TabContainer, outline_size);
 }
 
 TabContainer::TabContainer() {

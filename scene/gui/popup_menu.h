@@ -152,6 +152,8 @@ class PopupMenu : public Popup {
 	float gamepad_event_delay_ms = DEFAULT_GAMEPAD_EVENT_DELAY_MS;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> panel_style;
 		Ref<StyleBox> hover_style;
 
@@ -182,16 +184,42 @@ class PopupMenu : public Popup {
 		int font_size = 0;
 		Ref<Font> font_separator;
 		int font_separator_size = 0;
-
-		Color font_color;
-		Color font_hover_color;
-		Color font_disabled_color;
-		Color font_accelerator_color;
 		int font_outline_size = 0;
+		int font_separator_outline_size = 0;
+
+		Color font_color_scale;
+		Ref<ColorScheme> font_color_scheme;
+		ColorRole font_color_role;
+		Color font_color;
+
+		Color font_hover_color_scale;
+		Ref<ColorScheme> font_hover_color_scheme;
+		ColorRole font_hover_color_role;
+		Color font_hover_color;
+
+		Color font_disabled_color_scale;
+		Ref<ColorScheme> font_disabled_color_scheme;
+		ColorRole font_disabled_color_role;
+		Color font_disabled_color;
+
+		Color font_accelerator_color_scale;
+		Ref<ColorScheme> font_accelerator_color_scheme;
+		ColorRole font_accelerator_color_role;
+		Color font_accelerator_color;
+
+		Color font_outline_color_scale;
+		Ref<ColorScheme> font_outline_color_scheme;
+		ColorRole font_outline_color_role;
 		Color font_outline_color;
 
+		Color font_separator_color_scale;
+		Ref<ColorScheme> font_separator_color_scheme;
+		ColorRole font_separator_color_role;
 		Color font_separator_color;
-		int font_separator_outline_size = 0;
+
+		Color font_separator_outline_color_scale;
+		Ref<ColorScheme> font_separator_outline_color_scheme;
+		ColorRole font_separator_outline_color_role;
 		Color font_separator_outline_color;
 	} theme_cache;
 

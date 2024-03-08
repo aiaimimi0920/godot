@@ -77,6 +77,7 @@ public:
 	float get_theme_default_base_scale();
 	Ref<Font> get_theme_default_font();
 	int get_theme_default_font_size();
+	Ref<ColorScheme> get_theme_default_color_scheme();
 
 	ThemeOwner(Node *p_holder) { holder = p_holder; }
 	~ThemeOwner() {}

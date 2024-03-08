@@ -37,6 +37,12 @@ class ColorRect : public Control {
 	GDCLASS(ColorRect, Control);
 
 	Color color = Color(1, 1, 1);
+	ColorRole color_role = ColorRole::STATIC_COLOR;
+	Ref<ColorScheme> color_scheme;
+
+	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+	} theme_cache;
 
 protected:
 	void _notification(int p_what);
@@ -45,6 +51,13 @@ protected:
 public:
 	void set_color(const Color &p_color);
 	Color get_color() const;
+
+	void set_color_role(const ColorRole p_color);
+	ColorRole get_color_role() const;
+	void set_color_scheme(const Ref<ColorScheme> &p_color_scheme);
+	Ref<ColorScheme> get_color_scheme() const;
+
+	void _update_color();
 };
 
 #endif // COLOR_RECT_H

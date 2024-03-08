@@ -2404,6 +2404,10 @@ Variant::operator Orientation() const {
 	return (Orientation) operator int();
 }
 
+Variant::operator ColorRole() const {
+	return (ColorRole) operator int();
+}
+
 Variant::operator IPAddress() const {
 	if (type == PACKED_FLOAT32_ARRAY || type == PACKED_INT32_ARRAY || type == PACKED_FLOAT64_ARRAY || type == PACKED_INT64_ARRAY || type == PACKED_BYTE_ARRAY) {
 		Vector<int> addr = operator Vector<int>();

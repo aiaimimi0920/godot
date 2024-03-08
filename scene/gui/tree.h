@@ -522,6 +522,8 @@ private:
 	void propagate_set_columns(TreeItem *p_item);
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> panel_style;
 		Ref<StyleBox> focus_style;
 
@@ -542,8 +544,6 @@ private:
 		Ref<StyleBox> custom_button_hover;
 		Ref<StyleBox> custom_button_pressed;
 
-		Color title_button_color;
-
 		Ref<Texture2D> checked;
 		Ref<Texture2D> unchecked;
 		Ref<Texture2D> checked_disabled;
@@ -556,15 +556,59 @@ private:
 		Ref<Texture2D> select_arrow;
 		Ref<Texture2D> updown;
 
+		Color title_button_color_scale;
+		Ref<ColorScheme> title_button_color_scheme;
+		ColorRole title_button_color_role;
+		Color title_button_color;
+
+		Color font_color_scale;
+		Ref<ColorScheme> font_color_scheme;
+		ColorRole font_color_role;
 		Color font_color;
+
+		Color font_selected_color_scale;
+		Ref<ColorScheme> font_selected_color_scheme;
+		ColorRole font_selected_color_role;
 		Color font_selected_color;
+
+		Color font_disabled_color_scale;
+		Ref<ColorScheme> font_disabled_color_scheme;
+		ColorRole font_disabled_color_role;
 		Color font_disabled_color;
+
+		Color guide_color_scale;
+		Ref<ColorScheme> guide_color_scheme;
+		ColorRole guide_color_role;
 		Color guide_color;
+
+		Color drop_position_color_scale;
+		Ref<ColorScheme> drop_position_color_scheme;
+		ColorRole drop_position_color_role;
 		Color drop_position_color;
+
+		Color relationship_line_color_scale;
+		Ref<ColorScheme> relationship_line_color_scheme;
+		ColorRole relationship_line_color_role;
 		Color relationship_line_color;
+
+		Color parent_hl_line_color_scale;
+		Ref<ColorScheme> parent_hl_line_color_scheme;
+		ColorRole parent_hl_line_color_role;
 		Color parent_hl_line_color;
+
+		Color children_hl_line_color_scale;
+		Ref<ColorScheme> children_hl_line_color_scheme;
+		ColorRole children_hl_line_color_role;
 		Color children_hl_line_color;
+
+		Color custom_button_font_highlight_scale;
+		Ref<ColorScheme> custom_button_font_highlight_scheme;
+		ColorRole custom_button_font_highlight_role;
 		Color custom_button_font_highlight;
+
+		Color font_outline_color_scale;
+		Ref<ColorScheme> font_outline_color_scheme;
+		ColorRole font_outline_color_role;
 		Color font_outline_color;
 
 		float base_scale = 1.0;

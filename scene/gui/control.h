@@ -239,6 +239,8 @@ private:
 		Theme::ThemeFontSizeMap theme_font_size_override;
 		Theme::ThemeColorMap theme_color_override;
 		Theme::ThemeConstantMap theme_constant_override;
+		Theme::ThemeColorRoleMap theme_color_role_override;
+        Theme::ThemeColorSchemeMap theme_color_scheme_override;
 
 		mutable HashMap<StringName, Theme::ThemeIconMap> theme_icon_cache;
 		mutable HashMap<StringName, Theme::ThemeStyleMap> theme_style_cache;
@@ -246,6 +248,8 @@ private:
 		mutable HashMap<StringName, Theme::ThemeFontSizeMap> theme_font_size_cache;
 		mutable HashMap<StringName, Theme::ThemeColorMap> theme_color_cache;
 		mutable HashMap<StringName, Theme::ThemeConstantMap> theme_constant_cache;
+		mutable HashMap<StringName, Theme::ThemeColorRoleMap> theme_color_role_cache;
+        mutable HashMap<StringName, Theme::ThemeColorSchemeMap> theme_color_scheme_cache;
 
 		// Internationalization.
 
@@ -583,6 +587,8 @@ public:
 	void add_theme_font_size_override(const StringName &p_name, int p_font_size);
 	void add_theme_color_override(const StringName &p_name, const Color &p_color);
 	void add_theme_constant_override(const StringName &p_name, int p_constant);
+	void add_theme_color_role_override(const StringName &p_name, ColorRole p_color_role);
+    void add_theme_color_scheme_override(const StringName &p_name, const Ref<ColorScheme> &p_color_scheme);
 
 	void remove_theme_icon_override(const StringName &p_name);
 	void remove_theme_style_override(const StringName &p_name);
@@ -590,6 +596,8 @@ public:
 	void remove_theme_font_size_override(const StringName &p_name);
 	void remove_theme_color_override(const StringName &p_name);
 	void remove_theme_constant_override(const StringName &p_name);
+	void remove_theme_color_role_override(const StringName &p_name);
+    void remove_theme_color_scheme_override(const StringName &p_name);
 
 	Ref<Texture2D> get_theme_icon(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	Ref<StyleBox> get_theme_stylebox(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
@@ -597,6 +605,9 @@ public:
 	int get_theme_font_size(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	Color get_theme_color(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	int get_theme_constant(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
+	ColorRole get_theme_color_role(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
+    Ref<ColorScheme> get_theme_color_scheme(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
+
 	Variant get_theme_item(Theme::DataType p_data_type, const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 #ifdef TOOLS_ENABLED
 	Ref<Texture2D> get_editor_theme_icon(const StringName &p_name) const;
@@ -608,6 +619,8 @@ public:
 	bool has_theme_font_size_override(const StringName &p_name) const;
 	bool has_theme_color_override(const StringName &p_name) const;
 	bool has_theme_constant_override(const StringName &p_name) const;
+	bool has_theme_color_role_override(const StringName &p_name) const;
+    bool has_theme_color_scheme_override(const StringName &p_name) const;
 
 	bool has_theme_icon(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	bool has_theme_stylebox(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
@@ -615,10 +628,13 @@ public:
 	bool has_theme_font_size(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	bool has_theme_color(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	bool has_theme_constant(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
+	bool has_theme_color_role(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
+    bool has_theme_color_scheme(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 
 	float get_theme_default_base_scale() const;
 	Ref<Font> get_theme_default_font() const;
 	int get_theme_default_font_size() const;
+	Ref<ColorScheme> get_theme_default_color_scheme() const;
 
 	// Internationalization.
 

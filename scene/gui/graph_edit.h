@@ -78,11 +78,17 @@ class GraphEditMinimap : public Control {
 	bool is_resizing = false;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> panel;
 		Ref<StyleBox> node_style;
 		Ref<StyleBox> camera_style;
 
 		Ref<Texture2D> resizer;
+		
+		Color resizer_color_scale;
+		Ref<ColorScheme> resizer_color_scheme;
+		ColorRole resizer_color_role;
 		Color resizer_color;
 	} theme_cache;
 
@@ -266,17 +272,49 @@ private:
 
 	struct ThemeCache {
 		float base_scale = 1.0;
+		
+		Ref<ColorScheme> default_color_scheme;
 
 		Ref<StyleBox> panel;
+
+		Color grid_major_scale;
+		Ref<ColorScheme> grid_major_scheme;
+		ColorRole grid_major_role;
 		Color grid_major;
+
+		Color grid_minor_scale;
+		Ref<ColorScheme> grid_minor_scheme;
+		ColorRole grid_minor_role;
 		Color grid_minor;
 
+		Color activity_color_scale;
+		Ref<ColorScheme> activity_color_scheme;
+		ColorRole activity_color_role;
 		Color activity_color;
+
+		Color connection_hover_tint_color_scale;
+		Ref<ColorScheme> connection_hover_tint_color_scheme;
+		ColorRole connection_hover_tint_color_role;
 		Color connection_hover_tint_color;
+
+		Color connection_valid_target_tint_color_scale;
+		Ref<ColorScheme> connection_valid_target_tint_color_scheme;
+		ColorRole connection_valid_target_tint_color_role;
 		Color connection_valid_target_tint_color;
+
+		Color connection_rim_color_scale;
+		Ref<ColorScheme> connection_rim_color_scheme;
+		ColorRole connection_rim_color_role;
 		Color connection_rim_color;
 
+		Color selection_fill_scale;
+		Ref<ColorScheme> selection_fill_scheme;
+		ColorRole selection_fill_role;
 		Color selection_fill;
+
+		Color selection_stroke_scale;
+		Ref<ColorScheme> selection_stroke_scheme;
+		ColorRole selection_stroke_role;
 		Color selection_stroke;
 
 		Ref<StyleBox> menu_panel;

@@ -59,6 +59,7 @@
 #include "core/variant/array.h"
 #include "core/variant/callable.h"
 #include "core/variant/dictionary.h"
+#include "modules/color_scheme/color_role.h"
 
 class Object;
 
@@ -393,6 +394,7 @@ public:
 	operator Projection() const;
 
 	operator Color() const;
+	operator ColorRole() const;
 	operator NodePath() const;
 	operator ::RID() const;
 
@@ -505,6 +507,7 @@ public:
 	VARIANT_ENUM_CLASS_CONSTRUCTOR(KeyLocation)
 	VARIANT_ENUM_CLASS_CONSTRUCTOR(MIDIMessage)
 	VARIANT_ENUM_CLASS_CONSTRUCTOR(MouseButton)
+	VARIANT_ENUM_CLASS_CONSTRUCTOR(ColorRole)
 
 #undef VARIANT_ENUM_CLASS_CONSTRUCTOR
 

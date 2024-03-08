@@ -608,6 +608,8 @@ private:
 	bool fit_content = false;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> normal_style;
 		Ref<StyleBox> focus_style;
 		Ref<StyleBox> progress_bg_style;
@@ -618,15 +620,39 @@ private:
 		Ref<Font> normal_font;
 		int normal_font_size;
 
-		Color default_color;
+		Color font_default_color_scale;
+		Ref<ColorScheme> font_default_color_scheme;
+		ColorRole font_default_color_role;
+		Color font_default_color;
+
+		Color font_selected_color_scale;
+		Ref<ColorScheme> font_selected_color_scheme;
+		ColorRole font_selected_color_role;
 		Color font_selected_color;
+	
+		Color selection_color_scale;
+		Ref<ColorScheme> selection_color_scheme;
+		ColorRole selection_color_role;
 		Color selection_color;
+
+		Color font_outline_color_scale;
+		Ref<ColorScheme> font_outline_color_scheme;
+		ColorRole font_outline_color_role;
 		Color font_outline_color;
+
+		Color font_shadow_color_scale;
+		Ref<ColorScheme> font_shadow_color_scheme;
+		ColorRole font_shadow_color_role;
 		Color font_shadow_color;
+
 		int shadow_outline_size;
 		int shadow_offset_x;
 		int shadow_offset_y;
 		int outline_size;
+
+		Color outline_color_scale;
+		Ref<ColorScheme> outline_color_scheme;
+		ColorRole outline_color_role;
 		Color outline_color;
 
 		Ref<Font> bold_font;
@@ -643,8 +669,20 @@ private:
 
 		int table_h_separation;
 		int table_v_separation;
+
+		Color table_odd_row_bg_scale;
+		Ref<ColorScheme> table_odd_row_bg_scheme;
+		ColorRole table_odd_row_bg_role;
 		Color table_odd_row_bg;
+
+		Color table_even_row_bg_scale;
+		Ref<ColorScheme> table_even_row_bg_scheme;
+		ColorRole table_even_row_bg_role;
 		Color table_even_row_bg;
+		
+		Color table_border_scale;
+		Ref<ColorScheme> table_border_scheme;
+		ColorRole table_border_role;
 		Color table_border;
 
 		float base_scale = 1.0;
