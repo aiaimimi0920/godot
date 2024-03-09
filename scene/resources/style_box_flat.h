@@ -36,6 +36,55 @@
 class StyleBoxFlat : public StyleBox {
 	GDCLASS(StyleBoxFlat, StyleBox);
 
+public:
+	enum ElevationLevel {
+		Elevation_Level_0,
+		Elevation_Level_1,
+		Elevation_Level_2,
+		Elevation_Level_3,
+		Elevation_Level_4,
+		Elevation_Level_5,
+	};
+
+	inline static const Vector2 umbra_shadow_offset_map[6]={
+		Vector2(0,0),Vector2(0,2),Vector2(0,3),Vector2(0,3),Vector2(0,5),Vector2(0,7)
+	};
+
+	inline static const Vector2 penumbra_shadow_offset_map[6]={
+		Vector2(0,0),Vector2(0,1),Vector2(0,3),Vector2(0,6),Vector2(0,8),Vector2(0,12)
+	};
+
+	inline static const Vector2 ambient_shadow_offset_map[6]={
+		Vector2(0,0),Vector2(0,1),Vector2(0,1),Vector2(0,1),Vector2(0,3),Vector2(0,5)
+	};
+
+	inline static const Vector2 *dynamic_shadow_offset_map[3]={
+		umbra_shadow_offset_map,
+		penumbra_shadow_offset_map,
+		ambient_shadow_offset_map,
+	};
+
+
+	inline static const int umbra_shadow_size_map[6]={
+		0,1,3,5,5,8
+	};
+
+	inline static const int penumbra_shadow_size_map[6]={
+		0,1,4,10,10,17
+	};
+
+	inline static const int ambient_shadow_size_map[6]={
+		0,3,8,18,14,22
+	};
+
+	inline static const int *dynamic_shadow_size_map[3]={
+		umbra_shadow_size_map,
+		penumbra_shadow_size_map,
+		ambient_shadow_size_map,
+	};
+
+
+private:
 	Color bg_color = Color(0.6, 0.6, 0.6);
 	Color shadow_color = Color(0, 0, 0, 0.6);
 	Color border_color = Color(0.8, 0.8, 0.8);
@@ -61,6 +110,15 @@ class StyleBoxFlat : public StyleBox {
 	int shadow_size = 0;
 	Point2 shadow_offset;
 	real_t aa_size = 1;
+
+	bool dynamic_shadow = false;
+	ElevationLevel elevation_level = ElevationLevel::Elevation_Level_0;
+	int umbra_shadow_size = 0;
+	int penumbra_shadow_size = 0;
+	int ambient_shadow_size = 0;
+	Point2 umbra_shadow_offset = Vector2(0,0);
+	Point2 penumbra_shadow_offset = Vector2(0,0);
+	Point2 ambient_shadow_offset = Vector2(0,0);
 
 protected:
 	virtual float get_style_margin(Side p_side) const override;
@@ -138,6 +196,9 @@ public:
 
 	void set_border_color_scale(const Color &p_color);
 	Color get_border_color_scale() const;
+
+	void set_elevation_level(ElevationLevel p_elevation_level);
+	ElevationLevel get_elevation_level() const;
 
 	StyleBoxFlat();
 	~StyleBoxFlat();

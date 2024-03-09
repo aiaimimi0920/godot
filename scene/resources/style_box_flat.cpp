@@ -118,6 +118,23 @@ ColorRole StyleBoxFlat::get_shadow_color_role() const {
 	return shadow_color_role;
 }
 
+void StyleBoxFlat::set_elevation_level(ElevationLevel p_elevation_level){
+	elevation_level = p_elevation_level;
+	umbra_shadow_size = umbra_shadow_size_map[elevation_level];
+	penumbra_shadow_size = penumbra_shadow_size_map[elevation_level];
+	ambient_shadow_size = ambient_shadow_size_map[elevation_level];
+
+	umbra_shadow_offset = umbra_shadow_offset_map[elevation_level];
+	penumbra_shadow_offset = penumbra_shadow_offset_map[elevation_level];
+	ambient_shadow_offset = ambient_shadow_offset_map[elevation_level];
+
+	custom_emit_changed();
+}
+
+ElevationLevel StyleBoxFlat::get_elevation_level() const {
+	return elevation_level;
+}
+
 void StyleBoxFlat::_update_color() {
 	if (color_scheme.is_valid()) {
 		const Color target_bg_color = color_scheme->get_color(bg_color_role) * bg_color_scale;
@@ -250,6 +267,15 @@ void StyleBoxFlat::set_draw_center(bool p_enabled) {
 
 bool StyleBoxFlat::is_draw_center_enabled() const {
 	return draw_center;
+}
+
+void StyleBoxFlat::set_dynamic_shadow(bool p_enabled) {
+	dynamic_shadow = p_enabled;
+	custom_emit_changed();
+}
+
+bool StyleBoxFlat::is_dynamic_shadow_enabled() const {
+	return dynamic_shadow;
 }
 
 void StyleBoxFlat::set_skew(Vector2 p_skew) {
@@ -452,11 +478,30 @@ inline void adapt_values(int p_index_a, int p_index_b, real_t *adapted_values, c
 
 Rect2 StyleBoxFlat::get_draw_rect(const Rect2 &p_rect) const {
 	Rect2 draw_rect = p_rect.grow_individual(expand_margin[SIDE_LEFT], expand_margin[SIDE_TOP], expand_margin[SIDE_RIGHT], expand_margin[SIDE_BOTTOM]);
-
-	if (shadow_size > 0) {
-		Rect2 shadow_rect = draw_rect.grow(shadow_size);
-		shadow_rect.position += shadow_offset;
-		draw_rect = draw_rect.merge(shadow_rect);
+	if (dynamic_shadow){
+		Rect2 result_shadow_rect = draw_rect;
+		if (umbra_shadow_size > 0) {
+			Rect2 umbra_shadow_rect = draw_rect.grow(umbra_shadow_size);
+			umbra_shadow_rect.position += umbra_shadow_offset;
+			result_shadow_rect = result_shadow_rect.merge(umbra_shadow_rect);
+		}
+		if (penumbra_shadow_size > 0) {
+			Rect2 penumbra_shadow_rect = draw_rect.grow(penumbra_shadow_size);
+			penumbra_shadow_rect.position += penumbra_shadow_offset;
+			result_shadow_rect = result_shadow_rect.merge(penumbra_shadow_rect);
+		}
+		if (ambient_shadow_size > 0) {
+			Rect2 ambient_shadow_rect = draw_rect.grow(ambient_shadow_size);
+			ambient_shadow_rect.position += ambient_shadow_offset;
+			result_shadow_rect = result_shadow_rect.merge(ambient_shadow_rect);
+		}
+		draw_rect = result_shadow_rect;
+	}else{
+		if (shadow_size > 0) {
+			Rect2 shadow_rect = draw_rect.grow(shadow_size);
+			shadow_rect.position += shadow_offset;
+			draw_rect = draw_rect.merge(shadow_rect);
+		}
 	}
 
 	return draw_rect;
@@ -464,8 +509,9 @@ Rect2 StyleBoxFlat::get_draw_rect(const Rect2 &p_rect) const {
 
 void StyleBoxFlat::draw(RID p_canvas_item, const Rect2 &p_rect) const {
 	bool draw_border = (border_width[0] > 0) || (border_width[1] > 0) || (border_width[2] > 0) || (border_width[3] > 0);
-	bool draw_shadow = (shadow_size > 0);
-	if (!draw_border && !draw_center && !draw_shadow) {
+	bool draw_shadow = ((dynamic_shadow == false) && (shadow_size > 0));
+	bool draw_dynamic_shadow = (dynamic_shadow && ((umbra_shadow_size > 0) || (penumbra_shadow_size > 0) || (ambient_shadow_size > 0)));
+	if (!draw_border && !draw_center && !draw_shadow && !draw_dynamic_shadow) {
 		return;
 	}
 
@@ -531,6 +577,61 @@ void StyleBoxFlat::draw(RID p_canvas_item, const Rect2 &p_rect) const {
 		if (draw_center) {
 			draw_rounded_rectangle(verts, indices, colors, shadow_inner_rect, adapted_corner,
 					shadow_inner_rect, shadow_inner_rect, shadow_color, shadow_color, corner_detail, skew, true);
+		}
+	}
+
+	// Create dynamic shadow
+	if (draw_dynamic_shadow) {
+		if (umbra_shadow_size > 0) {
+			Rect2 umbra_shadow_inner_rect = style_rect;
+			umbra_shadow_inner_rect.position += umbra_shadow_offset;
+			
+			Rect2 umbra_shadow_rect = style_rect.grow(umbra_shadow_size);
+			umbra_shadow_rect.position += umbra_shadow_offset;
+
+			Color shadow_color_transparent = Color(shadow_color.r, shadow_color.g, shadow_color.b, 0);
+
+			draw_rounded_rectangle(verts, indices, colors, umbra_shadow_inner_rect, adapted_corner,
+					umbra_shadow_rect, umbra_shadow_inner_rect, shadow_color, shadow_color_transparent, corner_detail, skew);
+
+			if (draw_center) {
+				draw_rounded_rectangle(verts, indices, colors, umbra_shadow_inner_rect, adapted_corner,
+						umbra_shadow_inner_rect, umbra_shadow_inner_rect, shadow_color, shadow_color, corner_detail, skew, true);
+			}
+		}
+		if (penumbra_shadow_size > 0) {
+			Rect2 penumbra_shadow_inner_rect = style_rect;
+			penumbra_shadow_inner_rect.position += penumbra_shadow_offset;
+			
+			Rect2 penumbra_shadow_rect = style_rect.grow(penumbra_shadow_size);
+			penumbra_shadow_rect.position += penumbra_shadow_offset;
+
+			Color shadow_color_transparent = Color(shadow_color.r, shadow_color.g, shadow_color.b, 0);
+
+			draw_rounded_rectangle(verts, indices, colors, penumbra_shadow_inner_rect, adapted_corner,
+					penumbra_shadow_rect, penumbra_shadow_inner_rect, shadow_color, shadow_color_transparent, corner_detail, skew);
+
+			if (draw_center) {
+				draw_rounded_rectangle(verts, indices, colors, penumbra_shadow_inner_rect, adapted_corner,
+						penumbra_shadow_inner_rect, penumbra_shadow_inner_rect, shadow_color, shadow_color, corner_detail, skew, true);
+			}
+		}
+		if (ambient_shadow_size > 0) {
+			Rect2 ambient_shadow_inner_rect = style_rect;
+			ambient_shadow_inner_rect.position += ambient_shadow_offset;
+			
+			Rect2 ambient_shadow_rect = style_rect.grow(ambient_shadow_size);
+			ambient_shadow_rect.position += ambient_shadow_offset;
+
+			Color shadow_color_transparent = Color(shadow_color.r, shadow_color.g, shadow_color.b, 0);
+
+			draw_rounded_rectangle(verts, indices, colors, ambient_shadow_inner_rect, adapted_corner,
+					ambient_shadow_rect, ambient_shadow_inner_rect, shadow_color, shadow_color_transparent, corner_detail, skew);
+
+			if (draw_center) {
+				draw_rounded_rectangle(verts, indices, colors, ambient_shadow_inner_rect, adapted_corner,
+						ambient_shadow_inner_rect, ambient_shadow_inner_rect, shadow_color, shadow_color, corner_detail, skew, true);
+			}
 		}
 	}
 
@@ -660,6 +761,9 @@ void StyleBoxFlat::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_border_color_scale", "color"), &StyleBoxFlat::set_border_color_scale);
 	ClassDB::bind_method(D_METHOD("get_border_color_scale"), &StyleBoxFlat::get_border_color_scale);
 
+	ClassDB::bind_method(D_METHOD("set_elevation_level", "elevation_level"), &StyleBoxFlat::set_elevation_level);
+	ClassDB::bind_method(D_METHOD("get_elevation_level"), &StyleBoxFlat::get_elevation_level);
+
 	ClassDB::bind_method(D_METHOD("set_border_width_all", "width"), &StyleBoxFlat::set_border_width_all);
 	ClassDB::bind_method(D_METHOD("get_border_width_min"), &StyleBoxFlat::get_border_width_min);
 
@@ -680,6 +784,10 @@ void StyleBoxFlat::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_draw_center", "draw_center"), &StyleBoxFlat::set_draw_center);
 	ClassDB::bind_method(D_METHOD("is_draw_center_enabled"), &StyleBoxFlat::is_draw_center_enabled);
+
+	ClassDB::bind_method(D_METHOD("set_dynamic_shadow", "dynamic_shadow"), &StyleBoxFlat::set_dynamic_shadow);
+	ClassDB::bind_method(D_METHOD("is_dynamic_shadow_enabled"), &StyleBoxFlat::is_dynamic_shadow_enabled);
+
 
 	ClassDB::bind_method(D_METHOD("set_skew", "skew"), &StyleBoxFlat::set_skew);
 	ClassDB::bind_method(D_METHOD("get_skew"), &StyleBoxFlat::get_skew);
@@ -707,6 +815,7 @@ void StyleBoxFlat::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "bg_color_scale"), "set_bg_color_scale", "get_bg_color_scale");
 
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "draw_center"), "set_draw_center", "is_draw_center_enabled");
+	
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "skew"), "set_skew", "get_skew");
 
 	ADD_GROUP("Border Width", "border_width_");
@@ -742,6 +851,9 @@ void StyleBoxFlat::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "shadow_size", PROPERTY_HINT_RANGE, "0,100,1,or_greater,suffix:px"), "set_shadow_size", "get_shadow_size");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "shadow_offset", PROPERTY_HINT_NONE, "suffix:px"), "set_shadow_offset", "get_shadow_offset");
+
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "dynamic_shadow"), "set_dynamic_shadow", "is_dynamic_shadow_enabled");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "elevation_level", PROPERTY_HINT_ENUM, "Level0,Level1,Level2,Level3,Level4,Level5"), "set_elevation_level", "get_elevation_level");
 
 	ADD_GROUP("Anti Aliasing", "anti_aliasing_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "anti_aliasing"), "set_anti_aliased", "is_anti_aliased");
