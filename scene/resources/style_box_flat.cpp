@@ -131,7 +131,7 @@ void StyleBoxFlat::set_elevation_level(ElevationLevel p_elevation_level){
 	custom_emit_changed();
 }
 
-ElevationLevel StyleBoxFlat::get_elevation_level() const {
+StyleBoxFlat::ElevationLevel StyleBoxFlat::get_elevation_level() const {
 	return elevation_level;
 }
 

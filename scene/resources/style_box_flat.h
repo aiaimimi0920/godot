@@ -163,6 +163,9 @@ public:
 	void set_draw_center(bool p_enabled);
 	bool is_draw_center_enabled() const;
 
+	void set_dynamic_shadow(bool p_enabled);
+	bool is_dynamic_shadow_enabled() const;
+
 	void set_skew(Vector2 p_skew);
 	Vector2 get_skew() const;
 
@@ -203,5 +206,7 @@ public:
 	StyleBoxFlat();
 	~StyleBoxFlat();
 };
+
+VARIANT_ENUM_CAST(StyleBoxFlat::ElevationLevel);
 
 #endif // STYLE_BOX_FLAT_H
