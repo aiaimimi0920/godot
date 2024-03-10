@@ -289,6 +289,9 @@ Vector2 StyleBoxFlat::get_skew() const {
 
 void StyleBoxFlat::set_shadow_color(const Color &p_color) {
 	shadow_color = p_color;
+	umbra_shadow_color = Color(p_color, 0.2);
+	penumbra_shadow_color = Color(p_color, 0.14);
+	ambient_shadow_color = Color(p_color, 0.12);
 	custom_emit_changed();
 }
 
@@ -589,14 +592,14 @@ void StyleBoxFlat::draw(RID p_canvas_item, const Rect2 &p_rect) const {
 			Rect2 umbra_shadow_rect = style_rect.grow(umbra_shadow_size);
 			umbra_shadow_rect.position += umbra_shadow_offset;
 
-			Color shadow_color_transparent = Color(shadow_color.r, shadow_color.g, shadow_color.b, 0);
+			Color shadow_color_transparent = Color(umbra_shadow_color.r, umbra_shadow_color.g, umbra_shadow_color.b, 0);
 
 			draw_rounded_rectangle(verts, indices, colors, umbra_shadow_inner_rect, adapted_corner,
-					umbra_shadow_rect, umbra_shadow_inner_rect, shadow_color, shadow_color_transparent, corner_detail, skew);
+					umbra_shadow_rect, umbra_shadow_inner_rect, umbra_shadow_color, shadow_color_transparent, corner_detail, skew);
 
 			if (draw_center) {
 				draw_rounded_rectangle(verts, indices, colors, umbra_shadow_inner_rect, adapted_corner,
-						umbra_shadow_inner_rect, umbra_shadow_inner_rect, shadow_color, shadow_color, corner_detail, skew, true);
+						umbra_shadow_inner_rect, umbra_shadow_inner_rect, umbra_shadow_color, umbra_shadow_color, corner_detail, skew, true);
 			}
 		}
 		if (penumbra_shadow_size > 0) {
@@ -606,14 +609,14 @@ void StyleBoxFlat::draw(RID p_canvas_item, const Rect2 &p_rect) const {
 			Rect2 penumbra_shadow_rect = style_rect.grow(penumbra_shadow_size);
 			penumbra_shadow_rect.position += penumbra_shadow_offset;
 
-			Color shadow_color_transparent = Color(shadow_color.r, shadow_color.g, shadow_color.b, 0);
+			Color shadow_color_transparent = Color(penumbra_shadow_color.r, penumbra_shadow_color.g, penumbra_shadow_color.b, 0);
 
 			draw_rounded_rectangle(verts, indices, colors, penumbra_shadow_inner_rect, adapted_corner,
-					penumbra_shadow_rect, penumbra_shadow_inner_rect, shadow_color, shadow_color_transparent, corner_detail, skew);
+					penumbra_shadow_rect, penumbra_shadow_inner_rect, penumbra_shadow_color, shadow_color_transparent, corner_detail, skew);
 
 			if (draw_center) {
 				draw_rounded_rectangle(verts, indices, colors, penumbra_shadow_inner_rect, adapted_corner,
-						penumbra_shadow_inner_rect, penumbra_shadow_inner_rect, shadow_color, shadow_color, corner_detail, skew, true);
+						penumbra_shadow_inner_rect, penumbra_shadow_inner_rect, penumbra_shadow_color, penumbra_shadow_color, corner_detail, skew, true);
 			}
 		}
 		if (ambient_shadow_size > 0) {
@@ -623,14 +626,14 @@ void StyleBoxFlat::draw(RID p_canvas_item, const Rect2 &p_rect) const {
 			Rect2 ambient_shadow_rect = style_rect.grow(ambient_shadow_size);
 			ambient_shadow_rect.position += ambient_shadow_offset;
 
-			Color shadow_color_transparent = Color(shadow_color.r, shadow_color.g, shadow_color.b, 0);
+			Color shadow_color_transparent = Color(ambient_shadow_color.r, ambient_shadow_color.g, ambient_shadow_color.b, 0);
 
 			draw_rounded_rectangle(verts, indices, colors, ambient_shadow_inner_rect, adapted_corner,
-					ambient_shadow_rect, ambient_shadow_inner_rect, shadow_color, shadow_color_transparent, corner_detail, skew);
+					ambient_shadow_rect, ambient_shadow_inner_rect, ambient_shadow_color, shadow_color_transparent, corner_detail, skew);
 
 			if (draw_center) {
 				draw_rounded_rectangle(verts, indices, colors, ambient_shadow_inner_rect, adapted_corner,
-						ambient_shadow_inner_rect, ambient_shadow_inner_rect, shadow_color, shadow_color, corner_detail, skew, true);
+						ambient_shadow_inner_rect, ambient_shadow_inner_rect, ambient_shadow_color, ambient_shadow_color, corner_detail, skew, true);
 			}
 		}
 	}

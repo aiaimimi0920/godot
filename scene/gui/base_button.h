@@ -100,6 +100,11 @@ public:
 		DRAW_HOVER_PRESSED,
 	};
 
+	bool draw_state_layer = true;
+
+	void set_draw_state_layer(bool p_enabled);
+	bool is_draw_state_layer_enabled() const;
+
 	DrawMode get_draw_mode() const;
 
 	/* Signals */

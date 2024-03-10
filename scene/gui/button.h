@@ -71,6 +71,14 @@ private:
 		Ref<StyleBox> disabled_mirrored;
 		Ref<StyleBox> focus;
 
+		Ref<StyleBox> hover_state_layer;
+		Ref<StyleBox> hover_state_layer_mirrored;
+		Ref<StyleBox> pressed_state_layer;
+		Ref<StyleBox> pressed_state_layer_mirrored;
+		Ref<StyleBox> hover_pressed_state_layer;
+		Ref<StyleBox> hover_pressed_state_layer_mirrored;
+		Ref<StyleBox> focus_state_layer;
+
 		Color font_color_scale;
 		Ref<ColorScheme> font_color_scheme;
 		ColorRole font_color_role;
@@ -156,6 +164,8 @@ protected:
 	virtual void _queue_update_size_cache();
 
 	Ref<StyleBox> _get_current_stylebox() const;
+	Ref<StyleBox> _get_current_state_layer_stylebox() const;
+	bool _is_show_state_layer();
 	void _notification(int p_what);
 	static void _bind_methods();
 

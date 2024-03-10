@@ -87,6 +87,10 @@ public:
 private:
 	Color bg_color = Color(0.6, 0.6, 0.6);
 	Color shadow_color = Color(0, 0, 0, 0.6);
+	Color umbra_shadow_color = Color(0, 0, 0, 0.2);
+	Color penumbra_shadow_color = Color(0, 0, 0, 0.14);
+	Color ambient_shadow_color = Color(0, 0, 0, 0.12);
+
 	Color border_color = Color(0.8, 0.8, 0.8);
 
 	Color bg_color_scale = Color(0.6, 0.6, 0.6, 1);

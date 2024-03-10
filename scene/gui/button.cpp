@@ -99,9 +99,73 @@ Ref<StyleBox> Button::_get_current_stylebox() const {
 			}
 		} break;
 	}
-
 	return stylebox;
 }
+
+bool Button::_is_show_state_layer(){
+	if(is_draw_state_layer_enabled() == false){
+		return false;
+	}
+	bool show_state_layer = false;
+	switch (get_draw_mode()) {
+		case DRAW_NORMAL: {
+			show_state_layer = false;
+		} break;
+
+		case DRAW_HOVER_PRESSED: {
+			show_state_layer = true;
+		}
+			[[fallthrough]];
+		case DRAW_PRESSED: {
+			show_state_layer = true;
+		} break;
+
+		case DRAW_HOVER: {
+			show_state_layer = true;
+		} break;
+
+		case DRAW_DISABLED: {
+			show_state_layer = false;
+		} break;
+	}
+	return show_state_layer;
+}
+
+Ref<StyleBox> Button::_get_current_state_layer_stylebox() const {
+	Ref<StyleBox> stylebox = theme_cache.normal;
+	const bool rtl = is_layout_rtl();
+
+	switch (get_draw_mode()) {
+		case DRAW_HOVER_PRESSED: {
+			if (has_theme_stylebox("hover_pressed_state_layer")) {
+				if (rtl && has_theme_stylebox(SNAME("hover_pressed_state_layer_mirrored"))) {
+					stylebox = theme_cache.hover_pressed_state_layer_mirrored;
+				} else {
+					stylebox = theme_cache.hover_pressed_state_layer;
+				}
+				break;
+			}
+		}
+			[[fallthrough]];
+		case DRAW_PRESSED: {
+			if (rtl && has_theme_stylebox(SNAME("pressed_state_layer_mirrored"))) {
+				stylebox = theme_cache.pressed_state_layer_mirrored;
+			} else {
+				stylebox = theme_cache.pressed_state_layer;
+			}
+		} break;
+
+		case DRAW_HOVER: {
+			if (rtl && has_theme_stylebox(SNAME("hover_state_layer_mirrored"))) {
+				stylebox = theme_cache.hover_state_layer_mirrored;
+			} else {
+				stylebox = theme_cache.hover_state_layer;
+			}
+		} break;
+	}
+	return stylebox;
+}
+
 
 void Button::_notification(int p_what) {
 	switch (p_what) {
@@ -141,8 +205,13 @@ void Button::_notification(int p_what) {
 			{ // Draws the stylebox in the current state.
 				if (!flat) {
 					style->draw(ci, Rect2(Point2(), size));
+					
 				}
-
+				if (_is_show_state_layer()){
+					const Ref<StyleBox> state_layer_style = _get_current_state_layer_stylebox();
+					state_layer_style->draw(ci, Rect2(Point2(), size));
+				}
+				
 				if (has_focus()) {
 					Ref<StyleBox> style2 = theme_cache.focus;
 					style2->draw(ci, Rect2(Point2(), size));
@@ -735,6 +804,14 @@ void Button::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, disabled);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, disabled_mirrored);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, focus);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, hover_state_layer);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, hover_state_layer_mirrored);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, pressed_state_layer);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, pressed_state_layer_mirrored);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, hover_pressed_state_layer);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, hover_pressed_state_layer_mirrored);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Button, focus_state_layer);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_color_scale);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, font_color_scheme);

@@ -256,6 +256,15 @@ bool BaseButton::is_hovered() const {
 	return status.hovering;
 }
 
+void BaseButton::set_draw_state_layer(bool p_enabled) {
+	draw_state_layer = p_enabled;
+	queue_redraw();
+}
+
+bool BaseButton::is_draw_state_layer_enabled() const {
+	return draw_state_layer;
+}
+
 BaseButton::DrawMode BaseButton::get_draw_mode() const {
 	if (status.disabled) {
 		return DRAW_DISABLED;
@@ -456,6 +465,8 @@ void BaseButton::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_button_mask", "mask"), &BaseButton::set_button_mask);
 	ClassDB::bind_method(D_METHOD("get_button_mask"), &BaseButton::get_button_mask);
 	ClassDB::bind_method(D_METHOD("get_draw_mode"), &BaseButton::get_draw_mode);
+	ClassDB::bind_method(D_METHOD("set_draw_state_layer", "enabled"), &BaseButton::set_draw_state_layer);
+	ClassDB::bind_method(D_METHOD("is_draw_state_layer_enabled"), &BaseButton::is_draw_state_layer_enabled);
 	ClassDB::bind_method(D_METHOD("set_keep_pressed_outside", "enabled"), &BaseButton::set_keep_pressed_outside);
 	ClassDB::bind_method(D_METHOD("is_keep_pressed_outside"), &BaseButton::is_keep_pressed_outside);
 	ClassDB::bind_method(D_METHOD("set_shortcut_feedback", "enabled"), &BaseButton::set_shortcut_feedback);
@@ -478,6 +489,7 @@ void BaseButton::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "disabled"), "set_disabled", "is_disabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "toggle_mode"), "set_toggle_mode", "is_toggle_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "button_pressed"), "set_pressed", "is_pressed");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "draw_state_layer"), "set_draw_state_layer", "is_draw_state_layer_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "action_mode", PROPERTY_HINT_ENUM, "Button Press,Button Release"), "set_action_mode", "get_action_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "button_mask", PROPERTY_HINT_FLAGS, "Mouse Left, Mouse Right, Mouse Middle"), "set_button_mask", "get_button_mask");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "keep_pressed_outside"), "set_keep_pressed_outside", "is_keep_pressed_outside");
