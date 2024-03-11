@@ -52,6 +52,7 @@ void ThemeDB::initialize_theme() {
 	String project_theme_path = GLOBAL_DEF_RST_BASIC(PropertyInfo(Variant::STRING, "gui/theme/custom", PROPERTY_HINT_FILE, "*.tres,*.res,*.theme", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED), "");
 	String project_font_path = GLOBAL_DEF_RST_BASIC(PropertyInfo(Variant::STRING, "gui/theme/custom_font", PROPERTY_HINT_FILE, "*.tres,*.res,*.otf,*.ttf,*.woff,*.woff2,*.fnt,*.font,*.pfb,*.pfm", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED), "");
     Color project_color_scheme_source_color = GLOBAL_DEF_RST(PropertyInfo(Variant::COLOR, "gui/theme/custom_color_scheme_source_color", PROPERTY_HINT_COLOR_NO_ALPHA, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED), Color("#6750A4"));
+	String project_icon_font_path = GLOBAL_DEF_RST_BASIC(PropertyInfo(Variant::STRING, "gui/theme/custom_icon_font", PROPERTY_HINT_FILE, "*.tres,*.res,*.otf,*.ttf,*.woff,*.woff2,*.fnt,*.font,*.pfb,*.pfm", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED), "");
 
 	TextServer::FontAntialiasing font_antialiasing = (TextServer::FontAntialiasing)(int)GLOBAL_DEF_RST(PropertyInfo(Variant::INT, "gui/theme/default_font_antialiasing", PROPERTY_HINT_ENUM, "None,Grayscale,LCD Subpixel", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED), 1);
 	TextServer::Hinting font_hinting = (TextServer::Hinting)(int)GLOBAL_DEF_RST(PropertyInfo(Variant::INT, "gui/theme/default_font_hinting", PROPERTY_HINT_ENUM, "None,Light,Normal", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_RESTART_IF_CHANGED), TextServer::HINTING_LIGHT);
@@ -84,6 +85,12 @@ void ThemeDB::initialize_theme() {
 		}
 	}
 
+	Ref<Font> project_icon_font;
+	if (!project_icon_font_path.is_empty()) {
+		project_icon_font = ResourceLoader::load(project_icon_font_path);
+	}
+
+
     Ref<ColorScheme> project_color_scheme;
 	project_color_scheme.instantiate();
 	project_color_scheme->set_source_color(project_color_scheme_source_color);
@@ -92,7 +99,7 @@ void ThemeDB::initialize_theme() {
 	// Always generate the default theme to serve as a fallback for all required theme definitions.
 
 	if (RenderingServer::get_singleton()) {
-        make_default_theme(default_theme_scale, project_font, project_color_scheme, font_subpixel_positioning, font_hinting, font_antialiasing, font_msdf, font_generate_mipmaps);
+        make_default_theme(default_theme_scale, project_font, project_icon_font, project_color_scheme, font_subpixel_positioning, font_hinting, font_antialiasing, font_msdf, font_generate_mipmaps);
 	}
 	_init_default_theme_context();
 }
@@ -102,7 +109,7 @@ void ThemeDB::initialize_theme_noproject() {
         Ref<ColorScheme> cur_color_scheme;
 		cur_color_scheme.instantiate();
 		cur_color_scheme->set_source_color(Color("#6750A4"));
-        make_default_theme(1.0, Ref<Font>(), cur_color_scheme);
+        make_default_theme(1.0, Ref<Font>(), cur_color_scheme, Ref<Font>());
 	}
 
 	_init_default_theme_context();

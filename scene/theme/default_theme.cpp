@@ -131,7 +131,7 @@ static Ref<StyleBox> make_empty_stylebox(float p_margin_left = -1, float p_margi
 	return style;
 }
 
-void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme) {
+void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon,const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme) {
 	scale = p_scale;
 
 	// Default theme properties.
@@ -242,8 +242,8 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	theme->set_stylebox("pressed_state_layer", "Button", button_pressed_state_layer);
 	theme->set_stylebox("focus_state_layer", "Button", focus_state_layer);
 
-	theme->set_font("font", "Button", Ref<Font>());
-	theme->set_font("text_icon_font", "Button", Ref<Font>());
+	theme->set_font("font", "Button", default_font);
+	theme->set_font("text_icon_font", "Button", default_icon_font);
 	theme->set_font_size("font_size", "Button", -1);
 	theme->set_font_size("text_icon_font_size", "Button", -1);
 	theme->set_constant("outline_size", "Button", 0);
@@ -1984,13 +1984,14 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	// Same color as the error icon.
 	default_style = make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(1, 0.365, 0.365), StyleBoxFlat::ElevationLevel::Elevation_Level_0,4, 4, 4, 4, 0, false, 2);
 }
-void make_default_theme(float p_scale, Ref<Font> p_font, Ref<ColorScheme> p_color_scheme, TextServer::SubpixelPositioning p_font_subpixel, TextServer::Hinting p_font_hinting, TextServer::FontAntialiasing p_font_antialiasing, bool p_font_msdf, bool p_font_generate_mipmaps) {
+void make_default_theme(float p_scale, Ref<Font> p_font, Ref<Font> p_icon_font, Ref<ColorScheme> p_color_scheme, TextServer::SubpixelPositioning p_font_subpixel, TextServer::Hinting p_font_hinting, TextServer::FontAntialiasing p_font_antialiasing, bool p_font_msdf, bool p_font_generate_mipmaps) {
 	Ref<Theme> t;
 	t.instantiate();
 
 	Ref<StyleBox> default_style;
 	Ref<Texture2D> default_icon;
 	Ref<Font> default_font;
+	Ref<Font> default_icon_font;
 
 	Ref<FontVariation> bold_font;
 	Ref<FontVariation> bold_italics_font;
@@ -2024,6 +2025,11 @@ void make_default_theme(float p_scale, Ref<Font> p_font, Ref<ColorScheme> p_colo
 		default_font = dynamic_font;
 	}
 
+	if (p_icon_font.is_valid()) {
+		// Use the custom font defined in the Project Settings.
+		default_icon_font = p_icon_font;
+	}
+
 	if (default_font.is_valid()) {
 		bold_font.instantiate();
 		bold_font->set_base_font(default_font);
@@ -2039,7 +2045,7 @@ void make_default_theme(float p_scale, Ref<Font> p_font, Ref<ColorScheme> p_colo
 		italics_font->set_variation_transform(Transform2D(1.0, 0.2, 0.0, 1.0, 0.0, 0.0));
 	}
 
-	fill_default_theme(t, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_style, default_scale, default_color_scheme);
+	fill_default_theme(t, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, default_scale, default_color_scheme);
 
 	ThemeDB::get_singleton()->set_default_theme(t);
 

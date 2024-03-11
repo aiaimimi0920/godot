@@ -739,7 +739,7 @@ void Button::_icon_shape(Ref<TextParagraph> p_paragraph, String p_text_icon, int
 	}
 
 	if (p_text_icon.is_empty()) {
-		p_text_icon = text_icon;
+		p_text_icon = code_text_icon;
 	}
 
 	p_paragraph->clear();
@@ -829,9 +829,22 @@ String Button::get_text() const {
 void Button::set_text_icon(const String &p_text_icon) {
 	if (text_icon != p_text_icon) {
 		text_icon = p_text_icon;
-		code_text_icon = atr(text_icon);
-		_icon_shape();
+		
+		Ref<Font> font = theme_cache.text_icon_font;
+		String local_name = font->get_path().get_file().get_basename();
 
+		Ref<Translation> trans = TranslationServer::get_singleton()->get_translation_object(local_name);
+
+		float font_height = font->get_height(theme_cache.text_icon_font_size);
+		if(trans.is_valid()){
+			code_text_icon = trans->get_message(text_icon);
+			if(!code_text_icon.is_empty()){
+				code_text_icon = String::chr(("0x"+code_text_icon.to_lower()).hex_to_int());
+			}
+		}else{
+			code_text_icon = text_icon;
+		}
+		_icon_shape();
 		queue_redraw();
 		update_minimum_size();
 	}
