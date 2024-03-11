@@ -259,4 +259,24 @@ public:
 	~Button();
 };
 
+class ElevatedButton : public Button {
+	GDCLASS(ElevatedButton, Button);
+};
+
+class FilledButton : public Button {
+	GDCLASS(FilledButton, Button);
+};
+
+class FilledTonalButton : public Button {
+	GDCLASS(FilledTonalButton, Button);
+};
+
+class OutlinedButton : public Button {
+	GDCLASS(OutlinedButton, Button);
+};
+
+class TextButton : public Button {
+	GDCLASS(TextButton, Button);
+};
+
 #endif // BUTTON_H

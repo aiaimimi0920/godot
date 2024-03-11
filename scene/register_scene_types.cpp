@@ -388,6 +388,12 @@ void register_scene_types() {
 
 	GDREGISTER_CLASS(Control);
 	GDREGISTER_CLASS(Button);
+	GDREGISTER_CLASS(ElevatedButton);
+	GDREGISTER_CLASS(FilledButton);
+	GDREGISTER_CLASS(FilledTonalButton);
+	GDREGISTER_CLASS(OutlinedButton);
+	GDREGISTER_CLASS(TextButton);
+
 	GDREGISTER_CLASS(Label);
 	GDREGISTER_ABSTRACT_CLASS(ScrollBar);
 	GDREGISTER_CLASS(HScrollBar);
