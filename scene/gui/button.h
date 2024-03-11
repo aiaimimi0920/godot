@@ -41,7 +41,10 @@ private:
 	bool flat = false;
 	String text;
 	String xl_text;
+
 	Ref<TextParagraph> text_buf;
+
+	Ref<TextParagraph> text_icon_buf;
 
 	String language;
 	TextDirection text_direction = TEXT_DIRECTION_AUTO;
@@ -49,6 +52,10 @@ private:
 	TextServer::OverrunBehavior overrun_behavior = TextServer::OVERRUN_NO_TRIMMING;
 
 	Ref<Texture2D> icon;
+
+	String code_text_icon;
+	String text_icon = "";
+
 	bool expand_icon = false;
 	bool clip_text = false;
 	HorizontalAlignment alignment = HORIZONTAL_ALIGNMENT_CENTER;
@@ -150,6 +157,39 @@ private:
 
 		Ref<Texture2D> icon;
 
+		Color text_icon_normal_color_scale;
+		Ref<ColorScheme> text_icon_normal_color_scheme;
+		ColorRole text_icon_normal_color_role;
+		Color text_icon_normal_color;
+
+		Color text_icon_pressed_color_scale;
+		Ref<ColorScheme> text_icon_pressed_color_scheme;
+		ColorRole text_icon_pressed_color_role;
+		Color text_icon_pressed_color;
+
+		Color text_icon_hover_color_scale;
+		Ref<ColorScheme> text_icon_hover_color_scheme;
+		ColorRole text_icon_hover_color_role;
+		Color text_icon_hover_color;
+
+		Color text_icon_focus_color_scale;
+		Ref<ColorScheme> text_icon_focus_color_scheme;
+		ColorRole text_icon_focus_color_role;
+		Color text_icon_focus_color;
+
+		Color text_icon_hover_pressed_color_scale;
+		Ref<ColorScheme> text_icon_hover_pressed_color_scheme;
+		ColorRole text_icon_hover_pressed_color_role;
+		Color text_icon_hover_pressed_color;
+
+		Color text_icon_disabled_color_scale;
+		Ref<ColorScheme> text_icon_disabled_color_scheme;
+		ColorRole text_icon_disabled_color_role;
+		Color text_icon_disabled_color;
+
+		Ref<Font> text_icon_font;
+		int text_icon_font_size = 0;
+
 		int h_separation = 0;
 		int icon_max_width = 0;
 	} theme_cache;
@@ -157,6 +197,9 @@ private:
 	Size2 _fit_icon_size(const Size2 &p_size) const;
 
 	void _shape(Ref<TextParagraph> p_paragraph = Ref<TextParagraph>(), String p_text = "");
+	void _icon_shape(Ref<TextParagraph> p_paragraph = Ref<TextParagraph>(), String p_text = "", int expand_icon_size=0);
+
+	
 	void _texture_changed();
 
 protected:
@@ -172,10 +215,13 @@ protected:
 public:
 	virtual Size2 get_minimum_size() const override;
 
-	Size2 get_minimum_size_for_text_and_icon(const String &p_text, Ref<Texture2D> p_icon) const;
+	Size2 get_minimum_size_for_text_and_icon(const String &p_text, Ref<Texture2D> p_icon, const String &p_text_icon="") const;
 
 	void set_text(const String &p_text);
 	String get_text() const;
+
+	void set_text_icon(const String &p_text_icon);
+	String get_text_icon() const;
 
 	void set_text_overrun_behavior(TextServer::OverrunBehavior p_behavior);
 	TextServer::OverrunBehavior get_text_overrun_behavior() const;

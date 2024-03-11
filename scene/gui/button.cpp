@@ -40,7 +40,7 @@ Size2 Button::get_minimum_size() const {
 		_icon = theme_cache.icon;
 	}
 
-	return get_minimum_size_for_text_and_icon("", _icon);
+	return get_minimum_size_for_text_and_icon("", _icon, text_icon);
 }
 
 void Button::_set_internal_margin(Side p_side, float p_value) {
@@ -102,8 +102,8 @@ Ref<StyleBox> Button::_get_current_stylebox() const {
 	return stylebox;
 }
 
-bool Button::_is_show_state_layer(){
-	if(is_draw_state_layer_enabled() == false){
+bool Button::_is_show_state_layer() {
+	if (is_draw_state_layer_enabled() == false) {
 		return false;
 	}
 	bool show_state_layer = false;
@@ -166,7 +166,6 @@ Ref<StyleBox> Button::_get_current_state_layer_stylebox() const {
 	return stylebox;
 }
 
-
 void Button::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_LAYOUT_DIRECTION_CHANGED: {
@@ -176,14 +175,13 @@ void Button::_notification(int p_what) {
 		case NOTIFICATION_TRANSLATION_CHANGED: {
 			xl_text = atr(text);
 			_shape();
-
 			update_minimum_size();
 			queue_redraw();
 		} break;
 
 		case NOTIFICATION_THEME_CHANGED: {
 			_shape();
-
+			_icon_shape();
 			update_minimum_size();
 			queue_redraw();
 		} break;
@@ -191,6 +189,7 @@ void Button::_notification(int p_what) {
 		case NOTIFICATION_RESIZED: {
 			if (autowrap_mode != TextServer::AUTOWRAP_OFF) {
 				_shape();
+				_icon_shape();
 
 				update_minimum_size();
 				queue_redraw();
@@ -205,13 +204,12 @@ void Button::_notification(int p_what) {
 			{ // Draws the stylebox in the current state.
 				if (!flat) {
 					style->draw(ci, Rect2(Point2(), size));
-					
 				}
-				if (_is_show_state_layer()){
+				if (_is_show_state_layer()) {
 					const Ref<StyleBox> state_layer_style = _get_current_state_layer_stylebox();
 					state_layer_style->draw(ci, Rect2(Point2(), size));
 				}
-				
+
 				if (has_focus()) {
 					Ref<StyleBox> style2 = theme_cache.focus;
 					style2->draw(ci, Rect2(Point2(), size));
@@ -223,7 +221,7 @@ void Button::_notification(int p_what) {
 				_icon = theme_cache.icon;
 			}
 
-			if (xl_text.is_empty() && _icon.is_null()) {
+			if (xl_text.is_empty() && _icon.is_null() && code_text_icon.is_empty()) {
 				break;
 			}
 
@@ -333,8 +331,53 @@ void Button::_notification(int p_what) {
 				} break;
 			}
 
+			Color text_icon_font_color;
+			// Get the font color and icon modulate color in the current state.
+			switch (get_draw_mode()) {
+				case DRAW_NORMAL: {
+					// Focus colors only take precedence over normal state.
+					if (has_focus()) {
+						if (has_theme_color(SNAME("text_icon_focus_color"))) {
+							text_icon_font_color = theme_cache.text_icon_focus_color;
+						}
+					} else {
+						if (has_theme_color(SNAME("text_icon_normal_color"))) {
+							text_icon_font_color = theme_cache.text_icon_normal_color;
+						}
+					}
+				} break;
+				case DRAW_HOVER_PRESSED: {
+					// Edge case for CheckButton and CheckBox.
+					if (has_theme_stylebox("hover_pressed")) {
+						if (has_theme_color(SNAME("text_icon_hover_pressed_color"))) {
+							text_icon_font_color = theme_cache.text_icon_hover_pressed_color;
+						}
+						break;
+					}
+				}
+					[[fallthrough]];
+				case DRAW_PRESSED: {
+					if (has_theme_color(SNAME("text_icon_pressed_color"))) {
+						text_icon_font_color = theme_cache.text_icon_pressed_color;
+					}
+
+				} break;
+				case DRAW_HOVER: {
+					if (has_theme_color(SNAME("text_icon_hover_color"))) {
+						text_icon_font_color = theme_cache.text_icon_hover_color;
+					}
+
+				} break;
+				case DRAW_DISABLED: {
+					if (has_theme_color(SNAME("text_icon_disabled_color"))) {
+						text_icon_font_color = theme_cache.text_icon_disabled_color;
+					}
+
+				} break;
+			}
+
 			const bool is_clipped = clip_text || overrun_behavior != TextServer::OVERRUN_NO_TRIMMING || autowrap_mode != TextServer::AUTOWRAP_OFF;
-			const Size2 custom_element_size = drawable_size_remained;
+			Size2 custom_element_size = drawable_size_remained;
 
 			// Draw the icon.
 			if (_icon.is_valid()) {
@@ -421,6 +464,104 @@ void Button::_notification(int p_what) {
 						drawable_size_remained.height -= icon_size.height;
 					}
 				}
+			} else {
+				// Draw the text icon.
+				if (!text_icon.is_empty()) {
+					Size2 text_icon_size;
+					{
+						text_icon_buf->set_alignment(icon_align_rtl_checked);
+						if (expand_icon) {
+							const Size2 text_buf_size = text_buf->get_size();
+							Size2 _size = custom_element_size;
+							if (!is_clipped && icon_align_rtl_checked != HORIZONTAL_ALIGNMENT_CENTER && text_buf_size.width > 0.0f) {
+								// If there is not enough space for icon and h_separation, h_separation will occupy the space first,
+								// so the icon's width may be negative. Keep it negative to make it easier to calculate the space
+								// reserved for text later.
+								_size.width -= text_buf_size.width + h_separation;
+							}
+							if (vertical_icon_alignment != VERTICAL_ALIGNMENT_CENTER) {
+								_size.height -= text_buf_size.height;
+							}
+							float icon_width = _size.height;
+							float icon_height = _size.height;
+
+							if (icon_width > _size.width) {
+								icon_width = _size.width;
+								icon_height = icon_width;
+							}
+							text_icon_size = Size2(icon_width, icon_height);
+
+							text_icon_size = _fit_icon_size(text_icon_size);
+							if(text_icon_size.width<text_icon_size.height){
+								text_icon_size = Size2(text_icon_size.width, text_icon_size.width);
+							}else{
+								text_icon_size = Size2(text_icon_size.height, text_icon_size.height);
+							}
+						}else{
+							Ref<Font> font = theme_cache.text_icon_font;
+							float font_height = font->get_height(theme_cache.text_icon_font_size);
+							int icon_max_width = theme_cache.icon_max_width;
+							int max_size = font_height;
+							if (icon_max_width > 0) {
+								if(max_size > icon_max_width){
+									max_size = icon_max_width;
+								}
+							}
+
+							text_icon_size = Size2(max_size, max_size);
+						}
+						float text_buf_width = MAX(1.0f, drawable_size_remained.width); // The space's width filled by the text_buf.
+						text_icon_buf->set_width(text_icon_size.width);
+					}
+
+					Point2 text_ofs;
+					switch (icon_align_rtl_checked) {
+						case HORIZONTAL_ALIGNMENT_CENTER: {
+							text_ofs.x = (custom_element_size.width - text_icon_size.width) / 2.0f;
+						}
+							[[fallthrough]];
+						case HORIZONTAL_ALIGNMENT_FILL:
+						case HORIZONTAL_ALIGNMENT_LEFT:{
+							text_ofs.x += style_margin_left;
+							text_ofs.x += left_internal_margin_with_h_separation;
+						} break;
+						case HORIZONTAL_ALIGNMENT_RIGHT: {
+							text_ofs.x = size.x - style_margin_right;
+							text_ofs.x -= right_internal_margin_with_h_separation;
+							text_ofs.x -= text_icon_size.width;
+						} break;
+					}
+
+					switch (vertical_icon_alignment) {
+						case VERTICAL_ALIGNMENT_CENTER: {
+							text_ofs.y = (custom_element_size.height - text_icon_size.height) / 2.0f;
+						}
+							[[fallthrough]];
+						case VERTICAL_ALIGNMENT_FILL:
+						case VERTICAL_ALIGNMENT_TOP: {
+							text_ofs.y += style_margin_top;
+						} break;
+
+						case VERTICAL_ALIGNMENT_BOTTOM: {
+							text_ofs.y = size.y - style_margin_bottom - text_icon_size.height;
+						} break;
+					}
+					
+					_icon_shape(Ref<TextParagraph>(), "", text_icon_size.width);
+					text_icon_buf->draw(ci, text_ofs, text_icon_font_color);
+
+					if (!xl_text.is_empty()) {
+						// Update the size after the icon is stripped. Stripping only when the icon alignments are not center.
+						if (icon_align_rtl_checked != HORIZONTAL_ALIGNMENT_CENTER) {
+							// Subtract the space's width occupied by icon and h_separation together.
+							drawable_size_remained.width -= text_icon_size.width + h_separation;
+						}
+
+						if (vertical_icon_alignment != VERTICAL_ALIGNMENT_CENTER) {
+							drawable_size_remained.height -= text_icon_size.height;
+						}
+					}
+				}
 			}
 
 			// Draw the text.
@@ -461,7 +602,7 @@ void Button::_notification(int p_what) {
 				}
 				text_buf->draw(ci, text_ofs, font_color);
 			}
-		} break;
+		}
 	}
 }
 
@@ -477,7 +618,7 @@ Size2 Button::_fit_icon_size(const Size2 &p_size) const {
 	return icon_size;
 }
 
-Size2 Button::get_minimum_size_for_text_and_icon(const String &p_text, Ref<Texture2D> p_icon) const {
+Size2 Button::get_minimum_size_for_text_and_icon(const String &p_text, Ref<Texture2D> p_icon, const String &p_text_icon) const {
 	Ref<TextParagraph> paragraph;
 	if (p_text.is_empty()) {
 		paragraph = text_buf;
@@ -502,6 +643,32 @@ Size2 Button::get_minimum_size_for_text_and_icon(const String &p_text, Ref<Textu
 		if (horizontal_icon_alignment != HORIZONTAL_ALIGNMENT_CENTER) {
 			minsize.width += icon_size.width;
 			if (!xl_text.is_empty() || !p_text.is_empty()) {
+				minsize.width += MAX(0, theme_cache.h_separation);
+			}
+		} else {
+			minsize.width = MAX(minsize.width, icon_size.width);
+		}
+	} else if (!expand_icon && !p_text_icon.is_empty()) {
+		Ref<Font> font = theme_cache.text_icon_font;
+		float font_height = font->get_height(theme_cache.text_icon_font_size);
+		int icon_max_width = theme_cache.icon_max_width;
+		int max_size = font_height;
+		if (icon_max_width > 0) {
+			if(max_size>icon_max_width){
+				max_size = icon_max_width;
+			}
+		}
+
+		Size2 icon_size = Size2(max_size, max_size);
+		if (vertical_icon_alignment == VERTICAL_ALIGNMENT_CENTER) {
+			minsize.height = MAX(minsize.height, icon_size.height);
+		} else {
+			minsize.height += icon_size.height;
+		}
+
+		if (horizontal_icon_alignment != HORIZONTAL_ALIGNMENT_CENTER) {
+			minsize.width += icon_size.width;
+			if (!code_text_icon.is_empty() || !p_text_icon.is_empty()) {
 				minsize.width += MAX(0, theme_cache.h_separation);
 			}
 		} else {
@@ -566,11 +733,71 @@ void Button::_shape(Ref<TextParagraph> p_paragraph, String p_text) {
 	p_paragraph->set_text_overrun_behavior(overrun_behavior);
 }
 
+void Button::_icon_shape(Ref<TextParagraph> p_paragraph, String p_text_icon, int expand_icon_size) {
+	if (p_paragraph.is_null()) {
+		p_paragraph = text_icon_buf;
+	}
+
+	if (p_text_icon.is_empty()) {
+		p_text_icon = text_icon;
+	}
+
+	p_paragraph->clear();
+
+	Ref<Font> font = theme_cache.text_icon_font;
+	int font_size = theme_cache.text_icon_font_size;
+	if (font.is_null() || font_size == 0) {
+		// Can't shape without a valid font and a non-zero size.
+		return;
+	}
+
+	BitField<TextServer::LineBreakFlag> autowrap_flags = TextServer::BREAK_MANDATORY;
+	switch (autowrap_mode) {
+		case TextServer::AUTOWRAP_WORD_SMART:
+			autowrap_flags = TextServer::BREAK_WORD_BOUND | TextServer::BREAK_ADAPTIVE | TextServer::BREAK_MANDATORY;
+			break;
+		case TextServer::AUTOWRAP_WORD:
+			autowrap_flags = TextServer::BREAK_WORD_BOUND | TextServer::BREAK_MANDATORY;
+			break;
+		case TextServer::AUTOWRAP_ARBITRARY:
+			autowrap_flags = TextServer::BREAK_GRAPHEME_BOUND | TextServer::BREAK_MANDATORY;
+			break;
+		case TextServer::AUTOWRAP_OFF:
+			break;
+	}
+	autowrap_flags = autowrap_flags | TextServer::BREAK_TRIM_EDGE_SPACES;
+	p_paragraph->set_break_flags(autowrap_flags);
+
+	if (text_direction == Control::TEXT_DIRECTION_INHERITED) {
+		p_paragraph->set_direction(is_layout_rtl() ? TextServer::DIRECTION_RTL : TextServer::DIRECTION_LTR);
+	} else {
+		p_paragraph->set_direction((TextServer::Direction)text_direction);
+	}
+
+	float font_height = font->get_height(theme_cache.text_icon_font_size);
+
+	int icon_max_width = theme_cache.icon_max_width;
+	int max_size = font_height;
+	if (icon_max_width > 0) {
+		if(max_size>icon_max_width){
+			max_size = icon_max_width;
+		}
+	}
+
+	if (expand_icon_size!=0) {
+		max_size = expand_icon_size;
+	}
+
+	p_paragraph->add_string(p_text_icon, font, max_size, language);
+	p_paragraph->set_text_overrun_behavior(overrun_behavior);
+}
+
 void Button::set_text_overrun_behavior(TextServer::OverrunBehavior p_behavior) {
 	if (overrun_behavior != p_behavior) {
 		bool need_update_cache = overrun_behavior == TextServer::OVERRUN_NO_TRIMMING || p_behavior == TextServer::OVERRUN_NO_TRIMMING;
 		overrun_behavior = p_behavior;
 		_shape();
+		_icon_shape();
 
 		if (need_update_cache) {
 			_queue_update_size_cache();
@@ -599,10 +826,26 @@ String Button::get_text() const {
 	return text;
 }
 
+void Button::set_text_icon(const String &p_text_icon) {
+	if (text_icon != p_text_icon) {
+		text_icon = p_text_icon;
+		code_text_icon = atr(text_icon);
+		_icon_shape();
+
+		queue_redraw();
+		update_minimum_size();
+	}
+}
+
+String Button::get_text_icon() const {
+	return text_icon;
+}
+
 void Button::set_autowrap_mode(TextServer::AutowrapMode p_mode) {
 	if (autowrap_mode != p_mode) {
 		autowrap_mode = p_mode;
 		_shape();
+		_icon_shape();
 		queue_redraw();
 		update_minimum_size();
 	}
@@ -617,6 +860,7 @@ void Button::set_text_direction(Control::TextDirection p_text_direction) {
 	if (text_direction != p_text_direction) {
 		text_direction = p_text_direction;
 		_shape();
+		_icon_shape();
 		queue_redraw();
 	}
 }
@@ -629,6 +873,7 @@ void Button::set_language(const String &p_language) {
 	if (language != p_language) {
 		language = p_language;
 		_shape();
+		_icon_shape();
 		queue_redraw();
 	}
 }
@@ -668,6 +913,8 @@ Ref<Texture2D> Button::get_icon() const {
 void Button::set_expand_icon(bool p_enabled) {
 	if (expand_icon != p_enabled) {
 		expand_icon = p_enabled;
+		_shape();
+		_icon_shape();
 		_queue_update_size_cache();
 		queue_redraw();
 		update_minimum_size();
@@ -749,6 +996,8 @@ VerticalAlignment Button::get_vertical_icon_alignment() const {
 void Button::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_text", "text"), &Button::set_text);
 	ClassDB::bind_method(D_METHOD("get_text"), &Button::get_text);
+	ClassDB::bind_method(D_METHOD("set_text_icon", "text_icon"), &Button::set_text_icon);
+	ClassDB::bind_method(D_METHOD("get_text_icon"), &Button::get_text_icon);
 	ClassDB::bind_method(D_METHOD("set_text_overrun_behavior", "overrun_behavior"), &Button::set_text_overrun_behavior);
 	ClassDB::bind_method(D_METHOD("get_text_overrun_behavior"), &Button::get_text_overrun_behavior);
 	ClassDB::bind_method(D_METHOD("set_autowrap_mode", "autowrap_mode"), &Button::set_autowrap_mode);
@@ -773,6 +1022,7 @@ void Button::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_expand_icon"), &Button::is_expand_icon);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text", PROPERTY_HINT_MULTILINE_TEXT), "set_text", "get_text");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_icon", PROPERTY_HINT_MULTILINE_TEXT), "set_text_icon", "get_text_icon");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "icon", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_button_icon", "get_button_icon");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "flat"), "set_flat", "is_flat");
 
@@ -880,16 +1130,55 @@ void Button::_bind_methods() {
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, Button, icon);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, text_icon_normal_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, text_icon_normal_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, text_icon_normal_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, text_icon_normal_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, text_icon_pressed_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, text_icon_pressed_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, text_icon_pressed_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, text_icon_pressed_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, text_icon_hover_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, text_icon_hover_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, text_icon_hover_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, text_icon_hover_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, text_icon_focus_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, text_icon_focus_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, text_icon_focus_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, text_icon_focus_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, text_icon_hover_pressed_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, text_icon_hover_pressed_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, text_icon_hover_pressed_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, text_icon_hover_pressed_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, text_icon_disabled_color_scale);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Button, text_icon_disabled_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, text_icon_disabled_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, text_icon_disabled_color);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, Button, text_icon_font);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, Button, text_icon_font_size);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Button, h_separation);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Button, icon_max_width);
 }
 
 Button::Button(const String &p_text) {
 	text_buf.instantiate();
 	text_buf->set_break_flags(TextServer::BREAK_MANDATORY | TextServer::BREAK_TRIM_EDGE_SPACES);
+
+	text_icon_buf.instantiate();
+	text_icon_buf->set_break_flags(TextServer::BREAK_MANDATORY | TextServer::BREAK_TRIM_EDGE_SPACES);
+
 	set_mouse_filter(MOUSE_FILTER_STOP);
 
 	set_text(p_text);
+	set_text_icon("");
 }
 
 Button::~Button() {
