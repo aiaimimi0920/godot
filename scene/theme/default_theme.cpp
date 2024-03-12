@@ -101,7 +101,7 @@ static Ref<StyleBoxFlat> sb_expand(Ref<StyleBoxFlat> p_sbox, float p_left, float
 	p_sbox->set_expand_margin(SIDE_TOP, Math::round(p_top * scale));
 	p_sbox->set_expand_margin(SIDE_RIGHT, Math::round(p_right * scale));
 	p_sbox->set_expand_margin(SIDE_BOTTOM, Math::round(p_bottom * scale));
-	return p_sbox;
+return p_sbox;
 }
 
 // See also `editor_generate_icon()` in `editor/themes/editor_icons.cpp`.
@@ -131,7 +131,7 @@ static Ref<StyleBox> make_empty_stylebox(float p_margin_left = -1, float p_margi
 	return style;
 }
 
-void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon,const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme) {
+void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme) {
 	scale = p_scale;
 
 	// Default theme properties.
@@ -191,7 +191,6 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 	const Color style_one_color_scale = Color(1, 1, 1, 1);
 	const Color style_zero_color_scale = Color(1, 1, 1, 0);
-	
 
 	const Color style_normal_color_scale = Color(1, 1, 1, 0.6);
 	const Color style_hover_color_scale = Color(1.5, 1.5, 1.5, 0.6);
@@ -214,7 +213,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 	// Panel
 
-	theme->set_stylebox("panel", "Panel", make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, Color(1, 1, 1, 0.6),StyleBoxFlat::ElevationLevel::Elevation_Level_0, 0, 0, 0, 0));
+	theme->set_stylebox("panel", "Panel", make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, Color(1, 1, 1, 0.6), StyleBoxFlat::ElevationLevel::Elevation_Level_0, 0, 0, 0, 0));
 
 	// ColorRect
 	theme->set_color_scheme("default_color_scheme", "ColorRect", default_color_scheme);
@@ -222,7 +221,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	// Button
 	const Ref<StyleBoxFlat> button_normal = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_1);
 	const Ref<StyleBoxFlat> button_hover = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_2);
-	const Ref<StyleBoxFlat> button_pressed = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, style_one_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_1);
+	const Ref<StyleBoxFlat> button_pressed = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_1);
 	const Ref<StyleBoxFlat> button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, Color(style_one_color_scale, 0.12), StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
 	Ref<StyleBoxFlat> focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
@@ -230,7 +229,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	focus->set_expand_margin_all(Math::round(2 * scale));
 
 	const Ref<StyleBoxFlat> button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	const Ref<StyleBoxFlat> button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, pressed_state_layer_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+	const Ref<StyleBoxFlat> button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 	Ref<StyleBoxFlat> focus_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
 	theme->set_stylebox("normal", "Button", button_normal);
@@ -347,7 +346,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		theme->set_type_variation("ElevatedButton", "Button");
 		const Ref<StyleBoxFlat> elevated_button_normal = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_1);
 		const Ref<StyleBoxFlat> elevated_button_hover = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_2);
-		const Ref<StyleBoxFlat> elevated_button_pressed = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, style_one_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_1);
+		const Ref<StyleBoxFlat> elevated_button_pressed = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_1);
 		const Ref<StyleBoxFlat> elevated_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, Color(style_one_color_scale, 0.12), StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
 		Ref<StyleBoxFlat> elevated_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
@@ -355,7 +354,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		elevated_focus->set_expand_margin_all(Math::round(2 * scale));
 
 		const Ref<StyleBoxFlat> elevated_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-		const Ref<StyleBoxFlat> elevated_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, pressed_state_layer_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+		const Ref<StyleBoxFlat> elevated_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 		Ref<StyleBoxFlat> elevated_focus_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
 		theme->set_stylebox("normal", "ElevatedButton", elevated_button_normal);
@@ -468,7 +467,6 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		theme->set_constant("icon_max_width", "ElevatedButton", 0);
 	}
 
-
 	// FilledButton
 	{
 		theme->set_type_variation("FilledButton", "Button");
@@ -476,7 +474,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 		const Ref<StyleBoxFlat> filled_button_hover = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_1);
 
-		const Ref<StyleBoxFlat> filled_button_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_one_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+		const Ref<StyleBoxFlat> filled_button_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
 		const Ref<StyleBoxFlat> filled_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, Color(style_one_color_scale, 0.12), StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
@@ -485,7 +483,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		filled_focus->set_expand_margin_all(Math::round(2 * scale));
 
 		const Ref<StyleBoxFlat> filled_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-		const Ref<StyleBoxFlat> filled_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY, pressed_state_layer_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+		const Ref<StyleBoxFlat> filled_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 		Ref<StyleBoxFlat> filled_focus_state_layer = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
 		theme->set_stylebox("normal", "FilledButton", filled_button_normal);
@@ -605,7 +603,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 		const Ref<StyleBoxFlat> filled_tonal_button_hover = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_1);
 
-		const Ref<StyleBoxFlat> filled_tonal_button_pressed = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_one_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+		const Ref<StyleBoxFlat> filled_tonal_button_pressed = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
 		const Ref<StyleBoxFlat> filled_tonal_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, Color(style_one_color_scale, 0.12), StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
@@ -614,7 +612,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		filled_tonal_focus->set_expand_margin_all(Math::round(2 * scale));
 
 		const Ref<StyleBoxFlat> filled_tonal_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SECONDARY_CONTAINER, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-		const Ref<StyleBoxFlat> filled_tonal_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SECONDARY_CONTAINER, pressed_state_layer_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+		const Ref<StyleBoxFlat> filled_tonal_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SECONDARY_CONTAINER, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 		Ref<StyleBoxFlat> filled_tonal_focus_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SECONDARY_CONTAINER, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
 		theme->set_stylebox("normal", "FilledTonalButton", filled_tonal_button_normal);
@@ -623,7 +621,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		theme->set_stylebox("disabled", "FilledTonalButton", filled_tonal_button_disabled);
 		theme->set_stylebox("focus", "FilledTonalButton", filled_tonal_focus);
 
-		theme->set_stylebox("hover_state_layer", "FilledTonalButton",filled_tonal_button_hover_state_layer);
+		theme->set_stylebox("hover_state_layer", "FilledTonalButton", filled_tonal_button_hover_state_layer);
 		theme->set_stylebox("pressed_state_layer", "FilledTonalButton", filled_tonal_button_pressed_state_layer);
 		theme->set_stylebox("focus_state_layer", "FilledTonalButton", filled_tonal_focus_state_layer);
 
@@ -734,7 +732,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 		const Ref<StyleBoxFlat> filled_tonal_button_hover = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_1);
 
-		const Ref<StyleBoxFlat> filled_tonal_button_pressed = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_one_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+		const Ref<StyleBoxFlat> filled_tonal_button_pressed = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
 		const Ref<StyleBoxFlat> filled_tonal_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, Color(style_one_color_scale, 0.12), StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
@@ -743,7 +741,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		filled_tonal_focus->set_expand_margin_all(Math::round(2 * scale));
 
 		const Ref<StyleBoxFlat> filled_tonal_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SECONDARY_CONTAINER, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-		const Ref<StyleBoxFlat> filled_tonal_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SECONDARY_CONTAINER, pressed_state_layer_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+		const Ref<StyleBoxFlat> filled_tonal_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SECONDARY_CONTAINER, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 		Ref<StyleBoxFlat> filled_tonal_focus_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SECONDARY_CONTAINER, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
 		theme->set_stylebox("normal", "FilledTonalButton", filled_tonal_button_normal);
@@ -752,7 +750,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		theme->set_stylebox("disabled", "FilledTonalButton", filled_tonal_button_disabled);
 		theme->set_stylebox("focus", "FilledTonalButton", filled_tonal_focus);
 
-		theme->set_stylebox("hover_state_layer", "FilledTonalButton",filled_tonal_button_hover_state_layer);
+		theme->set_stylebox("hover_state_layer", "FilledTonalButton", filled_tonal_button_hover_state_layer);
 		theme->set_stylebox("pressed_state_layer", "FilledTonalButton", filled_tonal_button_pressed_state_layer);
 		theme->set_stylebox("focus_state_layer", "FilledTonalButton", filled_tonal_focus_state_layer);
 
@@ -856,7 +854,6 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		theme->set_constant("icon_max_width", "FilledTonalButton", 0);
 	}
 
-
 	// OutlinedButton
 	{
 		theme->set_type_variation("OutlinedButton", "Button");
@@ -881,11 +878,13 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		Ref<StyleBoxFlat> outlined_focus = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 		// Make the focus outline appear to be flush with the buttons it's focusing.
 		outlined_focus->set_expand_margin_all(Math::round(2 * scale));
-		outlined_button_disabled->set_border_color_role(ColorRole::OUTLINE);
-		outlined_button_disabled->set_border_color_scale(Color(1, 1, 1, 1));
+		outlined_focus->set_border_color_role(ColorRole::OUTLINE);
+		outlined_focus->set_border_color_scale(Color(1, 1, 1, 1));
 
 		const Ref<StyleBoxFlat> outlined_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-		const Ref<StyleBoxFlat> outlined_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, pressed_state_layer_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+
+		const Ref<StyleBoxFlat> outlined_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+		
 		Ref<StyleBoxFlat> outlined_focus_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
 		theme->set_stylebox("normal", "OutlinedButton", outlined_button_normal);
@@ -894,7 +893,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		theme->set_stylebox("disabled", "OutlinedButton", outlined_button_disabled);
 		theme->set_stylebox("focus", "OutlinedButton", outlined_focus);
 
-		theme->set_stylebox("hover_state_layer", "OutlinedButton",outlined_button_hover_state_layer);
+		theme->set_stylebox("hover_state_layer", "OutlinedButton", outlined_button_hover_state_layer);
 		theme->set_stylebox("pressed_state_layer", "OutlinedButton", outlined_button_pressed_state_layer);
 		theme->set_stylebox("focus_state_layer", "OutlinedButton", outlined_focus_state_layer);
 
@@ -1015,7 +1014,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		text_focus->set_expand_margin_all(Math::round(2 * scale));
 
 		const Ref<StyleBoxFlat> text_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-		const Ref<StyleBoxFlat> text_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, pressed_state_layer_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+		const Ref<StyleBoxFlat> text_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 		Ref<StyleBoxFlat> text_focus_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
 
 		theme->set_stylebox("normal", "TextButton", text_button_normal);
@@ -1024,7 +1023,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		theme->set_stylebox("disabled", "TextButton", text_button_disabled);
 		theme->set_stylebox("focus", "TextButton", text_focus);
 
-		theme->set_stylebox("hover_state_layer", "TextButton",text_button_hover_state_layer);
+		theme->set_stylebox("hover_state_layer", "TextButton", text_button_hover_state_layer);
 		theme->set_stylebox("pressed_state_layer", "TextButton", text_button_pressed_state_layer);
 		theme->set_stylebox("focus_state_layer", "TextButton", text_focus_state_layer);
 
@@ -1128,6 +1127,835 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		theme->set_constant("icon_max_width", "TextButton", 0);
 	}
 
+	// TextureButton
+	{
+		// theme->set_type_variation("IconButton", "TextureButton");
+
+		Ref<StyleBoxFlat> texture_button_normal = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_HIGHEST, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> texture_button_hover = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_HIGHEST, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> texture_button_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> texture_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, Color(style_one_color_scale,0.12), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> texture_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		// Make the focus outline appear to be flush with the buttons it's focusing.
+		texture_focus->set_expand_margin_all(Math::round(2 * scale));
+
+		const Ref<StyleBoxFlat> texture_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+		
+		const Ref<StyleBoxFlat> texture_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> texture_focus_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		theme->set_stylebox("normal", "TextureButton", texture_button_normal);
+		theme->set_stylebox("hover", "TextureButton", texture_button_hover);
+		theme->set_stylebox("pressed", "TextureButton", texture_button_pressed);
+		theme->set_stylebox("disabled", "TextureButton", texture_button_disabled);
+		theme->set_stylebox("focus", "TextureButton", texture_focus);
+
+		theme->set_stylebox("hover_state_layer", "TextureButton", texture_button_hover_state_layer);
+		theme->set_stylebox("pressed_state_layer", "TextureButton", texture_button_pressed_state_layer);
+		theme->set_stylebox("focus_state_layer", "TextureButton", texture_focus_state_layer);
+
+		theme->set_font("text_icon_font", "TextureButton", default_icon_font);
+		theme->set_font_size("text_icon_font_size", "TextureButton", 24);
+
+		theme->set_color_scheme("default_color_scheme", "TextureButton", default_color_scheme);
+
+		theme->set_color("text_icon_normal_color_scale", "TextureButton", one_color_scale);
+		theme->set_color("text_icon_focus_color_scale", "TextureButton", one_color_scale);
+		theme->set_color("text_icon_pressed_color_scale", "TextureButton", one_color_scale);
+		theme->set_color("text_icon_hover_color_scale", "TextureButton", one_color_scale);
+		theme->set_color("text_icon_hover_pressed_color_scale", "TextureButton", one_color_scale);
+		theme->set_color("text_icon_disabled_color_scale", "TextureButton", Color(one_color_scale, 0.38));
+
+		theme->set_color_scheme("text_icon_normal_color_scheme", "TextureButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_pressed_color_scheme", "TextureButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_hover_color_scheme", "TextureButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_focus_color_scheme", "TextureButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_hover_pressed_color_scheme", "TextureButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_disabled_color_scheme", "TextureButton", Ref<ColorScheme>());
+
+		theme->set_color_role("text_icon_normal_color_role", "TextureButton", ColorRole::PRIMARY);
+		theme->set_color_role("text_icon_pressed_color_role", "TextureButton", ColorRole::PRIMARY);
+		theme->set_color_role("text_icon_hover_color_role", "TextureButton", ColorRole::PRIMARY);
+		theme->set_color_role("text_icon_hover_pressed_color_role", "TextureButton", ColorRole::PRIMARY);
+		theme->set_color_role("text_icon_focus_color_role", "TextureButton", ColorRole::PRIMARY);
+		theme->set_color_role("text_icon_disabled_color_role", "TextureButton", ColorRole::ON_SURFACE);
+
+		theme->set_color("text_icon_normal_color", "TextureButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_pressed_color", "TextureButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_hover_color", "TextureButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_hover_pressed_color", "TextureButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_focus_color", "TextureButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_disabled_color", "TextureButton", Color(1, 1, 1, 0.4));
+
+		theme->set_constant("icon_max_width", "TextureButton", 0);
+	}
+
+	// FilledIconButton
+	{
+		theme->set_type_variation("FilledIconButton", "TextureButton");
+
+		Ref<StyleBoxFlat> filled_icon_button_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> filled_icon_button_hover = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> filled_icon_button_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> filled_icon_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, Color(style_one_color_scale,0.12), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> filled_icon_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		// Make the focus outline appear to be flush with the buttons it's focusing.
+		filled_icon_focus->set_expand_margin_all(Math::round(2 * scale));
+
+		const Ref<StyleBoxFlat> filled_icon_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+		
+		const Ref<StyleBoxFlat> filled_icon_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> filled_icon_focus_state_layer = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+
+		Ref<StyleBoxFlat> selected_filled_icon_button_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_filled_icon_button_hover = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_filled_icon_button_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_filled_icon_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, Color(style_one_color_scale,0.12), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_filled_icon_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		// Make the focus outline appear to be flush with the buttons it's focusing.
+		filled_icon_focus->set_expand_margin_all(Math::round(2 * scale));
+
+		const Ref<StyleBoxFlat> selected_filled_icon_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+		
+		const Ref<StyleBoxFlat> selected_filled_icon_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_filled_icon_focus_state_layer = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+
+		Ref<StyleBoxFlat> unselected_filled_icon_button_normal = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_HIGHEST, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> unselected_filled_icon_button_hover = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_HIGHEST, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> unselected_filled_icon_button_pressed = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_HIGHEST, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> unselected_filled_icon_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, Color(style_one_color_scale,0.12), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> unselected_filled_icon_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		// Make the focus outline appear to be flush with the buttons it's focusing.
+		filled_icon_focus->set_expand_margin_all(Math::round(2 * scale));
+
+		const Ref<StyleBoxFlat> unselected_filled_icon_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+		
+		const Ref<StyleBoxFlat> unselected_filled_icon_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> unselected_filled_icon_focus_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		theme->set_stylebox("normal", "FilledIconButton", filled_icon_button_normal);
+		theme->set_stylebox("hover", "FilledIconButton", filled_icon_button_hover);
+		theme->set_stylebox("pressed", "FilledIconButton", filled_icon_button_pressed);
+		theme->set_stylebox("disabled", "FilledIconButton", filled_icon_button_disabled);
+		theme->set_stylebox("focus", "FilledIconButton", filled_icon_focus);
+
+		theme->set_stylebox("hover_state_layer", "FilledIconButton", filled_icon_button_hover_state_layer);
+		theme->set_stylebox("pressed_state_layer", "FilledIconButton", filled_icon_button_pressed_state_layer);
+		theme->set_stylebox("focus_state_layer", "FilledIconButton", filled_icon_focus_state_layer);
+
+		theme->set_stylebox("selected_normal", "FilledIconButton", selected_filled_icon_button_normal);
+		theme->set_stylebox("selected_hover", "FilledIconButton", selected_filled_icon_button_hover);
+		theme->set_stylebox("selected_pressed", "FilledIconButton", selected_filled_icon_button_pressed);
+		theme->set_stylebox("selected_disabled", "FilledIconButton", selected_filled_icon_button_disabled);
+		theme->set_stylebox("selected_focus", "FilledIconButton", selected_filled_icon_focus);
+
+		theme->set_stylebox("selected_hover_state_layer", "FilledIconButton", selected_filled_icon_button_hover_state_layer);
+		theme->set_stylebox("selected_pressed_state_layer", "FilledIconButton", selected_filled_icon_button_pressed_state_layer);
+		theme->set_stylebox("selected_focus_state_layer", "FilledIconButton", selected_filled_icon_focus_state_layer);
+
+		theme->set_stylebox("unselected_normal", "FilledIconButton", unselected_filled_icon_button_normal);
+		theme->set_stylebox("unselected_hover", "FilledIconButton", unselected_filled_icon_button_hover);
+		theme->set_stylebox("unselected_pressed", "FilledIconButton", unselected_filled_icon_button_pressed);
+		theme->set_stylebox("unselected_disabled", "FilledIconButton", unselected_filled_icon_button_disabled);
+		theme->set_stylebox("unselected_focus", "FilledIconButton", unselected_filled_icon_focus);
+
+		theme->set_stylebox("unselected_hover_state_layer", "FilledIconButton", unselected_filled_icon_button_hover_state_layer);
+		theme->set_stylebox("unselected_pressed_state_layer", "FilledIconButton", unselected_filled_icon_button_pressed_state_layer);
+		theme->set_stylebox("unselected_focus_state_layer", "FilledIconButton", unselected_filled_icon_focus_state_layer);
+
+
+		theme->set_font("text_icon_font", "FilledIconButton", default_icon_font);
+		theme->set_font_size("text_icon_font_size", "FilledIconButton", 24);
+
+		theme->set_color_scheme("default_color_scheme", "FilledIconButton", default_color_scheme);
+
+		theme->set_color("text_icon_normal_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("text_icon_focus_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("text_icon_pressed_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("text_icon_hover_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("text_icon_hover_pressed_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("text_icon_disabled_color_scale", "FilledIconButton", Color(one_color_scale, 0.38));
+
+		theme->set_color("selected_text_icon_normal_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_focus_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_pressed_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_hover_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_hover_pressed_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_disabled_color_scale", "FilledIconButton", Color(one_color_scale, 0.38));
+
+		theme->set_color("unselected_text_icon_normal_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_focus_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_pressed_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_hover_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_hover_pressed_color_scale", "FilledIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_disabled_color_scale", "FilledIconButton", Color(one_color_scale, 0.38));
+
+		theme->set_color_scheme("text_icon_normal_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_pressed_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_hover_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_focus_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_hover_pressed_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_disabled_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+
+		theme->set_color_scheme("selected_text_icon_normal_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_pressed_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_hover_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_focus_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_hover_pressed_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_disabled_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+
+		theme->set_color_scheme("unselected_text_icon_normal_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_pressed_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_hover_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_focus_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_hover_pressed_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_disabled_color_scheme", "FilledIconButton", Ref<ColorScheme>());
+
+		theme->set_color_role("text_icon_normal_color_role", "FilledIconButton", ColorRole::ON_PRIMARY);
+		theme->set_color_role("text_icon_pressed_color_role", "FilledIconButton", ColorRole::ON_PRIMARY);
+		theme->set_color_role("text_icon_hover_color_role", "FilledIconButton", ColorRole::ON_PRIMARY);
+		theme->set_color_role("text_icon_hover_pressed_color_role", "FilledIconButton", ColorRole::ON_PRIMARY);
+		theme->set_color_role("text_icon_focus_color_role", "FilledIconButton", ColorRole::ON_PRIMARY);
+		theme->set_color_role("text_icon_disabled_color_role", "FilledIconButton", ColorRole::ON_SURFACE);
+
+		theme->set_color_role("selected_text_icon_normal_color_role", "FilledIconButton", ColorRole::ON_PRIMARY);
+		theme->set_color_role("selected_text_icon_pressed_color_role", "FilledIconButton", ColorRole::ON_PRIMARY);
+		theme->set_color_role("selected_text_icon_hover_color_role", "FilledIconButton", ColorRole::ON_PRIMARY);
+		theme->set_color_role("selected_text_icon_hover_pressed_color_role", "FilledIconButton", ColorRole::ON_PRIMARY);
+		theme->set_color_role("selected_text_icon_focus_color_role", "FilledIconButton", ColorRole::ON_PRIMARY);
+		theme->set_color_role("selected_text_icon_disabled_color_role", "FilledIconButton", ColorRole::ON_SURFACE);
+
+		theme->set_color_role("unselected_text_icon_normal_color_role", "FilledIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("unselected_text_icon_pressed_color_role", "FilledIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("unselected_text_icon_hover_color_role", "FilledIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("unselected_text_icon_hover_pressed_color_role", "FilledIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("unselected_text_icon_focus_color_role", "FilledIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("unselected_text_icon_disabled_color_role", "FilledIconButton", ColorRole::ON_SURFACE);
+
+		theme->set_color("text_icon_normal_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_pressed_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_hover_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_hover_pressed_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_focus_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_disabled_color", "FilledIconButton", Color(1, 1, 1, 0.4));
+
+		theme->set_color("selected_text_icon_normal_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_pressed_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_hover_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_hover_pressed_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_focus_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_disabled_color", "FilledIconButton", Color(1, 1, 1, 0.4));
+
+		theme->set_color("unselected_text_icon_normal_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_pressed_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_hover_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_hover_pressed_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_focus_color", "FilledIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_disabled_color", "FilledIconButton", Color(1, 1, 1, 0.4));
+
+		theme->set_constant("icon_max_width", "FilledIconButton", 0);
+	}
+
+	// FilledTonalIconButton
+	{
+		
+		theme->set_type_variation("FilledTonalIconButton", "TextureButton");
+
+		Ref<StyleBoxFlat> filled_tonal_icon_button_normal = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> filled_tonal_icon_button_hover = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> filled_tonal_icon_button_pressed = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> filled_tonal_icon_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, Color(style_one_color_scale,0.12), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> filled_tonal_icon_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		// Make the focus outline appear to be flush with the buttons it's focusing.
+		filled_tonal_icon_focus->set_expand_margin_all(Math::round(2 * scale));
+
+		const Ref<StyleBoxFlat> filled_tonal_icon_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SECONDARY_CONTAINER, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+		
+		const Ref<StyleBoxFlat> filled_tonal_icon_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SECONDARY_CONTAINER, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> filled_tonal_icon_focus_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SECONDARY_CONTAINER, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_filled_tonal_icon_button_normal = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_filled_tonal_icon_button_hover = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_filled_tonal_icon_button_pressed = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_filled_tonal_icon_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, Color(style_one_color_scale,0.12), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_filled_tonal_icon_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		// Make the focus outline appear to be flush with the buttons it's focusing.
+		filled_tonal_icon_focus->set_expand_margin_all(Math::round(2 * scale));
+
+		const Ref<StyleBoxFlat> selected_filled_tonal_icon_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SECONDARY_CONTAINER, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+		
+		const Ref<StyleBoxFlat> selected_filled_tonal_icon_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SECONDARY_CONTAINER, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_filled_tonal_icon_focus_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SECONDARY_CONTAINER, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+
+		Ref<StyleBoxFlat> unselected_filled_tonal_icon_button_normal = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_HIGHEST, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> unselected_filled_tonal_icon_button_hover = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_HIGHEST, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> unselected_filled_tonal_icon_button_pressed = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_HIGHEST, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> unselected_filled_tonal_icon_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, Color(style_one_color_scale,0.12), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> unselected_filled_tonal_icon_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		// Make the focus outline appear to be flush with the buttons it's focusing.
+		filled_tonal_icon_focus->set_expand_margin_all(Math::round(2 * scale));
+
+		const Ref<StyleBoxFlat> unselected_filled_tonal_icon_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE_VARIANT, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+		
+		const Ref<StyleBoxFlat> unselected_filled_tonal_icon_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE_VARIANT, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> unselected_filled_tonal_icon_focus_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE_VARIANT, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		theme->set_stylebox("normal", "FilledTonalIconButton", filled_tonal_icon_button_normal);
+		theme->set_stylebox("hover", "FilledTonalIconButton", filled_tonal_icon_button_hover);
+		theme->set_stylebox("pressed", "FilledTonalIconButton", filled_tonal_icon_button_pressed);
+		theme->set_stylebox("disabled", "FilledTonalIconButton", filled_tonal_icon_button_disabled);
+		theme->set_stylebox("focus", "FilledTonalIconButton", filled_tonal_icon_focus);
+
+		theme->set_stylebox("hover_state_layer", "FilledTonalIconButton", filled_tonal_icon_button_hover_state_layer);
+		theme->set_stylebox("pressed_state_layer", "FilledTonalIconButton", filled_tonal_icon_button_pressed_state_layer);
+		theme->set_stylebox("focus_state_layer", "FilledTonalIconButton", filled_tonal_icon_focus_state_layer);
+
+		theme->set_stylebox("selected_normal", "FilledTonalIconButton", selected_filled_tonal_icon_button_normal);
+		theme->set_stylebox("selected_hover", "FilledTonalIconButton", selected_filled_tonal_icon_button_hover);
+		theme->set_stylebox("selected_pressed", "FilledTonalIconButton", selected_filled_tonal_icon_button_pressed);
+		theme->set_stylebox("selected_disabled", "FilledTonalIconButton", selected_filled_tonal_icon_button_disabled);
+		theme->set_stylebox("selected_focus", "FilledTonalIconButton", selected_filled_tonal_icon_focus);
+
+		theme->set_stylebox("selected_hover_state_layer", "FilledTonalIconButton", selected_filled_tonal_icon_button_hover_state_layer);
+		theme->set_stylebox("selected_pressed_state_layer", "FilledTonalIconButton", selected_filled_tonal_icon_button_pressed_state_layer);
+		theme->set_stylebox("selected_focus_state_layer", "FilledTonalIconButton", selected_filled_tonal_icon_focus_state_layer);
+
+		theme->set_stylebox("unselected_normal", "FilledTonalIconButton", unselected_filled_tonal_icon_button_normal);
+		theme->set_stylebox("unselected_hover", "FilledTonalIconButton", unselected_filled_tonal_icon_button_hover);
+		theme->set_stylebox("unselected_pressed", "FilledTonalIconButton", unselected_filled_tonal_icon_button_pressed);
+		theme->set_stylebox("unselected_disabled", "FilledTonalIconButton", unselected_filled_tonal_icon_button_disabled);
+		theme->set_stylebox("unselected_focus", "FilledTonalIconButton", unselected_filled_tonal_icon_focus);
+
+		theme->set_stylebox("unselected_hover_state_layer", "FilledTonalIconButton", unselected_filled_tonal_icon_button_hover_state_layer);
+		theme->set_stylebox("unselected_pressed_state_layer", "FilledTonalIconButton", unselected_filled_tonal_icon_button_pressed_state_layer);
+		theme->set_stylebox("unselected_focus_state_layer", "FilledTonalIconButton", unselected_filled_tonal_icon_focus_state_layer);
+
+
+		theme->set_font("text_icon_font", "FilledTonalIconButton", default_icon_font);
+		theme->set_font_size("text_icon_font_size", "FilledTonalIconButton", 24);
+
+		theme->set_color_scheme("default_color_scheme", "FilledTonalIconButton", default_color_scheme);
+
+		theme->set_color("text_icon_normal_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("text_icon_focus_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("text_icon_pressed_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("text_icon_hover_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("text_icon_hover_pressed_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("text_icon_disabled_color_scale", "FilledTonalIconButton", Color(one_color_scale, 0.38));
+
+		theme->set_color("selected_text_icon_normal_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_focus_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_pressed_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_hover_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_hover_pressed_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_disabled_color_scale", "FilledTonalIconButton", Color(one_color_scale, 0.38));
+
+		theme->set_color("unselected_text_icon_normal_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_focus_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_pressed_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_hover_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_hover_pressed_color_scale", "FilledTonalIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_disabled_color_scale", "FilledTonalIconButton", Color(one_color_scale, 0.38));
+
+		theme->set_color_scheme("text_icon_normal_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_pressed_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_hover_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_focus_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_hover_pressed_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_disabled_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+
+		theme->set_color_scheme("selected_text_icon_normal_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_pressed_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_hover_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_focus_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_hover_pressed_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_disabled_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+
+		theme->set_color_scheme("unselected_text_icon_normal_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_pressed_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_hover_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_focus_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_hover_pressed_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_disabled_color_scheme", "FilledTonalIconButton", Ref<ColorScheme>());
+
+		theme->set_color_role("text_icon_normal_color_role", "FilledTonalIconButton", ColorRole::ON_SECONDARY_CONTAINER);
+		theme->set_color_role("text_icon_pressed_color_role", "FilledTonalIconButton", ColorRole::ON_SECONDARY_CONTAINER);
+		theme->set_color_role("text_icon_hover_color_role", "FilledTonalIconButton", ColorRole::ON_SECONDARY_CONTAINER);
+		theme->set_color_role("text_icon_hover_pressed_color_role", "FilledTonalIconButton", ColorRole::ON_SECONDARY_CONTAINER);
+		theme->set_color_role("text_icon_focus_color_role", "FilledTonalIconButton", ColorRole::ON_SECONDARY_CONTAINER);
+		theme->set_color_role("text_icon_disabled_color_role", "FilledTonalIconButton", ColorRole::ON_SURFACE);
+
+		theme->set_color_role("selected_text_icon_normal_color_role", "FilledTonalIconButton", ColorRole::ON_SECONDARY_CONTAINER);
+		theme->set_color_role("selected_text_icon_pressed_color_role", "FilledTonalIconButton", ColorRole::ON_SECONDARY_CONTAINER);
+		theme->set_color_role("selected_text_icon_hover_color_role", "FilledTonalIconButton", ColorRole::ON_SECONDARY_CONTAINER);
+		theme->set_color_role("selected_text_icon_hover_pressed_color_role", "FilledTonalIconButton", ColorRole::ON_SECONDARY_CONTAINER);
+		theme->set_color_role("selected_text_icon_focus_color_role", "FilledTonalIconButton", ColorRole::ON_SECONDARY_CONTAINER);
+		theme->set_color_role("selected_text_icon_disabled_color_role", "FilledTonalIconButton", ColorRole::ON_SURFACE);
+
+		theme->set_color_role("unselected_text_icon_normal_color_role", "FilledTonalIconButton", ColorRole::ON_SURFACE_VARIANT);
+		theme->set_color_role("unselected_text_icon_pressed_color_role", "FilledTonalIconButton", ColorRole::ON_SURFACE_VARIANT);
+		theme->set_color_role("unselected_text_icon_hover_color_role", "FilledTonalIconButton", ColorRole::ON_SURFACE_VARIANT);
+		theme->set_color_role("unselected_text_icon_hover_pressed_color_role", "FilledTonalIconButton", ColorRole::ON_SURFACE_VARIANT);
+		theme->set_color_role("unselected_text_icon_focus_color_role", "FilledTonalIconButton", ColorRole::ON_SURFACE_VARIANT);
+		theme->set_color_role("unselected_text_icon_disabled_color_role", "FilledTonalIconButton", ColorRole::ON_SURFACE);
+
+		theme->set_color("text_icon_normal_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_pressed_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_hover_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_hover_pressed_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_focus_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_disabled_color", "FilledTonalIconButton", Color(1, 1, 1, 0.4));
+
+		theme->set_color("selected_text_icon_normal_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_pressed_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_hover_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_hover_pressed_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_focus_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_disabled_color", "FilledTonalIconButton", Color(1, 1, 1, 0.4));
+
+		theme->set_color("unselected_text_icon_normal_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_pressed_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_hover_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_hover_pressed_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_focus_color", "FilledTonalIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_disabled_color", "FilledTonalIconButton", Color(1, 1, 1, 0.4));
+
+		theme->set_constant("icon_max_width", "FilledTonalIconButton", 0);
+	}
+
+	// OutlinedIconButton
+	{
+		
+		theme->set_type_variation("OutlinedIconButton", "TextureButton");
+
+		Ref<StyleBoxFlat> outlined_icon_button_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		outlined_icon_button_normal->set_expand_margin_all(Math::round(2 * scale));
+		outlined_icon_button_normal->set_border_color_role(ColorRole::OUTLINE);
+
+		Ref<StyleBoxFlat> outlined_icon_button_hover = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		outlined_icon_button_hover->set_expand_margin_all(Math::round(2 * scale));
+		outlined_icon_button_hover->set_border_color_role(ColorRole::OUTLINE);
+
+		Ref<StyleBoxFlat> outlined_icon_button_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		outlined_icon_button_pressed->set_expand_margin_all(Math::round(2 * scale));
+		outlined_icon_button_pressed->set_border_color_role(ColorRole::OUTLINE);
+
+		Ref<StyleBoxFlat> outlined_icon_button_disabled = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		outlined_icon_button_disabled->set_expand_margin_all(Math::round(2 * scale));
+		outlined_icon_button_disabled->set_border_color_role(ColorRole::ON_SURFACE);
+		outlined_icon_button_disabled->set_border_color_scale(Color(1, 1, 1, 0.12));
+
+		Ref<StyleBoxFlat> outlined_icon_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		outlined_icon_focus->set_expand_margin_all(Math::round(2 * scale));
+		outlined_icon_focus->set_border_color_role(ColorRole::SECONDARY);
+
+		const Ref<StyleBoxFlat> outlined_icon_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::INVERSE_ON_SURFACE, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		const Ref<StyleBoxFlat> outlined_icon_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::INVERSE_ON_SURFACE, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+	
+		Ref<StyleBoxFlat> outlined_icon_focus_state_layer = make_color_role_flat_stylebox(ColorRole::INVERSE_ON_SURFACE, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+
+		Ref<StyleBoxFlat> selected_outlined_icon_button_normal = make_color_role_flat_stylebox(ColorRole::INVERSE_SURFACE, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 2);
+		selected_outlined_icon_button_normal->set_expand_margin_all(Math::round(2 * scale));
+		selected_outlined_icon_button_normal->set_border_color_role(ColorRole::OUTLINE);
+
+		Ref<StyleBoxFlat> selected_outlined_icon_button_hover = make_color_role_flat_stylebox(ColorRole::INVERSE_SURFACE, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 2);
+		selected_outlined_icon_button_hover->set_expand_margin_all(Math::round(2 * scale));
+		selected_outlined_icon_button_hover->set_border_color_role(ColorRole::OUTLINE);
+
+		Ref<StyleBoxFlat> selected_outlined_icon_button_pressed = make_color_role_flat_stylebox(ColorRole::INVERSE_SURFACE, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 2);
+		selected_outlined_icon_button_pressed->set_expand_margin_all(Math::round(2 * scale));
+		selected_outlined_icon_button_pressed->set_border_color_role(ColorRole::OUTLINE);
+
+		Ref<StyleBoxFlat> selected_outlined_icon_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 2);
+		selected_outlined_icon_button_disabled->set_expand_margin_all(Math::round(2 * scale));
+		selected_outlined_icon_button_disabled->set_border_color_role(ColorRole::ON_SURFACE);
+		selected_outlined_icon_button_disabled->set_border_color_scale(Color(1, 1, 1, 0.12));
+
+		Ref<StyleBoxFlat> selected_outlined_icon_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		selected_outlined_icon_focus->set_expand_margin_all(Math::round(2 * scale));
+		selected_outlined_icon_focus->set_border_color_role(ColorRole::SECONDARY);
+
+		const Ref<StyleBoxFlat> selected_outlined_icon_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::INVERSE_ON_SURFACE, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		const Ref<StyleBoxFlat> selected_outlined_icon_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::INVERSE_ON_SURFACE, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+	
+		Ref<StyleBoxFlat> selected_outlined_icon_focus_state_layer = make_color_role_flat_stylebox(ColorRole::INVERSE_ON_SURFACE, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> unselected_outlined_icon_button_normal = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		selected_outlined_icon_button_normal->set_expand_margin_all(Math::round(2 * scale));
+		selected_outlined_icon_button_normal->set_border_color_role(ColorRole::OUTLINE);
+
+		Ref<StyleBoxFlat> unselected_outlined_icon_button_hover = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		unselected_outlined_icon_button_hover->set_expand_margin_all(Math::round(2 * scale));
+		unselected_outlined_icon_button_hover->set_border_color_role(ColorRole::OUTLINE);
+
+		Ref<StyleBoxFlat> unselected_outlined_icon_button_pressed = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		unselected_outlined_icon_button_pressed->set_expand_margin_all(Math::round(2 * scale));
+		unselected_outlined_icon_button_pressed->set_border_color_role(ColorRole::OUTLINE);
+
+		Ref<StyleBoxFlat> unselected_outlined_icon_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		unselected_outlined_icon_button_disabled->set_expand_margin_all(Math::round(2 * scale));
+		unselected_outlined_icon_button_disabled->set_border_color_role(ColorRole::ON_SURFACE);
+		unselected_outlined_icon_button_disabled->set_border_color_scale(Color(1, 1, 1, 0.12));
+
+		Ref<StyleBoxFlat> unselected_outlined_icon_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		unselected_outlined_icon_focus->set_expand_margin_all(Math::round(2 * scale));
+		unselected_outlined_icon_focus->set_border_color_role(ColorRole::SECONDARY);
+
+		const Ref<StyleBoxFlat> unselected_outlined_icon_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE_VARIANT, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		const Ref<StyleBoxFlat> unselected_outlined_icon_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+	
+		Ref<StyleBoxFlat> unselected_outlined_icon_focus_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE_VARIANT, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+
+		theme->set_stylebox("normal", "OutlinedIconButton", outlined_icon_button_normal);
+		theme->set_stylebox("hover", "OutlinedIconButton", outlined_icon_button_hover);
+		theme->set_stylebox("pressed", "OutlinedIconButton", outlined_icon_button_pressed);
+		theme->set_stylebox("disabled", "OutlinedIconButton", outlined_icon_button_disabled);
+		theme->set_stylebox("focus", "OutlinedIconButton", outlined_icon_focus);
+
+		theme->set_stylebox("hover_state_layer", "OutlinedIconButton", outlined_icon_button_hover_state_layer);
+		theme->set_stylebox("pressed_state_layer", "OutlinedIconButton", outlined_icon_button_pressed_state_layer);
+		theme->set_stylebox("focus_state_layer", "OutlinedIconButton", outlined_icon_focus_state_layer);
+
+		theme->set_stylebox("selected_normal", "OutlinedIconButton", selected_outlined_icon_button_normal);
+		theme->set_stylebox("selected_hover", "OutlinedIconButton", selected_outlined_icon_button_hover);
+		theme->set_stylebox("selected_pressed", "OutlinedIconButton", selected_outlined_icon_button_pressed);
+		theme->set_stylebox("selected_disabled", "OutlinedIconButton", selected_outlined_icon_button_disabled);
+		theme->set_stylebox("selected_focus", "OutlinedIconButton", selected_outlined_icon_focus);
+
+		theme->set_stylebox("selected_hover_state_layer", "OutlinedIconButton", selected_outlined_icon_button_hover_state_layer);
+		theme->set_stylebox("selected_pressed_state_layer", "OutlinedIconButton", selected_outlined_icon_button_pressed_state_layer);
+		theme->set_stylebox("selected_focus_state_layer", "OutlinedIconButton", selected_outlined_icon_focus_state_layer);
+
+		theme->set_stylebox("unselected_normal", "OutlinedIconButton", unselected_outlined_icon_button_normal);
+		theme->set_stylebox("unselected_hover", "OutlinedIconButton", unselected_outlined_icon_button_hover);
+		theme->set_stylebox("unselected_pressed", "OutlinedIconButton", unselected_outlined_icon_button_pressed);
+		theme->set_stylebox("unselected_disabled", "OutlinedIconButton", unselected_outlined_icon_button_disabled);
+		theme->set_stylebox("unselected_focus", "OutlinedIconButton", unselected_outlined_icon_focus);
+
+		theme->set_stylebox("unselected_hover_state_layer", "OutlinedIconButton", unselected_outlined_icon_button_hover_state_layer);
+		theme->set_stylebox("unselected_pressed_state_layer", "OutlinedIconButton", unselected_outlined_icon_button_pressed_state_layer);
+		theme->set_stylebox("unselected_focus_state_layer", "OutlinedIconButton", unselected_outlined_icon_focus_state_layer);
+
+		theme->set_font("text_icon_font", "OutlinedIconButton", default_icon_font);
+		theme->set_font_size("text_icon_font_size", "OutlinedIconButton", 24);
+
+		theme->set_color_scheme("default_color_scheme", "OutlinedIconButton", default_color_scheme);
+
+		theme->set_color("text_icon_normal_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("text_icon_focus_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("text_icon_pressed_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("text_icon_hover_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("text_icon_hover_pressed_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("text_icon_disabled_color_scale", "OutlinedIconButton", Color(one_color_scale, 0.38));
+
+		theme->set_color("selected_text_icon_normal_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_focus_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_pressed_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_hover_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_hover_pressed_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_disabled_color_scale", "OutlinedIconButton", Color(one_color_scale, 0.38));
+
+		theme->set_color("unselected_text_icon_normal_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_focus_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_pressed_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_hover_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_hover_pressed_color_scale", "OutlinedIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_disabled_color_scale", "OutlinedIconButton", Color(one_color_scale, 0.38));
+
+		theme->set_color_scheme("text_icon_normal_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_pressed_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_hover_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_focus_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_hover_pressed_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_disabled_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+
+		theme->set_color_scheme("selected_text_icon_normal_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_pressed_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_hover_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_focus_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_hover_pressed_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_disabled_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+
+		theme->set_color_scheme("unselected_text_icon_normal_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_pressed_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_hover_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_focus_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_hover_pressed_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_disabled_color_scheme", "OutlinedIconButton", Ref<ColorScheme>());
+
+		theme->set_color_role("text_icon_normal_color_role", "OutlinedIconButton", ColorRole::INVERSE_ON_SURFACE);
+		theme->set_color_role("text_icon_pressed_color_role", "OutlinedIconButton", ColorRole::INVERSE_ON_SURFACE);
+		theme->set_color_role("text_icon_hover_color_role", "OutlinedIconButton", ColorRole::INVERSE_ON_SURFACE);
+		theme->set_color_role("text_icon_hover_pressed_color_role", "OutlinedIconButton", ColorRole::INVERSE_ON_SURFACE);
+		theme->set_color_role("text_icon_focus_color_role", "OutlinedIconButton", ColorRole::INVERSE_ON_SURFACE);
+		theme->set_color_role("text_icon_disabled_color_role", "OutlinedIconButton", ColorRole::ON_SURFACE);
+
+		theme->set_color_role("selected_text_icon_normal_color_role", "OutlinedIconButton", ColorRole::INVERSE_ON_SURFACE);
+		theme->set_color_role("selected_text_icon_pressed_color_role", "OutlinedIconButton", ColorRole::INVERSE_ON_SURFACE);
+		theme->set_color_role("selected_text_icon_hover_color_role", "OutlinedIconButton", ColorRole::INVERSE_ON_SURFACE);
+		theme->set_color_role("selected_text_icon_hover_pressed_color_role", "OutlinedIconButton", ColorRole::INVERSE_ON_SURFACE);
+		theme->set_color_role("selected_text_icon_focus_color_role", "OutlinedIconButton", ColorRole::INVERSE_ON_SURFACE);
+		theme->set_color_role("selected_text_icon_disabled_color_role", "OutlinedIconButton", ColorRole::ON_SURFACE);
+
+		theme->set_color_role("unselected_text_icon_normal_color_role", "OutlinedIconButton", ColorRole::ON_SURFACE_VARIANT);
+		theme->set_color_role("unselected_text_icon_pressed_color_role", "OutlinedIconButton", ColorRole::ON_SURFACE);
+		theme->set_color_role("unselected_text_icon_hover_color_role", "OutlinedIconButton", ColorRole::ON_SURFACE_VARIANT);
+		theme->set_color_role("unselected_text_icon_hover_pressed_color_role", "OutlinedIconButton", ColorRole::ON_SURFACE);
+		theme->set_color_role("unselected_text_icon_focus_color_role", "OutlinedIconButton", ColorRole::ON_SURFACE_VARIANT);
+		theme->set_color_role("unselected_text_icon_disabled_color_role", "OutlinedIconButton", ColorRole::ON_SURFACE);
+
+		theme->set_color("text_icon_normal_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_pressed_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_hover_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_hover_pressed_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_focus_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_disabled_color", "OutlinedIconButton", Color(1, 1, 1, 0.4));
+
+		theme->set_color("selected_text_icon_normal_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_pressed_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_hover_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_hover_pressed_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_focus_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_disabled_color", "OutlinedIconButton", Color(1, 1, 1, 0.4));
+
+		theme->set_color("unselected_text_icon_normal_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_pressed_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_hover_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_hover_pressed_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_focus_color", "OutlinedIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_disabled_color", "OutlinedIconButton", Color(1, 1, 1, 0.4));
+
+		theme->set_constant("icon_max_width", "OutlinedIconButton", 0);
+	}
+
+	// StandardIconButton
+	{
+		
+		theme->set_type_variation("StandardIconButton", "TextureButton");
+
+		Ref<StyleBoxFlat> standard_icon_button_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 0);
+
+		Ref<StyleBoxFlat> standard_icon_button_hover = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 0);
+
+		Ref<StyleBoxFlat> standard_icon_button_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 0);
+
+		Ref<StyleBoxFlat> standard_icon_button_disabled = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 0);
+
+		Ref<StyleBoxFlat> standard_icon_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		standard_icon_focus->set_expand_margin_all(Math::round(2 * scale));
+		standard_icon_focus->set_border_color_role(ColorRole::SECONDARY);
+
+		const Ref<StyleBoxFlat> standard_icon_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		const Ref<StyleBoxFlat> standard_icon_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+	
+		Ref<StyleBoxFlat> standard_icon_focus_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+
+
+
+		Ref<StyleBoxFlat> selected_standard_icon_button_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_standard_icon_button_hover = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_standard_icon_button_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_standard_icon_button_disabled = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		Ref<StyleBoxFlat> selected_standard_icon_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		selected_standard_icon_focus->set_expand_margin_all(Math::round(2 * scale));
+		selected_standard_icon_focus->set_border_color_role(ColorRole::SECONDARY);
+
+		const Ref<StyleBoxFlat> selected_standard_icon_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		const Ref<StyleBoxFlat> selected_standard_icon_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+	
+		Ref<StyleBoxFlat> selected_standard_icon_focus_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+
+		Ref<StyleBoxFlat> unselected_standard_icon_button_normal = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 0);
+
+		Ref<StyleBoxFlat> unselected_standard_icon_button_hover = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 0);
+
+		Ref<StyleBoxFlat> unselected_standard_icon_button_pressed = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 0);
+
+		Ref<StyleBoxFlat> unselected_standard_icon_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 0);
+
+		Ref<StyleBoxFlat> unselected_standard_icon_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_one_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, false, 2);
+		unselected_standard_icon_focus->set_expand_margin_all(Math::round(2 * scale));
+		unselected_standard_icon_focus->set_border_color_role(ColorRole::SECONDARY);
+
+		const Ref<StyleBoxFlat> unselected_standard_icon_button_hover_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE_VARIANT, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+		const Ref<StyleBoxFlat> unselected_standard_icon_button_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE_VARIANT, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+	
+		Ref<StyleBoxFlat> unselected_standard_icon_focus_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE_VARIANT, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, 1000, true, 0);
+
+
+		theme->set_stylebox("normal", "StandardIconButton", standard_icon_button_normal);
+		theme->set_stylebox("hover", "StandardIconButton", standard_icon_button_hover);
+		theme->set_stylebox("pressed", "StandardIconButton", standard_icon_button_pressed);
+		theme->set_stylebox("disabled", "StandardIconButton", standard_icon_button_disabled);
+		theme->set_stylebox("focus", "StandardIconButton", standard_icon_focus);
+
+		theme->set_stylebox("hover_state_layer", "StandardIconButton", standard_icon_button_hover_state_layer);
+		theme->set_stylebox("pressed_state_layer", "StandardIconButton", standard_icon_button_pressed_state_layer);
+		theme->set_stylebox("focus_state_layer", "StandardIconButton", standard_icon_focus_state_layer);
+
+		theme->set_stylebox("selected_normal", "StandardIconButton", selected_standard_icon_button_normal);
+		theme->set_stylebox("selected_hover", "StandardIconButton", selected_standard_icon_button_hover);
+		theme->set_stylebox("selected_pressed", "StandardIconButton", selected_standard_icon_button_pressed);
+		theme->set_stylebox("selected_disabled", "StandardIconButton", selected_standard_icon_button_disabled);
+		theme->set_stylebox("selected_focus", "StandardIconButton", selected_standard_icon_focus);
+
+		theme->set_stylebox("selected_hover_state_layer", "StandardIconButton", selected_standard_icon_button_hover_state_layer);
+		theme->set_stylebox("selected_pressed_state_layer", "StandardIconButton", selected_standard_icon_button_pressed_state_layer);
+		theme->set_stylebox("selected_focus_state_layer", "StandardIconButton", selected_standard_icon_focus_state_layer);
+
+		theme->set_stylebox("unselected_normal", "StandardIconButton", unselected_standard_icon_button_normal);
+		theme->set_stylebox("unselected_hover", "StandardIconButton", unselected_standard_icon_button_hover);
+		theme->set_stylebox("unselected_pressed", "StandardIconButton", unselected_standard_icon_button_pressed);
+		theme->set_stylebox("unselected_disabled", "StandardIconButton", unselected_standard_icon_button_disabled);
+		theme->set_stylebox("unselected_focus", "StandardIconButton", unselected_standard_icon_focus);
+
+		theme->set_stylebox("unselected_hover_state_layer", "StandardIconButton", unselected_standard_icon_button_hover_state_layer);
+		theme->set_stylebox("unselected_pressed_state_layer", "StandardIconButton", unselected_standard_icon_button_pressed_state_layer);
+		theme->set_stylebox("unselected_focus_state_layer", "StandardIconButton", unselected_standard_icon_focus_state_layer);
+
+		theme->set_font("text_icon_font", "StandardIconButton", default_icon_font);
+		theme->set_font_size("text_icon_font_size", "StandardIconButton", 24);
+
+		theme->set_color_scheme("default_color_scheme", "StandardIconButton", default_color_scheme);
+
+		theme->set_color("text_icon_normal_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("text_icon_focus_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("text_icon_pressed_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("text_icon_hover_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("text_icon_hover_pressed_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("text_icon_disabled_color_scale", "StandardIconButton", Color(one_color_scale, 0.38));
+
+		theme->set_color("selected_text_icon_normal_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_focus_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_pressed_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_hover_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_hover_pressed_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("selected_text_icon_disabled_color_scale", "StandardIconButton", Color(one_color_scale, 0.38));
+
+		theme->set_color("unselected_text_icon_normal_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_focus_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_pressed_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_hover_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_hover_pressed_color_scale", "StandardIconButton", one_color_scale);
+		theme->set_color("unselected_text_icon_disabled_color_scale", "StandardIconButton", Color(one_color_scale, 0.38));
+
+		theme->set_color_scheme("text_icon_normal_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_pressed_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_hover_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_focus_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_hover_pressed_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("text_icon_disabled_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+
+		theme->set_color_scheme("selected_text_icon_normal_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_pressed_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_hover_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_focus_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_hover_pressed_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("selected_text_icon_disabled_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+
+		theme->set_color_scheme("unselected_text_icon_normal_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_pressed_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_hover_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_focus_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_hover_pressed_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+		theme->set_color_scheme("unselected_text_icon_disabled_color_scheme", "StandardIconButton", Ref<ColorScheme>());
+
+		theme->set_color_role("text_icon_normal_color_role", "StandardIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("text_icon_pressed_color_role", "StandardIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("text_icon_hover_color_role", "StandardIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("text_icon_hover_pressed_color_role", "StandardIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("text_icon_focus_color_role", "StandardIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("text_icon_disabled_color_role", "StandardIconButton", ColorRole::ON_SURFACE);
+
+		theme->set_color_role("selected_text_icon_normal_color_role", "StandardIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("selected_text_icon_pressed_color_role", "StandardIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("selected_text_icon_hover_color_role", "StandardIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("selected_text_icon_hover_pressed_color_role", "StandardIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("selected_text_icon_focus_color_role", "StandardIconButton", ColorRole::PRIMARY);
+		theme->set_color_role("selected_text_icon_disabled_color_role", "StandardIconButton", ColorRole::ON_SURFACE);
+
+		theme->set_color_role("unselected_text_icon_normal_color_role", "StandardIconButton", ColorRole::ON_SURFACE_VARIANT);
+		theme->set_color_role("unselected_text_icon_pressed_color_role", "StandardIconButton", ColorRole::ON_SURFACE_VARIANT);
+		theme->set_color_role("unselected_text_icon_hover_color_role", "StandardIconButton", ColorRole::ON_SURFACE_VARIANT);
+		theme->set_color_role("unselected_text_icon_hover_pressed_color_role", "StandardIconButton", ColorRole::ON_SURFACE_VARIANT);
+		theme->set_color_role("unselected_text_icon_focus_color_role", "StandardIconButton", ColorRole::ON_SURFACE_VARIANT);
+		theme->set_color_role("unselected_text_icon_disabled_color_role", "StandardIconButton", ColorRole::ON_SURFACE);
+
+		theme->set_color("text_icon_normal_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_pressed_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_hover_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_hover_pressed_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_focus_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("text_icon_disabled_color", "StandardIconButton", Color(1, 1, 1, 0.4));
+
+		theme->set_color("selected_text_icon_normal_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_pressed_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_hover_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_hover_pressed_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_focus_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("selected_text_icon_disabled_color", "StandardIconButton", Color(1, 1, 1, 0.4));
+
+		theme->set_color("unselected_text_icon_normal_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_pressed_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_hover_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_hover_pressed_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_focus_color", "StandardIconButton", Color(1, 1, 1, 1));
+		theme->set_color("unselected_text_icon_disabled_color", "StandardIconButton", Color(1, 1, 1, 0.4));
+
+		theme->set_constant("icon_max_width", "StandardIconButton", 0);
+	}
 
 	// MenuBar
 	theme->set_stylebox("normal", "MenuBar", button_normal);
@@ -1222,20 +2050,20 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	// OptionButton
 	theme->set_stylebox("focus", "OptionButton", focus);
 
-	Ref<StyleBox> sb_optbutton_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 2 * default_margin, default_margin, 21, default_margin);
-	Ref<StyleBox> sb_optbutton_hover = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_hover_color,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 2 * default_margin, default_margin, 21, default_margin);
-	Ref<StyleBox> sb_optbutton_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_pressed_color,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 2 * default_margin, default_margin, 21, default_margin);
-	Ref<StyleBox> sb_optbutton_disabled = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_disabled_color, StyleBoxFlat::ElevationLevel::Elevation_Level_0,2 * default_margin, default_margin, 21, default_margin);
+	Ref<StyleBox> sb_optbutton_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 2 * default_margin, default_margin, 21, default_margin);
+	Ref<StyleBox> sb_optbutton_hover = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_hover_color, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 2 * default_margin, default_margin, 21, default_margin);
+	Ref<StyleBox> sb_optbutton_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_pressed_color, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 2 * default_margin, default_margin, 21, default_margin);
+	Ref<StyleBox> sb_optbutton_disabled = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_disabled_color, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 2 * default_margin, default_margin, 21, default_margin);
 
 	theme->set_stylebox("normal", "OptionButton", sb_optbutton_normal);
 	theme->set_stylebox("hover", "OptionButton", sb_optbutton_hover);
 	theme->set_stylebox("pressed", "OptionButton", sb_optbutton_pressed);
 	theme->set_stylebox("disabled", "OptionButton", sb_optbutton_disabled);
 
-	Ref<StyleBox> sb_optbutton_normal_mirrored = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 21, default_margin, 2 * default_margin, default_margin);
-	Ref<StyleBox> sb_optbutton_hover_mirrored = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_hover_color,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 21, default_margin, 2 * default_margin, default_margin);
-	Ref<StyleBox> sb_optbutton_pressed_mirrored = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_pressed_color,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 21, default_margin, 2 * default_margin, default_margin);
-	Ref<StyleBox> sb_optbutton_disabled_mirrored = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_disabled_color,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 21, default_margin, 2 * default_margin, default_margin);
+	Ref<StyleBox> sb_optbutton_normal_mirrored = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 21, default_margin, 2 * default_margin, default_margin);
+	Ref<StyleBox> sb_optbutton_hover_mirrored = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_hover_color, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 21, default_margin, 2 * default_margin, default_margin);
+	Ref<StyleBox> sb_optbutton_pressed_mirrored = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_pressed_color, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 21, default_margin, 2 * default_margin, default_margin);
+	Ref<StyleBox> sb_optbutton_disabled_mirrored = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_disabled_color, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 21, default_margin, 2 * default_margin, default_margin);
 
 	theme->set_stylebox("normal_mirrored", "OptionButton", sb_optbutton_normal_mirrored);
 	theme->set_stylebox("hover_mirrored", "OptionButton", sb_optbutton_hover_mirrored);
@@ -1593,8 +2421,8 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 	// ProgressBar
 
-	theme->set_stylebox("background", "ProgressBar", make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, Color(1, 1, 1, 1),StyleBoxFlat::ElevationLevel::Elevation_Level_0, 2, 2, 2, 2, 6));
-	theme->set_stylebox("fill", "ProgressBar", make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(1, 1, 1, 1),StyleBoxFlat::ElevationLevel::Elevation_Level_0, 2, 2, 2, 2, 6));
+	theme->set_stylebox("background", "ProgressBar", make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, Color(1, 1, 1, 1), StyleBoxFlat::ElevationLevel::Elevation_Level_0, 2, 2, 2, 2, 6));
+	theme->set_stylebox("fill", "ProgressBar", make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(1, 1, 1, 1), StyleBoxFlat::ElevationLevel::Elevation_Level_0, 2, 2, 2, 2, 6));
 
 	theme->set_font("font", "ProgressBar", Ref<Font>());
 	theme->set_font_size("font_size", "ProgressBar", -1);
@@ -1694,7 +2522,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	theme->set_stylebox("normal", "CodeEdit", style_line_edit);
 	theme->set_stylebox("focus", "CodeEdit", focus);
 	theme->set_stylebox("read_only", "CodeEdit", style_line_edit_read_only);
-	theme->set_stylebox("completion", "CodeEdit", make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 0, 0, 0, 0));
+	theme->set_stylebox("completion", "CodeEdit", make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 0, 0, 0, 0));
 
 	theme->set_color_scheme("default_color_scheme", "CodeEdit", default_color_scheme);
 
@@ -1831,10 +2659,10 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 	Ref<Texture2D> empty_icon = memnew(ImageTexture);
 
-	const Ref<StyleBoxFlat> style_h_scrollbar = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 0, 4, 0, 4, 10);
-	const Ref<StyleBoxFlat> style_v_scrollbar = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 0, 4, 0, 10);
-	Ref<StyleBoxFlat> style_scrollbar_grabber = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_progress_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4, 10);
-	Ref<StyleBoxFlat> style_scrollbar_grabber_highlight = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_focus_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4, 10);
+	const Ref<StyleBoxFlat> style_h_scrollbar = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 0, 4, 0, 4, 10);
+	const Ref<StyleBoxFlat> style_v_scrollbar = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 0, 4, 0, 10);
+	Ref<StyleBoxFlat> style_scrollbar_grabber = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_progress_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4, 10);
+	Ref<StyleBoxFlat> style_scrollbar_grabber_highlight = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_focus_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4, 10);
 	Ref<StyleBoxFlat> style_scrollbar_grabber_pressed = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_focus_color_scale * Color(0.75, 0.75, 0.75, 1), StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4, 10);
 
 	// HScrollBar
@@ -1867,9 +2695,9 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	theme->set_icon("decrement_highlight", "VScrollBar", empty_icon);
 	theme->set_icon("decrement_pressed", "VScrollBar", empty_icon);
 
-	const Ref<StyleBoxFlat> style_slider = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4, 4);
-	const Ref<StyleBoxFlat> style_slider_grabber = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_progress_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4, 4);
-	const Ref<StyleBoxFlat> style_slider_grabber_highlight = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_focus_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0,4, 4, 4, 4, 4);
+	const Ref<StyleBoxFlat> style_slider = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4, 4);
+	const Ref<StyleBoxFlat> style_slider_grabber = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_progress_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4, 4);
+	const Ref<StyleBoxFlat> style_slider_grabber_highlight = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, style_focus_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4, 4);
 
 	// HSlider
 
@@ -1911,8 +2739,8 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 	// Window
 
-	theme->set_stylebox("embedded_border", "Window", sb_expand(make_color_role_flat_stylebox(ColorRole::PRIMARY, style_popup_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 10, 28, 10, 8), 8, 32, 8, 6));
-	theme->set_stylebox("embedded_unfocused_border", "Window", sb_expand(make_color_role_flat_stylebox(ColorRole::PRIMARY, style_popup_hover_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 10, 28, 10, 8), 8, 32, 8, 6));
+	theme->set_stylebox("embedded_border", "Window", sb_expand(make_color_role_flat_stylebox(ColorRole::PRIMARY, style_popup_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 10, 28, 10, 8), 8, 32, 8, 6));
+	theme->set_stylebox("embedded_unfocused_border", "Window", sb_expand(make_color_role_flat_stylebox(ColorRole::PRIMARY, style_popup_hover_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 10, 28, 10, 8), 8, 32, 8, 6));
 
 	theme->set_color_scheme("default_color_scheme", "Window", default_color_scheme);
 
@@ -1941,7 +2769,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	// Dialogs
 
 	// AcceptDialog is currently the base dialog, so this defines styles for all extending nodes.
-	theme->set_stylebox("panel", "AcceptDialog", make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, style_popup_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0, Math::round(8 * scale), Math::round(8 * scale), Math::round(8 * scale), Math::round(8 * scale)));
+	theme->set_stylebox("panel", "AcceptDialog", make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, style_popup_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, Math::round(8 * scale), Math::round(8 * scale), Math::round(8 * scale), Math::round(8 * scale)));
 	theme->set_constant("buttons_separation", "AcceptDialog", Math::round(10 * scale));
 
 	// File Dialog
@@ -2082,14 +2910,14 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 	// GraphNode
 
-	Ref<StyleBoxFlat> graphnode_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0,18, 12, 18, 12);
+	Ref<StyleBoxFlat> graphnode_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 18, 12, 18, 12);
 	graphnode_normal->set_border_color(Color(0.325, 0.325, 0.325, 0.6));
 	graphnode_normal->set_border_color_scale(Color(0.325, 0.325, 0.325, 0.6));
 	Ref<StyleBoxFlat> graphnode_selected = graphnode_normal->duplicate();
 	graphnode_selected->set_border_color(Color(0.625, 0.625, 0.625, 0.6));
 	graphnode_selected->set_border_color_scale(Color(0.625, 0.625, 0.625, 0.6));
 
-	Ref<StyleBoxFlat> graphn_sb_titlebar = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color_scale.lightened(0.3),StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4);
+	Ref<StyleBoxFlat> graphn_sb_titlebar = make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color_scale.lightened(0.3), StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4);
 	Ref<StyleBoxFlat> graphn_sb_titlebar_selected = graphnode_normal->duplicate();
 	graphn_sb_titlebar_selected->set_bg_color(Color(1.0, 0.625, 0.625, 0.6));
 	graphn_sb_titlebar_selected->set_bg_color_scale(Color(1.0, 0.625, 0.625, 0.6));
@@ -2147,16 +2975,16 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 	theme->set_color_scheme("default_color_scheme", "Tree", default_color_scheme);
 
-	theme->set_stylebox("panel", "Tree", make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 5));
+	theme->set_stylebox("panel", "Tree", make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 5));
 	theme->set_stylebox("focus", "Tree", focus);
 	theme->set_stylebox("selected", "Tree", make_color_role_flat_stylebox(ColorRole::PRIMARY, style_selected_color_scale));
 	theme->set_stylebox("selected_focus", "Tree", make_color_role_flat_stylebox(ColorRole::PRIMARY, style_selected_color_scale));
 	theme->set_stylebox("cursor", "Tree", focus);
 	theme->set_stylebox("cursor_unfocused", "Tree", focus);
 	theme->set_stylebox("button_pressed", "Tree", button_pressed);
-	theme->set_stylebox("title_button_normal", "Tree", make_color_role_flat_stylebox(ColorRole::PRIMARY, style_pressed_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0,4, 4, 4, 4));
-	theme->set_stylebox("title_button_pressed", "Tree", make_color_role_flat_stylebox(ColorRole::PRIMARY, style_hover_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4));
-	theme->set_stylebox("title_button_hover", "Tree", make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0,4, 4, 4, 4));
+	theme->set_stylebox("title_button_normal", "Tree", make_color_role_flat_stylebox(ColorRole::PRIMARY, style_pressed_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4));
+	theme->set_stylebox("title_button_pressed", "Tree", make_color_role_flat_stylebox(ColorRole::PRIMARY, style_hover_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4));
+	theme->set_stylebox("title_button_hover", "Tree", make_color_role_flat_stylebox(ColorRole::PRIMARY, style_normal_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4));
 	theme->set_stylebox("custom_button", "Tree", button_normal);
 	theme->set_stylebox("custom_button_pressed", "Tree", button_pressed);
 	theme->set_stylebox("custom_button_hover", "Tree", button_hover);
@@ -2292,11 +3120,11 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 	// TabContainer
 
-	Ref<StyleBoxFlat> style_tab_selected = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_normal_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0,10, 4, 10, 4, 0);
+	Ref<StyleBoxFlat> style_tab_selected = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_normal_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 10, 4, 10, 4, 0);
 	style_tab_selected->set_border_width(SIDE_TOP, Math::round(2 * scale));
 	style_tab_selected->set_border_color(style_focus_color);
 	style_tab_selected->set_border_color_scale(style_focus_color_scale);
-	Ref<StyleBoxFlat> style_tab_unselected = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_pressed_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 10, 4, 10, 4, 0);
+	Ref<StyleBoxFlat> style_tab_unselected = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, style_pressed_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 10, 4, 10, 4, 0);
 	// Add some spacing between unselected tabs to make them easier to distinguish from each other.
 	style_tab_unselected->set_border_width(SIDE_LEFT, Math::round(scale));
 	style_tab_unselected->set_border_width(SIDE_RIGHT, Math::round(scale));
@@ -2315,7 +3143,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	theme->set_stylebox("tab_unselected", "TabContainer", style_tab_unselected);
 	theme->set_stylebox("tab_disabled", "TabContainer", style_tab_disabled);
 	theme->set_stylebox("tab_focus", "TabContainer", style_tab_focus);
-	theme->set_stylebox("panel", "TabContainer", make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, style_normal_color,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 0, 0, 0, 0));
+	theme->set_stylebox("panel", "TabContainer", make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, style_normal_color, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 0, 0, 0, 0));
 	theme->set_stylebox("tabbar_background", "TabContainer", make_empty_stylebox(0, 0, 0, 0));
 
 	theme->set_icon("increment", "TabContainer", icons["scroll_button_right"]);
@@ -2554,7 +3382,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 	// ColorPresetButton
 
-	Ref<StyleBoxFlat> preset_sb = make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(1, 1, 1),StyleBoxFlat::ElevationLevel::Elevation_Level_0, 2, 2, 2, 2);
+	Ref<StyleBoxFlat> preset_sb = make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(1, 1, 1), StyleBoxFlat::ElevationLevel::Elevation_Level_0, 2, 2, 2, 2);
 	preset_sb->set_corner_radius_all(Math::round(2 * scale));
 	preset_sb->set_corner_detail(Math::round(2 * scale));
 	preset_sb->set_anti_aliased(false);
@@ -2567,7 +3395,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 	theme->set_type_variation("TooltipPanel", "PopupPanel");
 	theme->set_stylebox("panel", "TooltipPanel",
-			make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER, Color(1, 1, 1, 0.5), StyleBoxFlat::ElevationLevel::Elevation_Level_0,2 * default_margin, 0.5 * default_margin, 2 * default_margin, 0.5 * default_margin));
+			make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER, Color(1, 1, 1, 0.5), StyleBoxFlat::ElevationLevel::Elevation_Level_0, 2 * default_margin, 0.5 * default_margin, 2 * default_margin, 0.5 * default_margin));
 
 	theme->set_type_variation("TooltipLabel", "Label");
 	theme->set_font_size("font_size", "TooltipLabel", -1);
@@ -2707,7 +3535,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	theme->set_constant("h_separation", "VFlowContainer", Math::round(4 * scale));
 	theme->set_constant("v_separation", "VFlowContainer", Math::round(4 * scale));
 
-	theme->set_stylebox("panel", "PanelContainer", make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, style_normal_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 0, 0, 0, 0));
+	theme->set_stylebox("panel", "PanelContainer", make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, style_normal_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 0, 0, 0, 0));
 
 	theme->set_icon("zoom_out", "GraphEdit", icons["zoom_less"]);
 	theme->set_icon("zoom_in", "GraphEdit", icons["zoom_more"]);
@@ -2717,9 +3545,9 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	theme->set_icon("snapping_toggle", "GraphEdit", icons["grid_snap"]);
 	theme->set_icon("layout", "GraphEdit", icons["grid_layout"]);
 
-	theme->set_stylebox("panel", "GraphEdit", make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, style_normal_color_scale,StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 5));
+	theme->set_stylebox("panel", "GraphEdit", make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, style_normal_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 5));
 
-	Ref<StyleBoxFlat> graph_toolbar_style = make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(0.24, 0.24, 0.24, 0.6),StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 2, 4, 2);
+	Ref<StyleBoxFlat> graph_toolbar_style = make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(0.24, 0.24, 0.24, 0.6), StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 2, 4, 2);
 	theme->set_stylebox("menu_panel", "GraphEdit", graph_toolbar_style);
 
 	theme->set_color_scheme("default_color_scheme", "GraphEdit", default_color_scheme);
@@ -2751,12 +3579,12 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	theme->set_constant("port_hotzone_inner_extent", "GraphEdit", 22 * scale);
 	theme->set_constant("port_hotzone_outer_extent", "GraphEdit", 26 * scale);
 
-	theme->set_stylebox("panel", "GraphEditMinimap", make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(0.24, 0.24, 0.24), StyleBoxFlat::ElevationLevel::Elevation_Level_0,0, 0, 0, 0));
-	Ref<StyleBoxFlat> style_minimap_camera = make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(0.65, 0.65, 0.65, 0.2), StyleBoxFlat::ElevationLevel::Elevation_Level_0,0, 0, 0, 0, 0);
+	theme->set_stylebox("panel", "GraphEditMinimap", make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(0.24, 0.24, 0.24), StyleBoxFlat::ElevationLevel::Elevation_Level_0, 0, 0, 0, 0));
+	Ref<StyleBoxFlat> style_minimap_camera = make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(0.65, 0.65, 0.65, 0.2), StyleBoxFlat::ElevationLevel::Elevation_Level_0, 0, 0, 0, 0, 0);
 	style_minimap_camera->set_border_color(Color(0.65, 0.65, 0.65, 0.45));
 	style_minimap_camera->set_border_width_all(1);
 	theme->set_stylebox("camera", "GraphEditMinimap", style_minimap_camera);
-	theme->set_stylebox("node", "GraphEditMinimap", make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(1, 1, 1),StyleBoxFlat::ElevationLevel::Elevation_Level_0, 0, 0, 0, 0, 2));
+	theme->set_stylebox("node", "GraphEditMinimap", make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(1, 1, 1), StyleBoxFlat::ElevationLevel::Elevation_Level_0, 0, 0, 0, 0, 2));
 
 	theme->set_color_scheme("default_color_scheme", "GraphEditMinimap", default_color_scheme);
 	theme->set_color_scheme("resizer_color_scheme", "GraphEditMinimap", Ref<ColorScheme>());
@@ -2770,7 +3598,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 
 	default_icon = icons["error_icon"];
 	// Same color as the error icon.
-	default_style = make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(1, 0.365, 0.365), StyleBoxFlat::ElevationLevel::Elevation_Level_0,4, 4, 4, 4, 0, false, 2);
+	default_style = make_color_role_flat_stylebox(ColorRole::PRIMARY, Color(1, 0.365, 0.365), StyleBoxFlat::ElevationLevel::Elevation_Level_0, 4, 4, 4, 4, 0, false, 2);
 }
 void make_default_theme(float p_scale, Ref<Font> p_font, Ref<Font> p_icon_font, Ref<ColorScheme> p_color_scheme, TextServer::SubpixelPositioning p_font_subpixel, TextServer::Hinting p_font_hinting, TextServer::FontAntialiasing p_font_antialiasing, bool p_font_msdf, bool p_font_generate_mipmaps) {
 	Ref<Theme> t;

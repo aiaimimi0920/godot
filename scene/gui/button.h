@@ -43,7 +43,6 @@ private:
 	String xl_text;
 
 	Ref<TextParagraph> text_buf;
-
 	Ref<TextParagraph> text_icon_buf;
 
 	String language;
@@ -197,9 +196,8 @@ private:
 	Size2 _fit_icon_size(const Size2 &p_size) const;
 
 	void _shape(Ref<TextParagraph> p_paragraph = Ref<TextParagraph>(), String p_text = "");
-	void _icon_shape(Ref<TextParagraph> p_paragraph = Ref<TextParagraph>(), String p_text = "", int expand_icon_size=0);
+	void _icon_shape(Ref<TextParagraph> p_paragraph = Ref<TextParagraph>(), String p_text = "", int expand_icon_size = 0);
 
-	
 	void _texture_changed();
 
 protected:
@@ -215,7 +213,7 @@ protected:
 public:
 	virtual Size2 get_minimum_size() const override;
 
-	Size2 get_minimum_size_for_text_and_icon(const String &p_text, Ref<Texture2D> p_icon, const String &p_text_icon="") const;
+	Size2 get_minimum_size_for_text_and_icon(const String &p_text, Ref<Texture2D> p_icon, const String &p_text_icon = "") const;
 
 	void set_text(const String &p_text);
 	String get_text() const;

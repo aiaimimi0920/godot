@@ -492,18 +492,18 @@ void Button::_notification(int p_what) {
 							text_icon_size = Size2(icon_width, icon_height);
 
 							text_icon_size = _fit_icon_size(text_icon_size);
-							if(text_icon_size.width<text_icon_size.height){
+							if (text_icon_size.width < text_icon_size.height) {
 								text_icon_size = Size2(text_icon_size.width, text_icon_size.width);
-							}else{
+							} else {
 								text_icon_size = Size2(text_icon_size.height, text_icon_size.height);
 							}
-						}else{
+						} else {
 							Ref<Font> font = theme_cache.text_icon_font;
 							float font_height = font->get_height(theme_cache.text_icon_font_size);
 							int icon_max_width = theme_cache.icon_max_width;
 							int max_size = font_height;
 							if (icon_max_width > 0) {
-								if(max_size > icon_max_width){
+								if (max_size > icon_max_width) {
 									max_size = icon_max_width;
 								}
 							}
@@ -521,7 +521,7 @@ void Button::_notification(int p_what) {
 						}
 							[[fallthrough]];
 						case HORIZONTAL_ALIGNMENT_FILL:
-						case HORIZONTAL_ALIGNMENT_LEFT:{
+						case HORIZONTAL_ALIGNMENT_LEFT: {
 							text_ofs.x += style_margin_left;
 							text_ofs.x += left_internal_margin_with_h_separation;
 						} break;
@@ -546,7 +546,7 @@ void Button::_notification(int p_what) {
 							text_ofs.y = size.y - style_margin_bottom - text_icon_size.height;
 						} break;
 					}
-					
+
 					_icon_shape(Ref<TextParagraph>(), "", text_icon_size.width);
 					text_icon_buf->draw(ci, text_ofs, text_icon_font_color);
 
@@ -654,7 +654,7 @@ Size2 Button::get_minimum_size_for_text_and_icon(const String &p_text, Ref<Textu
 		int icon_max_width = theme_cache.icon_max_width;
 		int max_size = font_height;
 		if (icon_max_width > 0) {
-			if(max_size>icon_max_width){
+			if (max_size > icon_max_width) {
 				max_size = icon_max_width;
 			}
 		}
@@ -779,12 +779,12 @@ void Button::_icon_shape(Ref<TextParagraph> p_paragraph, String p_text_icon, int
 	int icon_max_width = theme_cache.icon_max_width;
 	int max_size = font_height;
 	if (icon_max_width > 0) {
-		if(max_size>icon_max_width){
+		if (max_size > icon_max_width) {
 			max_size = icon_max_width;
 		}
 	}
 
-	if (expand_icon_size!=0) {
+	if (expand_icon_size != 0) {
 		max_size = expand_icon_size;
 	}
 
@@ -829,19 +829,19 @@ String Button::get_text() const {
 void Button::set_text_icon(const String &p_text_icon) {
 	if (text_icon != p_text_icon) {
 		text_icon = p_text_icon;
-		
+
 		Ref<Font> font = theme_cache.text_icon_font;
 		String local_name = font->get_path().get_file().get_basename();
 
 		Ref<Translation> trans = TranslationServer::get_singleton()->get_translation_object(local_name);
 
 		float font_height = font->get_height(theme_cache.text_icon_font_size);
-		if(trans.is_valid()){
+		if (trans.is_valid()) {
 			code_text_icon = trans->get_message(text_icon);
-			if(!code_text_icon.is_empty()){
-				code_text_icon = String::chr(("0x"+code_text_icon.to_lower()).hex_to_int());
+			if (!code_text_icon.is_empty()) {
+				code_text_icon = String::chr(("0x" + code_text_icon.to_lower()).hex_to_int());
 			}
-		}else{
+		} else {
 			code_text_icon = text_icon;
 		}
 		_icon_shape();
