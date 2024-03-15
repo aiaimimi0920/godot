@@ -393,6 +393,8 @@ void register_scene_types() {
 	GDREGISTER_CLASS(FilledTonalButton);
 	GDREGISTER_CLASS(OutlinedButton);
 	GDREGISTER_CLASS(TextButton);
+	GDREGISTER_CLASS(FabButton);
+	GDREGISTER_CLASS(ExtendedFabButton);
 
 	GDREGISTER_CLASS(FilledIconButton);
 	GDREGISTER_CLASS(FilledTonalIconButton);

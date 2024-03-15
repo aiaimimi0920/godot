@@ -204,6 +204,7 @@ protected:
 	void _set_internal_margin(Side p_side, float p_value);
 	virtual void _queue_update_size_cache();
 
+	Ref<StyleBox> _get_focus_state_layer_stylebox() const;
 	Ref<StyleBox> _get_current_stylebox() const;
 	Ref<StyleBox> _get_current_state_layer_stylebox() const;
 	bool _is_show_state_layer();
@@ -276,5 +277,14 @@ class OutlinedButton : public Button {
 class TextButton : public Button {
 	GDCLASS(TextButton, Button);
 };
+
+class FabButton : public Button {
+	GDCLASS(FabButton, Button);
+};
+
+class ExtendedFabButton : public Button {
+	GDCLASS(ExtendedFabButton, Button);
+};
+
 
 #endif // BUTTON_H

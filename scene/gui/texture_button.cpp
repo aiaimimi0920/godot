@@ -1193,7 +1193,7 @@ String TextureButton::_get_trans_text(const String &p_text_icon) {
 			result_text = String::chr(("0x" + result_text.to_lower()).hex_to_int());
 		}
 	} else {
-		result_text = p_text_icon;
+		result_text = "";
 	}
 	return result_text;
 }

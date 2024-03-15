@@ -50,6 +50,11 @@ void Button::_set_internal_margin(Side p_side, float p_value) {
 void Button::_queue_update_size_cache() {
 }
 
+Ref<StyleBox> Button::_get_focus_state_layer_stylebox() const {
+	Ref<StyleBox> style = theme_cache.focus_state_layer;
+	return style;
+}
+
 Ref<StyleBox> Button::_get_current_stylebox() const {
 	Ref<StyleBox> stylebox = theme_cache.normal;
 	const bool rtl = is_layout_rtl();
@@ -208,6 +213,10 @@ void Button::_notification(int p_what) {
 				if (_is_show_state_layer()) {
 					const Ref<StyleBox> state_layer_style = _get_current_state_layer_stylebox();
 					state_layer_style->draw(ci, Rect2(Point2(), size));
+					if (has_focus()) {
+						Ref<StyleBox> focus_state_style = _get_focus_state_layer_stylebox();
+						focus_state_style->draw(ci, Rect2(Point2(), size));
+					}
 				}
 
 				if (has_focus()) {

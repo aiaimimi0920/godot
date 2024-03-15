@@ -88,6 +88,12 @@ void ThemeDB::initialize_theme() {
 	Ref<Font> project_icon_font;
 	if (!project_icon_font_path.is_empty()) {
 		project_icon_font = ResourceLoader::load(project_icon_font_path);
+		project_icon_font->set_name(project_icon_font_path.get_file().get_basename());
+		if (project_icon_font.is_valid()) {
+			set_fallback_icon_font(project_icon_font);
+		} else {
+			ERR_PRINT("Error loading custom project icon font '" + project_icon_font_path + "'");
+		}
 	}
 
 
@@ -109,7 +115,7 @@ void ThemeDB::initialize_theme_noproject() {
         Ref<ColorScheme> cur_color_scheme;
 		cur_color_scheme.instantiate();
 		cur_color_scheme->set_source_color(Color("#6750A4"));
-        make_default_theme(1.0, Ref<Font>(), cur_color_scheme, Ref<Font>());
+        make_default_theme(1.0, Ref<Font>(), Ref<Font>(), cur_color_scheme);
 	}
 
 	_init_default_theme_context();
@@ -174,6 +180,20 @@ void ThemeDB::set_fallback_font(const Ref<Font> &p_font) {
 Ref<Font> ThemeDB::get_fallback_font() {
 	return fallback_font;
 }
+
+void ThemeDB::set_fallback_icon_font(const Ref<Font> &p_icon_font) {
+	if (fallback_icon_font == p_icon_font) {
+		return;
+	}
+
+	fallback_icon_font = p_icon_font;
+	emit_signal(SNAME("fallback_changed"));
+}
+
+Ref<Font> ThemeDB::get_fallback_icon_font() {
+	return fallback_icon_font;
+}
+
 
 void ThemeDB::set_fallback_font_size(int p_font_size) {
 	if (fallback_font_size == p_font_size) {
@@ -452,6 +472,8 @@ void ThemeDB::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_fallback_base_scale"), &ThemeDB::get_fallback_base_scale);
 	ClassDB::bind_method(D_METHOD("set_fallback_font", "font"), &ThemeDB::set_fallback_font);
 	ClassDB::bind_method(D_METHOD("get_fallback_font"), &ThemeDB::get_fallback_font);
+	ClassDB::bind_method(D_METHOD("set_fallback_icon_font", "font"), &ThemeDB::set_fallback_icon_font);
+	ClassDB::bind_method(D_METHOD("get_fallback_icon_font"), &ThemeDB::get_fallback_icon_font);
 	ClassDB::bind_method(D_METHOD("set_fallback_font_size", "font_size"), &ThemeDB::set_fallback_font_size);
 	ClassDB::bind_method(D_METHOD("get_fallback_font_size"), &ThemeDB::get_fallback_font_size);
 	ClassDB::bind_method(D_METHOD("set_fallback_color_scheme", "color_scheme"), &ThemeDB::set_fallback_color_scheme);
@@ -464,6 +486,7 @@ void ThemeDB::_bind_methods() {
 	ADD_GROUP("Fallback values", "fallback_");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fallback_base_scale", PROPERTY_HINT_RANGE, "0.0,2.0,0.01,or_greater"), "set_fallback_base_scale", "get_fallback_base_scale");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fallback_font", PROPERTY_HINT_RESOURCE_TYPE, "Font", PROPERTY_USAGE_NONE), "set_fallback_font", "get_fallback_font");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fallback_icon_font", PROPERTY_HINT_RESOURCE_TYPE, "Font", PROPERTY_USAGE_NONE), "set_fallback_icon_font", "get_fallback_icon_font");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "fallback_font_size", PROPERTY_HINT_RANGE, "0,256,1,or_greater,suffix:px"), "set_fallback_font_size", "get_fallback_font_size");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fallback_color_scheme", PROPERTY_HINT_RESOURCE_TYPE, "ColorScheme", PROPERTY_USAGE_NONE), "set_fallback_color_scheme", "get_fallback_color_scheme");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fallback_icon", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D", PROPERTY_USAGE_NONE), "set_fallback_icon", "get_fallback_icon");
