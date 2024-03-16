@@ -37,6 +37,7 @@
 #include "scene/main/canvas_item.h"
 #include "scene/main/timer.h"
 #include "scene/resources/theme.h"
+#include "scene/theme/theme_data.h"
 
 class Viewport;
 class Label;
