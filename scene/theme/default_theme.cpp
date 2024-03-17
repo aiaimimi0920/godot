@@ -131,8 +131,103 @@ static Ref<StyleBox> make_empty_stylebox(float p_margin_left = -1, float p_margi
 	return style;
 }
 
+
+
+void fill_default_theme_button(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme) {
+	ThemeIntData cur_theme_data();                                                                                                                        \
+	
+	theme->set_color_scheme("default_color_scheme", "Button", default_color_scheme);
+
+	scale = p_scale;
+
+	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, StyleBoxFlat::ElevationLevel::Elevation_Level_1);
+	const Ref<StyleBoxFlat> default_stylebox_hover = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, StyleBoxFlat::ElevationLevel::Elevation_Level_2);
+	const Ref<StyleBoxFlat> default_stylebox_pressed = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, StyleBoxFlat::ElevationLevel::Elevation_Level_1);
+	const Ref<StyleBoxFlat> default_stylebox_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE_12, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+	focus->set_expand_margin_all(Math::round(2 * scale));
+
+	const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(ColorRole::PRIMARY_08, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+	const Ref<StyleBoxFlat> state_layer_stylebox_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY_10, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+	Ref<StyleBoxFlat> state_layer_stylebox_focus = make_color_role_flat_stylebox(ColorRole::PRIMARY_10, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
+
+	cur_theme_data.set_data_name("default_stylebox"); 
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", default_stylebox_normal);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", default_stylebox_hover);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", default_stylebox_pressed);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", default_stylebox_disabled);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", default_stylebox_focus);
+
+	cur_theme_data.set_data_name("state_layer_stylebox"); 
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", state_layer_stylebox_hover);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", state_layer_stylebox_pressed);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", state_layer_stylebox_focus);
+
+
+	theme->set_font("font", "Button", default_font);
+	theme->set_font("text_icon_font", "Button", default_icon_font);
+
+	theme->set_font_size("font_size", "Button", -1);
+	theme->set_font_size("text_icon_font_size", "Button", -1);
+	theme->set_constant("font_outline_size", "Button", 0);
+
+	theme->set_constant("icon_max_width", "Button", 0);
+	theme->set_constant("h_separation", "Button", Math::round(4 * scale));
+
+
+	cur_theme_data.set_data_name("text_icon_color_role"); 
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", ColorRole::PRIMARY);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", ColorRole::PRIMARY);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", ColorRole::PRIMARY);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", ColorRole::ON_SURFACE_38);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", ColorRole::PRIMARY);
+
+	cur_theme_data.set_data_name("text_icon_color"); 
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", Color(1, 1, 1, 1));
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", Color(1, 1, 1, 1));
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", Color(1, 1, 1, 1));
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", Color(1, 1, 1, 0.38));
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", Color(1, 1, 1, 1));
+
+
+	cur_theme_data.set_data_name("icon_color_role"); 
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", ColorRole::STATIC_COLOR);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", ColorRole::STATIC_COLOR);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", ColorRole::STATIC_COLOR);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", ColorRole::STATIC_COLOR);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", ColorRole::STATIC_COLOR);
+
+	cur_theme_data.set_data_name("icon_color"); 
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", Color(1, 1, 1, 1));
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", Color(1, 1, 1, 1));
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", Color(1, 1, 1, 1));
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", Color(1, 1, 1, 0.38));
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("font_outline_color_role"); 
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", ColorRole::OUTLINE);
+
+	cur_theme_data.set_data_name("font_outline_color"); 
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("font_color_role"); 
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", ColorRole::PRIMARY);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", ColorRole::PRIMARY);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", ColorRole::PRIMARY);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", ColorRole::ON_SURFACE_38);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", ColorRole::PRIMARY);
+
+	cur_theme_data.set_data_name("font_color"); 
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", Color(1, 1, 1, 1));
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", Color(1, 1, 1, 1));
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", Color(1, 1, 1, 1));
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", Color(1, 1, 1, 0.38));
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", Color(1, 1, 1, 1));
+}
+
 void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme) {
 	scale = p_scale;
+
 
 	// Default theme properties.
 	theme->set_default_font(default_font);

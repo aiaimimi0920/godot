@@ -468,6 +468,13 @@ void Control::_get_property_list(List<PropertyInfo> *p_list) const {
 			}
 				p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("theme_override_color_schemes") + String("/") + E.item_name, PROPERTY_HINT_RESOURCE_TYPE, "ColorScheme", usage));
 			} break;
+			case Theme::DATA_TYPE_STR: {
+				if (data.theme_str_override.has(E.item_name)) {
+				usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
+			}
+				p_list->push_back(PropertyInfo(Variant::INT, PNAME("theme_override_strs") + String("/") + E.item_name, PROPERTY_HINT_NONE, "", usage));
+			} break;
+
 
 			default: {
 				// Silences warning.
@@ -2819,6 +2826,29 @@ Ref<ColorScheme> Control::get_theme_color_scheme(const StringName &p_name, const
     return color_scheme;
 }
 
+String Control::get_theme_str(const StringName &p_name, const StringName &p_theme_type) const {
+	ERR_READ_THREAD_GUARD_V(0);
+	if (!data.initialized) {
+		WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
+	}
+
+	if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
+		const String *str = data.theme_str_override.getptr(p_name);
+		if (str) {
+			return *str;
+		}
+	}
+
+	if (data.theme_str_cache.has(p_theme_type) && data.theme_str_cache[p_theme_type].has(p_name)) {
+		return data.theme_str_cache[p_theme_type][p_name];
+	}
+
+	List<StringName> theme_types;
+	data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
+	String str = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_STR, p_name, theme_types);
+	data.theme_str_cache[p_theme_type][p_name] = str;
+	return str;
+}
 
 Variant Control::get_theme_item(Theme::DataType p_data_type, const StringName &p_name, const StringName &p_theme_type) const {
 	switch (p_data_type) {
@@ -2838,6 +2868,8 @@ Variant Control::get_theme_item(Theme::DataType p_data_type, const StringName &p
             return get_theme_color_role(p_name, p_theme_type);
         case Theme::DATA_TYPE_COLOR_SCHEME:
             return get_theme_color_scheme(p_name, p_theme_type);
+        case Theme::DATA_TYPE_STR:
+            return get_theme_str(p_name, p_theme_type);
 		case Theme::DATA_TYPE_MAX:
 			break; // Can't happen, but silences warning.
 	}
@@ -2989,6 +3021,23 @@ bool Control::has_theme_color_scheme(const StringName &p_name, const StringName 
 
 
 
+bool Control::has_theme_str(const StringName &p_name, const StringName &p_theme_type) const {
+	ERR_READ_THREAD_GUARD_V(false);
+	if (!data.initialized) {
+		WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
+	}
+
+	if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
+		if (has_theme_str_override(p_name)) {
+			return true;
+		}
+	}
+
+	List<StringName> theme_types;
+	data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
+	return data.theme_owner->has_theme_item_in_types(Theme::DATA_TYPE_STR, p_name, theme_types);
+}
+
 /// Local property overrides.
 
 void Control::add_theme_icon_override(const StringName &p_name, const Ref<Texture2D> &p_icon) {
@@ -3068,6 +3117,12 @@ void Control::add_theme_color_scheme_override(const StringName &p_name, const Re
 
 }
 
+void Control::add_theme_str_override(const StringName &p_name, String p_str) {
+	ERR_MAIN_THREAD_GUARD;
+	data.theme_str_override[p_name] = p_str;
+	_notify_theme_override_changed();
+}
+
 void Control::remove_theme_icon_override(const StringName &p_name) {
 	ERR_MAIN_THREAD_GUARD;
 	if (data.theme_icon_override.has(p_name)) {
@@ -3133,6 +3188,12 @@ void Control::remove_theme_color_scheme_override(const StringName &p_name) {
 
 }
 
+void Control::remove_theme_str_override(const StringName &p_name) {
+	ERR_MAIN_THREAD_GUARD;
+	data.theme_str_override.erase(p_name);
+	_notify_theme_override_changed();
+}
+
 
 bool Control::has_theme_icon_override(const StringName &p_name) const {
 	ERR_READ_THREAD_GUARD_V(false);
@@ -3182,6 +3243,11 @@ bool Control::has_theme_color_scheme_override(const StringName &p_name) const {
     return color_scheme != nullptr;
 }
 
+bool Control::has_theme_str_override(const StringName &p_name) const {
+	ERR_READ_THREAD_GUARD_V(false);
+	const String *str = data.theme_str_override.getptr(p_name);
+	return str != nullptr;
+}
 /// Default theme properties.
 
 float Control::get_theme_default_base_scale() const {
@@ -3571,6 +3637,64 @@ void Control::_notification(int p_notification) {
 	}
 }
 
+State Control::get_current_state(){
+	const bool rtl = is_layout_rtl();
+	State cur_state;
+	switch (get_draw_mode()) {
+		case DRAW_NORMAL: {
+			if (rtl) {
+				cur_state = State::NormalNoneRTL;
+			} else {
+				cur_state = State::NormalNoneLTR;
+			}
+		} break;
+
+		case DRAW_HOVER_PRESSED: {
+			if (rtl) {
+				cur_state = State::HoverPressedNoneRTL;
+			} else {
+				cur_state = State::HoverPressedNoneLTR;
+			}
+		} break;
+		case DRAW_PRESSED: {
+			if (rtl) {
+				cur_state = State::PressedNoneRTL;
+			} else {
+				cur_state = State::PressedNoneLTR;
+			}
+		} break;
+
+		case DRAW_HOVER: {
+			if (rtl) {
+				cur_state = State::HoverNoneRTL;
+			} else {
+				cur_state = State::HoverNoneLTR;
+			}
+		} break;
+
+		case DRAW_DISABLED: {
+			if (rtl) {
+				cur_state = State::DisabledNoneRTL;
+			} else {
+				cur_state = State::DisabledNoneLTR;
+			}
+		} break;
+	}
+	return cur_state;
+}
+
+State Control::get_current_focus_state(){
+	const bool rtl = is_layout_rtl();
+	State cur_state;
+	if (rtl) {
+		cur_state = State::FocusNoneRTL;
+	} else {
+		cur_state = State::FocusNoneLTR;
+	}
+	return cur_state;
+}
+
+
 void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("accept_event"), &Control::accept_event);
 	ClassDB::bind_method(D_METHOD("get_minimum_size"), &Control::get_minimum_size);
@@ -3654,6 +3778,7 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_theme_constant_override", "name", "constant"), &Control::add_theme_constant_override);
 	ClassDB::bind_method(D_METHOD("add_theme_color_role_override", "name", "color_role"), &Control::add_theme_color_role_override);
 	ClassDB::bind_method(D_METHOD("add_theme_color_scheme_override", "name", "color_scheme"), &Control::add_theme_color_scheme_override);
+	ClassDB::bind_method(D_METHOD("add_theme_str_override", "name", "str"), &Control::add_theme_str_override);
 
 	ClassDB::bind_method(D_METHOD("remove_theme_icon_override", "name"), &Control::remove_theme_icon_override);
 	ClassDB::bind_method(D_METHOD("remove_theme_stylebox_override", "name"), &Control::remove_theme_style_override);
@@ -3663,6 +3788,7 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("remove_theme_constant_override", "name"), &Control::remove_theme_constant_override);
 	ClassDB::bind_method(D_METHOD("remove_theme_color_role_override", "color_role"), &Control::remove_theme_color_role_override);
 	ClassDB::bind_method(D_METHOD("remove_theme_color_scheme_override", "color_scheme"), &Control::remove_theme_color_scheme_override);
+	ClassDB::bind_method(D_METHOD("remove_theme_str_override", "str"), &Control::remove_theme_str_override);
 
 	ClassDB::bind_method(D_METHOD("get_theme_icon", "name", "theme_type"), &Control::get_theme_icon, DEFVAL(StringName()));
 	ClassDB::bind_method(D_METHOD("get_theme_stylebox", "name", "theme_type"), &Control::get_theme_stylebox, DEFVAL(StringName()));
@@ -3672,6 +3798,7 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_theme_constant", "name", "theme_type"), &Control::get_theme_constant, DEFVAL(StringName()));
 	ClassDB::bind_method(D_METHOD("get_theme_color_role", "name", "theme_type"), &Control::get_theme_color_role, DEFVAL(StringName()));
 	ClassDB::bind_method(D_METHOD("get_theme_color_scheme", "name", "theme_type"), &Control::get_theme_color_scheme, DEFVAL(StringName()));
+	ClassDB::bind_method(D_METHOD("get_theme_str", "name", "theme_type"), &Control::get_theme_str, DEFVAL(StringName()));
 
 	ClassDB::bind_method(D_METHOD("has_theme_icon_override", "name"), &Control::has_theme_icon_override);
 	ClassDB::bind_method(D_METHOD("has_theme_stylebox_override", "name"), &Control::has_theme_stylebox_override);
@@ -3681,6 +3808,7 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("has_theme_constant_override", "name"), &Control::has_theme_constant_override);
 	ClassDB::bind_method(D_METHOD("has_theme_color_role_override", "name"), &Control::has_theme_color_role_override);
 	ClassDB::bind_method(D_METHOD("has_theme_color_scheme_override", "name"), &Control::has_theme_color_scheme_override);
+	ClassDB::bind_method(D_METHOD("has_theme_str_override", "name"), &Control::has_theme_str_override);
 
 	ClassDB::bind_method(D_METHOD("has_theme_icon", "name", "theme_type"), &Control::has_theme_icon, DEFVAL(StringName()));
 	ClassDB::bind_method(D_METHOD("has_theme_stylebox", "name", "theme_type"), &Control::has_theme_stylebox, DEFVAL(StringName()));
@@ -3690,6 +3818,7 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("has_theme_constant", "name", "theme_type"), &Control::has_theme_constant, DEFVAL(StringName()));
 	ClassDB::bind_method(D_METHOD("has_theme_color_role", "name", "theme_type"), &Control::has_theme_color_role, DEFVAL(StringName()));
 	ClassDB::bind_method(D_METHOD("has_theme_color_scheme", "name", "theme_type"), &Control::has_theme_color_scheme, DEFVAL(StringName()));
+	ClassDB::bind_method(D_METHOD("has_theme_str", "name", "theme_type"), &Control::has_theme_str, DEFVAL(StringName()));
 
 	ClassDB::bind_method(D_METHOD("get_theme_default_base_scale"), &Control::get_theme_default_base_scale);
 	ClassDB::bind_method(D_METHOD("get_theme_default_font"), &Control::get_theme_default_font);
@@ -3971,4 +4100,5 @@ Control::~Control() {
 	data.theme_constant_override.clear();
 	data.theme_color_role_override.clear();
 	data.theme_color_scheme_override.clear();
+	data.theme_str_override.clear();
 }

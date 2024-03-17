@@ -436,6 +436,7 @@ typedef ThemeData<Ref<ColorScheme>> ThemeColorSchemeData;
 typedef ThemeData<Ref<Font>> ThemeFontData;
 typedef ThemeData<Ref<Texture2D>> ThemeIconData;
 typedef ThemeData<Ref<StyleBox>> ThemeStyleboxData;
-typedef ThemeData<String> ThemeTextData;
+typedef ThemeData<String> ThemeStrData;
+typedef ThemeData<int> ThemeIntData;
 
 #endif // THEME_DATA_H

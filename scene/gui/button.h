@@ -41,8 +41,8 @@ private:
 	bool flat = false;
 	String text;
 	String xl_text;
-
 	Ref<TextParagraph> text_buf;
+
 	Ref<TextParagraph> text_icon_buf;
 
 	String language;
@@ -50,10 +50,9 @@ private:
 	TextServer::AutowrapMode autowrap_mode = TextServer::AUTOWRAP_OFF;
 	TextServer::OverrunBehavior overrun_behavior = TextServer::OVERRUN_NO_TRIMMING;
 
-	Ref<Texture2D> icon;
-
-	String code_text_icon;
-	String text_icon = "";
+	// Ref<Texture2D> icon;
+	// String text_icon;
+	// String code_text_icon;
 
 	bool expand_icon = false;
 	bool clip_text = false;
@@ -65,132 +64,33 @@ private:
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
 
-		Ref<StyleBox> normal;
-		Ref<StyleBox> normal_mirrored;
-		Ref<StyleBox> pressed;
-		Ref<StyleBox> pressed_mirrored;
-		Ref<StyleBox> hover;
-		Ref<StyleBox> hover_mirrored;
-		Ref<StyleBox> hover_pressed;
-		Ref<StyleBox> hover_pressed_mirrored;
-		Ref<StyleBox> disabled;
-		Ref<StyleBox> disabled_mirrored;
-		Ref<StyleBox> focus;
+		ThemeStyleboxData default_stylebox;
 
-		Ref<StyleBox> hover_state_layer;
-		Ref<StyleBox> hover_state_layer_mirrored;
-		Ref<StyleBox> pressed_state_layer;
-		Ref<StyleBox> pressed_state_layer_mirrored;
-		Ref<StyleBox> hover_pressed_state_layer;
-		Ref<StyleBox> hover_pressed_state_layer_mirrored;
-		Ref<StyleBox> focus_state_layer;
+		ThemeStyleboxData state_layer_stylebox;
 
-		Color font_color_scale;
-		Ref<ColorScheme> font_color_scheme;
-		ColorRole font_color_role;
-		Color font_color;
-
-		Color font_pressed_color_scale;
-		Ref<ColorScheme> font_pressed_color_scheme;
-		ColorRole font_pressed_color_role;
-		Color font_pressed_color;
-
-		Color font_hover_color_scale;
-		Ref<ColorScheme> font_hover_color_scheme;
-		ColorRole font_hover_color_role;
-		Color font_hover_color;
-
-		Color font_focus_color_scale;
-		Ref<ColorScheme> font_focus_color_scheme;
-		ColorRole font_focus_color_role;
-		Color font_focus_color;
-
-		Color font_hover_pressed_color_scale;
-		Ref<ColorScheme> font_hover_pressed_color_scheme;
-		ColorRole font_hover_pressed_color_role;
-		Color font_hover_pressed_color;
-
-		Color font_disabled_color_scale;
-		Ref<ColorScheme> font_disabled_color_scheme;
-		ColorRole font_disabled_color_role;
-		Color font_disabled_color;
-
+		ThemeColorData font_color;
+		ThemeColorRoleData font_color_role;
 		Ref<Font> font;
-		int font_size = 0;
-		int outline_size = 0;
+		int font_size;
 
-		Color font_outline_color_scale;
-		Ref<ColorScheme> font_outline_color_scheme;
-		ColorRole font_outline_color_role;
-		Color font_outline_color;
-
-		Color icon_normal_color_scale;
-		Ref<ColorScheme> icon_normal_color_scheme;
-		ColorRole icon_normal_color_role;
-		Color icon_normal_color;
-
-		Color icon_pressed_color_scale;
-		Ref<ColorScheme> icon_pressed_color_scheme;
-		ColorRole icon_pressed_color_role;
-		Color icon_pressed_color;
-
-		Color icon_hover_color_scale;
-		Ref<ColorScheme> icon_hover_color_scheme;
-		ColorRole icon_hover_color_role;
-		Color icon_hover_color;
-
-		Color icon_focus_color_scale;
-		Ref<ColorScheme> icon_focus_color_scheme;
-		ColorRole icon_focus_color_role;
-		Color icon_focus_color;
-
-		Color icon_hover_pressed_color_scale;
-		Ref<ColorScheme> icon_hover_pressed_color_scheme;
-		ColorRole icon_hover_pressed_color_role;
-		Color icon_hover_pressed_color;
-
-		Color icon_disabled_color_scale;
-		Ref<ColorScheme> icon_disabled_color_scheme;
-		ColorRole icon_disabled_color_role;
-		Color icon_disabled_color;
-
-		Ref<Texture2D> icon;
-
-		Color text_icon_normal_color_scale;
-		Ref<ColorScheme> text_icon_normal_color_scheme;
-		ColorRole text_icon_normal_color_role;
-		Color text_icon_normal_color;
-
-		Color text_icon_pressed_color_scale;
-		Ref<ColorScheme> text_icon_pressed_color_scheme;
-		ColorRole text_icon_pressed_color_role;
-		Color text_icon_pressed_color;
-
-		Color text_icon_hover_color_scale;
-		Ref<ColorScheme> text_icon_hover_color_scheme;
-		ColorRole text_icon_hover_color_role;
-		Color text_icon_hover_color;
-
-		Color text_icon_focus_color_scale;
-		Ref<ColorScheme> text_icon_focus_color_scheme;
-		ColorRole text_icon_focus_color_role;
-		Color text_icon_focus_color;
-
-		Color text_icon_hover_pressed_color_scale;
-		Ref<ColorScheme> text_icon_hover_pressed_color_scheme;
-		ColorRole text_icon_hover_pressed_color_role;
-		Color text_icon_hover_pressed_color;
-
-		Color text_icon_disabled_color_scale;
-		Ref<ColorScheme> text_icon_disabled_color_scheme;
-		ColorRole text_icon_disabled_color_role;
-		Color text_icon_disabled_color;
+		ThemeColorData font_outline_color;
+		ThemeColorRoleData font_outline_color_role;
+		int font_outline_size;
 
 		Ref<Font> text_icon_font;
-		int text_icon_font_size = 0;
+		int text_icon_font_size;
+		
+		ThemeIconData icon;
+		ThemeColorData icon_color;
+		ThemeColorRoleData icon_color_role;
 
-		int h_separation = 0;
-		int icon_max_width = 0;
+		int icon_max_width;
+
+		ThemeStrData text_icon;
+		ThemeColorData text_icon_color;
+		ThemeColorRoleData text_icon_color_role;
+
+		int h_separation;
 	} theme_cache;
 
 	Size2 _fit_icon_size(const Size2 &p_size) const;

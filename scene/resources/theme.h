@@ -56,6 +56,7 @@ public:
 	using ThemeConstantMap = HashMap<StringName, int>;
 	using ThemeColorRoleMap = HashMap<StringName, ColorRole>;
 	using ThemeColorSchemeMap = HashMap<StringName, Ref<ColorScheme>>;
+	using ThemeStrMap = HashMap<StringName, String>;
 
 	enum DataType {
 		DATA_TYPE_COLOR,
@@ -66,6 +67,7 @@ public:
 		DATA_TYPE_STYLEBOX,
 		DATA_TYPE_COLOR_ROLE,
 		DATA_TYPE_COLOR_SCHEME,
+		DATA_TYPE_STR,
 		DATA_TYPE_MAX
 	};
 
@@ -90,6 +92,8 @@ private:
 	Vector<String> _get_color_role_type_list() const;
 	Vector<String> _get_color_scheme_list(const String &p_theme_type) const;
 	Vector<String> _get_color_scheme_type_list() const;
+	Vector<String> _get_str_list(const String &p_theme_type) const;
+	Vector<String> _get_str_type_list() const;
 
 	Vector<String> _get_theme_item_list(DataType p_data_type, const String &p_theme_type) const;
 	Vector<String> _get_theme_item_type_list(DataType p_data_type) const;
@@ -116,6 +120,7 @@ protected:
 	HashMap<StringName, ThemeConstantMap> constant_map;
 	HashMap<StringName, ThemeColorRoleMap> color_role_map;
 	HashMap<StringName, ThemeColorSchemeMap> color_scheme_map;
+	HashMap<StringName, ThemeStrMap> str_map;
 	HashMap<StringName, StringName> variation_map;
 	HashMap<StringName, List<StringName>> variation_base_map;
 
@@ -233,6 +238,17 @@ public:
 	void add_color_scheme_type(const StringName &p_theme_type);
 	void remove_color_scheme_type(const StringName &p_theme_type);
 	void get_color_scheme_type_list(List<StringName> *p_list) const;
+
+	void set_str(const StringName &p_name, const StringName &p_theme_type, String p_str);
+	virtual String get_str(const StringName &p_name, const StringName &p_theme_type) const;
+	bool has_str(const StringName &p_name, const StringName &p_theme_type) const;
+	bool has_str_nocheck(const StringName &p_name, const StringName &p_theme_type) const;
+	void rename_str(const StringName &p_old_name, const StringName &p_name, const StringName &p_theme_type);
+	void clear_str(const StringName &p_name, const StringName &p_theme_type);
+	void get_str_list(const StringName &p_theme_type, List<StringName> *p_list) const;
+	void add_str_type(const StringName &p_theme_type);
+	void remove_str_type(const StringName &p_theme_type);
+	void get_str_type_list(List<StringName> *p_list) const;
 
 	void set_theme_item(DataType p_data_type, const StringName &p_name, const StringName &p_theme_type, const Variant &p_value);
 	Variant get_theme_item(DataType p_data_type, const StringName &p_name, const StringName &p_theme_type) const;

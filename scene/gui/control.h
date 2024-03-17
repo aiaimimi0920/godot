@@ -590,6 +590,7 @@ public:
 	void add_theme_constant_override(const StringName &p_name, int p_constant);
 	void add_theme_color_role_override(const StringName &p_name, ColorRole p_color_role);
     void add_theme_color_scheme_override(const StringName &p_name, const Ref<ColorScheme> &p_color_scheme);
+    void add_theme_str_override(const StringName &p_name, String p_str);
 
 	void remove_theme_icon_override(const StringName &p_name);
 	void remove_theme_style_override(const StringName &p_name);
@@ -599,6 +600,7 @@ public:
 	void remove_theme_constant_override(const StringName &p_name);
 	void remove_theme_color_role_override(const StringName &p_name);
     void remove_theme_color_scheme_override(const StringName &p_name);
+    void remove_theme_str_override(const StringName &p_name);
 
 	Ref<Texture2D> get_theme_icon(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	Ref<StyleBox> get_theme_stylebox(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
@@ -608,6 +610,7 @@ public:
 	int get_theme_constant(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	ColorRole get_theme_color_role(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
     Ref<ColorScheme> get_theme_color_scheme(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
+    String get_theme_str(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 
 	Variant get_theme_item(Theme::DataType p_data_type, const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 #ifdef TOOLS_ENABLED
@@ -622,6 +625,7 @@ public:
 	bool has_theme_constant_override(const StringName &p_name) const;
 	bool has_theme_color_role_override(const StringName &p_name) const;
     bool has_theme_color_scheme_override(const StringName &p_name) const;
+    bool has_theme_str_override(const StringName &p_name) const;
 
 	bool has_theme_icon(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	bool has_theme_stylebox(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
@@ -631,6 +635,7 @@ public:
 	bool has_theme_constant(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	bool has_theme_color_role(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
     bool has_theme_color_scheme(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
+    bool has_theme_str(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 
 	float get_theme_default_base_scale() const;
 	Ref<Font> get_theme_default_font() const;
@@ -656,6 +661,9 @@ public:
 	void set_tooltip_text(const String &text);
 	virtual String get_tooltip(const Point2 &p_pos) const;
 	virtual Control *make_custom_tooltip(const String &p_text) const;
+
+	State get_current_state() override;
+	State get_current_focus_state() override;
 
 	Control();
 	~Control();

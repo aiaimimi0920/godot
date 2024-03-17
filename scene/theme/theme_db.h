@@ -53,6 +53,16 @@ class ColorScheme;
 		p_cast->theme_cache.m_prop = p_cast->get_theme_item(m_data_type, _scs_create(#m_prop));                         \
 	})
 
+#define BIND_THEME_ITEM_MULTI(m_data_type, m_class, m_prop)                                                                                               \
+	ThemeIntData cur_theme_data();                                                                                                                        \
+	cur_theme_data.set_data_name(#m_prop);                                                                                                                \	
+	for (int i = 0; i < STATE_MAX; i++) {                                                                                                                 \
+		ThemeDB::get_singleton()->bind_class_item(m_data_type, get_class_static(), get_state_data_name(i), get_state_data_name(i), [](Node *p_instance) { \
+			m_class *p_cast = Object::cast_to<m_class>(p_instance);                                                                                       \
+			p_cast->theme_cache.m_prop.set_data(p_cast->get_theme_item(m_data_type, _scs_create(get_state_data_name(i))), i);                             \
+		})                                                                                                                                                \
+	}
+
 #define BIND_THEME_ITEM_CUSTOM(m_data_type, m_class, m_prop, m_item_name)                                                   \
 	ThemeDB::get_singleton()->bind_class_item(m_data_type, get_class_static(), #m_prop, m_item_name, [](Node *p_instance) { \
 		m_class *p_cast = Object::cast_to<m_class>(p_instance);                                                             \
@@ -83,11 +93,11 @@ class ThemeDB : public Object {
 	float fallback_base_scale = 1.0;
 	Ref<Font> fallback_font;
 	Ref<Font> fallback_icon_font;
-	
+
 	int fallback_font_size = 16;
 	Ref<Texture2D> fallback_icon;
 	Ref<StyleBox> fallback_stylebox;
-    Ref<ColorScheme> fallback_color_scheme;
+	Ref<ColorScheme> fallback_color_scheme;
 
 	// Global theme contexts used to scope global Theme resources.
 
@@ -155,8 +165,8 @@ public:
 	void set_fallback_font_size(int p_font_size);
 	int get_fallback_font_size();
 
-    void set_fallback_color_scheme(const Ref<ColorScheme> p_color_scheme);
-    Ref<ColorScheme> get_fallback_color_scheme();
+	void set_fallback_color_scheme(const Ref<ColorScheme> p_color_scheme);
+	Ref<ColorScheme> get_fallback_color_scheme();
 
 	void set_fallback_icon(const Ref<Texture2D> &p_icon);
 	Ref<Texture2D> get_fallback_icon();

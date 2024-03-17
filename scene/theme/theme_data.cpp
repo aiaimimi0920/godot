@@ -101,13 +101,9 @@ static const Vector<State> search_order[STATE_MAX] = {
 	{
 			State::FocusCheckedLTR,
 			State::FocusCheckedRTL,
-			State::NormalCheckedLTR,
-			State::NormalCheckedRTL,
 
 			State::FocusNoneLTR,
 			State::FocusNoneRTL,
-			State::NormalNoneLTR,
-			State::NormalNoneRTL,
 	},
 	{
 			State::HoverPressedCheckedLTR,
@@ -172,13 +168,9 @@ static const Vector<State> search_order[STATE_MAX] = {
 	{
 			State::FocusUncheckedLTR,
 			State::FocusUncheckedRTL,
-			State::NormalUncheckedLTR,
-			State::NormalUncheckedRTL,
 
 			State::FocusNoneLTR,
 			State::FocusNoneRTL,
-			State::NormalNoneLTR,
-			State::NormalNoneRTL,
 	},
 	{
 			State::HoverPressedUncheckedLTR,
@@ -230,8 +222,6 @@ static const Vector<State> search_order[STATE_MAX] = {
 	{
 			State::FocusNoneRTL,
 			State::FocusNoneLTR,
-			State::NormalNoneRTL,
-			State::NormalNoneLTR,
 	},
 	{
 			State::HoverPressedNoneRTL,
@@ -282,13 +272,9 @@ static const Vector<State> search_order[STATE_MAX] = {
 	{
 			State::FocusCheckedRTL,
 			State::FocusCheckedLTR,
-			State::NormalCheckedRTL,
-			State::NormalCheckedLTR,
 
 			State::FocusNoneRTL,
 			State::FocusNoneLTR,
-			State::NormalNoneRTL,
-			State::NormalNoneLTR,
 	},
 	{
 			State::HoverPressedCheckedRTL,
@@ -353,13 +339,9 @@ static const Vector<State> search_order[STATE_MAX] = {
 	{
 			State::FocusUncheckedRTL,
 			State::FocusUncheckedLTR,
-			State::NormalUncheckedRTL,
-			State::NormalUncheckedLTR,
 
 			State::FocusNoneRTL,
 			State::FocusNoneLTR,
-			State::NormalNoneRTL,
-			State::NormalNoneLTR,
 	},
 	{
 			State::HoverPressedUncheckedRTL,

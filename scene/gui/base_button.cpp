@@ -449,6 +449,330 @@ PackedStringArray BaseButton::get_configuration_warnings() const {
 	return warnings;
 }
 
+
+State BaseButton::get_current_state(){
+	const bool rtl = is_layout_rtl();
+	State cur_state;
+	const bool cur_toggle_mode = is_toggle_mode();
+	const bool cur_pressed = is_pressed();
+	
+	switch (get_draw_mode()) {
+		case DRAW_NORMAL: {
+			if (rtl) {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::NormalCheckedRTL;
+					}else{
+						cur_state = State::NormalUncheckedRTL;
+					}
+				}else{
+					cur_state = State::NormalNoneRTL;
+				}
+				
+			} else {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::NormalCheckedLTR;
+					}else{
+						cur_state = State::NormalUncheckedLTR;
+					}
+				}else{
+					cur_state = State::NormalNoneLTR;
+				}
+			}
+		} break;
+
+		case DRAW_HOVER_PRESSED: {
+			if (rtl) {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::HoverPressedCheckedRTL;
+					}else{
+						cur_state = State::HoverPressedUncheckedRTL;
+					}
+				}else{
+					cur_state = State::HoverPressedNoneRTL;
+				}
+				
+			} else {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::HoverPressedCheckedLTR;
+					}else{
+						cur_state = State::HoverPressedUncheckedLTR;
+					}
+				}else{
+					cur_state = State::HoverPressedNoneLTR;
+				}
+			}
+		} break;
+		case DRAW_PRESSED: {
+			if (rtl) {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::PressedCheckedRTL;
+					}else{
+						cur_state = State::PressedUncheckedRTL;
+					}
+				}else{
+					cur_state = State::PressedNoneRTL;
+				}
+				
+			} else {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::PressedCheckedLTR;
+					}else{
+						cur_state = State::PressedUncheckedLTR;
+					}
+				}else{
+					cur_state = State::PressedNoneLTR;
+				}
+			}
+		} break;
+
+		case DRAW_HOVER: {
+			if (rtl) {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::HoverCheckedRTL;
+					}else{
+						cur_state = State::HoverUncheckedRTL;
+					}
+				}else{
+					cur_state = State::HoverNoneRTL;
+				}
+				
+			} else {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::HoverCheckedLTR;
+					}else{
+						cur_state = State::HoverUncheckedLTR;
+					}
+				}else{
+					cur_state = State::HoverNoneLTR;
+				}
+			}
+		} break;
+
+		case DRAW_DISABLED: {
+			if (rtl) {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::DisabledCheckedRTL;
+					}else{
+						cur_state = State::DisabledUncheckedRTL;
+					}
+				}else{
+					cur_state = State::DisabledNoneRTL;
+				}
+				
+			} else {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::DisabledCheckedLTR;
+					}else{
+						cur_state = State::DisabledUncheckedLTR;
+					}
+				}else{
+					cur_state = State::DisabledNoneLTR;
+				}
+			}
+		} break;
+	}
+	return cur_state;
+}
+
+State BaseButton::get_current_state_with_focus(){
+	const bool rtl = is_layout_rtl();
+	State cur_state;
+	const bool cur_toggle_mode = is_toggle_mode();
+	const bool cur_pressed = is_pressed();
+	
+	switch (get_draw_mode()) {
+		case DRAW_NORMAL: {
+			if(has_focus()){
+				if (rtl) {
+					if(cur_toggle_mode){
+						if(cur_pressed){
+							cur_state = State::FocusCheckedRTL;
+						}else{
+							cur_state = State::FocusUncheckedRTL;
+						}
+					}else{
+						cur_state = State::FocusNoneRTL;
+					}
+					
+				} else {
+					if(cur_toggle_mode){
+						if(cur_pressed){
+							cur_state = State::FocusCheckedLTR;
+						}else{
+							cur_state = State::FocusUncheckedLTR;
+						}
+					}else{
+						cur_state = State::FocusNoneLTR;
+					}
+				}
+			}else{
+				if (rtl) {
+					if(cur_toggle_mode){
+						if(cur_pressed){
+							cur_state = State::NormalCheckedRTL;
+						}else{
+							cur_state = State::NormalUncheckedRTL;
+						}
+					}else{
+						cur_state = State::NormalNoneRTL;
+					}
+					
+				} else {
+					if(cur_toggle_mode){
+						if(cur_pressed){
+							cur_state = State::NormalCheckedLTR;
+						}else{
+							cur_state = State::NormalUncheckedLTR;
+						}
+					}else{
+						cur_state = State::NormalNoneLTR;
+					}
+				}
+			}
+		} break;
+
+		case DRAW_HOVER_PRESSED: {
+			if (rtl) {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::HoverPressedCheckedRTL;
+					}else{
+						cur_state = State::HoverPressedUncheckedRTL;
+					}
+				}else{
+					cur_state = State::HoverPressedNoneRTL;
+				}
+				
+			} else {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::HoverPressedCheckedLTR;
+					}else{
+						cur_state = State::HoverPressedUncheckedLTR;
+					}
+				}else{
+					cur_state = State::HoverPressedNoneLTR;
+				}
+			}
+		} break;
+		case DRAW_PRESSED: {
+			if (rtl) {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::PressedCheckedRTL;
+					}else{
+						cur_state = State::PressedUncheckedRTL;
+					}
+				}else{
+					cur_state = State::PressedNoneRTL;
+				}
+				
+			} else {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::PressedCheckedLTR;
+					}else{
+						cur_state = State::PressedUncheckedLTR;
+					}
+				}else{
+					cur_state = State::PressedNoneLTR;
+				}
+			}
+		} break;
+
+		case DRAW_HOVER: {
+			if (rtl) {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::HoverCheckedRTL;
+					}else{
+						cur_state = State::HoverUncheckedRTL;
+					}
+				}else{
+					cur_state = State::HoverNoneRTL;
+				}
+				
+			} else {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::HoverCheckedLTR;
+					}else{
+						cur_state = State::HoverUncheckedLTR;
+					}
+				}else{
+					cur_state = State::HoverNoneLTR;
+				}
+			}
+		} break;
+
+		case DRAW_DISABLED: {
+			if (rtl) {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::DisabledCheckedRTL;
+					}else{
+						cur_state = State::DisabledUncheckedRTL;
+					}
+				}else{
+					cur_state = State::DisabledNoneRTL;
+				}
+				
+			} else {
+				if(cur_toggle_mode){
+					if(cur_pressed){
+						cur_state = State::DisabledCheckedLTR;
+					}else{
+						cur_state = State::DisabledUncheckedLTR;
+					}
+				}else{
+					cur_state = State::DisabledNoneLTR;
+				}
+			}
+		} break;
+	}
+	return cur_state;
+}
+
+State BaseButton::get_current_focus_state(){
+	const bool rtl = is_layout_rtl();
+	State cur_state;
+	const bool cur_toggle_mode = is_toggle_mode();
+	const bool cur_pressed = is_pressed();
+	if (rtl) {
+		if(cur_toggle_mode){
+			if(cur_pressed){
+				cur_state = State::FocusCheckedRTL;
+			}else{
+				cur_state = State::FocusUncheckedRTL;
+			}
+		}else{
+			cur_state = State::FocusNoneRTL;
+		}
+		
+	} else {
+		if(cur_toggle_mode){
+			if(cur_pressed){
+				cur_state = State::FocusCheckedLTR;
+			}else{
+				cur_state = State::FocusUncheckedLTR;
+			}
+		}else{
+			cur_state = State::FocusNoneLTR;
+		}
+	}
+	return cur_state;
+}
+
 void BaseButton::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_pressed", "pressed"), &BaseButton::set_pressed);
 	ClassDB::bind_method(D_METHOD("is_pressed"), &BaseButton::is_pressed);
