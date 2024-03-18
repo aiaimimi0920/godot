@@ -146,8 +146,9 @@ public:
 
 	PackedStringArray get_configuration_warnings() const override;
 
-	State get_current_state() override;
-	State get_current_focus_state() override;
+	State get_current_state() const;
+	State get_current_state_with_focus() const;
+	State get_current_focus_state() const;
 
 	BaseButton();
 	~BaseButton();

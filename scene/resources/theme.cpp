@@ -1126,7 +1126,7 @@ void Theme::set_str(const StringName &p_name, const StringName &p_theme_type, St
 }
 
 String Theme::get_str(const StringName &p_name, const StringName &p_theme_type) const {
-	if (str_map.has(p_theme_type) && str_map[p_theme_type].has(p_name) && (str_map[p_theme_type][p_name] > 0)) {
+	if (str_map.has(p_theme_type) && str_map[p_theme_type].has(p_name) && (!str_map[p_theme_type][p_name].is_empty())) {
 		return str_map[p_theme_type][p_name];
 	} else {
 		return String();
@@ -2345,8 +2345,8 @@ void Theme::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("has_str", "name", "theme_type"), &Theme::has_str);
 	ClassDB::bind_method(D_METHOD("rename_str", "old_name", "name", "theme_type"), &Theme::rename_str);
 	ClassDB::bind_method(D_METHOD("clear_str", "name", "theme_type"), &Theme::clear_str);
-	ClassDB::bind_method(D_METHOD("get_str_list", "theme_type"), &Theme::get_str_list);
-	ClassDB::bind_method(D_METHOD("get_str_type_list"), &Theme::get_str_type_list);
+	ClassDB::bind_method(D_METHOD("get_str_list", "theme_type"), &Theme::_get_str_list);
+	ClassDB::bind_method(D_METHOD("get_str_type_list"), &Theme::_get_str_type_list);
 
 	ClassDB::bind_method(D_METHOD("set_default_base_scale", "base_scale"), &Theme::set_default_base_scale);
 	ClassDB::bind_method(D_METHOD("get_default_base_scale"), &Theme::get_default_base_scale);

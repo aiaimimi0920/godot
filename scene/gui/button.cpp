@@ -59,7 +59,7 @@ void Button::_set_internal_margin(Side p_side, float p_value) {
 void Button::_queue_update_size_cache() {
 }
 
-bool Button::_has_current_icon() const {
+bool Button::_has_current_icon() const{
 	State cur_state = get_current_state_with_focus();
 	if(theme_cache.icon.has_loop_data(cur_state)){
 		return true;
@@ -67,7 +67,7 @@ bool Button::_has_current_icon() const {
 	return false;
 }
 
-Ref<Texture2D> Button::_get_current_icon() const {
+Ref<Texture2D> Button::_get_current_icon() const{
 	State cur_state = get_current_state_with_focus();
 	Ref<Texture2D> cur_icon;
 	if(theme_cache.icon.has_loop_data(cur_state)){
@@ -76,7 +76,7 @@ Ref<Texture2D> Button::_get_current_icon() const {
 	return cur_icon;
 }
 
-bool Button::_has_current_text_icon() const {
+bool Button::_has_current_text_icon() const{
 	State cur_state = get_current_state_with_focus();
 	if(theme_cache.text_icon.has_loop_data(cur_state)){
 		return true;
@@ -84,7 +84,7 @@ bool Button::_has_current_text_icon() const {
 	return false;
 }
 
-String Button::_get_current_text_icon() const {
+String Button::_get_current_text_icon() const{
 	State cur_state = get_current_state_with_focus();
 	String cur_text_icon;
 	if(theme_cache.text_icon.has_loop_data(cur_state)){
@@ -93,7 +93,7 @@ String Button::_get_current_text_icon() const {
 	return cur_text_icon;
 }
 
-bool Button::_has_current_default_stylebox() const {
+bool Button::_has_current_default_stylebox() const{
 	State cur_state = get_current_state();
 	if(theme_cache.default_stylebox.has_loop_data(cur_state)){
 		return true;
@@ -101,7 +101,7 @@ bool Button::_has_current_default_stylebox() const {
 	return false;
 }
 
-Ref<StyleBox> Button::_get_current_default_stylebox() const {
+Ref<StyleBox> Button::_get_current_default_stylebox() const{
 	State cur_state = get_current_state();
 	Ref<StyleBox> style;
 	if(theme_cache.default_stylebox.has_loop_data(cur_state)){
@@ -110,7 +110,7 @@ Ref<StyleBox> Button::_get_current_default_stylebox() const {
 	return style;
 }
 
-bool Button::_has_current_focus_default_stylebox() const {
+bool Button::_has_current_focus_default_stylebox() const{
 	State cur_state = get_current_focus_state();
 	if(theme_cache.default_stylebox.has_loop_data(cur_state)){
 		return true;
@@ -118,7 +118,7 @@ bool Button::_has_current_focus_default_stylebox() const {
 	return false;
 }
 
-Ref<StyleBox> Button::_get_current_focus_default_stylebox() const {
+Ref<StyleBox> Button::_get_current_focus_default_stylebox() const{
 	State cur_state = get_current_focus_state();
 	Ref<StyleBox> style;
 	if(theme_cache.default_stylebox.has_loop_data(cur_state)){
@@ -127,7 +127,7 @@ Ref<StyleBox> Button::_get_current_focus_default_stylebox() const {
 	return style;
 }
 
-bool Button::_has_current_state_layer_stylebox() const {
+bool Button::_has_current_state_layer_stylebox() const{
 	State cur_state = get_current_state_with_focus();
 	if(theme_cache.state_layer_stylebox.has_loop_data(cur_state)){
 		return true;
@@ -135,7 +135,7 @@ bool Button::_has_current_state_layer_stylebox() const {
 	return false;
 }
 
-Ref<StyleBox> Button::_get_current_state_layer_stylebox() const {
+Ref<StyleBox> Button::_get_current_state_layer_stylebox() const{
 	State cur_state = get_current_state_with_focus();
 	Ref<StyleBox> style;
 	if(theme_cache.state_layer_stylebox.has_loop_data(cur_state)){
@@ -144,7 +144,7 @@ Ref<StyleBox> Button::_get_current_state_layer_stylebox() const {
 	return style;
 }
 
-bool Button::_has_current_font_color() const {
+bool Button::_has_current_font_color() const{
 	State cur_state = get_current_state_with_focus();
 	if(theme_cache.font_color.has_loop_data(cur_state)){
 		return true;
@@ -152,7 +152,7 @@ bool Button::_has_current_font_color() const {
 	return false;
 }
 
-Color Button::_get_current_font_color() const {
+Color Button::_get_current_font_color() const{
 	State cur_state = get_current_state_with_focus();
 	Color cur_font_color;
 	if(theme_cache.font_color.has_loop_data(cur_state)){
@@ -161,7 +161,7 @@ Color Button::_get_current_font_color() const {
 	return cur_font_color;
 }
 
-bool Button::_has_current_font_outline_color() const {
+bool Button::_has_current_font_outline_color() const{
 	State cur_state = get_current_state_with_focus();
 	if(theme_cache.font_outline_color.has_loop_data(cur_state)){
 		return true;
@@ -169,7 +169,7 @@ bool Button::_has_current_font_outline_color() const {
 	return false;
 }
 
-Color Button::_get_current_font_outline_color() const {
+Color Button::_get_current_font_outline_color() const{
 	State cur_state = get_current_state_with_focus();
 	Color cur_font_outline_color;
 	if(theme_cache.font_outline_color.has_loop_data(cur_state)){
@@ -179,7 +179,7 @@ Color Button::_get_current_font_outline_color() const {
 }
 
 
-bool Button::_has_current_icon_color() const {
+bool Button::_has_current_icon_color() const{
 	State cur_state = get_current_state_with_focus();
 	if(theme_cache.icon_color.has_loop_data(cur_state)){
 		return true;
@@ -187,7 +187,7 @@ bool Button::_has_current_icon_color() const {
 	return false;
 }
 
-Color Button::_get_current_icon_color() const {
+Color Button::_get_current_icon_color() const{
 	State cur_state = get_current_state_with_focus();
 	Color cur_icon_color;
 	if(theme_cache.icon_color.has_loop_data(cur_state)){
@@ -196,7 +196,7 @@ Color Button::_get_current_icon_color() const {
 	return cur_icon_color;
 }
 
-bool Button::_has_current_text_icon_color() const {
+bool Button::_has_current_text_icon_color() const{
 	State cur_state = get_current_state_with_focus();
 	if(theme_cache.text_icon_color.has_loop_data(cur_state)){
 		return true;
@@ -204,7 +204,7 @@ bool Button::_has_current_text_icon_color() const {
 	return false;
 }
 
-Ref<StyleBox> Button::_get_current_text_icon_color() const {
+Color Button::_get_current_text_icon_color() const{
 	State cur_state = get_current_state_with_focus();
 	Color cur_text_icon_color;
 	if(theme_cache.text_icon_color.has_loop_data(cur_state)){
@@ -248,37 +248,34 @@ void Button::_notification(int p_what) {
 			const Size2 size = get_size();
 			Ref<Font> text_icon_font = theme_cache.text_icon_font;
 
-			if(_has_current_default_stylebox()){
-				const Ref<StyleBox> style = _get_current_default_stylebox();
-				{ // Draws the stylebox in the current state.
-					if (!flat) {
-						style->draw(ci, Rect2(Point2(), size));
-					}
+			const Ref<StyleBox> style = _get_current_default_stylebox();
+			{ // Draws the stylebox in the current state.
+				if (!flat) {
+					style->draw(ci, Rect2(Point2(), size));
+				}
 
-					if (is_draw_state_layer_enabled()) {
-						if(_has_current_state_layer_stylebox()){
-							const Ref<StyleBox> state_layer_style = _get_current_state_layer_stylebox();
-							state_layer_style->draw(ci, Rect2(Point2(), size));
-						}
+				if (is_draw_state_layer_enabled()) {
+					if(_has_current_state_layer_stylebox()){
+						const Ref<StyleBox> state_layer_style = _get_current_state_layer_stylebox();
+						state_layer_style->draw(ci, Rect2(Point2(), size));
 					}
+				}
 
-					if (has_focus()) {
-						if(_has_current_focus_default_stylebox()){
-							Ref<StyleBox> style2 = _get_current_focus_default_stylebox();
-							style2->draw(ci, Rect2(Point2(), size));
-						}
+				if (has_focus()) {
+					if(_has_current_focus_default_stylebox()){
+						Ref<StyleBox> style2 = _get_current_focus_default_stylebox();
+						style2->draw(ci, Rect2(Point2(), size));
 					}
 				}
 			}
 
-			Ref<Texture2D> _icon = icon;
-			if (_icon.is_null()) {
-				if(_has_current_icon()){
-					_icon = _get_current_icon();
-				}
+			Ref<Texture2D> _icon;
+			if(_has_current_icon()){
+				_icon = _get_current_icon();
 			}
 
-			String _text_icon = text_icon;
+
+			String _text_icon;
 			if (_text_icon.is_empty()) {
 				if(_has_current_text_icon()){
 					_text_icon = _get_current_text_icon();
@@ -653,7 +650,7 @@ Size2 Button::get_minimum_size_for_text_and_icon(const String &p_text, Ref<Textu
 
 		if (horizontal_icon_alignment != HORIZONTAL_ALIGNMENT_CENTER) {
 			minsize.width += icon_size.width;
-			if (!code_text_icon.is_empty() || !p_text_icon.is_empty()) {
+			if (!p_text_icon.is_empty()) {
 				minsize.width += MAX(0, theme_cache.h_separation);
 			}
 		} else {
@@ -671,7 +668,7 @@ Size2 Button::get_minimum_size_for_text_and_icon(const String &p_text, Ref<Textu
 		}
 	}
 
-	return _get_current_stylebox()->get_minimum_size() + minsize;
+	return _get_current_default_stylebox()->get_minimum_size() + minsize;
 }
 
 void Button::_shape(Ref<TextParagraph> p_paragraph, String p_text) {
@@ -864,6 +861,36 @@ String Button::get_language() const {
 }
 
 
+void Button::set_icon(const Ref<Texture2D> &p_icon) {
+	if (icon == p_icon) {
+		return;
+	}
+
+	if (icon.is_valid()) {
+		icon->disconnect_changed(callable_mp(this, &Button::_texture_changed));
+	}
+
+	icon = p_icon;
+
+	if (icon.is_valid()) {
+		icon->connect_changed(callable_mp(this, &Button::_texture_changed));
+	}
+
+	queue_redraw();
+	update_minimum_size();
+}
+
+void Button::_texture_changed() {
+	queue_redraw();
+	update_minimum_size();
+}
+
+Ref<Texture2D> Button::get_icon() const {
+	return icon;
+}
+
+
+
 void Button::set_expand_icon(bool p_enabled) {
 	if (expand_icon != p_enabled) {
 		expand_icon = p_enabled;
@@ -958,6 +985,8 @@ void Button::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_text_direction"), &Button::get_text_direction);
 	ClassDB::bind_method(D_METHOD("set_language", "language"), &Button::set_language);
 	ClassDB::bind_method(D_METHOD("get_language"), &Button::get_language);
+	ClassDB::bind_method(D_METHOD("set_button_icon", "texture"), &Button::set_icon);
+	ClassDB::bind_method(D_METHOD("get_button_icon"), &Button::get_icon);
 	ClassDB::bind_method(D_METHOD("set_flat", "enabled"), &Button::set_flat);
 	ClassDB::bind_method(D_METHOD("is_flat"), &Button::is_flat);
 	ClassDB::bind_method(D_METHOD("set_clip_text", "enabled"), &Button::set_clip_text);
@@ -972,7 +1001,7 @@ void Button::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_expand_icon"), &Button::is_expand_icon);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text", PROPERTY_HINT_MULTILINE_TEXT), "set_text", "get_text");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_icon", PROPERTY_HINT_MULTILINE_TEXT), "set_text_icon", "get_text_icon");
+	// ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_icon", PROPERTY_HINT_MULTILINE_TEXT), "set_text_icon", "get_text_icon");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "icon", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_button_icon", "get_button_icon");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "flat"), "set_flat", "is_flat");
 
@@ -1013,7 +1042,7 @@ void Button::_bind_methods() {
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Button, icon_max_width);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STRING, Button, text_icon);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STR, Button, text_icon);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, Button, text_icon_color);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Button, h_separation);	
@@ -1029,7 +1058,7 @@ Button::Button(const String &p_text) {
 	set_mouse_filter(MOUSE_FILTER_STOP);
 
 	set_text(p_text);
-	set_text_icon("");
+	// set_text_icon("");
 }
 
 Button::~Button() {

@@ -246,7 +246,7 @@ protected:
 	virtual Size2 get_minimum_size() const override;
 	virtual bool has_point(const Point2 &p_point) const override;
 
-	Ref<StyleBox> _get_current_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox() const;
 	Ref<StyleBox> _get_current_state_layer_stylebox() const;
 	bool _is_show_state_layer();
 

@@ -227,6 +227,8 @@ void Control::get_argument_options(const StringName &p_function, int p_idx, List
             ThemeDB::get_singleton()->get_default_theme()->get_color_role_list(get_class(), &sn);
         } else if (pf == "add_theme_color_scheme_override" || pf == "has_theme_color_scheme" || pf == "has_theme_color_scheme_override" || pf == "get_theme_color_scheme") {
             ThemeDB::get_singleton()->get_default_theme()->get_color_scheme_list(get_class(), &sn);
+        } else if (pf == "add_theme_str_override" || pf == "has_theme_str" || pf == "has_theme_str_override" || pf == "get_theme_str") {
+            ThemeDB::get_singleton()->get_default_theme()->get_str_list(get_class(), &sn);
 		}
 
 		sn.sort_custom<StringName::AlphCompare>();
@@ -2631,7 +2633,7 @@ Ref<StyleBox> Control::get_theme_stylebox(const StringName &p_name, const String
 	data.theme_style_cache[p_theme_type][p_name] = style;
 
 	if(style.is_valid()){
-		const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
+		const StringName targe_color_role_scheme = String("default_color_scheme");
 		const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
 		if(color_scheme.is_valid()){
 			style->set_emit_changed_signal_flag(false);
@@ -2639,7 +2641,6 @@ Ref<StyleBox> Control::get_theme_stylebox(const StringName &p_name, const String
 			style->set_emit_changed_signal_flag(true);
 		}
 	}
-
 	return style;
 }
 
@@ -2702,11 +2703,9 @@ Color Control::get_theme_color(const StringName &p_name, const StringName &p_the
         const ColorRole *color_role = data.theme_color_role_override.getptr(targe_color_role_name);
 		if (color_role && *color_role!=ColorRole::STATIC_COLOR) {
 			const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
-            const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
+			const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
             Color color = color_scheme->get_color(*color_role);
-			const StringName targe_color_scale_name = String(p_name) + String("_scale");
-			Color color_scale = get_theme_color(targe_color_scale_name);
-            return color*color_scale;
+            return color;
         }
     }
     if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
@@ -2730,9 +2729,6 @@ Color Control::get_theme_color(const StringName &p_name, const StringName &p_the
 		const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
 		const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
 		target_color = color_scheme->get_color(color_role);
-		const StringName targe_color_scale_name = String(p_name) + String("_scale");
-		Color color_scale = get_theme_color(targe_color_scale_name);
-		target_color = target_color * color_scale;
 	} else{
 		target_color = Color(color);
 	}
@@ -2827,7 +2823,7 @@ Ref<ColorScheme> Control::get_theme_color_scheme(const StringName &p_name, const
 }
 
 String Control::get_theme_str(const StringName &p_name, const StringName &p_theme_type) const {
-	ERR_READ_THREAD_GUARD_V(0);
+	ERR_READ_THREAD_GUARD_V(String());
 	if (!data.initialized) {
 		WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
 	}
@@ -3640,45 +3636,10 @@ void Control::_notification(int p_notification) {
 State Control::get_current_state(){
 	const bool rtl = is_layout_rtl();
 	State cur_state;
-	switch (get_draw_mode()) {
-		case DRAW_NORMAL: {
-			if (rtl) {
-				cur_state = State::NormalNoneRTL;
-			} else {
-				cur_state = State::NormalNoneLTR;
-			}
-		} break;
-
-		case DRAW_HOVER_PRESSED: {
-			if (rtl) {
-				cur_state = State::HoverPressedNoneRTL;
-			} else {
-				cur_state = State::HoverPressedNoneLTR;
-			}
-		} break;
-		case DRAW_PRESSED: {
-			if (rtl) {
-				cur_state = State::PressedNoneRTL;
-			} else {
-				cur_state = State::PressedNoneLTR;
-			}
-		} break;
-
-		case DRAW_HOVER: {
-			if (rtl) {
-				cur_state = State::HoverNoneRTL;
-			} else {
-				cur_state = State::HoverNoneLTR;
-			}
-		} break;
-
-		case DRAW_DISABLED: {
-			if (rtl) {
-				cur_state = State::DisabledNoneRTL;
-			} else {
-				cur_state = State::DisabledNoneLTR;
-			}
-		} break;
+	if (rtl) {
+		cur_state = State::NormalNoneRTL;
+	} else {
+		cur_state = State::NormalNoneLTR;
 	}
 	return cur_state;
 }

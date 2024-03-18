@@ -450,7 +450,7 @@ PackedStringArray BaseButton::get_configuration_warnings() const {
 }
 
 
-State BaseButton::get_current_state(){
+State BaseButton::get_current_state() const{
 	const bool rtl = is_layout_rtl();
 	State cur_state;
 	const bool cur_toggle_mode = is_toggle_mode();
@@ -584,7 +584,7 @@ State BaseButton::get_current_state(){
 	return cur_state;
 }
 
-State BaseButton::get_current_state_with_focus(){
+State BaseButton::get_current_state_with_focus() const{
 	const bool rtl = is_layout_rtl();
 	State cur_state;
 	const bool cur_toggle_mode = is_toggle_mode();
@@ -743,7 +743,7 @@ State BaseButton::get_current_state_with_focus(){
 	return cur_state;
 }
 
-State BaseButton::get_current_focus_state(){
+State BaseButton::get_current_focus_state() const{
 	const bool rtl = is_layout_rtl();
 	State cur_state;
 	const bool cur_toggle_mode = is_toggle_mode();

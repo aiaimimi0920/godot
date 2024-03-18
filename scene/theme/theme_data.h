@@ -90,6 +90,400 @@ enum State {
 	STATE_MAX
 };
 
+
+
+
+static const Vector<State> search_order[STATE_MAX] = {
+	{
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+	{
+			State::PressedNoneLTR,
+			State::PressedNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+	{
+			State::HoverNoneLTR,
+			State::HoverNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+	{
+			State::FocusNoneLTR,
+			State::FocusNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+	{
+			State::HoverPressedNoneLTR,
+			State::HoverPressedNoneRTL,
+			State::PressedNoneLTR,
+			State::PressedNoneRTL,
+			State::HoverNoneLTR,
+			State::HoverNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+	{
+			State::DisabledNoneLTR,
+			State::DisabledNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+	{
+			State::NormalCheckedLTR,
+			State::NormalCheckedRTL,
+
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+	{
+			State::PressedCheckedLTR,
+			State::PressedCheckedRTL,
+			State::NormalCheckedLTR,
+			State::NormalCheckedRTL,
+
+			State::PressedNoneLTR,
+			State::PressedNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+	{
+			State::HoverCheckedLTR,
+			State::HoverCheckedRTL,
+			State::NormalCheckedLTR,
+			State::NormalCheckedRTL,
+
+			State::HoverNoneLTR,
+			State::HoverNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+	{
+			State::FocusCheckedLTR,
+			State::FocusCheckedRTL,
+
+			State::FocusNoneLTR,
+			State::FocusNoneRTL,
+	},
+	{
+			State::HoverPressedCheckedLTR,
+			State::HoverPressedCheckedRTL,
+			State::PressedCheckedLTR,
+			State::PressedCheckedRTL,
+			State::HoverCheckedLTR,
+			State::HoverCheckedRTL,
+			State::NormalCheckedLTR,
+			State::NormalCheckedRTL,
+
+			State::HoverPressedNoneLTR,
+			State::HoverPressedNoneRTL,
+			State::PressedNoneLTR,
+			State::PressedNoneRTL,
+			State::HoverNoneLTR,
+			State::HoverNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+	{
+			State::DisabledCheckedLTR,
+			State::DisabledCheckedRTL,
+			State::NormalCheckedLTR,
+			State::NormalCheckedRTL,
+
+			State::DisabledNoneLTR,
+			State::DisabledNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+
+	{
+			State::NormalUncheckedLTR,
+			State::NormalUncheckedRTL,
+
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+	{
+			State::PressedUncheckedLTR,
+			State::PressedUncheckedRTL,
+			State::NormalUncheckedLTR,
+			State::NormalUncheckedRTL,
+
+			State::PressedNoneLTR,
+			State::PressedNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+	{
+			State::HoverUncheckedLTR,
+			State::HoverUncheckedRTL,
+			State::NormalUncheckedLTR,
+			State::NormalUncheckedRTL,
+
+			State::HoverNoneLTR,
+			State::HoverNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+	{
+			State::FocusUncheckedLTR,
+			State::FocusUncheckedRTL,
+
+			State::FocusNoneLTR,
+			State::FocusNoneRTL,
+	},
+	{
+			State::HoverPressedUncheckedLTR,
+			State::HoverPressedUncheckedRTL,
+			State::PressedUncheckedLTR,
+			State::PressedUncheckedRTL,
+			State::HoverUncheckedLTR,
+			State::HoverUncheckedRTL,
+			State::NormalUncheckedLTR,
+			State::NormalUncheckedRTL,
+
+			State::HoverPressedNoneLTR,
+			State::HoverPressedNoneRTL,
+			State::PressedNoneLTR,
+			State::PressedNoneRTL,
+			State::HoverNoneLTR,
+			State::HoverNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+	{
+			State::DisabledUncheckedLTR,
+			State::DisabledUncheckedRTL,
+			State::NormalUncheckedLTR,
+			State::NormalUncheckedRTL,
+
+			State::DisabledNoneLTR,
+			State::DisabledNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
+	},
+
+	{
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	},
+	{
+			State::PressedNoneRTL,
+			State::PressedNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	},
+	{
+			State::HoverNoneRTL,
+			State::HoverNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	},
+	{
+			State::FocusNoneRTL,
+			State::FocusNoneLTR,
+	},
+	{
+			State::HoverPressedNoneRTL,
+			State::HoverPressedNoneLTR,
+			State::PressedNoneRTL,
+			State::PressedNoneLTR,
+			State::HoverNoneRTL,
+			State::HoverNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	},
+	{
+			State::DisabledNoneRTL,
+			State::DisabledNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	},
+
+	{
+			State::NormalCheckedRTL,
+			State::NormalCheckedLTR,
+
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	},
+	{
+			State::PressedCheckedRTL,
+			State::PressedCheckedLTR,
+			State::NormalCheckedRTL,
+			State::NormalCheckedLTR,
+
+			State::PressedNoneRTL,
+			State::PressedNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	},
+	{
+			State::HoverCheckedRTL,
+			State::HoverCheckedLTR,
+			State::NormalCheckedRTL,
+			State::NormalCheckedLTR,
+
+			State::HoverNoneRTL,
+			State::HoverNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	},
+	{
+			State::FocusCheckedRTL,
+			State::FocusCheckedLTR,
+
+			State::FocusNoneRTL,
+			State::FocusNoneLTR,
+	},
+	{
+			State::HoverPressedCheckedRTL,
+			State::HoverPressedCheckedLTR,
+			State::PressedCheckedRTL,
+			State::PressedCheckedLTR,
+			State::HoverCheckedRTL,
+			State::HoverCheckedLTR,
+			State::NormalCheckedRTL,
+			State::NormalCheckedLTR,
+
+			State::HoverPressedNoneRTL,
+			State::HoverPressedNoneLTR,
+			State::PressedNoneRTL,
+			State::PressedNoneLTR,
+			State::HoverNoneRTL,
+			State::HoverNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	},
+	{
+			State::DisabledCheckedRTL,
+			State::DisabledCheckedLTR,
+			State::NormalCheckedRTL,
+			State::NormalCheckedLTR,
+
+			State::DisabledNoneRTL,
+			State::DisabledNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	},
+
+	{
+			State::NormalUncheckedRTL,
+			State::NormalUncheckedLTR,
+
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	},
+	{
+			State::PressedUncheckedRTL,
+			State::PressedUncheckedLTR,
+			State::NormalUncheckedRTL,
+			State::NormalUncheckedLTR,
+
+			State::PressedNoneRTL,
+			State::PressedNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	},
+	{
+			State::HoverUncheckedRTL,
+			State::HoverUncheckedLTR,
+			State::NormalUncheckedRTL,
+			State::NormalUncheckedLTR,
+
+			State::HoverNoneRTL,
+			State::HoverNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	},
+	{
+			State::FocusUncheckedRTL,
+			State::FocusUncheckedLTR,
+
+			State::FocusNoneRTL,
+			State::FocusNoneLTR,
+	},
+	{
+			State::HoverPressedUncheckedRTL,
+			State::HoverPressedUncheckedLTR,
+			State::PressedUncheckedRTL,
+			State::PressedUncheckedLTR,
+			State::HoverUncheckedRTL,
+			State::HoverUncheckedLTR,
+			State::NormalUncheckedRTL,
+			State::NormalUncheckedLTR,
+
+			State::HoverPressedNoneRTL,
+			State::HoverPressedNoneLTR,
+			State::PressedNoneRTL,
+			State::PressedNoneLTR,
+			State::HoverNoneRTL,
+			State::HoverNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	},
+	{
+			State::DisabledUncheckedRTL,
+			State::DisabledUncheckedLTR,
+			State::NormalUncheckedRTL,
+			State::NormalUncheckedLTR,
+
+			State::DisabledNoneRTL,
+			State::DisabledNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+	}
+};
+
+static const char *state_prefix_name[STATE_MAX] = {
+	"normal_",
+	"pressed_",
+	"hover_",
+	"focus_",
+	"hover_pressed_",
+	"disabled_",
+
+	"normal_checked_",
+	"pressed_checked_",
+	"hover_checked_",
+	"focus_checked_",
+	"hover_pressed_checked_",
+	"disabled_checked_",
+
+	"normal_unchecked_",
+	"pressed_unchecked_",
+	"hover_unchecked_",
+	"focus_unchecked_",
+	"hover_pressed_unchecked_",
+	"disabled_unchecked_",
+
+	"normal_mirrored_",
+	"pressed_mirrored_",
+	"hover_mirrored_",
+	"focus_mirrored_",
+	"hover_pressed_mirrored_",
+	"disabled_mirrored_",
+
+	"normal_checked_mirrored_",
+	"pressed_checked_mirrored_",
+	"hover_checked_mirrored_",
+	"focus_checked_mirrored_",
+	"hover_pressed_checked_mirrored_",
+	"disabled_checked_mirrored_",
+
+	"normal_unchecked_mirrored_",
+	"pressed_unchecked_mirrored_",
+	"hover_unchecked_mirrored_",
+	"focus_unchecked_mirrored_",
+	"hover_pressed_unchecked_mirrored_",
+	"disabled_unchecked_mirrored_"
+};
+
+
+
 template <typename T>
 class ThemeData : public Object {
 	GDCLASS(ThemeData, Object);
@@ -142,28 +536,23 @@ class ThemeData : public Object {
 	HashMap<State, bool> has_data_map;
 	String data_name;
 
+public:
 	void set_data_name(const String &p_data_name);
 
+	String get_state_data_name(State p_state = State::NormalNoneLTR) const;
 
-	String get_state_data_name(State p_state = State::NormalNoneLTR);
+	T get_loop_data(State p_state = State::NormalNoneLTR) const;
 
-	T get_loop_data(State p_state = State::NormalNoneLTR);
-
-	T get_data(State p_state = State::NormalNoneLTR);
+	T get_data(State p_state = State::NormalNoneLTR) const;
 	void set_data(T p_data, State p_state = State::NormalNoneLTR);
 
-	bool has_data(State p_state);
+	bool has_data(State p_state) const;
 
-	bool has_loop_data(State p_state);
+	bool has_loop_data(State p_state) const;
 
-	ThemeData<T>() {
-
-	}
-	~ThemeData<T>() {}
-
+	ThemeData<T>() {};
+	~ThemeData<T>() {};
 };
-
-
 
 template <typename T>
 void ThemeData<T>::set_data_name(const String &p_data_name) {
@@ -171,22 +560,22 @@ void ThemeData<T>::set_data_name(const String &p_data_name) {
 }
 
 template <typename T>
-String ThemeData<T>::get_state_data_name(State p_state){
-	return data_name + state_suffix_name[p_state]
+String ThemeData<T>::get_state_data_name(State p_state) const {
+	return state_prefix_name[p_state] + data_name;
 }
 
 template <typename T>
-T ThemeData<T>::get_loop_data(State p_state) {
+T ThemeData<T>::get_loop_data(State p_state) const {
 	for (const State &E : search_order[p_state]) {
 		if (has_data(E)) {
 			return get_data(E);
 		}
 	}
-	return <T>();
+	return T();
 }
 
 template <typename T>
-T ThemeData<T>::get_data(State p_state) {
+T ThemeData<T>::get_data(State p_state) const {
 	switch (p_state) {
 		case State::NormalNoneLTR: {
 			return data_cache.normal;
@@ -296,12 +685,15 @@ T ThemeData<T>::get_data(State p_state) {
 		case State::DisabledUncheckedRTL: {
 			return data_cache.disabled_unchecked_rtl;
 		} break;
+		default: {
+			return data_cache.normal;
+		} break;
 	}
 }
 
 template <typename T>
 void ThemeData<T>::set_data(T p_data, State p_state) {
-	data_map[p_state] = true;
+	has_data_map[p_state] = true;
 	switch (p_state) {
 		case State::NormalNoneLTR: {
 			data_cache.normal = p_data;
@@ -411,17 +803,19 @@ void ThemeData<T>::set_data(T p_data, State p_state) {
 		case State::DisabledUncheckedRTL: {
 			data_cache.disabled_unchecked_rtl = p_data;
 		} break;
+		default: {
+			data_cache.normal = p_data;
+		} break;
 	}
 }
 
-
 template <typename T>
-bool ThemeData<T>::has_data(State p_state) {
+bool ThemeData<T>::has_data(State p_state) const {
 	return has_data_map[p_state];
 }
 
 template <typename T>
-bool ThemeData<T>::has_loop_data(State p_state) {
+bool ThemeData<T>::has_loop_data(State p_state) const {
 	for (const State &E : search_order[p_state]) {
 		if (has_data(E)) {
 			return true;

@@ -242,6 +242,7 @@ private:
 		Theme::ThemeConstantMap theme_constant_override;
 		Theme::ThemeColorRoleMap theme_color_role_override;
         Theme::ThemeColorSchemeMap theme_color_scheme_override;
+        Theme::ThemeStrMap theme_str_override;
 
 		mutable HashMap<StringName, Theme::ThemeIconMap> theme_icon_cache;
 		mutable HashMap<StringName, Theme::ThemeStyleMap> theme_style_cache;
@@ -251,6 +252,7 @@ private:
 		mutable HashMap<StringName, Theme::ThemeConstantMap> theme_constant_cache;
 		mutable HashMap<StringName, Theme::ThemeColorRoleMap> theme_color_role_cache;
         mutable HashMap<StringName, Theme::ThemeColorSchemeMap> theme_color_scheme_cache;
+        mutable HashMap<StringName, Theme::ThemeStrMap> theme_str_cache;
 
 		// Internationalization.
 
@@ -662,8 +664,8 @@ public:
 	virtual String get_tooltip(const Point2 &p_pos) const;
 	virtual Control *make_custom_tooltip(const String &p_text) const;
 
-	State get_current_state() override;
-	State get_current_focus_state() override;
+	State get_current_state();
+	State get_current_focus_state();
 
 	Control();
 	~Control();

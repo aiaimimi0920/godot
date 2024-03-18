@@ -36,6 +36,7 @@
 #include "scene/resources/font.h"
 #include "scene/resources/style_box.h"
 #include "scene/resources/texture.h"
+#include "scene/theme/theme_data.h"
 
 class Theme : public Resource {
 	GDCLASS(Theme, Resource);

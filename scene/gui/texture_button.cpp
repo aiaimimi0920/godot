@@ -134,7 +134,7 @@ bool TextureButton::has_point(const Point2 &p_point) const {
 	return Control::has_point(p_point);
 }
 
-Ref<StyleBox> TextureButton::_get_current_stylebox() const {
+Ref<StyleBox> TextureButton::_get_current_default_stylebox() const {
 	Ref<StyleBox> stylebox = theme_cache.normal;
 	const bool rtl = is_layout_rtl();
 	bool cur_pressed = is_pressed();
@@ -412,7 +412,7 @@ void TextureButton::_notification(int p_what) {
 			const RID ci = get_canvas_item();
 			const Size2 container_size = get_size();
 
-			const Ref<StyleBox> style = _get_current_stylebox();
+			const Ref<StyleBox> style = _get_current_default_stylebox();
 			{ // Draws the stylebox in the current state.
 				style->draw(ci, Rect2(Point2(), container_size));
 				if (_is_show_state_layer()) {

@@ -50,7 +50,7 @@ private:
 	TextServer::AutowrapMode autowrap_mode = TextServer::AUTOWRAP_OFF;
 	TextServer::OverrunBehavior overrun_behavior = TextServer::OVERRUN_NO_TRIMMING;
 
-	// Ref<Texture2D> icon;
+	Ref<Texture2D> icon;
 	// String text_icon;
 	// String code_text_icon;
 
@@ -104,13 +104,27 @@ protected:
 	void _set_internal_margin(Side p_side, float p_value);
 	virtual void _queue_update_size_cache();
 
-	Ref<StyleBox> _get_focus_state_layer_stylebox() const;
-	Ref<StyleBox> _get_current_stylebox() const;
-	Ref<StyleBox> _get_current_state_layer_stylebox() const;
-	bool _is_show_state_layer();
 	void _notification(int p_what);
 	static void _bind_methods();
 
+	bool _has_current_icon() const;
+	Ref<Texture2D> _get_current_icon() const;
+	bool _has_current_text_icon() const;
+	String _get_current_text_icon() const;
+	bool _has_current_default_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox() const;
+	bool _has_current_focus_default_stylebox() const;
+	Ref<StyleBox> _get_current_focus_default_stylebox() const;
+	bool _has_current_state_layer_stylebox() const;
+	Ref<StyleBox> _get_current_state_layer_stylebox() const;
+	bool _has_current_font_color() const;
+	Color _get_current_font_color() const;
+	bool _has_current_font_outline_color() const;
+	Color _get_current_font_outline_color() const;
+	bool _has_current_icon_color() const;
+	Color _get_current_icon_color() const;
+	bool _has_current_text_icon_color() const;
+	Color _get_current_text_icon_color() const;
 public:
 	virtual Size2 get_minimum_size() const override;
 
