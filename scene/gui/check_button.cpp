@@ -79,7 +79,12 @@ Size2 CheckButton::get_minimum_size() const {
 	Size2 minsize = Button::get_minimum_size();
 	const Size2 tex_size = get_icon_size();
 	if (tex_size.width > 0 || tex_size.height > 0) {
-		const Size2 padding = _get_current_default_stylebox()->get_minimum_size();
+		Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+
+		Size2 padding = Size2(0, 0);
+		if (style.is_valid()) {
+			padding = style->get_minimum_size();
+		}
 		Size2 content_size = minsize - padding;
 		if (content_size.width > 0 && tex_size.width > 0) {
 			content_size.width += MAX(0, theme_cache.h_separation);
@@ -992,7 +997,6 @@ void CheckButton::_notification(int p_what) {
 
 				Size2 cur_size = get_icon_size();
 				if (!cur_text_icon.is_empty()) {
-
 					bg_text_icon_buf->clear();
 					bg_text_icon_buf->set_width(cur_size.width);
 					if (cur_code_bg_text_icon.is_empty()) {
@@ -1002,7 +1006,6 @@ void CheckButton::_notification(int p_what) {
 					bg_text_icon_buf->add_string(cur_code_bg_text_icon, font, cur_size.width, "");
 					bg_text_icon_buf->draw(ci, ofs, bg_text_icon_font_color);
 
-
 					text_icon_buf->clear();
 					text_icon_buf->set_width(cur_size.width);
 					if (cur_code_text_icon.is_empty()) {
@@ -1011,8 +1014,6 @@ void CheckButton::_notification(int p_what) {
 
 					text_icon_buf->add_string(cur_code_text_icon, font, cur_size.width, "");
 					text_icon_buf->draw(ci, ofs, text_icon_font_color);
-
-
 				}
 			} else {
 				if (is_pressed()) {

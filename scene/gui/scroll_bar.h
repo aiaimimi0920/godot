@@ -86,9 +86,8 @@ class ScrollBar : public Range {
 	bool smooth_scroll_enabled = false;
 
 	struct ThemeCache {
-		Ref<StyleBox> scroll_style;
-		Ref<StyleBox> scroll_focus_style;
-		Ref<StyleBox> scroll_offset_style;
+		ThemeStyleboxData scroll_style{"scroll_style"};
+
 		Ref<StyleBox> grabber_style;
 		Ref<StyleBox> grabber_hl_style;
 		Ref<StyleBox> grabber_pressed_style;
@@ -122,6 +121,11 @@ public:
 	bool is_smooth_scroll_enabled() const;
 
 	virtual Size2 get_minimum_size() const override;
+
+	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
+	bool _has_current_default_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox() const;
+
 	ScrollBar(Orientation p_orientation = VERTICAL);
 	~ScrollBar();
 };

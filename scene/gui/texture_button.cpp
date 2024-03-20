@@ -134,277 +134,6 @@ bool TextureButton::has_point(const Point2 &p_point) const {
 	return Control::has_point(p_point);
 }
 
-Ref<StyleBox> TextureButton::_get_current_default_stylebox() const {
-	Ref<StyleBox> stylebox = theme_cache.normal;
-	const bool rtl = is_layout_rtl();
-	bool cur_pressed = is_pressed();
-	if(is_toggle_mode()){
-		switch (get_draw_mode()) {
-			case DRAW_NORMAL: {
-				if(cur_pressed){
-					if (rtl && has_theme_stylebox(SNAME("selected_normal_mirrored"))) {
-						stylebox = theme_cache.selected_normal_mirrored;
-					} else {
-						stylebox = theme_cache.selected_normal;
-					}
-				}else{
-					if (rtl && has_theme_stylebox(SNAME("unselected_normal_mirrored"))) {
-						stylebox = theme_cache.unselected_normal_mirrored;
-					} else {
-						stylebox = theme_cache.unselected_normal;
-					}
-				}
-			} break;
-
-			case DRAW_HOVER_PRESSED: {
-				// Edge case for CheckButton and CheckBox.
-				if(cur_pressed){
-					if (has_theme_stylebox("selected_hover_pressed")) {
-						if (rtl && has_theme_stylebox(SNAME("selected_hover_pressed_mirrored"))) {
-							stylebox = theme_cache.selected_hover_pressed_mirrored;
-						} else {
-							stylebox = theme_cache.selected_hover_pressed;
-						}
-						break;
-					}
-				}else{
-					if (has_theme_stylebox("unselected_hover_pressed")) {
-						if (rtl && has_theme_stylebox(SNAME("unselected_hover_pressed_mirrored"))) {
-							stylebox = theme_cache.unselected_hover_pressed_mirrored;
-						} else {
-							stylebox = theme_cache.unselected_hover_pressed;
-						}
-						break;
-					}
-				}
-			}
-				[[fallthrough]];
-			case DRAW_PRESSED: {
-				if(cur_pressed){
-					if (rtl && has_theme_stylebox(SNAME("selected_pressed_mirrored"))) {
-						stylebox = theme_cache.selected_pressed_mirrored;
-					} else {
-						stylebox = theme_cache.selected_pressed;
-					}
-				}else{
-					if (rtl && has_theme_stylebox(SNAME("unselected_pressed_mirrored"))) {
-						stylebox = theme_cache.unselected_pressed_mirrored;
-					} else {
-						stylebox = theme_cache.unselected_pressed;
-					}
-				}
-			} break;
-
-			case DRAW_HOVER: {
-				if(cur_pressed){
-					if (rtl && has_theme_stylebox(SNAME("selected_hover_mirrored"))) {
-						stylebox = theme_cache.selected_hover_mirrored;
-					} else {
-						stylebox = theme_cache.selected_hover;
-					}
-				}else{
-					if (rtl && has_theme_stylebox(SNAME("unselected_hover_mirrored"))) {
-						stylebox = theme_cache.unselected_hover_mirrored;
-					} else {
-						stylebox = theme_cache.unselected_hover;
-					}
-				}
-			} break;
-
-			case DRAW_DISABLED: {
-				if(cur_pressed){
-					if (rtl && has_theme_stylebox(SNAME("selected_disabled_mirrored"))) {
-						stylebox = theme_cache.selected_disabled_mirrored;
-					} else {
-						stylebox = theme_cache.selected_disabled;
-					}
-				}else{
-					if (rtl && has_theme_stylebox(SNAME("unselected_disabled_mirrored"))) {
-						stylebox = theme_cache.unselected_disabled_mirrored;
-					} else {
-						stylebox = theme_cache.unselected_disabled;
-					}
-				}
-			} break;
-		}
-
-	}else{
-		switch (get_draw_mode()) {
-			case DRAW_NORMAL: {
-				if (rtl && has_theme_stylebox(SNAME("normal_mirrored"))) {
-					stylebox = theme_cache.normal_mirrored;
-				} else {
-					stylebox = theme_cache.normal;
-				}
-			} break;
-
-			case DRAW_HOVER_PRESSED: {
-				// Edge case for CheckButton and CheckBox.
-				if (has_theme_stylebox("hover_pressed")) {
-					if (rtl && has_theme_stylebox(SNAME("hover_pressed_mirrored"))) {
-						stylebox = theme_cache.hover_pressed_mirrored;
-					} else {
-						stylebox = theme_cache.hover_pressed;
-					}
-					break;
-				}
-			}
-				[[fallthrough]];
-			case DRAW_PRESSED: {
-				if (rtl && has_theme_stylebox(SNAME("pressed_mirrored"))) {
-					stylebox = theme_cache.pressed_mirrored;
-				} else {
-					stylebox = theme_cache.pressed;
-				}
-			} break;
-
-			case DRAW_HOVER: {
-				if (rtl && has_theme_stylebox(SNAME("hover_mirrored"))) {
-					stylebox = theme_cache.hover_mirrored;
-				} else {
-					stylebox = theme_cache.hover;
-				}
-			} break;
-
-			case DRAW_DISABLED: {
-				if (rtl && has_theme_stylebox(SNAME("disabled_mirrored"))) {
-					stylebox = theme_cache.disabled_mirrored;
-				} else {
-					stylebox = theme_cache.disabled;
-				}
-			} break;
-		}
-	}
-	
-	return stylebox;
-}
-
-bool TextureButton::_is_show_state_layer() {
-	if (is_draw_state_layer_enabled() == false) {
-		return false;
-	}
-	bool show_state_layer = false;
-	bool cur_pressed = is_pressed();
-
-
-	switch (get_draw_mode()) {
-		case DRAW_NORMAL: {
-			show_state_layer = false;
-		} break;
-
-		case DRAW_HOVER_PRESSED: {
-			show_state_layer = true;
-		}
-			[[fallthrough]];
-		case DRAW_PRESSED: {
-			show_state_layer = true;
-		} break;
-
-		case DRAW_HOVER: {
-			show_state_layer = true;
-		} break;
-
-		case DRAW_DISABLED: {
-			show_state_layer = false;
-		} break;
-	}
-	return show_state_layer;
-}
-
-Ref<StyleBox> TextureButton::_get_current_state_layer_stylebox() const {
-	Ref<StyleBox> stylebox = theme_cache.normal;
-	const bool rtl = is_layout_rtl();
-	bool cur_pressed = is_pressed();
-	if(is_toggle_mode()){
-		switch (get_draw_mode()) {
-			case DRAW_HOVER_PRESSED: {
-				if(cur_pressed){
-					if (has_theme_stylebox("selected_hover_pressed_state_layer")) {
-						if (rtl && has_theme_stylebox(SNAME("selected_hover_pressed_state_layer_mirrored"))) {
-							stylebox = theme_cache.selected_hover_pressed_state_layer_mirrored;
-						} else {
-							stylebox = theme_cache.selected_hover_pressed_state_layer;
-						}
-						break;
-					}
-				}else{
-					if (has_theme_stylebox("unselected_hover_pressed_state_layer")) {
-						if (rtl && has_theme_stylebox(SNAME("unselected_hover_pressed_state_layer_mirrored"))) {
-							stylebox = theme_cache.unselected_hover_pressed_state_layer_mirrored;
-						} else {
-							stylebox = theme_cache.unselected_hover_pressed_state_layer;
-						}
-						break;
-					}
-				}
-			}
-				[[fallthrough]];
-			case DRAW_PRESSED: {
-				if(cur_pressed){
-					if (rtl && has_theme_stylebox(SNAME("selected_pressed_state_layer_mirrored"))) {
-						stylebox = theme_cache.selected_pressed_state_layer_mirrored;
-					} else {
-						stylebox = theme_cache.selected_pressed_state_layer;
-					}
-				}else{
-					if (rtl && has_theme_stylebox(SNAME("unselected_pressed_state_layer_mirrored"))) {
-						stylebox = theme_cache.unselected_pressed_state_layer_mirrored;
-					} else {
-						stylebox = theme_cache.unselected_pressed_state_layer;
-					}
-				}
-			} break;
-
-			case DRAW_HOVER: {
-				if(cur_pressed){
-					if (rtl && has_theme_stylebox(SNAME("selected_hover_state_layer_mirrored"))) {
-						stylebox = theme_cache.selected_hover_state_layer_mirrored;
-					} else {
-						stylebox = theme_cache.selected_hover_state_layer;
-					}
-				}else{
-					if (rtl && has_theme_stylebox(SNAME("unselected_hover_state_layer_mirrored"))) {
-						stylebox = theme_cache.unselected_hover_state_layer_mirrored;
-					} else {
-						stylebox = theme_cache.unselected_hover_state_layer;
-					}
-				}
-			} break;
-		}
-	}else{
-		switch (get_draw_mode()) {
-			case DRAW_HOVER_PRESSED: {
-				if (has_theme_stylebox("hover_pressed_state_layer")) {
-					if (rtl && has_theme_stylebox(SNAME("hover_pressed_state_layer_mirrored"))) {
-						stylebox = theme_cache.hover_pressed_state_layer_mirrored;
-					} else {
-						stylebox = theme_cache.hover_pressed_state_layer;
-					}
-					break;
-				}
-			}
-				[[fallthrough]];
-			case DRAW_PRESSED: {
-				if (rtl && has_theme_stylebox(SNAME("pressed_state_layer_mirrored"))) {
-					stylebox = theme_cache.pressed_state_layer_mirrored;
-				} else {
-					stylebox = theme_cache.pressed_state_layer;
-				}
-			} break;
-
-			case DRAW_HOVER: {
-				if (rtl && has_theme_stylebox(SNAME("hover_state_layer_mirrored"))) {
-					stylebox = theme_cache.hover_state_layer_mirrored;
-				} else {
-					stylebox = theme_cache.hover_state_layer;
-				}
-			} break;
-		}
-	}
-	
-	return stylebox;
-}
-
 void TextureButton::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_DRAW: {
@@ -414,24 +143,26 @@ void TextureButton::_notification(int p_what) {
 
 			const Ref<StyleBox> style = _get_current_default_stylebox();
 			{ // Draws the stylebox in the current state.
-				style->draw(ci, Rect2(Point2(), container_size));
-				if (_is_show_state_layer()) {
-					const Ref<StyleBox> state_layer_style = _get_current_state_layer_stylebox();
-					state_layer_style->draw(ci, Rect2(Point2(), container_size));
+				if(style.is_valid()){
+					style->draw(ci, Rect2(Point2(), container_size));
+				}
+
+				if (is_draw_state_layer_enabled()) {
+					if (_has_current_state_layer_stylebox()) {
+						const Ref<StyleBox> state_layer_style = _get_current_state_layer_stylebox();
+						if(state_layer_style.is_valid()){
+							state_layer_style->draw(ci, Rect2(Point2(), container_size));
+						}
+					}
 				}
 
 				if (has_focus()) {
-					Ref<StyleBox> style2;
-					if(is_toggle_mode()){
-						if (cur_pressed) {
-							style2 = theme_cache.selected_focus;
-						} else {
-							style2 = theme_cache.unselected_focus;
+					if (_has_current_focus_default_stylebox()) {
+						Ref<StyleBox> style2 = _get_current_focus_default_stylebox();
+						if(style2.is_valid()){
+							style2->draw(ci, Rect2(Point2(), container_size));
 						}
-					}else{
-						style2 = theme_cache.focus;
 					}
-					style2->draw(ci, Rect2(Point2(), container_size));
 				}
 			}
 
@@ -534,125 +265,8 @@ void TextureButton::_notification(int p_what) {
 				} break;
 			}
 
-			Color text_icon_font_color;
-			// Get the font color and icon modulate color in the current state.
-			switch (get_draw_mode()) {
-				case DRAW_NORMAL: {
-					// Focus colors only take precedence over normal state.
-					if (has_focus()) {
-						if(is_toggle_mode()){
-							if (cur_pressed) {
-								if (has_theme_color(SNAME("selected_text_icon_focus_color"))) {
-									text_icon_font_color = theme_cache.selected_text_icon_focus_color;
-								}
-							} else {
-								if (has_theme_color(SNAME("unselected_text_icon_focus_color"))) {
-									text_icon_font_color = theme_cache.unselected_text_icon_focus_color;
-								}
-							}
-						}else{
-							if (has_theme_color(SNAME("text_icon_focus_color"))) {
-								text_icon_font_color = theme_cache.text_icon_focus_color;
-							}
-						}
-					} else {
-						if(is_toggle_mode()){
-							if (cur_pressed) {
-								if (has_theme_color(SNAME("selected_text_icon_normal_color"))) {
-									text_icon_font_color = theme_cache.selected_text_icon_normal_color;
-								}
-							} else {
-								if (has_theme_color(SNAME("unselected_text_icon_normal_color"))) {
-									text_icon_font_color = theme_cache.unselected_text_icon_normal_color;
-								}
-							}
-						}else{
-							if (has_theme_color(SNAME("text_icon_normal_color"))) {
-								text_icon_font_color = theme_cache.text_icon_normal_color;
-							}
-						}
-					}
-				} break;
-				case DRAW_HOVER_PRESSED: {
-					// Edge case for CheckButton and CheckBox.
-					if(is_toggle_mode()){
-						if (cur_pressed) {
-							if (has_theme_stylebox("selected_hover_pressed")) {
-								if (has_theme_color(SNAME("selected_text_icon_hover_pressed_color"))) {
-									text_icon_font_color = theme_cache.selected_text_icon_hover_pressed_color;
-								}
-								break;
-							}
-						} else {
-							if (has_theme_stylebox("unselected_hover_pressed")) {
-								if (has_theme_color(SNAME("unselected_text_icon_hover_pressed_color"))) {
-									text_icon_font_color = theme_cache.unselected_text_icon_hover_pressed_color;
-								}
-								break;
-							}
-						}
-					}else{
-						if (has_theme_stylebox("hover_pressed")) {
-							if (has_theme_color(SNAME("text_icon_hover_pressed_color"))) {
-								text_icon_font_color = theme_cache.text_icon_hover_pressed_color;
-							}
-							break;
-						}
-					}
-				}
-					[[fallthrough]];
-				case DRAW_PRESSED: {
-					if(is_toggle_mode()){
-						if (cur_pressed) {
-							if (has_theme_color(SNAME("selected_text_icon_pressed_color"))) {
-								text_icon_font_color = theme_cache.selected_text_icon_pressed_color;
-							}
-						} else {
-							if (has_theme_color(SNAME("unselected_text_icon_pressed_color"))) {
-								text_icon_font_color = theme_cache.unselected_text_icon_pressed_color;
-							}
-						}
-					}else{
-						if (has_theme_color(SNAME("text_icon_pressed_color"))) {
-							text_icon_font_color = theme_cache.text_icon_pressed_color;
-						}
-					}
-				} break;
-				case DRAW_HOVER: {
-					if(is_toggle_mode()){
-						if (cur_pressed) {
-							if (has_theme_color(SNAME("selected_text_icon_hover_color"))) {
-								text_icon_font_color = theme_cache.selected_text_icon_hover_color;
-							}
-						} else {
-							if (has_theme_color(SNAME("unselected_text_icon_hover_color"))) {
-								text_icon_font_color = theme_cache.unselected_text_icon_hover_color;
-							}
-						}
-					}else{
-						if (has_theme_color(SNAME("text_icon_hover_color"))) {
-							text_icon_font_color = theme_cache.text_icon_hover_color;
-						}
-					}
-				} break;
-				case DRAW_DISABLED: {
-					if(is_toggle_mode()){
-						if (cur_pressed) {
-							if (has_theme_color(SNAME("selected_text_icon_disabled_color"))) {
-								text_icon_font_color = theme_cache.selected_text_icon_disabled_color;
-							}
-						} else {
-							if (has_theme_color(SNAME("unselected_text_icon_disabled_color"))) {
-								text_icon_font_color = theme_cache.unselected_text_icon_disabled_color;
-							}
-						}
-					}else{
-						if (has_theme_color(SNAME("text_icon_disabled_color"))) {
-							text_icon_font_color = theme_cache.text_icon_disabled_color;
-						}
-					}
-				} break;
-			}
+			Color text_icon_font_color = _get_current_text_icon_color();
+			Color focus_text_icon_font_color = _get_current_focus_text_icon_color();
 
 			Point2 ofs;
 			Size2 size;
@@ -808,24 +422,7 @@ void TextureButton::_notification(int p_what) {
 					Ref<Font> font = theme_cache.text_icon_font;
 					text_icon_focus_buf->add_string(code_text_icon_focused, font, size.width, "");
 
-					Color text_icon_font_foucs_color = text_icon_font_color;
-
-					if(is_toggle_mode()){
-						if (cur_pressed) {
-							if (has_theme_color(SNAME("selected_text_icon_focus_color"))) {
-								text_icon_font_foucs_color = theme_cache.selected_text_icon_focus_color;
-							}
-						} else {
-							if (has_theme_color(SNAME("unselected_text_icon_focus_color"))) {
-								text_icon_font_foucs_color = theme_cache.unselected_text_icon_focus_color;
-							}
-						}
-					}else{
-						if (has_theme_color(SNAME("text_icon_focus_color"))) {
-							text_icon_font_foucs_color = theme_cache.text_icon_focus_color;
-						}
-					}
-					text_icon_focus_buf->draw(ci, ofs, text_icon_font_foucs_color);
+					text_icon_focus_buf->draw(ci, ofs, focus_text_icon_font_color);
 				}
 			};
 		} break;
@@ -875,7 +472,7 @@ void TextureButton::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture_hover", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture_hover", "get_texture_hover");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture_disabled", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture_disabled", "get_texture_disabled");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture_focused", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture_focused", "get_texture_focused");
-	
+
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_icon_normal"), "set_text_icon_normal", "get_text_icon_normal");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_icon_pressed"), "set_text_icon_pressed", "get_text_icon_pressed");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_icon_hover"), "set_text_icon_hover", "get_text_icon_hover");
@@ -897,161 +494,16 @@ void TextureButton::_bind_methods() {
 	BIND_ENUM_CONSTANT(STRETCH_KEEP_ASPECT_COVERED);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, default_color_scheme);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, normal);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, normal_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, pressed);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, pressed_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, hover);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, hover_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, hover_pressed);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, hover_pressed_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, disabled);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, disabled_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, focus);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_normal);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_normal_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_pressed);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_pressed_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_hover);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_hover_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_hover_pressed);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_hover_pressed_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_disabled);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_disabled_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_focus);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_normal);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_normal_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_pressed);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_pressed_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_hover);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_hover_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_hover_pressed);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_hover_pressed_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_disabled);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_disabled_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_focus);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, hover_state_layer);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, hover_state_layer_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, pressed_state_layer);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, pressed_state_layer_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, hover_pressed_state_layer);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, hover_pressed_state_layer_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, focus_state_layer);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_hover_state_layer);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_hover_state_layer_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_pressed_state_layer);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_pressed_state_layer_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_hover_pressed_state_layer);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_hover_pressed_state_layer_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, selected_focus_state_layer);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_hover_state_layer);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_hover_state_layer_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_pressed_state_layer);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_pressed_state_layer_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_hover_pressed_state_layer);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_hover_pressed_state_layer_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, TextureButton, unselected_focus_state_layer);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_icon_normal_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, text_icon_normal_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, text_icon_normal_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_icon_normal_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, selected_text_icon_normal_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, selected_text_icon_normal_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, selected_text_icon_normal_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, selected_text_icon_normal_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, unselected_text_icon_normal_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, unselected_text_icon_normal_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, unselected_text_icon_normal_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, unselected_text_icon_normal_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_icon_pressed_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, text_icon_pressed_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, text_icon_pressed_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_icon_pressed_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, selected_text_icon_pressed_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, selected_text_icon_pressed_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, selected_text_icon_pressed_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, selected_text_icon_pressed_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, unselected_text_icon_pressed_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, unselected_text_icon_pressed_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, unselected_text_icon_pressed_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, unselected_text_icon_pressed_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_icon_hover_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, text_icon_hover_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, text_icon_hover_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_icon_hover_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, selected_text_icon_hover_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, selected_text_icon_hover_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, selected_text_icon_hover_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, selected_text_icon_hover_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, unselected_text_icon_hover_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, unselected_text_icon_hover_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, unselected_text_icon_hover_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, unselected_text_icon_hover_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_icon_focus_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, text_icon_focus_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, text_icon_focus_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_icon_focus_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, selected_text_icon_focus_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, selected_text_icon_focus_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, selected_text_icon_focus_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, selected_text_icon_focus_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, unselected_text_icon_focus_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, unselected_text_icon_focus_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, unselected_text_icon_focus_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, unselected_text_icon_focus_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_icon_hover_pressed_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, text_icon_hover_pressed_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, text_icon_hover_pressed_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_icon_hover_pressed_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, selected_text_icon_hover_pressed_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, selected_text_icon_hover_pressed_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, selected_text_icon_hover_pressed_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, selected_text_icon_hover_pressed_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, unselected_text_icon_hover_pressed_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, unselected_text_icon_hover_pressed_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, unselected_text_icon_hover_pressed_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, unselected_text_icon_hover_pressed_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_icon_disabled_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, text_icon_disabled_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, text_icon_disabled_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_icon_disabled_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, selected_text_icon_disabled_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, selected_text_icon_disabled_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, selected_text_icon_disabled_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, selected_text_icon_disabled_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, unselected_text_icon_disabled_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, unselected_text_icon_disabled_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, unselected_text_icon_disabled_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, unselected_text_icon_disabled_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, TextureButton, default_stylebox);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, TextureButton, state_layer_stylebox);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, TextureButton, text_icon_font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, TextureButton, text_icon_font_size);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextureButton, icon_max_width);
+
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, text_icon_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextureButton, text_icon_color);
 }
 
 void TextureButton::set_texture_normal(const Ref<Texture2D> &p_normal) {
@@ -1181,10 +633,124 @@ bool TextureButton::is_flipped_v() const {
 	return vflip;
 }
 
+bool TextureButton::_has_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> TextureButton::_get_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			style = theme_cache.default_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+bool TextureButton::_has_current_focus_default_stylebox() const {
+	State cur_state = get_current_focus_state();
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> TextureButton::_get_current_focus_default_stylebox() const {
+	State cur_state = get_current_focus_state();
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			style = theme_cache.default_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+bool TextureButton::_has_current_state_layer_stylebox() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.state_layer_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.state_layer_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> TextureButton::_get_current_state_layer_stylebox() const {
+	State cur_state = get_current_state_with_focus();
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.state_layer_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.state_layer_stylebox.get_state_data_name(E))) {
+			style = theme_cache.state_layer_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+bool TextureButton::_has_current_text_icon_color() const {
+	State cur_state = get_current_state();
+	for (const State &E : theme_cache.text_icon_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.text_icon_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextureButton::_get_current_text_icon_color() const {
+	State cur_state = get_current_state();
+	Color cur_text_icon_color;
+
+	for (const State &E : theme_cache.text_icon_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.text_icon_color.get_state_data_name(E))) {
+			cur_text_icon_color = theme_cache.text_icon_color.get_data(E);
+			break;
+		}
+	}
+	return cur_text_icon_color;
+}
+
+bool TextureButton::_has_current_focus_text_icon_color() const {
+	State cur_state = get_current_focus_state();
+	for (const State &E : theme_cache.text_icon_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.text_icon_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextureButton::_get_current_focus_text_icon_color() const {
+	State cur_state = get_current_focus_state();
+	Color cur_text_icon_color;
+
+	for (const State &E : theme_cache.text_icon_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.text_icon_color.get_state_data_name(E))) {
+			cur_text_icon_color = theme_cache.text_icon_color.get_data(E);
+			break;
+		}
+	}
+	return cur_text_icon_color;
+}
+
 String TextureButton::_get_trans_text(const String &p_text_icon) {
 	Ref<Font> font = theme_cache.text_icon_font;
 	String local_name = font->get_path().get_file().get_basename();
-
 	Ref<Translation> trans = TranslationServer::get_singleton()->get_translation_object(local_name);
 	String result_text = "";
 	if (trans.is_valid()) {

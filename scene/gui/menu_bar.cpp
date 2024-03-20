@@ -347,7 +347,8 @@ void MenuBar::_notification(int p_what) {
 }
 
 int MenuBar::_get_index_at_point(const Point2 &p_point) const {
-	Ref<StyleBox> style = theme_cache.normal;
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+
 	int offset = 0;
 	Point2 point = p_point;
 	if (is_layout_rtl()) {
@@ -358,7 +359,11 @@ int MenuBar::_get_index_at_point(const Point2 &p_point) const {
 		if (menu_cache[i].hidden) {
 			continue;
 		}
-		Size2 size = menu_cache[i].text_buf->get_size() + style->get_minimum_size();
+
+		Size2 size = menu_cache[i].text_buf->get_size();
+		if (style.is_valid()) {
+			size += style->get_minimum_size();
+		}
 		if (point.x > offset && point.x < offset + size.x) {
 			if (point.y > 0 && point.y < size.y) {
 				return i;
@@ -372,18 +377,23 @@ int MenuBar::_get_index_at_point(const Point2 &p_point) const {
 Rect2 MenuBar::_get_menu_item_rect(int p_index) const {
 	ERR_FAIL_INDEX_V(p_index, menu_cache.size(), Rect2());
 
-	Ref<StyleBox> style = theme_cache.normal;
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 
 	int offset = 0;
 	for (int i = 0; i < p_index; i++) {
 		if (menu_cache[i].hidden) {
 			continue;
 		}
-		Size2 size = menu_cache[i].text_buf->get_size() + style->get_minimum_size();
+		Size2 size = menu_cache[i].text_buf->get_size();
+		if (style.is_valid()) {
+			size += style->get_minimum_size();
+		}
 		offset += size.x + theme_cache.h_separation;
 	}
-
-	Size2 size = menu_cache[p_index].text_buf->get_size() + style->get_minimum_size();
+	Size2 size = menu_cache[p_index].text_buf->get_size();
+	if (style.is_valid()) {
+		size += style->get_minimum_size();
+	}
 	if (is_layout_rtl()) {
 		return Rect2(Point2(get_size().x - offset - size.x, 0), size);
 	} else {
@@ -406,76 +416,63 @@ void MenuBar::_draw_menu_item(int p_index) {
 	Color color;
 	Ref<StyleBox> style;
 	Rect2 item_rect = _get_menu_item_rect(p_index);
-
+	State cur_state;
 	if (menu_cache[p_index].disabled) {
-		if (rtl && has_theme_stylebox(SNAME("disabled_mirrored"))) {
-			style = theme_cache.disabled_mirrored;
+		if (rtl) {
+			cur_state = State::DisabledNoneRTL;
 		} else {
-			style = theme_cache.disabled;
+			cur_state = State::DisabledNoneLTR;
 		}
-		if (!flat) {
-			style->draw(ci, item_rect);
-		}
-		color = theme_cache.font_disabled_color;
-	} else if (hovered && pressed && has_theme_stylebox("hover_pressed")) {
-		if (rtl && has_theme_stylebox(SNAME("hover_pressed_mirrored"))) {
-			style = theme_cache.hover_pressed_mirrored;
+	} else if (hovered && pressed) {
+		if (rtl) {
+			cur_state = State::HoverPressedNoneRTL;
 		} else {
-			style = theme_cache.hover_pressed;
-		}
-		if (!flat) {
-			style->draw(ci, item_rect);
-		}
-		if (has_theme_color(SNAME("font_hover_pressed_color"))) {
-			color = theme_cache.font_hover_pressed_color;
+			cur_state = State::HoverPressedNoneLTR;
 		}
 	} else if (pressed) {
-		if (rtl && has_theme_stylebox(SNAME("pressed_mirrored"))) {
-			style = theme_cache.pressed_mirrored;
+		if (rtl) {
+			cur_state = State::PressedNoneRTL;
 		} else {
-			style = theme_cache.pressed;
-		}
-		if (!flat) {
-			style->draw(ci, item_rect);
-		}
-		if (has_theme_color(SNAME("font_pressed_color"))) {
-			color = theme_cache.font_pressed_color;
-		} else {
-			color = theme_cache.font_color;
+			cur_state = State::PressedNoneLTR;
 		}
 	} else if (hovered) {
-		if (rtl && has_theme_stylebox(SNAME("hover_mirrored"))) {
-			style = theme_cache.hover_mirrored;
+		if (rtl) {
+			cur_state = State::HoverNoneRTL;
 		} else {
-			style = theme_cache.hover;
+			cur_state = State::HoverNoneLTR;
 		}
-		if (!flat) {
-			style->draw(ci, item_rect);
-		}
-		color = theme_cache.font_hover_color;
 	} else {
-		if (rtl && has_theme_stylebox(SNAME("normal_mirrored"))) {
-			style = theme_cache.normal_mirrored;
-		} else {
-			style = theme_cache.normal;
-		}
-		if (!flat) {
-			style->draw(ci, item_rect);
-		}
-		// Focus colors only take precedence over normal state.
 		if (has_focus()) {
-			color = theme_cache.font_focus_color;
+			if (rtl) {
+				cur_state = State::FocusNoneRTL;
+			} else {
+				cur_state = State::FocusNoneLTR;
+			}
 		} else {
-			color = theme_cache.font_color;
+			if (rtl) {
+				cur_state = State::NormalNoneRTL;
+			} else {
+				cur_state = State::NormalNoneLTR;
+			}
 		}
 	}
+	style = _get_current_default_stylebox_with_state(cur_state);
+	if (!flat) {
+		if(style.is_valid()){
+			style->draw(ci, item_rect);
+		}
+	}
+	color = _get_current_font_color_with_state(cur_state);
 
-	Point2 text_ofs = item_rect.position + Point2(style->get_margin(SIDE_LEFT), style->get_margin(SIDE_TOP));
+	Point2 text_ofs = item_rect.position;
+	if(style.is_valid()){
+		text_ofs += Point2(style->get_margin(SIDE_LEFT), style->get_margin(SIDE_TOP));
+	}
 
-	Color font_outline_color = theme_cache.font_outline_color;
-	int outline_size = theme_cache.outline_size;
-	if (outline_size > 0 && font_outline_color.a > 0) {
-		menu_cache[p_index].text_buf->draw_outline(ci, text_ofs, outline_size, font_outline_color);
+	Color font_outline_color = _get_current_font_outline_color_with_state(cur_state);
+	int font_outline_size = theme_cache.font_outline_size;
+	if (font_outline_size > 0 && font_outline_color.a > 0) {
+		menu_cache[p_index].text_buf->draw_outline(ci, text_ofs, font_outline_size, font_outline_color);
 	}
 	menu_cache[p_index].text_buf->draw(ci, text_ofs, color);
 }
@@ -635,6 +632,155 @@ void MenuBar::remove_child_notify(Node *p_child) {
 	update_minimum_size();
 }
 
+Ref<StyleBox> MenuBar::_get_current_default_stylebox_with_state(State p_state) const {
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			style = theme_cache.default_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+
+bool MenuBar::_has_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> MenuBar::_get_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	Ref<StyleBox> style;
+	style = _get_current_default_stylebox_with_state(cur_state);
+	return style;
+}
+
+bool MenuBar::_has_current_focus_default_stylebox() const {
+	State cur_state = get_current_focus_state();
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> MenuBar::_get_current_focus_default_stylebox() const {
+	State cur_state = get_current_focus_state();
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			style = theme_cache.default_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+bool MenuBar::_has_current_state_layer_stylebox() const {
+	State cur_state = get_current_state();
+	for (const State &E : theme_cache.state_layer_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.state_layer_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> MenuBar::_get_current_state_layer_stylebox() const {
+	State cur_state = get_current_state();
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.state_layer_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.state_layer_stylebox.get_state_data_name(E))) {
+			style = theme_cache.state_layer_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+bool MenuBar::_has_current_font_color() const {
+	State cur_state = get_current_state();
+	for (const State &E : theme_cache.font_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color MenuBar::_get_current_font_color_with_state(State p_state) const {
+	Color cur_font_color;
+
+	for (const State &E : theme_cache.font_color.get_search_order(p_state)) {
+		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
+			cur_font_color = theme_cache.font_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_color;
+}
+
+
+Color MenuBar::_get_current_font_color() const {
+	State cur_state = get_current_state();
+	Color cur_font_color;
+
+	for (const State &E : theme_cache.font_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
+			cur_font_color = theme_cache.font_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_color;
+}
+
+bool MenuBar::_has_current_font_outline_color() const {
+	State cur_state = get_current_state();
+	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color MenuBar::_get_current_font_outline_color_with_state(State p_state) const {
+	Color cur_font_outline_color;
+
+	for (const State &E : theme_cache.font_outline_color.get_search_order(p_state)) {
+		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
+			cur_font_outline_color = theme_cache.font_outline_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_outline_color;
+}
+
+
+
+Color MenuBar::_get_current_font_outline_color() const {
+	State cur_state = get_current_state();
+	Color cur_font_outline_color;
+
+	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
+			cur_font_outline_color = theme_cache.font_outline_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_outline_color;
+}
+
 void MenuBar::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_switch_on_hover", "enable"), &MenuBar::set_switch_on_hover);
 	ClassDB::bind_method(D_METHOD("is_switch_on_hover"), &MenuBar::is_switch_on_hover);
@@ -679,56 +825,17 @@ void MenuBar::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "language", PROPERTY_HINT_LOCALE_ID, ""), "set_language", "get_language");
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, MenuBar, default_color_scheme);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, MenuBar, default_stylebox);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, MenuBar, state_layer_stylebox);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, normal);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, normal_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, disabled);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, disabled_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, pressed);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, pressed_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, hover);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, hover_mirrored);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, hover_pressed);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, hover_pressed_mirrored);
-
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, MenuBar, font_color);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, MenuBar, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, MenuBar, font_size);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, MenuBar, outline_size);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, MenuBar, font_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_pressed_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, MenuBar, font_pressed_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_pressed_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_pressed_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_hover_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, MenuBar, font_hover_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_hover_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_hover_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_focus_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, MenuBar, font_focus_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_focus_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_focus_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_hover_pressed_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, MenuBar, font_hover_pressed_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_hover_pressed_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_hover_pressed_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_disabled_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, MenuBar, font_disabled_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_disabled_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_disabled_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_outline_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, MenuBar, font_outline_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_outline_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_outline_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_outline_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, MenuBar, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, MenuBar, font_outline_size);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, MenuBar, h_separation);
 }
@@ -815,14 +922,17 @@ Size2 MenuBar::get_minimum_size() const {
 		return Size2();
 	}
 
-	Ref<StyleBox> style = theme_cache.normal;
-
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 	Vector2 size;
 	for (int i = 0; i < menu_cache.size(); i++) {
 		if (menu_cache[i].hidden) {
 			continue;
 		}
-		Size2 sz = menu_cache[i].text_buf->get_size() + style->get_minimum_size();
+
+		Size2 sz = menu_cache[i].text_buf->get_size();
+		if (style.is_valid()) {
+			sz += style->get_minimum_size();
+		}
 		size.y = MAX(size.y, sz.y);
 		size.x += sz.x;
 	}

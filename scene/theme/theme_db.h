@@ -57,10 +57,10 @@ class ColorScheme;
 	ThemeIntData cur_theme_data_##m_prop;                                                                                                                                                               \
 	cur_theme_data_##m_prop.set_data_name(#m_prop);                                                                                                                                                     \
 	for (int i = 0; i < STATE_MAX; i++) {                                                                                                                                                               \
-		String cur_theme_data_state_##m_prop = cur_theme_data_##m_prop.get_state_data_name(static_cast<State>(i));                                                                                 \
+		String cur_theme_data_state_##m_prop = cur_theme_data_##m_prop.get_state_data_name(static_cast<State>(i));                                                                                      \
 		ThemeDB::get_singleton()->bind_class_item(m_data_type, get_class_static(), cur_theme_data_state_##m_prop, cur_theme_data_state_##m_prop, [i, cur_theme_data_state_##m_prop](Node *p_instance) { \
 			m_class *p_cast = Object::cast_to<m_class>(p_instance);                                                                                                                                     \
-			p_cast->theme_cache.m_prop.set_data(p_cast->get_theme_item(m_data_type, cur_theme_data_state_##m_prop), static_cast<State>(i));                                                                    \
+			p_cast->theme_cache.m_prop.set_data(p_cast->get_theme_item(m_data_type, cur_theme_data_state_##m_prop), static_cast<State>(i));                                                             \
 		});                                                                                                                                                                                             \
 	}
 

@@ -2987,6 +2987,50 @@ void Window::_mouse_leave_viewport() {
 	}
 }
 
+State Window::get_current_state() const {
+	const bool rtl = is_layout_rtl();
+	State cur_state;
+	if (rtl) {
+		cur_state = State::NormalNoneRTL;
+	} else {
+		cur_state = State::NormalNoneLTR;
+	}
+	return cur_state;
+}
+
+State Window::get_current_state_with_focus() const {
+	const bool rtl = is_layout_rtl();
+	State cur_state;
+	if (rtl) {
+		if(has_focus()){
+			cur_state = State::FocusNoneRTL;
+		}else{
+			cur_state = State::NormalNoneRTL;
+		}
+		
+	} else {
+		if(has_focus()){
+			cur_state = State::FocusNoneLTR;
+		}else{
+			cur_state = State::NormalNoneLTR;
+		}
+	}
+	return cur_state;
+}
+
+
+State Window::get_current_focus_state() const {
+	const bool rtl = is_layout_rtl();
+	State cur_state;
+	if (rtl) {
+		cur_state = State::FocusNoneRTL;
+	} else {
+		cur_state = State::FocusNoneLTR;
+	}
+	return cur_state;
+}
+
+
 void Window::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_title", "title"), &Window::set_title);
 	ClassDB::bind_method(D_METHOD("get_title"), &Window::get_title);

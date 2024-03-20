@@ -52,33 +52,6 @@ Color StyleBoxFlat::get_bg_color() const {
 	return bg_color;
 }
 
-void StyleBoxFlat::set_bg_color_scale(const Color &p_color) {
-	bg_color_scale = p_color;
-	custom_emit_changed();
-}
-
-Color StyleBoxFlat::get_bg_color_scale() const {
-	return bg_color_scale;
-}
-
-void StyleBoxFlat::set_shadow_color_scale(const Color &p_color) {
-	shadow_color_scale = p_color;
-	custom_emit_changed();
-}
-
-Color StyleBoxFlat::get_shadow_color_scale() const {
-	return shadow_color_scale;
-}
-
-void StyleBoxFlat::set_border_color_scale(const Color &p_color) {
-	border_color_scale = p_color;
-	custom_emit_changed();
-}
-
-Color StyleBoxFlat::get_border_color_scale() const {
-	return border_color_scale;
-}
-
 void StyleBoxFlat::set_border_color(const Color &p_color) {
 	border_color = p_color;
 	custom_emit_changed();
@@ -137,28 +110,28 @@ StyleBoxFlat::ElevationLevel StyleBoxFlat::get_elevation_level() const {
 
 void StyleBoxFlat::_update_color() {
 	if (color_scheme.is_valid()) {
-		const Color target_bg_color = color_scheme->get_color(bg_color_role) * bg_color_scale;
+		const Color target_bg_color = color_scheme->get_color(bg_color_role);
 		if (target_bg_color != bg_color) {
 			set_bg_color(target_bg_color);
 		}
-		const Color target_shadow_color = color_scheme->get_color(shadow_color_role) * shadow_color_scale;
+		const Color target_shadow_color = color_scheme->get_color(shadow_color_role);
 		if (target_shadow_color != shadow_color) {
 			set_shadow_color(target_shadow_color);
 		}
-		const Color target_border_color = color_scheme->get_color(border_color_role) * border_color_scale;
+		const Color target_border_color = color_scheme->get_color(border_color_role);
 		if (target_border_color != border_color) {
 			set_border_color(target_border_color);
 		}
 	} else if (default_color_scheme.is_valid()) {
-		const Color target_bg_color = default_color_scheme->get_color(bg_color_role) * bg_color_scale;
+		const Color target_bg_color = default_color_scheme->get_color(bg_color_role);
 		if (target_bg_color != bg_color) {
 			set_bg_color(target_bg_color);
 		}
-		const Color target_shadow_color = default_color_scheme->get_color(shadow_color_role) * shadow_color_scale;
+		const Color target_shadow_color = default_color_scheme->get_color(shadow_color_role);
 		if (target_shadow_color != shadow_color) {
 			set_shadow_color(target_shadow_color);
 		}
-		const Color target_border_color = default_color_scheme->get_color(border_color_role) * border_color_scale;
+		const Color target_border_color = default_color_scheme->get_color(border_color_role);
 		if (target_border_color != border_color) {
 			set_border_color(target_border_color);
 		}
@@ -755,15 +728,6 @@ void StyleBoxFlat::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_border_color", "color"), &StyleBoxFlat::set_border_color);
 	ClassDB::bind_method(D_METHOD("get_border_color"), &StyleBoxFlat::get_border_color);
 
-	ClassDB::bind_method(D_METHOD("set_bg_color_scale", "color"), &StyleBoxFlat::set_bg_color_scale);
-	ClassDB::bind_method(D_METHOD("get_bg_color_scale"), &StyleBoxFlat::get_bg_color_scale);
-
-	ClassDB::bind_method(D_METHOD("set_shadow_color_scale", "color"), &StyleBoxFlat::set_shadow_color_scale);
-	ClassDB::bind_method(D_METHOD("get_shadow_color_scale"), &StyleBoxFlat::get_shadow_color_scale);
-
-	ClassDB::bind_method(D_METHOD("set_border_color_scale", "color"), &StyleBoxFlat::set_border_color_scale);
-	ClassDB::bind_method(D_METHOD("get_border_color_scale"), &StyleBoxFlat::get_border_color_scale);
-
 	ClassDB::bind_method(D_METHOD("set_elevation_level", "elevation_level"), &StyleBoxFlat::set_elevation_level);
 	ClassDB::bind_method(D_METHOD("get_elevation_level"), &StyleBoxFlat::get_elevation_level);
 
@@ -815,7 +779,6 @@ void StyleBoxFlat::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "bg_color"), "set_bg_color", "get_bg_color");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "bg_color_role", PROPERTY_HINT_ENUM, color_role_hint), "set_bg_color_role", "get_bg_color_role");
-	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "bg_color_scale"), "set_bg_color_scale", "get_bg_color_scale");
 
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "draw_center"), "set_draw_center", "is_draw_center_enabled");
 	
@@ -830,7 +793,6 @@ void StyleBoxFlat::_bind_methods() {
 	ADD_GROUP("Border", "border_");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "border_color"), "set_border_color", "get_border_color");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "border_color_role", PROPERTY_HINT_ENUM, color_role_hint), "set_border_color_role", "get_border_color_role");
-	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "border_color_scale"), "set_border_color_scale", "get_border_color_scale");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "border_blend"), "set_border_blend", "get_border_blend");
 
 	ADD_GROUP("Corner Radius", "corner_radius_");
@@ -850,7 +812,6 @@ void StyleBoxFlat::_bind_methods() {
 	ADD_GROUP("Shadow", "shadow_");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "shadow_color"), "set_shadow_color", "get_shadow_color");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "shadow_color_role", PROPERTY_HINT_ENUM, color_role_hint), "set_shadow_color_role", "get_shadow_color_role");
-	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "shadow_color_scale"), "set_shadow_color_scale", "get_shadow_color_scale");
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "shadow_size", PROPERTY_HINT_RANGE, "0,100,1,or_greater,suffix:px"), "set_shadow_size", "get_shadow_size");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "shadow_offset", PROPERTY_HINT_NONE, "suffix:px"), "set_shadow_offset", "get_shadow_offset");

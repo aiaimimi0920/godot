@@ -480,6 +480,7 @@ public:
 	bool has_theme_constant_override(const StringName &p_name) const;
 	bool has_theme_color_role_override(const StringName &p_name) const;
 	bool has_theme_color_scheme_override(const StringName &p_name) const;
+	bool has_theme_str_override(const StringName &p_name) const;
 
 	bool has_theme_icon(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	bool has_theme_stylebox(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
@@ -489,6 +490,7 @@ public:
 	bool has_theme_constant(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	bool has_theme_color_role(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	bool has_theme_color_scheme(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
+	bool has_theme_str(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 
 	float get_theme_default_base_scale() const;
 	Ref<Font> get_theme_default_font() const;
@@ -507,6 +509,10 @@ public:
 	virtual DisplayServer::WindowID get_window_id() const override;
 
 	virtual Size2 _get_contents_minimum_size() const;
+
+	State get_current_state() const;
+	State get_current_state_with_focus() const;
+	State get_current_focus_state() const;
 
 	Window();
 	~Window();

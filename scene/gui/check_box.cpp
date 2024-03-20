@@ -74,7 +74,12 @@ Size2 CheckBox::get_minimum_size() const {
 	Size2 minsize = Button::get_minimum_size();
 	const Size2 tex_size = get_icon_size();
 	if (tex_size.width > 0 || tex_size.height > 0) {
-		const Size2 padding = _get_current_default_stylebox()->get_minimum_size();
+		Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+
+		Size2 padding = Size2(0, 0);
+		if (style.is_valid()) {
+			padding = style->get_minimum_size();
+		}
 		Size2 content_size = minsize - padding;
 		if (content_size.width > 0 && tex_size.width > 0) {
 			content_size.width += MAX(0, theme_cache.h_separation);
@@ -161,7 +166,7 @@ Ref<StyleBox> CheckBox::_get_current_state_layer_stylebox() const {
 
 void CheckBox::_notification(int p_what) {
 	switch (p_what) {
-		case NOTIFICATION_THEME_CHANGED:{
+		case NOTIFICATION_THEME_CHANGED: {
 			update_minimum_size();
 			queue_redraw();
 		} break;
@@ -237,7 +242,7 @@ void CheckBox::_notification(int p_what) {
 						if (is_pressed()) {
 							if (!selected_radio_check_text_icon_normal.is_empty()) {
 								cur_text_icon = selected_radio_check_text_icon_normal;
-								if(code_selected_radio_check_text_icon_normal.is_empty()){
+								if (code_selected_radio_check_text_icon_normal.is_empty()) {
 									code_selected_radio_check_text_icon_normal = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_selected_radio_check_text_icon_normal;
@@ -245,7 +250,7 @@ void CheckBox::_notification(int p_what) {
 						} else {
 							if (!unselected_radio_check_text_icon_normal.is_empty()) {
 								cur_text_icon = unselected_radio_check_text_icon_normal;
-								if(code_unselected_radio_check_text_icon_normal.is_empty()){
+								if (code_unselected_radio_check_text_icon_normal.is_empty()) {
 									code_unselected_radio_check_text_icon_normal = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_unselected_radio_check_text_icon_normal;
@@ -255,7 +260,7 @@ void CheckBox::_notification(int p_what) {
 						if (is_pressed()) {
 							if (!selected_check_text_icon_normal.is_empty()) {
 								cur_text_icon = selected_check_text_icon_normal;
-								if(code_selected_check_text_icon_normal.is_empty()){
+								if (code_selected_check_text_icon_normal.is_empty()) {
 									code_selected_check_text_icon_normal = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_selected_check_text_icon_normal;
@@ -263,7 +268,7 @@ void CheckBox::_notification(int p_what) {
 						} else {
 							if (!unselected_check_text_icon_normal.is_empty()) {
 								cur_text_icon = unselected_check_text_icon_normal;
-								if(code_unselected_check_text_icon_normal.is_empty()){
+								if (code_unselected_check_text_icon_normal.is_empty()) {
 									code_unselected_check_text_icon_normal = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_unselected_check_text_icon_normal;
@@ -279,21 +284,21 @@ void CheckBox::_notification(int p_what) {
 								if (selected_radio_check_text_icon_hover.is_empty()) {
 									if (selected_radio_check_text_icon_normal.is_empty()) {
 										cur_text_icon = selected_radio_check_text_icon_normal;
-										if(code_selected_radio_check_text_icon_normal.is_empty()){
+										if (code_selected_radio_check_text_icon_normal.is_empty()) {
 											code_selected_radio_check_text_icon_normal = _get_trans_text(cur_text_icon);
 										}
 										cur_code_text_icon = code_selected_radio_check_text_icon_normal;
 									}
 								} else {
 									cur_text_icon = selected_radio_check_text_icon_hover;
-									if(code_selected_radio_check_text_icon_hover.is_empty()){
+									if (code_selected_radio_check_text_icon_hover.is_empty()) {
 										code_selected_radio_check_text_icon_hover = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_selected_radio_check_text_icon_hover;
 								}
 							} else {
 								cur_text_icon = selected_radio_check_text_icon_pressed;
-								if(code_selected_radio_check_text_icon_pressed.is_empty()){
+								if (code_selected_radio_check_text_icon_pressed.is_empty()) {
 									code_selected_radio_check_text_icon_pressed = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_selected_radio_check_text_icon_pressed;
@@ -303,21 +308,21 @@ void CheckBox::_notification(int p_what) {
 								if (unselected_radio_check_text_icon_hover.is_empty()) {
 									if (unselected_radio_check_text_icon_normal.is_empty()) {
 										cur_text_icon = unselected_radio_check_text_icon_normal;
-										if(code_unselected_radio_check_text_icon_normal.is_empty()){
+										if (code_unselected_radio_check_text_icon_normal.is_empty()) {
 											code_unselected_radio_check_text_icon_normal = _get_trans_text(cur_text_icon);
 										}
 										cur_code_text_icon = code_unselected_radio_check_text_icon_normal;
 									}
 								} else {
 									cur_text_icon = unselected_radio_check_text_icon_hover;
-									if(code_unselected_radio_check_text_icon_hover.is_empty()){
+									if (code_unselected_radio_check_text_icon_hover.is_empty()) {
 										code_unselected_radio_check_text_icon_hover = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_unselected_radio_check_text_icon_hover;
 								}
 							} else {
 								cur_text_icon = unselected_radio_check_text_icon_pressed;
-								if(code_unselected_radio_check_text_icon_pressed.is_empty()){
+								if (code_unselected_radio_check_text_icon_pressed.is_empty()) {
 									code_unselected_radio_check_text_icon_pressed = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_unselected_radio_check_text_icon_pressed;
@@ -329,21 +334,21 @@ void CheckBox::_notification(int p_what) {
 								if (selected_check_text_icon_hover.is_empty()) {
 									if (selected_check_text_icon_normal.is_empty()) {
 										cur_text_icon = selected_check_text_icon_normal;
-										if(code_selected_check_text_icon_normal.is_empty()){
+										if (code_selected_check_text_icon_normal.is_empty()) {
 											code_selected_check_text_icon_normal = _get_trans_text(cur_text_icon);
 										}
 										cur_code_text_icon = code_selected_check_text_icon_normal;
 									}
 								} else {
 									cur_text_icon = selected_check_text_icon_hover;
-									if(code_selected_check_text_icon_hover.is_empty()){
+									if (code_selected_check_text_icon_hover.is_empty()) {
 										code_selected_check_text_icon_hover = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_selected_check_text_icon_hover;
 								}
 							} else {
 								cur_text_icon = selected_check_text_icon_pressed;
-								if(code_selected_check_text_icon_pressed.is_empty()){
+								if (code_selected_check_text_icon_pressed.is_empty()) {
 									code_selected_check_text_icon_pressed = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_selected_check_text_icon_pressed;
@@ -353,21 +358,21 @@ void CheckBox::_notification(int p_what) {
 								if (unselected_check_text_icon_hover.is_empty()) {
 									if (unselected_check_text_icon_normal.is_empty()) {
 										cur_text_icon = unselected_check_text_icon_normal;
-										if(code_unselected_check_text_icon_normal.is_empty()){
+										if (code_unselected_check_text_icon_normal.is_empty()) {
 											code_unselected_check_text_icon_normal = _get_trans_text(cur_text_icon);
 										}
 										cur_code_text_icon = code_unselected_check_text_icon_normal;
 									}
 								} else {
 									cur_text_icon = unselected_check_text_icon_hover;
-									if(code_unselected_check_text_icon_hover.is_empty()){
+									if (code_unselected_check_text_icon_hover.is_empty()) {
 										code_unselected_check_text_icon_hover = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_unselected_check_text_icon_hover;
 								}
 							} else {
 								cur_text_icon = unselected_check_text_icon_pressed;
-								if(code_unselected_check_text_icon_pressed.is_empty()){
+								if (code_unselected_check_text_icon_pressed.is_empty()) {
 									code_unselected_check_text_icon_pressed = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_unselected_check_text_icon_pressed;
@@ -381,20 +386,20 @@ void CheckBox::_notification(int p_what) {
 							if (selected_radio_check_text_icon_hover.is_empty()) {
 								if (!selected_radio_check_text_icon_pressed.is_empty() && is_pressed()) {
 									cur_text_icon = selected_radio_check_text_icon_pressed;
-									if(code_selected_radio_check_text_icon_pressed.is_empty()){
+									if (code_selected_radio_check_text_icon_pressed.is_empty()) {
 										code_selected_radio_check_text_icon_pressed = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_selected_radio_check_text_icon_pressed;
 								} else if (!selected_check_text_icon_normal.is_empty()) {
 									cur_text_icon = selected_radio_check_text_icon_normal;
-									if(code_selected_radio_check_text_icon_normal.is_empty()){
+									if (code_selected_radio_check_text_icon_normal.is_empty()) {
 										code_selected_radio_check_text_icon_normal = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_selected_radio_check_text_icon_normal;
 								}
 							} else {
 								cur_text_icon = selected_radio_check_text_icon_hover;
-								if(code_selected_radio_check_text_icon_hover.is_empty()){
+								if (code_selected_radio_check_text_icon_hover.is_empty()) {
 									code_selected_radio_check_text_icon_hover = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_selected_radio_check_text_icon_hover;
@@ -403,20 +408,20 @@ void CheckBox::_notification(int p_what) {
 							if (unselected_radio_check_text_icon_hover.is_empty()) {
 								if (!unselected_radio_check_text_icon_pressed.is_empty() && is_pressed()) {
 									cur_text_icon = unselected_radio_check_text_icon_pressed;
-									if(code_unselected_radio_check_text_icon_pressed.is_empty()){
+									if (code_unselected_radio_check_text_icon_pressed.is_empty()) {
 										code_unselected_radio_check_text_icon_pressed = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_unselected_radio_check_text_icon_pressed;
 								} else if (!unselected_radio_check_text_icon_normal.is_empty()) {
 									cur_text_icon = unselected_radio_check_text_icon_normal;
-									if(code_unselected_radio_check_text_icon_normal.is_empty()){
+									if (code_unselected_radio_check_text_icon_normal.is_empty()) {
 										code_unselected_radio_check_text_icon_normal = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_unselected_radio_check_text_icon_normal;
 								}
 							} else {
 								cur_text_icon = unselected_radio_check_text_icon_hover;
-								if(code_unselected_radio_check_text_icon_hover.is_empty()){
+								if (code_unselected_radio_check_text_icon_hover.is_empty()) {
 									code_unselected_radio_check_text_icon_hover = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_unselected_radio_check_text_icon_hover;
@@ -427,20 +432,20 @@ void CheckBox::_notification(int p_what) {
 							if (selected_check_text_icon_hover.is_empty()) {
 								if (!selected_check_text_icon_pressed.is_empty() && is_pressed()) {
 									cur_text_icon = selected_check_text_icon_pressed;
-									if(code_selected_check_text_icon_pressed.is_empty()){
+									if (code_selected_check_text_icon_pressed.is_empty()) {
 										code_selected_check_text_icon_pressed = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_selected_check_text_icon_pressed;
 								} else if (!selected_check_text_icon_normal.is_empty()) {
 									cur_text_icon = selected_check_text_icon_normal;
-									if(code_selected_check_text_icon_normal.is_empty()){
+									if (code_selected_check_text_icon_normal.is_empty()) {
 										code_selected_check_text_icon_normal = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_selected_check_text_icon_normal;
 								}
 							} else {
 								cur_text_icon = selected_check_text_icon_hover;
-								if(code_selected_check_text_icon_hover.is_empty()){
+								if (code_selected_check_text_icon_hover.is_empty()) {
 									code_selected_check_text_icon_hover = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_selected_check_text_icon_hover;
@@ -449,20 +454,20 @@ void CheckBox::_notification(int p_what) {
 							if (unselected_check_text_icon_hover.is_empty()) {
 								if (!unselected_check_text_icon_pressed.is_empty() && is_pressed()) {
 									cur_text_icon = unselected_check_text_icon_pressed;
-									if(code_unselected_check_text_icon_pressed.is_empty()){
+									if (code_unselected_check_text_icon_pressed.is_empty()) {
 										code_unselected_check_text_icon_pressed = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_unselected_check_text_icon_pressed;
 								} else if (!unselected_check_text_icon_normal.is_empty()) {
 									cur_text_icon = unselected_check_text_icon_normal;
-									if(code_unselected_check_text_icon_normal.is_empty()){
+									if (code_unselected_check_text_icon_normal.is_empty()) {
 										code_unselected_check_text_icon_normal = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_unselected_check_text_icon_normal;
 								}
 							} else {
 								cur_text_icon = unselected_check_text_icon_hover;
-								if(code_unselected_check_text_icon_hover.is_empty()){
+								if (code_unselected_check_text_icon_hover.is_empty()) {
 									code_unselected_check_text_icon_hover = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_unselected_check_text_icon_hover;
@@ -477,14 +482,14 @@ void CheckBox::_notification(int p_what) {
 							if (selected_radio_check_text_icon_disabled.is_empty()) {
 								if (!selected_radio_check_text_icon_normal.is_empty()) {
 									cur_text_icon = selected_radio_check_text_icon_normal;
-									if(code_selected_radio_check_text_icon_normal.is_empty()){
+									if (code_selected_radio_check_text_icon_normal.is_empty()) {
 										code_selected_radio_check_text_icon_normal = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_selected_radio_check_text_icon_normal;
 								}
 							} else {
 								cur_text_icon = selected_radio_check_text_icon_disabled;
-								if(code_selected_radio_check_text_icon_disabled.is_empty()){
+								if (code_selected_radio_check_text_icon_disabled.is_empty()) {
 									code_selected_radio_check_text_icon_disabled = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_selected_radio_check_text_icon_disabled;
@@ -493,14 +498,14 @@ void CheckBox::_notification(int p_what) {
 							if (unselected_radio_check_text_icon_disabled.is_empty()) {
 								if (!unselected_radio_check_text_icon_normal.is_empty()) {
 									cur_text_icon = unselected_radio_check_text_icon_normal;
-									if(code_unselected_radio_check_text_icon_normal.is_empty()){
+									if (code_unselected_radio_check_text_icon_normal.is_empty()) {
 										code_unselected_radio_check_text_icon_normal = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_unselected_radio_check_text_icon_normal;
 								}
 							} else {
 								cur_text_icon = unselected_radio_check_text_icon_disabled;
-								if(code_unselected_radio_check_text_icon_disabled.is_empty()){
+								if (code_unselected_radio_check_text_icon_disabled.is_empty()) {
 									code_unselected_radio_check_text_icon_disabled = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_unselected_radio_check_text_icon_disabled;
@@ -511,14 +516,14 @@ void CheckBox::_notification(int p_what) {
 							if (selected_check_text_icon_disabled.is_empty()) {
 								if (!selected_check_text_icon_normal.is_empty()) {
 									cur_text_icon = selected_check_text_icon_normal;
-									if(code_selected_check_text_icon_normal.is_empty()){
+									if (code_selected_check_text_icon_normal.is_empty()) {
 										code_selected_check_text_icon_normal = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_selected_check_text_icon_normal;
 								}
 							} else {
 								cur_text_icon = selected_check_text_icon_disabled;
-								if(code_selected_check_text_icon_disabled.is_empty()){
+								if (code_selected_check_text_icon_disabled.is_empty()) {
 									code_selected_check_text_icon_disabled = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_selected_check_text_icon_disabled;
@@ -527,14 +532,14 @@ void CheckBox::_notification(int p_what) {
 							if (unselected_check_text_icon_disabled.is_empty()) {
 								if (!unselected_check_text_icon_normal.is_empty()) {
 									cur_text_icon = unselected_check_text_icon_normal;
-									if(code_unselected_check_text_icon_normal.is_empty()){
+									if (code_unselected_check_text_icon_normal.is_empty()) {
 										code_unselected_check_text_icon_normal = _get_trans_text(cur_text_icon);
 									}
 									cur_code_text_icon = code_unselected_check_text_icon_normal;
 								}
 							} else {
 								cur_text_icon = unselected_check_text_icon_disabled;
-								if(code_unselected_check_text_icon_disabled.is_empty()){
+								if (code_unselected_check_text_icon_disabled.is_empty()) {
 									code_unselected_check_text_icon_disabled = _get_trans_text(cur_text_icon);
 								}
 								cur_code_text_icon = code_unselected_check_text_icon_disabled;
@@ -631,13 +636,13 @@ void CheckBox::_notification(int p_what) {
 				if (!cur_text_icon.is_empty()) {
 					text_icon_buf->clear();
 					text_icon_buf->set_width(cur_size.width);
-					
+
 					// Ref<Font> font = ThemeDB::get_singleton()->get_fallback_icon_font();
 
-					if(cur_code_text_icon.is_empty()) {
+					if (cur_code_text_icon.is_empty()) {
 						cur_code_text_icon = _get_trans_text(cur_text_icon);
 					}
-					
+
 					text_icon_buf->add_string(cur_code_text_icon, font, cur_size.width, "");
 					text_icon_buf->draw(ci, ofs, text_icon_font_color);
 				}
@@ -658,9 +663,9 @@ bool CheckBox::is_radio() {
 
 String CheckBox::_get_trans_text(const String &p_text_icon) {
 	Ref<Font> text_icon_font = theme_cache.text_icon_font;
-	
+
 	String local_name = text_icon_font->get_path().get_file().get_basename();
-	if(local_name.is_empty()){
+	if (local_name.is_empty()) {
 		local_name = text_icon_font->get_name();
 	}
 

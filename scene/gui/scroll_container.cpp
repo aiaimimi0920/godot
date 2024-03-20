@@ -77,7 +77,10 @@ Size2 ScrollContainer::get_minimum_size() const {
 		min_size.x += v_scroll->get_minimum_size().x;
 	}
 
-	min_size += theme_cache.panel_style->get_minimum_size();
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	if (style.is_valid()) {
+		min_size += style->get_minimum_size();
+	}
 	return min_size;
 }
 
@@ -296,8 +299,12 @@ void ScrollContainer::_reposition_children() {
 	Size2 size = get_size();
 	Point2 ofs;
 
-	size -= theme_cache.panel_style->get_minimum_size();
-	ofs += theme_cache.panel_style->get_offset();
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	if(style.is_valid()){
+		size -= style->get_minimum_size();
+		ofs += style->get_offset();
+	}
+
 	bool rtl = is_layout_rtl();
 
 	if (h_scroll->is_visible_in_tree() && h_scroll->get_parent() == this) { //scrolls may have been moved out for reasons
@@ -361,7 +368,7 @@ void ScrollContainer::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_DRAW: {
-			draw_style_box(theme_cache.panel_style, Rect2(Vector2(), get_size()));
+			draw_style_box(_get_current_default_stylebox(), Rect2(Vector2(), get_size()));
 		} break;
 
 		case NOTIFICATION_INTERNAL_PHYSICS_PROCESS: {
@@ -436,7 +443,10 @@ void ScrollContainer::_notification(int p_what) {
 
 void ScrollContainer::update_scrollbars() {
 	Size2 size = get_size();
-	size -= theme_cache.panel_style->get_minimum_size();
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	if (style.is_valid()) {
+		size -= style->get_minimum_size();
+	}
 
 	Size2 hmin = h_scroll->get_combined_minimum_size();
 	Size2 vmin = v_scroll->get_combined_minimum_size();
@@ -458,6 +468,37 @@ void ScrollContainer::update_scrollbars() {
 void ScrollContainer::_scroll_moved(float) {
 	queue_sort();
 };
+
+Ref<StyleBox> ScrollContainer::_get_current_default_stylebox_with_state(State p_state) const {
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.panel_style.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.panel_style.get_state_data_name(E))) {
+			style = theme_cache.panel_style.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+
+bool ScrollContainer::_has_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	for (const State &E : theme_cache.panel_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.panel_style.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> ScrollContainer::_get_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	Ref<StyleBox> style;
+	style = _get_current_default_stylebox_with_state(cur_state);
+
+	return style;
+}
 
 void ScrollContainer::set_h_scroll(int p_pos) {
 	h_scroll->set_value(p_pos);
@@ -620,7 +661,8 @@ void ScrollContainer::_bind_methods() {
 	BIND_ENUM_CONSTANT(SCROLL_MODE_SHOW_ALWAYS);
 	BIND_ENUM_CONSTANT(SCROLL_MODE_SHOW_NEVER);
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollContainer, panel_style, "panel");
+	// BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollContainer, panel_style, "panel");
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, ScrollContainer, panel_style);
 
 	GLOBAL_DEF("gui/common/default_scroll_deadzone", 0);
 };

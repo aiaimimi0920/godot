@@ -61,17 +61,21 @@ private:
 	Ref<TextParagraph> text_icon_buf;
 	Ref<TextParagraph> text_icon_focus_buf;
 
-	String code_text_icon_normal;
 	String text_icon_normal = "";
-	String code_text_icon_pressed;
+	String code_text_icon_normal;
+	
 	String text_icon_pressed = "";
-	String code_text_icon_hover;
+	String code_text_icon_pressed;
+	
 	String text_icon_hover = "";
-	String code_text_icon_disabled;
+	String code_text_icon_hover;
+	
 	String text_icon_disabled = "";
-	String code_text_icon_focused;
+	String code_text_icon_disabled;
+	
 	String text_icon_focused = "";
-
+	String code_text_icon_focused;
+	
 	Rect2 _texture_region;
 	Rect2 _position_rect;
 	bool _tile = false;
@@ -85,170 +89,22 @@ private:
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
-
-		Ref<StyleBox> normal;
-		Ref<StyleBox> normal_mirrored;
-		Ref<StyleBox> pressed;
-		Ref<StyleBox> pressed_mirrored;
-		Ref<StyleBox> hover;
-		Ref<StyleBox> hover_mirrored;
-		Ref<StyleBox> hover_pressed;
-		Ref<StyleBox> hover_pressed_mirrored;
-		Ref<StyleBox> disabled;
-		Ref<StyleBox> disabled_mirrored;
-		Ref<StyleBox> focus;
-
-		Ref<StyleBox> selected_normal;
-		Ref<StyleBox> selected_normal_mirrored;
-		Ref<StyleBox> selected_pressed;
-		Ref<StyleBox> selected_pressed_mirrored;
-		Ref<StyleBox> selected_hover;
-		Ref<StyleBox> selected_hover_mirrored;
-		Ref<StyleBox> selected_hover_pressed;
-		Ref<StyleBox> selected_hover_pressed_mirrored;
-		Ref<StyleBox> selected_disabled;
-		Ref<StyleBox> selected_disabled_mirrored;
-		Ref<StyleBox> selected_focus;
-	
-		Ref<StyleBox> unselected_normal;
-		Ref<StyleBox> unselected_normal_mirrored;
-		Ref<StyleBox> unselected_pressed;
-		Ref<StyleBox> unselected_pressed_mirrored;
-		Ref<StyleBox> unselected_hover;
-		Ref<StyleBox> unselected_hover_mirrored;
-		Ref<StyleBox> unselected_hover_pressed;
-		Ref<StyleBox> unselected_hover_pressed_mirrored;
-		Ref<StyleBox> unselected_disabled;
-		Ref<StyleBox> unselected_disabled_mirrored;
-		Ref<StyleBox> unselected_focus;
-
-		Ref<StyleBox> hover_state_layer;
-		Ref<StyleBox> hover_state_layer_mirrored;
-		Ref<StyleBox> pressed_state_layer;
-		Ref<StyleBox> pressed_state_layer_mirrored;
-		Ref<StyleBox> hover_pressed_state_layer;
-		Ref<StyleBox> hover_pressed_state_layer_mirrored;
-		Ref<StyleBox> focus_state_layer;
-
-		Ref<StyleBox> selected_hover_state_layer;
-		Ref<StyleBox> selected_hover_state_layer_mirrored;
-		Ref<StyleBox> selected_pressed_state_layer;
-		Ref<StyleBox> selected_pressed_state_layer_mirrored;
-		Ref<StyleBox> selected_hover_pressed_state_layer;
-		Ref<StyleBox> selected_hover_pressed_state_layer_mirrored;
-		Ref<StyleBox> selected_focus_state_layer;
-
-		Ref<StyleBox> unselected_hover_state_layer;
-		Ref<StyleBox> unselected_hover_state_layer_mirrored;
-		Ref<StyleBox> unselected_pressed_state_layer;
-		Ref<StyleBox> unselected_pressed_state_layer_mirrored;
-		Ref<StyleBox> unselected_hover_pressed_state_layer;
-		Ref<StyleBox> unselected_hover_pressed_state_layer_mirrored;
-		Ref<StyleBox> unselected_focus_state_layer;
-
-		Color text_icon_normal_color_scale;
-		Ref<ColorScheme> text_icon_normal_color_scheme;
-		ColorRole text_icon_normal_color_role;
-		Color text_icon_normal_color;
-
-		Color selected_text_icon_normal_color_scale;
-		Ref<ColorScheme> selected_text_icon_normal_color_scheme;
-		ColorRole selected_text_icon_normal_color_role;
-		Color selected_text_icon_normal_color;
-
-		Color unselected_text_icon_normal_color_scale;
-		Ref<ColorScheme> unselected_text_icon_normal_color_scheme;
-		ColorRole unselected_text_icon_normal_color_role;
-		Color unselected_text_icon_normal_color;
-
-		Color text_icon_pressed_color_scale;
-		Ref<ColorScheme> text_icon_pressed_color_scheme;
-		ColorRole text_icon_pressed_color_role;
-		Color text_icon_pressed_color;
-
-		Color selected_text_icon_pressed_color_scale;
-		Ref<ColorScheme> selected_text_icon_pressed_color_scheme;
-		ColorRole selected_text_icon_pressed_color_role;
-		Color selected_text_icon_pressed_color;
-
-		Color unselected_text_icon_pressed_color_scale;
-		Ref<ColorScheme> unselected_text_icon_pressed_color_scheme;
-		ColorRole unselected_text_icon_pressed_color_role;
-		Color unselected_text_icon_pressed_color;
-
-		Color text_icon_hover_color_scale;
-		Ref<ColorScheme> text_icon_hover_color_scheme;
-		ColorRole text_icon_hover_color_role;
-		Color text_icon_hover_color;
-
-		Color selected_text_icon_hover_color_scale;
-		Ref<ColorScheme> selected_text_icon_hover_color_scheme;
-		ColorRole selected_text_icon_hover_color_role;
-		Color selected_text_icon_hover_color;
-
-		Color unselected_text_icon_hover_color_scale;
-		Ref<ColorScheme> unselected_text_icon_hover_color_scheme;
-		ColorRole unselected_text_icon_hover_color_role;
-		Color unselected_text_icon_hover_color;
-
-		Color text_icon_focus_color_scale;
-		Ref<ColorScheme> text_icon_focus_color_scheme;
-		ColorRole text_icon_focus_color_role;
-		Color text_icon_focus_color;
-
-		Color selected_text_icon_focus_color_scale;
-		Ref<ColorScheme> selected_text_icon_focus_color_scheme;
-		ColorRole selected_text_icon_focus_color_role;
-		Color selected_text_icon_focus_color;
-
-		Color unselected_text_icon_focus_color_scale;
-		Ref<ColorScheme> unselected_text_icon_focus_color_scheme;
-		ColorRole unselected_text_icon_focus_color_role;
-		Color unselected_text_icon_focus_color;
-
-		Color text_icon_hover_pressed_color_scale;
-		Ref<ColorScheme> text_icon_hover_pressed_color_scheme;
-		ColorRole text_icon_hover_pressed_color_role;
-		Color text_icon_hover_pressed_color;
-
-		Color selected_text_icon_hover_pressed_color_scale;
-		Ref<ColorScheme> selected_text_icon_hover_pressed_color_scheme;
-		ColorRole selected_text_icon_hover_pressed_color_role;
-		Color selected_text_icon_hover_pressed_color;
-
-		Color unselected_text_icon_hover_pressed_color_scale;
-		Ref<ColorScheme> unselected_text_icon_hover_pressed_color_scheme;
-		ColorRole unselected_text_icon_hover_pressed_color_role;
-		Color unselected_text_icon_hover_pressed_color;
-
-		Color text_icon_disabled_color_scale;
-		Ref<ColorScheme> text_icon_disabled_color_scheme;
-		ColorRole text_icon_disabled_color_role;
-		Color text_icon_disabled_color;
-
-		Color selected_text_icon_disabled_color_scale;
-		Ref<ColorScheme> selected_text_icon_disabled_color_scheme;
-		ColorRole selected_text_icon_disabled_color_role;
-		Color selected_text_icon_disabled_color;
-
-		Color unselected_text_icon_disabled_color_scale;
-		Ref<ColorScheme> unselected_text_icon_disabled_color_scheme;
-		ColorRole unselected_text_icon_disabled_color_role;
-		Color unselected_text_icon_disabled_color;
+		ThemeStyleboxData default_stylebox{"default_stylebox"};
+		ThemeStyleboxData state_layer_stylebox{"state_layer_stylebox"};
 
 		Ref<Font> text_icon_font;
 		int text_icon_font_size = 0;
 
 		int icon_max_width = 0;
+
+		ThemeColorData text_icon_color{"text_icon_color"};
+		ThemeColorRoleData text_icon_color_role{"text_icon_color_role"};
+
 	} theme_cache;
 
 protected:
 	virtual Size2 get_minimum_size() const override;
 	virtual bool has_point(const Point2 &p_point) const override;
-
-	Ref<StyleBox> _get_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_state_layer_stylebox() const;
-	bool _is_show_state_layer();
 
 	void _notification(int p_what);
 	static void _bind_methods();
@@ -290,6 +146,20 @@ public:
 
 	void set_flip_v(bool p_flip);
 	bool is_flipped_v() const;
+
+
+	bool _has_current_default_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox() const;
+	bool _has_current_focus_default_stylebox() const;
+	Ref<StyleBox> _get_current_focus_default_stylebox() const;
+	bool _has_current_state_layer_stylebox() const;
+	Ref<StyleBox> _get_current_state_layer_stylebox() const;
+
+	bool _has_current_text_icon_color() const;
+	Color _get_current_text_icon_color() const;
+
+	bool _has_current_focus_text_icon_color() const;
+	Color _get_current_focus_text_icon_color() const;
 
 	TextureButton();
 };

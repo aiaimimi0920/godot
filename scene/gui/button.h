@@ -63,32 +63,30 @@ private:
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
+		ThemeStyleboxData default_stylebox{ "default_stylebox" };
+		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
 
-		ThemeStyleboxData default_stylebox;
-
-		ThemeStyleboxData state_layer_stylebox;
-
-		ThemeColorData font_color;
-		ThemeColorRoleData font_color_role;
+		ThemeColorData font_color{ "font_color" };
+		ThemeColorRoleData font_color_role{ "font_color_role" };
 		Ref<Font> font;
 		int font_size;
 
-		ThemeColorData font_outline_color;
-		ThemeColorRoleData font_outline_color_role;
+		ThemeColorData font_outline_color{ "font_outline_color" };
+		ThemeColorRoleData font_outline_color_role{ "font_outline_color_role" };
 		int font_outline_size;
 
 		Ref<Font> text_icon_font;
 		int text_icon_font_size;
-		
-		ThemeIconData icon;
-		ThemeColorData icon_color;
-		ThemeColorRoleData icon_color_role;
+
+		ThemeIconData icon{ "icon" };
+		ThemeColorData icon_color{"icon_color"};
+		ThemeColorRoleData icon_color_role{"icon_color_role"};
 
 		int icon_max_width;
 
-		ThemeStrData text_icon;
-		ThemeColorData text_icon_color;
-		ThemeColorRoleData text_icon_color_role;
+		ThemeStrData text_icon{"text_icon"};
+		ThemeColorData text_icon_color{"text_icon_color"};
+		ThemeColorRoleData text_icon_color_role{"text_icon_color_role"};
 
 		int h_separation;
 	} theme_cache;
@@ -111,7 +109,9 @@ protected:
 	Ref<Texture2D> _get_current_icon() const;
 	bool _has_current_text_icon() const;
 	String _get_current_text_icon() const;
+	bool _has_current_default_stylebox_with_state(State p_state) const;
 	bool _has_current_default_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
 	Ref<StyleBox> _get_current_default_stylebox() const;
 	bool _has_current_focus_default_stylebox() const;
 	Ref<StyleBox> _get_current_focus_default_stylebox() const;

@@ -43,7 +43,6 @@
 // class Texture2D;
 // class ColorScheme;
 
-
 enum State {
 	NormalNoneLTR,
 	PressedNoneLTR,
@@ -89,9 +88,6 @@ enum State {
 
 	STATE_MAX
 };
-
-
-
 
 static const Vector<State> search_order[STATE_MAX] = {
 	{
@@ -164,9 +160,13 @@ static const Vector<State> search_order[STATE_MAX] = {
 	{
 			State::FocusCheckedLTR,
 			State::FocusCheckedRTL,
+			State::NormalCheckedLTR,
+			State::NormalCheckedRTL,
 
 			State::FocusNoneLTR,
 			State::FocusNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
 	},
 	{
 			State::HoverPressedCheckedLTR,
@@ -231,9 +231,13 @@ static const Vector<State> search_order[STATE_MAX] = {
 	{
 			State::FocusUncheckedLTR,
 			State::FocusUncheckedRTL,
+			State::NormalUncheckedLTR,
+			State::NormalUncheckedRTL,
 
 			State::FocusNoneLTR,
 			State::FocusNoneRTL,
+			State::NormalNoneLTR,
+			State::NormalNoneRTL,
 	},
 	{
 			State::HoverPressedUncheckedLTR,
@@ -285,6 +289,9 @@ static const Vector<State> search_order[STATE_MAX] = {
 	{
 			State::FocusNoneRTL,
 			State::FocusNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
+
 	},
 	{
 			State::HoverPressedNoneRTL,
@@ -335,9 +342,13 @@ static const Vector<State> search_order[STATE_MAX] = {
 	{
 			State::FocusCheckedRTL,
 			State::FocusCheckedLTR,
+			State::NormalCheckedRTL,
+			State::NormalCheckedLTR,
 
 			State::FocusNoneRTL,
 			State::FocusNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
 	},
 	{
 			State::HoverPressedCheckedRTL,
@@ -402,9 +413,13 @@ static const Vector<State> search_order[STATE_MAX] = {
 	{
 			State::FocusUncheckedRTL,
 			State::FocusUncheckedLTR,
+			State::NormalUncheckedRTL,
+			State::NormalUncheckedLTR,
 
 			State::FocusNoneRTL,
 			State::FocusNoneLTR,
+			State::NormalNoneRTL,
+			State::NormalNoneLTR,
 	},
 	{
 			State::HoverPressedUncheckedRTL,
@@ -482,8 +497,6 @@ static const char *state_prefix_name[STATE_MAX] = {
 	"disabled_unchecked_mirrored_"
 };
 
-
-
 template <typename T>
 class ThemeData : public Object {
 	GDCLASS(ThemeData, Object);
@@ -541,17 +554,14 @@ public:
 
 	String get_state_data_name(State p_state = State::NormalNoneLTR) const;
 
-	T get_loop_data(State p_state = State::NormalNoneLTR) const;
-
 	T get_data(State p_state = State::NormalNoneLTR) const;
 	void set_data(T p_data, State p_state = State::NormalNoneLTR);
 
-	bool has_data(State p_state) const;
+	Vector<State> get_search_order(State p_state) const;
 
-	bool has_loop_data(State p_state) const;
-
-	ThemeData<T>() {};
-	~ThemeData<T>() {};
+	ThemeData<T>(const String &p_data_name):data_name(p_data_name){};
+	ThemeData<T>(){};
+	~ThemeData<T>(){};
 };
 
 template <typename T>
@@ -562,16 +572,6 @@ void ThemeData<T>::set_data_name(const String &p_data_name) {
 template <typename T>
 String ThemeData<T>::get_state_data_name(State p_state) const {
 	return state_prefix_name[p_state] + data_name;
-}
-
-template <typename T>
-T ThemeData<T>::get_loop_data(State p_state) const {
-	for (const State &E : search_order[p_state]) {
-		if (has_data(E)) {
-			return get_data(E);
-		}
-	}
-	return T();
 }
 
 template <typename T>
@@ -693,7 +693,6 @@ T ThemeData<T>::get_data(State p_state) const {
 
 template <typename T>
 void ThemeData<T>::set_data(T p_data, State p_state) {
-	has_data_map[p_state] = true;
 	switch (p_state) {
 		case State::NormalNoneLTR: {
 			data_cache.normal = p_data;
@@ -810,18 +809,8 @@ void ThemeData<T>::set_data(T p_data, State p_state) {
 }
 
 template <typename T>
-bool ThemeData<T>::has_data(State p_state) const {
-	return has_data_map[p_state];
-}
-
-template <typename T>
-bool ThemeData<T>::has_loop_data(State p_state) const {
-	for (const State &E : search_order[p_state]) {
-		if (has_data(E)) {
-			return true;
-		}
-	}
-	return false;
+Vector<State> ThemeData<T>::get_search_order(State p_state) const {
+	return search_order[p_state];
 }
 
 typedef ThemeData<Color> ThemeColorData;

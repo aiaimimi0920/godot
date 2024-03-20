@@ -67,12 +67,12 @@ ColorRole StyleBoxLine::get_color_role() const {
 
 void StyleBoxLine::_update_color() {
 	if (color_scheme.is_valid()) {
-		const Color target_color = color_scheme->get_color(color_role) * color_scale;
+		const Color target_color = color_scheme->get_color(color_role);
 		if (target_color != color) {
 			set_color(target_color);
 		}
 	} else if (default_color_scheme.is_valid()) {
-		const Color target_color = default_color_scheme->get_color(color_role) * color_scale;
+		const Color target_color = default_color_scheme->get_color(color_role);
 		if (target_color != color) {
 			set_color(target_color);
 		}
@@ -132,14 +132,6 @@ void StyleBoxLine::draw(RID p_canvas_item, const Rect2 &p_rect) const {
 	vs->canvas_item_add_rect(p_canvas_item, r, color);
 }
 
-void StyleBoxLine::set_color_scale(const Color &p_color) {
-	color_scale = p_color;
-	custom_emit_changed();
-}
-
-Color StyleBoxLine::get_color_scale() const {
-	return color_scale;
-}
 
 void StyleBoxLine::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_color", "color"), &StyleBoxLine::set_color);
@@ -155,11 +147,7 @@ void StyleBoxLine::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_vertical", "vertical"), &StyleBoxLine::set_vertical);
 	ClassDB::bind_method(D_METHOD("is_vertical"), &StyleBoxLine::is_vertical);
 
-	ClassDB::bind_method(D_METHOD("set_color_scale", "color"), &StyleBoxLine::set_color_scale);
-	ClassDB::bind_method(D_METHOD("get_color_scale"), &StyleBoxLine::get_color_scale);
-
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
-	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color_scale"), "set_color_scale", "get_color_scale");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "color_role", PROPERTY_HINT_ENUM, color_role_hint), "set_color_role", "get_color_role");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "grow_begin", PROPERTY_HINT_RANGE, "-300,300,1,suffix:px"), "set_grow_begin", "get_grow_begin");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "grow_end", PROPERTY_HINT_RANGE, "-300,300,1,suffix:px"), "set_grow_end", "get_grow_end");

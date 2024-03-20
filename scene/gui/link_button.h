@@ -58,47 +58,18 @@ private:
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
+		ThemeStyleboxData default_stylebox{ "default_stylebox" };
+		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
 
-		Ref<StyleBox> focus;
-
-		Color font_color_scale;
-		Ref<ColorScheme> font_color_scheme;
-		ColorRole font_color_role;
-		Color font_color;
-
-		Color font_pressed_color_scale;
-		Ref<ColorScheme> font_pressed_color_scheme;
-		ColorRole font_pressed_color_role;
-		Color font_pressed_color;
-
-		Color font_hover_color_scale;
-		Ref<ColorScheme> font_hover_color_scheme;
-		ColorRole font_hover_color_role;
-		Color font_hover_color;
-
-		Color font_focus_color_scale;
-		Ref<ColorScheme> font_focus_color_scheme;
-		ColorRole font_focus_color_role;
-		Color font_focus_color;
-
-		Color font_hover_pressed_color_scale;
-		Ref<ColorScheme> font_hover_pressed_color_scheme;
-		ColorRole font_hover_pressed_color_role;
-		Color font_hover_pressed_color;
-
-		Color font_disabled_color_scale;
-		Ref<ColorScheme> font_disabled_color_scheme;
-		ColorRole font_disabled_color_role;
-		Color font_disabled_color;
-
-		Color font_outline_color_scale;
-		Ref<ColorScheme> font_outline_color_scheme;
-		ColorRole font_outline_color_role;
-		Color font_outline_color;
-
+		ThemeColorData font_color{ "font_color" };
+		ThemeColorRoleData font_color_role{ "font_color_role" };
 		Ref<Font> font;
-		int font_size = 0;
-		int outline_size = 0;
+		int font_size;
+
+		ThemeColorData font_outline_color{ "font_outline_color" };
+		ThemeColorRoleData font_outline_color_role{ "font_outline_color_role" };		
+		int font_outline_size;
+
 		int underline_spacing = 0;
 	} theme_cache;
 
@@ -110,6 +81,20 @@ protected:
 
 	void _notification(int p_what);
 	static void _bind_methods();
+
+	bool _has_current_default_stylebox_with_state(State p_state) const;
+	bool _has_current_default_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_default_stylebox() const;
+	bool _has_current_focus_default_stylebox() const;
+	Ref<StyleBox> _get_current_focus_default_stylebox() const;
+	bool _has_current_state_layer_stylebox() const;
+	Ref<StyleBox> _get_current_state_layer_stylebox() const;
+	bool _has_current_font_color() const;
+	Color _get_current_font_color() const;
+	bool _has_current_font_outline_color() const;
+	Color _get_current_font_outline_color() const;
+
 
 public:
 	void set_text(const String &p_text);
@@ -133,6 +118,9 @@ public:
 	UnderlineMode get_underline_mode() const;
 
 	Ref<Font> get_button_font() const;
+
+
+
 
 	LinkButton(const String &p_text = String());
 };

@@ -153,13 +153,12 @@ class PopupMenu : public Popup {
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
+		ThemeStyleboxData default_stylebox{ "default_stylebox" };
+		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
 
-		Ref<StyleBox> panel_style;
-		Ref<StyleBox> hover_style;
-
-		Ref<StyleBox> separator_style;
-		Ref<StyleBox> labeled_separator_left;
-		Ref<StyleBox> labeled_separator_right;
+		ThemeStyleboxData separator_style{ "separator_style" };
+		ThemeStyleboxData labeled_separator_left{ "labeled_separator_left" };
+		ThemeStyleboxData labeled_separator_right{ "labeled_separator_right" };
 
 		int v_separation = 0;
 		int h_separation = 0;
@@ -168,59 +167,28 @@ class PopupMenu : public Popup {
 		int item_end_padding = 0;
 		int icon_max_width = 0;
 
-		Ref<Texture2D> checked;
-		Ref<Texture2D> checked_disabled;
-		Ref<Texture2D> unchecked;
-		Ref<Texture2D> unchecked_disabled;
-		Ref<Texture2D> radio_checked;
-		Ref<Texture2D> radio_checked_disabled;
-		Ref<Texture2D> radio_unchecked;
-		Ref<Texture2D> radio_unchecked_disabled;
-
-		Ref<Texture2D> submenu;
-		Ref<Texture2D> submenu_mirrored;
+		ThemeIconData icon{ "icon" };
+		ThemeIconData radio_icon{ "radio_icon" };
+		ThemeIconData submenu{ "submenu" };
 
 		Ref<Font> font;
-		int font_size = 0;
+		int font_size;
 		Ref<Font> font_separator;
 		int font_separator_size = 0;
+
+		ThemeColorData font_color{ "font_color" };
+		ThemeColorRoleData font_color_role{ "font_color_role" };
+		ThemeColorData font_accelerator_color{ "font_accelerator_color" };
+		ThemeColorRoleData font_accelerator_color_role{ "font_accelerator_color_role" };
 		int font_outline_size = 0;
+		ThemeColorData font_outline_color{ "font_outline_color" };
+		ThemeColorRoleData font_outline_color_role{ "font_outline_color_role" };
+
+		ThemeColorData font_separator_color{ "font_separator_color" };
+		ThemeColorRoleData font_separator_color_role{ "font_separator_color_role" };
 		int font_separator_outline_size = 0;
-
-		Color font_color_scale;
-		Ref<ColorScheme> font_color_scheme;
-		ColorRole font_color_role;
-		Color font_color;
-
-		Color font_hover_color_scale;
-		Ref<ColorScheme> font_hover_color_scheme;
-		ColorRole font_hover_color_role;
-		Color font_hover_color;
-
-		Color font_disabled_color_scale;
-		Ref<ColorScheme> font_disabled_color_scheme;
-		ColorRole font_disabled_color_role;
-		Color font_disabled_color;
-
-		Color font_accelerator_color_scale;
-		Ref<ColorScheme> font_accelerator_color_scheme;
-		ColorRole font_accelerator_color_role;
-		Color font_accelerator_color;
-
-		Color font_outline_color_scale;
-		Ref<ColorScheme> font_outline_color_scheme;
-		ColorRole font_outline_color_role;
-		Color font_outline_color;
-
-		Color font_separator_color_scale;
-		Ref<ColorScheme> font_separator_color_scheme;
-		ColorRole font_separator_color_role;
-		Color font_separator_color;
-
-		Color font_separator_outline_color_scale;
-		Ref<ColorScheme> font_separator_outline_color_scheme;
-		ColorRole font_separator_outline_color_role;
-		Color font_separator_outline_color;
+		ThemeColorData font_separator_outline_color{ "font_separator_outline_color" };
+		ThemeColorRoleData font_separator_outline_color_role{ "font_separator_outline_color_role" };
 	} theme_cache;
 
 	void _draw_items();
@@ -245,6 +213,57 @@ protected:
 	bool _property_can_revert(const StringName &p_name) const { return property_helper.property_can_revert(p_name); }
 	bool _property_get_revert(const StringName &p_name, Variant &r_property) const { return property_helper.property_get_revert(p_name, r_property); }
 	static void _bind_methods();
+
+	bool _has_current_default_stylebox_with_state(State p_state) const;
+	bool _has_current_default_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_default_stylebox() const;
+
+	bool _has_current_focus_default_stylebox() const;
+	Ref<StyleBox> _get_current_focus_default_stylebox() const;
+
+	bool _has_current_state_layer_stylebox() const;
+	Ref<StyleBox> _get_current_state_layer_stylebox() const;
+
+	bool _has_current_separator_style() const;
+	Ref<StyleBox> _get_current_separator_style() const;
+
+	bool _has_current_labeled_separator_left() const;
+	Ref<StyleBox> _get_current_labeled_separator_left() const;
+
+	bool _has_current_labeled_separator_right() const;
+	Ref<StyleBox> _get_current_labeled_separator_right() const;
+
+	bool _has_current_icon_with_state(State p_state) const;
+	bool _has_current_icon() const;
+	Ref<Texture2D> _get_current_icon_with_state(State p_state) const;
+	Ref<Texture2D> _get_current_icon() const;
+	bool _has_current_radio_icon_with_state(State p_state) const;
+	bool _has_current_radio_icon() const;
+	Ref<Texture2D> _get_current_radio_icon_with_state(State p_state) const;
+	Ref<Texture2D> _get_current_radio_icon() const;
+
+	bool _has_current_submenu_with_state(State p_state) const;
+	bool _has_current_submenu() const;
+	Ref<Texture2D> _get_current_submenu_with_state(State p_state) const;
+	Ref<Texture2D> _get_current_submenu() const;
+
+	bool _has_current_font_color_with_state(State p_state) const;
+	bool _has_current_font_color() const;
+	Color _get_current_font_color_with_state(State p_state) const;
+	Color _get_current_font_color() const;
+
+	bool _has_current_font_accelerator_color() const;
+	Color _get_current_font_accelerator_color() const;
+
+	bool _has_current_font_outline_color() const;
+	Color _get_current_font_outline_color() const;
+
+	bool _has_current_font_separator_color() const;
+	Color _get_current_font_separator_color() const;
+
+	bool _has_current_font_separator_outline_color() const;
+	Color _get_current_font_separator_outline_color() const;
 
 #ifndef DISABLE_DEPRECATED
 	void _add_shortcut_bind_compat_36493(const Ref<Shortcut> &p_shortcut, int p_id = -1, bool p_global = false);

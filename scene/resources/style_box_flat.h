@@ -93,10 +93,6 @@ private:
 
 	Color border_color = Color(0.8, 0.8, 0.8);
 
-	Color bg_color_scale = Color(0.6, 0.6, 0.6, 1);
-	Color shadow_color_scale = Color(1, 1, 1, 0.6);
-	Color border_color_scale = Color(0.8, 0.8, 0.8, 1);
-
 	ColorRole bg_color_role;
 	ColorRole shadow_color_role;
 	ColorRole border_color_role;
@@ -194,15 +190,6 @@ public:
 	virtual void draw(RID p_canvas_item, const Rect2 &p_rect) const override;
 
 	virtual void _update_color() override;
-
-	void set_bg_color_scale(const Color &p_color);
-	Color get_bg_color_scale() const;
-
-	void set_shadow_color_scale(const Color &p_color);
-	Color get_shadow_color_scale() const;
-
-	void set_border_color_scale(const Color &p_color);
-	Color get_border_color_scale() const;
 
 	void set_elevation_level(ElevationLevel p_elevation_level);
 	ElevationLevel get_elevation_level() const;

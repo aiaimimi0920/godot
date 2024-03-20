@@ -102,8 +102,11 @@ int Label::get_line_height(int p_line) const {
 }
 
 void Label::_shape() {
-	Ref<StyleBox> style = theme_cache.normal_style;
-	int width = (get_size().width - style->get_minimum_size().width);
+	int width = get_size().width;
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	if (style.is_valid()) {
+		width -= style->get_minimum_size().width;
+	}
 
 	if (dirty || font_dirty) {
 		if (dirty) {
@@ -291,7 +294,6 @@ void Label::_shape() {
 
 void Label::_update_visible() {
 	int line_spacing = settings.is_valid() ? settings->get_line_spacing() : theme_cache.line_spacing;
-	Ref<StyleBox> style = theme_cache.normal_style;
 	int lines_visible = lines_rid.size();
 
 	if (max_lines_visible >= 0 && lines_visible > max_lines_visible) {
@@ -421,19 +423,23 @@ void Label::_notification(int p_what) {
 
 			Size2 string_size;
 			Size2 size = get_size();
-			Ref<StyleBox> style = theme_cache.normal_style;
+			Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 			Ref<Font> font = (has_settings && settings->get_font().is_valid()) ? settings->get_font() : theme_cache.font;
-			Color font_color = has_settings ? settings->get_font_color() : theme_cache.font_color;
-			Color font_shadow_color = has_settings ? settings->get_shadow_color() : theme_cache.font_shadow_color;
+
+			Color font_color = has_settings ? settings->get_font_color() : _get_current_font_color();
+			Color font_shadow_color = has_settings ? settings->get_shadow_color() : _get_current_font_shadow_color();
 			Point2 shadow_ofs = has_settings ? settings->get_shadow_offset() : theme_cache.font_shadow_offset;
 			int line_spacing = has_settings ? settings->get_line_spacing() : theme_cache.line_spacing;
-			Color font_outline_color = has_settings ? settings->get_outline_color() : theme_cache.font_outline_color;
+			Color font_outline_color = has_settings ? settings->get_outline_color() : _get_current_font_outline_color();
 			int outline_size = has_settings ? settings->get_outline_size() : theme_cache.font_outline_size;
 			int shadow_outline_size = has_settings ? settings->get_shadow_size() : theme_cache.font_shadow_outline_size;
+
 			bool rtl = (TS->shaped_text_get_inferred_direction(text_rid) == TextServer::DIRECTION_RTL);
 			bool rtl_layout = is_layout_rtl();
 
-			style->draw(ci, Rect2(Point2(0, 0), get_size()));
+			if (style.is_valid()) {
+				style->draw(ci, Rect2(Point2(0, 0), get_size()));
+			}
 
 			float total_h = 0.0;
 			int lines_visible = 0;
@@ -441,8 +447,14 @@ void Label::_notification(int p_what) {
 			// Get number of lines to fit to the height.
 			for (int64_t i = lines_skipped; i < lines_rid.size(); i++) {
 				total_h += TS->shaped_text_get_size(lines_rid[i]).y + line_spacing;
-				if (total_h > (get_size().height - style->get_minimum_size().height + line_spacing)) {
-					break;
+				if (style.is_valid()) {
+					if (total_h > (get_size().height - style->get_minimum_size().height + line_spacing)) {
+						break;
+					}
+				} else {
+					if (total_h > (get_size().height + line_spacing)) {
+						break;
+					}
 				}
 				lines_visible++;
 			}
@@ -465,7 +477,10 @@ void Label::_notification(int p_what) {
 			}
 			int visible_glyphs = total_glyphs * visible_ratio;
 			int processed_glyphs = 0;
-			total_h += style->get_margin(SIDE_TOP) + style->get_margin(SIDE_BOTTOM);
+
+			if (style.is_valid()) {
+				total_h += style->get_margin(SIDE_TOP) + style->get_margin(SIDE_BOTTOM);
+			}
 
 			int vbegin = 0, vsep = 0;
 			if (lines_visible > 0) {
@@ -496,34 +511,63 @@ void Label::_notification(int p_what) {
 			}
 
 			Vector2 ofs;
-			ofs.y = style->get_offset().y + vbegin;
+			if (style.is_valid()) {
+				ofs.y = style->get_offset().y + vbegin;
+			} else {
+				ofs.y = vbegin;
+			}
+
 			for (int i = lines_skipped; i < last_line; i++) {
 				Size2 line_size = TS->shaped_text_get_size(lines_rid[i]);
 				ofs.x = 0;
 				ofs.y += TS->shaped_text_get_ascent(lines_rid[i]);
 				switch (horizontal_alignment) {
 					case HORIZONTAL_ALIGNMENT_FILL:
-						if (rtl && autowrap_mode != TextServer::AUTOWRAP_OFF) {
-							ofs.x = int(size.width - style->get_margin(SIDE_RIGHT) - line_size.width);
+						if (style.is_valid()) {
+							if (rtl && autowrap_mode != TextServer::AUTOWRAP_OFF) {
+								ofs.x = int(size.width - style->get_margin(SIDE_RIGHT) - line_size.width);
+							} else {
+								ofs.x = style->get_offset().x;
+							}
 						} else {
-							ofs.x = style->get_offset().x;
+							if (rtl && autowrap_mode != TextServer::AUTOWRAP_OFF) {
+								ofs.x = int(size.width - line_size.width);
+							} else {
+								ofs.x = 0;
+							}
 						}
 						break;
 					case HORIZONTAL_ALIGNMENT_LEFT: {
-						if (rtl_layout) {
-							ofs.x = int(size.width - style->get_margin(SIDE_RIGHT) - line_size.width);
+						if (style.is_valid()) {
+							if (rtl_layout) {
+								ofs.x = int(size.width - style->get_margin(SIDE_RIGHT) - line_size.width);
+							} else {
+								ofs.x = style->get_offset().x;
+							}
 						} else {
-							ofs.x = style->get_offset().x;
+							if (rtl_layout) {
+								ofs.x = int(size.width - line_size.width);
+							} else {
+								ofs.x = 0;
+							}
 						}
 					} break;
 					case HORIZONTAL_ALIGNMENT_CENTER: {
 						ofs.x = int(size.width - line_size.width) / 2;
 					} break;
 					case HORIZONTAL_ALIGNMENT_RIGHT: {
-						if (rtl_layout) {
-							ofs.x = style->get_offset().x;
+						if (style.is_valid()) {
+							if (rtl_layout) {
+								ofs.x = style->get_offset().x;
+							} else {
+								ofs.x = int(size.width - style->get_margin(SIDE_RIGHT) - line_size.width);
+							}
 						} else {
-							ofs.x = int(size.width - style->get_margin(SIDE_RIGHT) - line_size.width);
+							if (rtl_layout) {
+								ofs.x = 0;
+							} else {
+								ofs.x = int(size.width - line_size.width);
+							}
 						}
 					} break;
 				}
@@ -675,7 +719,7 @@ Rect2 Label::get_character_bounds(int p_pos) const {
 
 	bool has_settings = settings.is_valid();
 	Size2 size = get_size();
-	Ref<StyleBox> style = theme_cache.normal_style;
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 	int line_spacing = has_settings ? settings->get_line_spacing() : theme_cache.line_spacing;
 	bool rtl = (TS->shaped_text_get_inferred_direction(text_rid) == TextServer::DIRECTION_RTL);
 	bool rtl_layout = is_layout_rtl();
@@ -686,8 +730,14 @@ Rect2 Label::get_character_bounds(int p_pos) const {
 	// Get number of lines to fit to the height.
 	for (int64_t i = lines_skipped; i < lines_rid.size(); i++) {
 		total_h += TS->shaped_text_get_size(lines_rid[i]).y + line_spacing;
-		if (total_h > (get_size().height - style->get_minimum_size().height + line_spacing)) {
-			break;
+		if (style.is_valid()) {
+			if (total_h > (get_size().height - style->get_minimum_size().height + line_spacing)) {
+				break;
+			}
+		} else {
+			if (total_h > (get_size().height + line_spacing)) {
+				break;
+			}
 		}
 		lines_visible++;
 	}
@@ -704,7 +754,11 @@ Rect2 Label::get_character_bounds(int p_pos) const {
 		total_h += TS->shaped_text_get_size(lines_rid[i]).y + line_spacing;
 	}
 
-	total_h += style->get_margin(SIDE_TOP) + style->get_margin(SIDE_BOTTOM);
+	if (style.is_valid()) {
+		total_h += style->get_margin(SIDE_TOP) + style->get_margin(SIDE_BOTTOM);
+	} else {
+		total_h += 0;
+	}
 
 	int vbegin = 0, vsep = 0;
 	if (lines_visible > 0) {
@@ -735,33 +789,61 @@ Rect2 Label::get_character_bounds(int p_pos) const {
 	}
 
 	Vector2 ofs;
-	ofs.y = style->get_offset().y + vbegin;
+	if (style.is_valid()) {
+		ofs.y = style->get_offset().y + vbegin;
+	} else {
+		ofs.y = vbegin;
+	}
 	for (int i = lines_skipped; i < last_line; i++) {
 		Size2 line_size = TS->shaped_text_get_size(lines_rid[i]);
 		ofs.x = 0;
 		switch (horizontal_alignment) {
 			case HORIZONTAL_ALIGNMENT_FILL:
-				if (rtl && autowrap_mode != TextServer::AUTOWRAP_OFF) {
-					ofs.x = int(size.width - style->get_margin(SIDE_RIGHT) - line_size.width);
+				if (style.is_valid()) {
+					if (rtl && autowrap_mode != TextServer::AUTOWRAP_OFF) {
+						ofs.x = int(size.width - style->get_margin(SIDE_RIGHT) - line_size.width);
+					} else {
+						ofs.x = style->get_offset().x;
+					}
 				} else {
-					ofs.x = style->get_offset().x;
+					if (rtl && autowrap_mode != TextServer::AUTOWRAP_OFF) {
+						ofs.x = int(size.width - line_size.width);
+					} else {
+						ofs.x = 0;
+					}
 				}
 				break;
 			case HORIZONTAL_ALIGNMENT_LEFT: {
-				if (rtl_layout) {
-					ofs.x = int(size.width - style->get_margin(SIDE_RIGHT) - line_size.width);
+				if (style.is_valid()) {
+					if (rtl_layout) {
+						ofs.x = int(size.width - style->get_margin(SIDE_RIGHT) - line_size.width);
+					} else {
+						ofs.x = style->get_offset().x;
+					}
 				} else {
-					ofs.x = style->get_offset().x;
+					if (rtl_layout) {
+						ofs.x = int(size.width - line_size.width);
+					} else {
+						ofs.x = 0;
+					}
 				}
 			} break;
 			case HORIZONTAL_ALIGNMENT_CENTER: {
 				ofs.x = int(size.width - line_size.width) / 2;
 			} break;
 			case HORIZONTAL_ALIGNMENT_RIGHT: {
-				if (rtl_layout) {
-					ofs.x = style->get_offset().x;
+				if (style.is_valid()) {
+					if (rtl_layout) {
+						ofs.x = style->get_offset().x;
+					} else {
+						ofs.x = int(size.width - style->get_margin(SIDE_RIGHT) - line_size.width);
+					}
 				} else {
-					ofs.x = int(size.width - style->get_margin(SIDE_RIGHT) - line_size.width);
+					if (rtl_layout) {
+						ofs.x = 0;
+					} else {
+						ofs.x = int(size.width - line_size.width);
+					}
 				}
 			} break;
 		}
@@ -802,7 +884,13 @@ Size2 Label::get_minimum_size() const {
 
 	min_size.height = MAX(min_size.height, font->get_height(font_size) + font->get_spacing(TextServer::SPACING_TOP) + font->get_spacing(TextServer::SPACING_BOTTOM));
 
-	Size2 min_style = theme_cache.normal_style->get_minimum_size();
+	Size2 min_style = Size2(0, 0);
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+
+	if (style.is_valid()) {
+		min_style = style->get_minimum_size();
+	}
+
 	if (autowrap_mode != TextServer::AUTOWRAP_OFF) {
 		return Size2(1, (clip || overrun_behavior != TextServer::OVERRUN_NO_TRIMMING) ? 1 : min_size.height) + min_style;
 	} else {
@@ -838,14 +926,21 @@ int Label::get_line_count() const {
 }
 
 int Label::get_visible_line_count() const {
-	Ref<StyleBox> style = theme_cache.normal_style;
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+
 	int line_spacing = settings.is_valid() ? settings->get_line_spacing() : theme_cache.line_spacing;
 	int lines_visible = 0;
 	float total_h = 0.0;
 	for (int64_t i = lines_skipped; i < lines_rid.size(); i++) {
 		total_h += TS->shaped_text_get_size(lines_rid[i]).y + line_spacing;
-		if (total_h > (get_size().height - style->get_minimum_size().height + line_spacing)) {
-			break;
+		if (style.is_valid()) {
+			if (total_h > (get_size().height - style->get_minimum_size().height + line_spacing)) {
+				break;
+			}
+		} else {
+			if (total_h > (get_size().height + line_spacing)) {
+				break;
+			}
 		}
 		lines_visible++;
 	}
@@ -1143,6 +1238,145 @@ int Label::get_total_character_count() const {
 	return xl_text.length();
 }
 
+bool Label::_has_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> Label::_get_current_default_stylebox_with_state(State p_state) const {
+	Ref<StyleBox> style;
+	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			style = theme_cache.default_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+Ref<StyleBox> Label::_get_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	Ref<StyleBox> style;
+	style = _get_current_default_stylebox_with_state(cur_state);
+	return style;
+}
+
+bool Label::_has_current_focus_default_stylebox() const {
+	State cur_state = get_current_focus_state();
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> Label::_get_current_focus_default_stylebox() const {
+	State cur_state = get_current_focus_state();
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			style = theme_cache.default_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+State Label::get_current_state_with_focus() const {
+	const bool rtl = is_layout_rtl();
+	State cur_state;
+	if (has_focus()) {
+		if (rtl) {
+			cur_state = State::FocusNoneRTL;
+		} else {
+			cur_state = State::FocusNoneLTR;
+		}
+	} else {
+		if (rtl) {
+			cur_state = State::NormalNoneRTL;
+		} else {
+			cur_state = State::NormalNoneLTR;
+		}
+	}
+	return cur_state;
+}
+
+bool Label::_has_current_font_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color Label::_get_current_font_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_font_color;
+
+	for (const State &E : theme_cache.font_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
+			cur_font_color = theme_cache.font_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_color;
+}
+
+bool Label::_has_current_font_outline_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color Label::_get_current_font_outline_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_font_outline_color;
+
+	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
+			cur_font_outline_color = theme_cache.font_outline_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_outline_color;
+}
+
+bool Label::_has_current_font_shadow_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_shadow_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_shadow_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color Label::_get_current_font_shadow_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_font_shadow_color;
+
+	for (const State &E : theme_cache.font_shadow_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_shadow_color.get_state_data_name(E))) {
+			cur_font_shadow_color = theme_cache.font_shadow_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_shadow_color;
+}
+
 void Label::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_horizontal_alignment", "alignment"), &Label::set_horizontal_alignment);
 	ClassDB::bind_method(D_METHOD("get_horizontal_alignment"), &Label::get_horizontal_alignment);
@@ -1219,28 +1453,22 @@ void Label::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "structured_text_bidi_override_options"), "set_structured_text_bidi_override_options", "get_structured_text_bidi_override_options");
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Label, default_color_scheme);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, Label, default_stylebox);
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, Label, normal_style, "normal");
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, Label, font_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, Label, font_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, Label, font);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, Label, font_size);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Label, line_spacing);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, Label, font);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, Label, font_size);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Label, font_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Label, font_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_shadow_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Label, font_shadow_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Label, font_shadow_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_shadow_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, Label, font_shadow_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, Label, font_shadow_color);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, Label, font_shadow_offset.x, "shadow_offset_x");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, Label, font_shadow_offset.y, "shadow_offset_y");
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_outline_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Label, font_outline_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Label, font_outline_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_outline_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, Label, font_outline_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, Label, font_outline_color);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, Label, font_outline_size, "outline_size");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, Label, font_shadow_outline_size, "shadow_outline_size");
 }

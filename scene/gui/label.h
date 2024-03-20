@@ -72,30 +72,22 @@ private:
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
+		ThemeStyleboxData default_stylebox{"default_stylebox"};
 
-		Ref<StyleBox> normal_style;
+		ThemeColorData font_color{"font_color"};
+		ThemeColorRoleData font_color_role{"font_color_role"};
 		Ref<Font> font;
 
 		int font_size = 0;
 		int line_spacing = 0;
 
-		Color font_color_scale;
-		Ref<ColorScheme> font_color_scheme;
-		ColorRole font_color_role;
-		Color font_color;
-
-		Color font_shadow_color_scale;
-		Ref<ColorScheme> font_shadow_color_scheme;
-		ColorRole font_shadow_color_role;
-		Color font_shadow_color;
+		ThemeColorData font_shadow_color{"font_shadow_color"};
+		ThemeColorRoleData font_shadow_color_role{"font_shadow_color_role"};
 
 		Point2 font_shadow_offset;
 
-		Color font_outline_color_scale;
-		Ref<ColorScheme> font_outline_color_scheme;
-		ColorRole font_outline_color_role;
-		Color font_outline_color;
-
+		ThemeColorData font_outline_color{"font_outline_color"};
+		ThemeColorRoleData font_outline_color_role{"font_outline_color_role"};
 		int font_outline_size;
 		int font_shadow_outline_size;
 	} theme_cache;
@@ -181,6 +173,22 @@ public:
 	int get_visible_line_count() const;
 
 	Rect2 get_character_bounds(int p_pos) const;
+
+	State get_current_state_with_focus() const;
+
+	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
+	bool _has_current_default_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox() const;
+	bool _has_current_focus_default_stylebox() const;
+	Ref<StyleBox> _get_current_focus_default_stylebox() const;
+
+	bool _has_current_font_color() const;
+	Color _get_current_font_color() const;
+	bool _has_current_font_outline_color() const;
+	Color _get_current_font_outline_color() const;
+
+	bool _has_current_font_shadow_color() const;
+	Color _get_current_font_shadow_color() const;
 
 	Label(const String &p_text = String());
 	~Label();

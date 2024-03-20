@@ -36,7 +36,6 @@
 class StyleBoxLine : public StyleBox {
 	GDCLASS(StyleBoxLine, StyleBox);
 	Color color;
-	Color color_scale = Color(1, 1, 1, 1);
 	ColorRole color_role;
 	int thickness = 1;
 	bool vertical = false;
@@ -70,10 +69,7 @@ public:
 	virtual void _update_color() override;
 
 	virtual void draw(RID p_canvas_item, const Rect2 &p_rect) const override;
-
-	void set_color_scale(const Color &p_color);
-	Color get_color_scale() const;
-
+	
 	StyleBoxLine();
 	~StyleBoxLine();
 };
