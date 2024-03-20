@@ -2798,7 +2798,6 @@ bool PopupMenu::_has_current_icon() const {
 
 Ref<Texture2D> PopupMenu::_get_current_icon_with_state(State p_state) const {
 	Ref<Texture2D> cur_icon;
-
 	for (const State &E : theme_cache.icon.get_search_order(p_state)) {
 		if (has_theme_icon(theme_cache.icon.get_state_data_name(E))) {
 			cur_icon = theme_cache.icon.get_data(E);

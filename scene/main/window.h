@@ -33,6 +33,7 @@
 
 #include "scene/main/viewport.h"
 #include "scene/resources/theme.h"
+#include "scene/theme/theme_data.h"
 
 class Font;
 class Shortcut;
@@ -185,6 +186,7 @@ private:
 	Theme::ThemeConstantMap theme_constant_override;
 	Theme::ThemeColorRoleMap theme_color_role_override;
 	Theme::ThemeColorSchemeMap theme_color_scheme_override;
+	Theme::ThemeStrMap theme_str_override;
 
 	mutable HashMap<StringName, Theme::ThemeIconMap> theme_icon_cache;
 	mutable HashMap<StringName, Theme::ThemeStyleMap> theme_style_cache;
@@ -194,6 +196,7 @@ private:
 	mutable HashMap<StringName, Theme::ThemeConstantMap> theme_constant_cache;
 	mutable HashMap<StringName, Theme::ThemeColorRoleMap> theme_color_role_cache;
 	mutable HashMap<StringName, Theme::ThemeColorSchemeMap> theme_color_scheme_cache;
+	mutable HashMap<StringName, Theme::ThemeStrMap> theme_str_cache;
 
 	void _theme_changed();
 	void _notify_theme_override_changed();
@@ -447,6 +450,7 @@ public:
 	void add_theme_constant_override(const StringName &p_name, int p_constant);
 	void add_theme_color_role_override(const StringName &p_name, ColorRole p_color_role);
 	void add_theme_color_scheme_override(const StringName &p_name, const Ref<ColorScheme> &p_color_scheme);
+	void add_theme_str_override(const StringName &p_name, String p_str);
 
 	void remove_theme_icon_override(const StringName &p_name);
 	void remove_theme_style_override(const StringName &p_name);
@@ -456,6 +460,7 @@ public:
 	void remove_theme_constant_override(const StringName &p_name);
 	void remove_theme_color_role_override(const StringName &p_name);
 	void remove_theme_color_scheme_override(const StringName &p_name);
+	void remove_theme_str_override(const StringName &p_name);
 
 	Ref<Texture2D> get_theme_icon(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	Ref<StyleBox> get_theme_stylebox(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
@@ -463,9 +468,9 @@ public:
 	int get_theme_font_size(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	Color get_theme_color(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	int get_theme_constant(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
-
 	ColorRole get_theme_color_role(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	Ref<ColorScheme> get_theme_color_scheme(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
+	String get_theme_str(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 
 	Variant get_theme_item(Theme::DataType p_data_type, const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 #ifdef TOOLS_ENABLED

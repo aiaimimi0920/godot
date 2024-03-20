@@ -329,6 +329,10 @@ bool Control::_set(const StringName &p_name, const Variant &p_value) {
 			}
 			data.theme_color_scheme_override.erase(dname);
 			_notify_theme_override_changed();
+		} else if (name.begins_with("theme_override_strs/")) {
+			String dname = name.get_slicec('/', 1);
+			data.theme_str_override.erase(dname);
+			_notify_theme_override_changed();
 		} else {
 			return false;
 		}
@@ -357,6 +361,9 @@ bool Control::_set(const StringName &p_name, const Variant &p_value) {
 		} else if (name.begins_with("theme_override_color_schemes/")) {
 			String dname = name.get_slicec('/', 1);
 			add_theme_color_scheme_override(dname, p_value);
+		} else if (name.begins_with("theme_override_strs/")) {
+			String dname = name.get_slicec('/', 1);
+			add_theme_str_override(dname, p_value);
 		} else {
 			return false;
 		}
@@ -397,6 +404,9 @@ bool Control::_get(const StringName &p_name, Variant &r_ret) const {
 	} else if (sname.begins_with("theme_override_color_schemes/")) {
 		String name = sname.get_slicec('/', 1);
 		r_ret = data.theme_color_scheme_override.has(name) ? Variant(data.theme_color_scheme_override[name]) : Variant();
+	} else if (sname.begins_with("theme_override_strs/")) {
+		String name = sname.get_slicec('/', 1);
+		r_ret = data.theme_str_override.has(name) ? Variant(data.theme_str_override[name]) : Variant();
 	} else {
 		return false;
 	}
@@ -474,7 +484,7 @@ void Control::_get_property_list(List<PropertyInfo> *p_list) const {
 				if (data.theme_str_override.has(E.item_name)) {
 					usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
 				}
-				p_list->push_back(PropertyInfo(Variant::INT, PNAME("theme_override_strs") + String("/") + E.item_name, PROPERTY_HINT_NONE, "", usage));
+				p_list->push_back(PropertyInfo(Variant::STRING, PNAME("theme_override_strs") + String("/") + E.item_name, PROPERTY_HINT_NONE, "", usage));
 			} break;
 
 			default: {
@@ -2504,6 +2514,7 @@ void Control::_invalidate_theme_cache() {
 	data.theme_constant_cache.clear();
 	data.theme_color_role_cache.clear();
 	data.theme_color_scheme_cache.clear();
+	data.theme_str_cache.clear();
 }
 
 void Control::_update_theme_item_cache() {
@@ -2782,7 +2793,7 @@ ColorRole Control::get_theme_color_role(const StringName &p_name, const StringNa
 	ColorRole color_role = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR_ROLE, p_name, theme_types);
 	data.theme_color_role_cache[p_theme_type][p_name] = color_role;
 	const StringName targe_color_name = String(p_name).trim_suffix("_role");
-	get_theme_color(targe_color_name, p_theme_type);
+	Color color = get_theme_color(targe_color_name, p_theme_type);
 	return color_role;
 }
 
