@@ -182,66 +182,41 @@ private:
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
+		ThemeStyleboxData default_stylebox{ "default_stylebox" };
+		ThemeStyleboxData read_only_stylebox{ "read_only_stylebox" };
+		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
 
-		Ref<StyleBox> normal;
-		Ref<StyleBox> read_only;
-		Ref<StyleBox> focus;
-
+		ThemeColorData font_color{ "font_color" };
+		ThemeColorRoleData font_color_role{ "font_color_role" };
 		Ref<Font> font;
-		int font_size = 0;
+		int font_size;
 
-		Color font_color_scale;
-		Ref<ColorScheme> font_color_scheme;
-		ColorRole font_color_role;
-		Color font_color;
+		ThemeColorData font_uneditable_color{ "font_uneditable_color" };
+		ThemeColorRoleData font_uneditable_color_role{ "font_uneditable_color_role" };
 
-		Color font_uneditable_color_scale;
-		Ref<ColorScheme> font_uneditable_color_scheme;
-		ColorRole font_uneditable_color_role;
-		Color font_uneditable_color;
+		ThemeColorData font_selected_color{ "font_selected_color" };
+		ThemeColorRoleData font_selected_color_role{ "font_selected_color_role" };
 
-		Color font_selected_color_scale;
-		Ref<ColorScheme> font_selected_color_scheme;
-		ColorRole font_selected_color_role;
-		Color font_selected_color;
-
+		ThemeColorData font_outline_color{ "font_outline_color" };
+		ThemeColorRoleData font_outline_color_role{ "font_outline_color_role" };
 		int font_outline_size;
 
-		Color font_outline_color_scale;
-		Ref<ColorScheme> font_outline_color_scheme;
-		ColorRole font_outline_color_role;
-		Color font_outline_color;
-
-		Color font_placeholder_color_scale;
-		Ref<ColorScheme> font_placeholder_color_scheme;
-		ColorRole font_placeholder_color_role;
-		Color font_placeholder_color;
-
+		ThemeColorData font_placeholder_color{ "font_placeholder_color" };
+		ThemeColorRoleData font_placeholder_color_role{ "font_placeholder_color_role" };
+		
 		int caret_width = 0;
-
-		Color caret_color_scale;
-		Ref<ColorScheme> caret_color_scheme;
-		ColorRole caret_color_role;
-		Color caret_color;
+		ThemeColorData caret_color{ "caret_color" };
+		ThemeColorRoleData caret_color_role{ "caret_color_role" };
 
 		int minimum_character_width = 0;
 
-		Color selection_color_scale;
-		Ref<ColorScheme> selection_color_scheme;
-		ColorRole selection_color_role;
-		Color selection_color;
+		ThemeColorData selection_color{ "selection_color" };
+		ThemeColorRoleData selection_color_role{ "selection_color_role" };
 
 		Ref<Texture2D> clear_icon;
 
-		Color clear_button_color_scale;
-		Ref<ColorScheme> clear_button_color_scheme;
-		ColorRole clear_button_color_role;
-		Color clear_button_color;
-
-		Color clear_button_color_pressed_scale;
-		Ref<ColorScheme> clear_button_color_pressed_scheme;
-		ColorRole clear_button_color_pressed_role;
-		Color clear_button_color_pressed;
+		ThemeColorData clear_button_color{ "clear_button_color" };
+		ThemeColorRoleData clear_button_color_role{ "clear_button_color_role" };
 
 		float base_scale = 1.0;
 	} theme_cache;
@@ -297,6 +272,36 @@ protected:
 	virtual void unhandled_key_input(const Ref<InputEvent> &p_event) override;
 	virtual void gui_input(const Ref<InputEvent> &p_event) override;
 
+	bool _has_current_default_stylebox_with_state(State p_state) const;
+	bool _has_current_default_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_default_stylebox() const;
+	bool _has_current_focus_default_stylebox() const;
+	Ref<StyleBox> _get_current_focus_default_stylebox() const;
+	bool _has_current_state_layer_stylebox() const;
+	Ref<StyleBox> _get_current_state_layer_stylebox() const;
+	bool _has_current_read_only_stylebox() const;
+	Ref<StyleBox> _get_current_read_only_stylebox() const;
+
+	bool _has_current_font_color() const;
+	Color _get_current_font_color() const;
+	bool _has_current_font_uneditable_color() const;
+	Color _get_current_font_uneditable_color() const;
+	bool _has_current_font_selected_color() const;
+	Color _get_current_font_selected_color() const;
+	bool _has_current_font_outline_color() const;
+	Color _get_current_font_outline_color() const;
+	bool _has_current_font_placeholder_color() const;
+	Color _get_current_font_placeholder_color() const;
+	bool _has_current_caret_color() const;
+	Color _get_current_caret_color() const;
+	bool _has_current_selection_color() const;
+	Color _get_current_selection_color() const;
+
+	bool _has_current_clear_button_color_with_state(State p_state) const;
+	bool _has_current_clear_button_color() const;
+	Color _get_current_clear_button_color_with_state(State p_state) const;
+	Color _get_current_clear_button_color() const;
 public:
 	void set_horizontal_alignment(HorizontalAlignment p_alignment);
 	HorizontalAlignment get_horizontal_alignment() const;

@@ -550,48 +550,32 @@ private:
 	/* Visual. */
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
-
 		float base_scale = 1.0;
 
 		/* Search */
-		Color search_result_color_scale;
-		Ref<ColorScheme> search_result_color_scheme;
-		ColorRole search_result_color_role;
-		Color search_result_color = Color(1, 1, 1);
-
-		Color search_result_border_color_scale;
-		Ref<ColorScheme> search_result_border_color_scheme;
-		ColorRole search_result_border_color_role;
-		Color search_result_border_color = Color(1, 1, 1);
+		ThemeColorData search_result_color{ "search_result_color" };
+		ThemeColorRoleData search_result_color_role{ "search_result_color_role" };
+		ThemeColorData search_result_border_color{ "search_result_border_color" };
+		ThemeColorRoleData search_result_border_color_role{ "search_result_border_color_role" };
 
 		/* Caret */
-		int caret_width = 1;
-
-		Color caret_color_scale;
-		Ref<ColorScheme> caret_color_scheme;
-		ColorRole caret_color_role;
-		Color caret_color = Color(1, 1, 1);
-
-		Color caret_background_color_scale;
-		Ref<ColorScheme> caret_background_color_scheme;
-		ColorRole caret_background_color_role;
-		Color caret_background_color = Color(0, 0, 0);
+		int caret_width = 0;
+		ThemeColorData caret_color{ "caret_color" };
+		ThemeColorRoleData caret_color_role{ "caret_color_role" };
+		ThemeColorData caret_background_color{ "caret_background_color" };
+		ThemeColorRoleData caret_background_color_role{ "caret_background_color_role" };
 
 		/* Selection */
-		Color font_selected_color_scale;
-		Ref<ColorScheme> font_selected_color_scheme;
-		ColorRole font_selected_color_role;
-		Color font_selected_color = Color(0, 0, 0, 0);
+		ThemeColorData font_selected_color{ "font_selected_color" };
+		ThemeColorRoleData font_selected_color_role{ "font_selected_color_role" };
 
-		Color selection_color_scale;
-		Ref<ColorScheme> selection_color_scheme;
-		ColorRole selection_color_role;
-		Color selection_color = Color(1, 1, 1);
+		ThemeColorData selection_color{ "selection_color" };
+		ThemeColorRoleData selection_color_role{ "selection_color_role" };
 
 		/* Other visuals */
-		Ref<StyleBox> style_normal;
-		Ref<StyleBox> style_focus;
-		Ref<StyleBox> style_readonly;
+		ThemeStyleboxData default_stylebox{ "default_stylebox" };
+		ThemeStyleboxData read_only_stylebox{ "read_only_stylebox" };
+		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
 
 		Ref<Texture2D> tab_icon;
 		Ref<Texture2D> space_icon;
@@ -599,44 +583,29 @@ private:
 		Ref<Font> font;
 		int font_size = 16;
 
-		Color font_color_scale;
-		Ref<ColorScheme> font_color_scheme;
-		ColorRole font_color_role;
-		Color font_color = Color(1, 1, 1);
+		ThemeColorData font_color{ "font_color" };
+		ThemeColorRoleData font_color_role{ "font_color_role" };
 
-		Color font_readonly_color_scale;
-		Ref<ColorScheme> font_readonly_color_scheme;
-		ColorRole font_readonly_color_role;
-		Color font_readonly_color = Color(1, 1, 1);
+		ThemeColorData font_readonly_color{ "font_readonly_color" };
+		ThemeColorRoleData font_readonly_color_role{ "font_readonly_color_role" };
 
-		Color font_placeholder_color_scale;
-		Ref<ColorScheme> font_placeholder_color_scheme;
-		ColorRole font_placeholder_color_role;
-		Color font_placeholder_color = Color(1, 1, 1, 0.6);
-
-		int outline_size = 0;
-
-		Color outline_color_scale;
-		Ref<ColorScheme> outline_color_scheme;
-		ColorRole outline_color_role;
-		Color outline_color = Color(1, 1, 1);
+		ThemeColorData font_placeholder_color{ "font_placeholder_color" };
+		ThemeColorRoleData font_placeholder_color_role{ "font_placeholder_color_role" };
+		
+		ThemeColorData font_outline_color{ "font_outline_color" };
+		ThemeColorRoleData font_outline_color_role{ "font_outline_color_role" };
+		int font_outline_size = 0;
 
 		int line_spacing = 1;
 
-		Color background_color_scale;
-		Ref<ColorScheme> background_color_scheme;
-		ColorRole background_color_role;
-		Color background_color = Color(1, 1, 1);
+		ThemeColorData background_color{ "background_color" };
+		ThemeColorRoleData background_color_role{ "background_color_role" };
 
-		Color current_line_color_scale;
-		Ref<ColorScheme> current_line_color_scheme;
-		ColorRole current_line_color_role;
-		Color current_line_color = Color(1, 1, 1);
+		ThemeColorData current_line_color{ "current_line_color" };
+		ThemeColorRoleData current_line_color_role{ "current_line_color_role" };
 
-		Color word_highlighted_color_scale;
-		Ref<ColorScheme> word_highlighted_color_scheme;
-		ColorRole word_highlighted_color_role;
-		Color word_highlighted_color = Color(1, 1, 1);
+		ThemeColorData word_highlighted_color{ "word_highlighted_color" };
+		ThemeColorRoleData word_highlighted_color_role{ "word_highlighted_color_role" };
 	} theme_cache;
 
 	bool window_has_focus = true;
@@ -738,6 +707,52 @@ protected:
 	GDVIRTUAL1(_paste, int)
 	GDVIRTUAL1(_paste_primary_clipboard, int)
 
+	bool _has_current_default_stylebox_with_state(State p_state) const;
+	bool _has_current_default_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_default_stylebox() const;
+	bool _has_current_focus_default_stylebox() const;
+	Ref<StyleBox> _get_current_focus_default_stylebox() const;
+	bool _has_current_state_layer_stylebox() const;
+	Ref<StyleBox> _get_current_state_layer_stylebox() const;
+	bool _has_current_read_only_stylebox() const;
+	Ref<StyleBox> _get_current_read_only_stylebox() const;
+
+	bool _has_current_search_result_color() const;
+	Color _get_current_search_result_color() const;
+	bool _has_current_search_result_border_color() const;
+	Color _get_current_search_result_border_color() const;
+
+	bool _has_current_caret_color() const;
+	Color _get_current_caret_color() const;
+	bool _has_current_caret_background_color() const;
+	Color _get_current_caret_background_color() const;
+
+	bool _has_current_font_selected_color() const;
+	Color _get_current_font_selected_color() const;
+	bool _has_current_selection_color() const;
+	Color _get_current_selection_color() const;
+
+	bool _has_current_font_color() const;
+	Color _get_current_font_color() const;
+
+	bool _has_current_font_readonly_color() const;
+	Color _get_current_font_readonly_color() const;
+
+	bool _has_current_font_placeholder_color() const;
+	Color _get_current_font_placeholder_color() const;
+
+	bool _has_current_font_outline_color() const;
+	Color _get_current_font_outline_color() const;
+
+	bool _has_current_background_color() const;
+	Color _get_current_background_color() const;
+
+	bool _has_current_current_line_color() const;
+	Color _get_current_current_line_color() const;
+
+	bool _has_current_word_highlighted_color() const;
+	Color _get_current_word_highlighted_color() const;
 public:
 	/* General overrides. */
 	virtual void unhandled_key_input(const Ref<InputEvent> &p_event) override;

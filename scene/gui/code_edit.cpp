@@ -2485,6 +2485,24 @@ Ref<Texture2D> CodeEdit::_get_folded_eol_icon() const {
 	return theme_cache.folded_eol_icon;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void CodeEdit::_bind_methods() {
 	/* Indent management */
 	ClassDB::bind_method(D_METHOD("set_indent_size", "size"), &CodeEdit::set_indent_size);

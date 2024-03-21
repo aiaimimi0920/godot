@@ -757,7 +757,10 @@ bool LineEdit::_is_over_clear_button(const Point2 &p_pos) const {
 		return false;
 	}
 	Ref<Texture2D> icon = theme_cache.clear_icon;
-	int x_ofs = theme_cache.normal->get_margin(SIDE_RIGHT);
+
+	Ref<StyleBox> normal_style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+
+	int x_ofs = normal_style->get_margin(SIDE_RIGHT);
 	return p_pos.x > get_size().width - icon->get_width() - x_ofs;
 }
 
@@ -833,9 +836,9 @@ void LineEdit::_notification(int p_what) {
 
 			RID ci = get_canvas_item();
 
-			Ref<StyleBox> style = theme_cache.normal;
+			Ref<StyleBox> style = _get_current_default_stylebox();
 			if (!is_editable()) {
-				style = theme_cache.read_only;
+				style = _get_current_read_only_stylebox();
 			}
 			Ref<Font> font = theme_cache.font;
 
@@ -844,7 +847,7 @@ void LineEdit::_notification(int p_what) {
 			}
 
 			if (has_focus()) {
-				theme_cache.focus->draw(ci, Rect2(Point2(), size));
+				_get_current_focus_default_stylebox()->draw(ci, Rect2(Point2(), size));
 			}
 
 			int x_ofs = 0;
@@ -882,19 +885,19 @@ void LineEdit::_notification(int p_what) {
 			int y_area = height - style->get_minimum_size().height;
 			int y_ofs = style->get_offset().y + (y_area - text_height) / 2;
 
-			Color selection_color = theme_cache.selection_color;
+			Color selection_color = _get_current_selection_color();
 			Color font_color;
 			if (is_editable()) {
-				font_color = theme_cache.font_color;
+				font_color = _get_current_font_color();
 			} else {
-				font_color = theme_cache.font_uneditable_color;
+				font_color = _get_current_font_uneditable_color();
 			}
-			Color font_selected_color = theme_cache.font_selected_color;
-			Color caret_color = theme_cache.caret_color;
+			Color font_selected_color = _get_current_font_selected_color();
+			Color caret_color = _get_current_caret_color();
 
 			// Draw placeholder color.
 			if (using_placeholder) {
-				font_color = theme_cache.font_placeholder_color;
+				font_color = _get_current_font_placeholder_color();
 			}
 
 			bool display_clear_icon = !using_placeholder && is_editable() && clear_button_enabled;
@@ -903,9 +906,9 @@ void LineEdit::_notification(int p_what) {
 				Color color_icon(1, 1, 1, !is_editable() ? .5 * .9 : .9);
 				if (display_clear_icon) {
 					if (clear_button_status.press_attempt && clear_button_status.pressing_inside) {
-						color_icon = theme_cache.clear_button_color_pressed;
+						color_icon = _get_current_clear_button_color_with_state(State::PressedNoneLTR);
 					} else {
-						color_icon = theme_cache.clear_button_color;
+						color_icon = _get_current_clear_button_color_with_state(State::NormalNoneLTR);
 					}
 				}
 
@@ -945,7 +948,7 @@ void LineEdit::_notification(int p_what) {
 
 			// Draw text.
 			ofs.y += TS->shaped_text_get_ascent(text_rid);
-			Color font_outline_color = theme_cache.font_outline_color;
+			Color font_outline_color = _get_current_font_outline_color();
 			int outline_size = theme_cache.font_outline_size;
 			if (outline_size > 0 && font_outline_color.a > 0) {
 				Vector2 oofs = ofs;
@@ -1299,7 +1302,7 @@ void LineEdit::shift_selection_check_post(bool p_shift) {
 }
 
 void LineEdit::set_caret_at_pixel_pos(int p_x) {
-	Ref<StyleBox> style = theme_cache.normal;
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 	bool rtl = is_layout_rtl();
 
 	int x_ofs = 0;
@@ -1350,7 +1353,8 @@ void LineEdit::set_caret_at_pixel_pos(int p_x) {
 }
 
 Vector2 LineEdit::get_caret_pixel_pos() {
-	Ref<StyleBox> style = theme_cache.normal;
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+
 	bool rtl = is_layout_rtl();
 
 	int x_ofs = 0;
@@ -1690,7 +1694,8 @@ void LineEdit::set_caret_column(int p_column) {
 		return;
 	}
 
-	Ref<StyleBox> style = theme_cache.normal;
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+
 	bool rtl = is_layout_rtl();
 
 	int x_ofs = 0;
@@ -1805,7 +1810,8 @@ void LineEdit::clear_internal() {
 }
 
 Size2 LineEdit::get_minimum_size() const {
-	Ref<StyleBox> style = theme_cache.normal;
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+
 	Ref<Font> font = theme_cache.font;
 	int font_size = theme_cache.font_size;
 
@@ -2358,7 +2364,7 @@ void LineEdit::_shape() {
 
 void LineEdit::_fit_to_width() {
 	if (alignment == HORIZONTAL_ALIGNMENT_FILL) {
-		Ref<StyleBox> style = theme_cache.normal;
+		Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 		int t_width = get_size().width - style->get_margin(SIDE_RIGHT) - style->get_margin(SIDE_LEFT);
 		bool using_placeholder = text.is_empty() && ime_text.is_empty();
 		bool display_clear_icon = !using_placeholder && is_editable() && clear_button_enabled;
@@ -2535,6 +2541,309 @@ void LineEdit::_validate_property(PropertyInfo &p_property) const {
 	}
 }
 
+
+bool LineEdit::_has_current_default_stylebox_with_state(State p_state) const {
+	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
+bool LineEdit::_has_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	return _has_current_default_stylebox_with_state(cur_state);
+}
+
+Ref<StyleBox> LineEdit::_get_current_default_stylebox_with_state(State p_state) const {
+	Ref<StyleBox> style;
+	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			style = theme_cache.default_stylebox.get_data(E);
+			break; 
+		}
+	}
+	return style;
+}
+
+Ref<StyleBox> LineEdit::_get_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	Ref<StyleBox> style;
+	style = _get_current_default_stylebox_with_state(cur_state);
+	return style;
+}
+
+bool LineEdit::_has_current_focus_default_stylebox() const {
+	State cur_state = get_current_focus_state();
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> LineEdit::_get_current_focus_default_stylebox() const {
+	State cur_state = get_current_focus_state();
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			style = theme_cache.default_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+bool LineEdit::_has_current_state_layer_stylebox() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.state_layer_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.state_layer_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> LineEdit::_get_current_state_layer_stylebox() const {
+	State cur_state = get_current_state_with_focus();
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.state_layer_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.state_layer_stylebox.get_state_data_name(E))) {
+			style = theme_cache.state_layer_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+
+bool LineEdit::_has_current_read_only_stylebox() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.read_only_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.read_only_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> LineEdit::_get_current_read_only_stylebox() const {
+	State cur_state = get_current_state_with_focus();
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.read_only_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.read_only_stylebox.get_state_data_name(E))) {
+			style = theme_cache.read_only_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+
+bool LineEdit::_has_current_font_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color LineEdit::_get_current_font_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_font_color;
+
+	for (const State &E : theme_cache.font_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
+			cur_font_color = theme_cache.font_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_color;
+}
+
+bool LineEdit::_has_current_font_uneditable_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_uneditable_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_uneditable_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color LineEdit::_get_current_font_uneditable_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_font_color;
+
+	for (const State &E : theme_cache.font_uneditable_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_uneditable_color.get_state_data_name(E))) {
+			cur_font_color = theme_cache.font_uneditable_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_color;
+}
+
+bool LineEdit::_has_current_font_selected_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_selected_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_selected_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color LineEdit::_get_current_font_selected_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_font_color;
+
+	for (const State &E : theme_cache.font_selected_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_selected_color.get_state_data_name(E))) {
+			cur_font_color = theme_cache.font_selected_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_color;
+}
+
+bool LineEdit::_has_current_font_outline_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color LineEdit::_get_current_font_outline_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_font_outline_color;
+
+	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
+			cur_font_outline_color = theme_cache.font_outline_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_outline_color;
+}
+
+bool LineEdit::_has_current_font_placeholder_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_placeholder_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_placeholder_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color LineEdit::_get_current_font_placeholder_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_font_outline_color;
+
+	for (const State &E : theme_cache.font_placeholder_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_placeholder_color.get_state_data_name(E))) {
+			cur_font_outline_color = theme_cache.font_placeholder_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_outline_color;
+}
+
+
+bool LineEdit::_has_current_caret_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.caret_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.caret_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color LineEdit::_get_current_caret_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_font_outline_color;
+
+	for (const State &E : theme_cache.caret_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.caret_color.get_state_data_name(E))) {
+			cur_font_outline_color = theme_cache.caret_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_outline_color;
+}
+
+
+bool LineEdit::_has_current_selection_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.selection_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.selection_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color LineEdit::_get_current_selection_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_font_outline_color;
+
+	for (const State &E : theme_cache.selection_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.selection_color.get_state_data_name(E))) {
+			cur_font_outline_color = theme_cache.selection_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_outline_color;
+}
+
+bool LineEdit::_has_current_clear_button_color_with_state(State p_state) const {
+	for (const State &E : theme_cache.clear_button_color.get_search_order(p_state)) {
+		if (has_theme_color(theme_cache.clear_button_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
+bool LineEdit::_has_current_clear_button_color() const {
+	State cur_state = get_current_state_with_focus();
+	return _has_current_clear_button_color_with_state(cur_state);
+}
+
+Color LineEdit::_get_current_clear_button_color_with_state(State p_state) const {
+	Color cur_font_outline_color;
+	for (const State &E : theme_cache.clear_button_color.get_search_order(p_state)) {
+		if (has_theme_color(theme_cache.clear_button_color.get_state_data_name(E))) {
+			cur_font_outline_color = theme_cache.clear_button_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_outline_color;
+}
+
+Color LineEdit::_get_current_clear_button_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_font_outline_color;
+	cur_font_outline_color = _get_current_clear_button_color_with_state(cur_state);
+	return cur_font_outline_color;
+}
+
+
+
 void LineEdit::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_horizontal_alignment", "alignment"), &LineEdit::set_horizontal_alignment);
 	ClassDB::bind_method(D_METHOD("get_horizontal_alignment"), &LineEdit::get_horizontal_alignment);
@@ -2695,67 +3004,44 @@ void LineEdit::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "structured_text_bidi_override", PROPERTY_HINT_ENUM, "Default,URI,File,Email,List,None,Custom"), "set_structured_text_bidi_override", "get_structured_text_bidi_override");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "structured_text_bidi_override_options"), "set_structured_text_bidi_override_options", "get_structured_text_bidi_override_options");
 
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, LineEdit, default_color_scheme);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, LineEdit, default_stylebox);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, LineEdit, read_only_stylebox);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, LineEdit, state_layer_stylebox);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, LineEdit, normal);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, LineEdit, read_only);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, LineEdit, focus);
-
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, LineEdit, font_color);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, LineEdit, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, LineEdit, font_size);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, LineEdit, font_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_uneditable_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, LineEdit, font_uneditable_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_uneditable_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, LineEdit, font_uneditable_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_uneditable_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_uneditable_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_selected_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, LineEdit, font_selected_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_selected_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, LineEdit, font_selected_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_selected_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_selected_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_outline_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, LineEdit, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, LineEdit, font_outline_size);
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, LineEdit, font_outline_size, "outline_size");
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_outline_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, LineEdit, font_outline_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_outline_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_outline_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_placeholder_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, LineEdit, font_placeholder_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_placeholder_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_placeholder_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_placeholder_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, LineEdit, font_placeholder_color);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, LineEdit, caret_width);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, caret_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, LineEdit, caret_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, caret_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, caret_color);
-
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, caret_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, LineEdit, caret_color);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, LineEdit, minimum_character_width);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, selection_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, LineEdit, selection_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, selection_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, selection_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, selection_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, LineEdit, selection_color);
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, LineEdit, clear_icon, "clear");
+	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, LineEdit, clear_icon);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, clear_button_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, LineEdit, clear_button_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, clear_button_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, clear_button_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, clear_button_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, LineEdit, clear_button_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, clear_button_color_pressed_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, LineEdit, clear_button_color_pressed_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, clear_button_color_pressed_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, clear_button_color_pressed);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, LineEdit, base_scale);
 }
 
 LineEdit::LineEdit(const String &p_placeholder) {

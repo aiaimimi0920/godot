@@ -540,28 +540,53 @@ void TextEdit::_notification(int p_what) {
 
 			RID ci = get_canvas_item();
 			RenderingServer::get_singleton()->canvas_item_set_clip(get_canvas_item(), true);
-			int xmargin_beg = theme_cache.style_normal->get_margin(SIDE_LEFT) + gutters_width + gutter_padding;
+			Ref<StyleBox> style_normal = _get_current_default_stylebox();
+			Ref<StyleBox> style_readonly = _get_current_read_only_stylebox();
+			Ref<StyleBox> style_focus = _get_current_focus_default_stylebox();
+			
+			Color font_outline_color = _get_current_font_outline_color();
 
-			int xmargin_end = size.width - theme_cache.style_normal->get_margin(SIDE_RIGHT);
+			Color font_color = _get_current_font_color();
+
+			Color selection_color = _get_current_selection_color();
+
+			Color search_result_color = _get_current_search_result_color();
+
+			Color search_result_border_color = _get_current_search_result_border_color();
+
+			Color word_highlighted_color = _get_current_word_highlighted_color();
+
+			Color font_readonly_color = _get_current_font_readonly_color();
+
+			Color font_selected_color = _get_current_font_selected_color();
+			
+			Color caret_color = _get_current_caret_color();
+
+
+			int xmargin_beg = style_normal->get_margin(SIDE_LEFT) + gutters_width + gutter_padding;
+
+			int xmargin_end = size.width - style_normal->get_margin(SIDE_RIGHT);
 			if (draw_minimap) {
 				xmargin_end -= minimap_width;
 			}
 			// Let's do it easy for now.
-			theme_cache.style_normal->draw(ci, Rect2(Point2(), size));
+			style_normal->draw(ci, Rect2(Point2(), size));
 			if (!editable) {
-				theme_cache.style_readonly->draw(ci, Rect2(Point2(), size));
+				style_readonly->draw(ci, Rect2(Point2(), size));
 				draw_caret = is_drawing_caret_when_editable_disabled();
 			}
 			if (has_focus()) {
-				theme_cache.style_focus->draw(ci, Rect2(Point2(), size));
+				
+				style_focus->draw(ci, Rect2(Point2(), size));
 			}
 
 			int visible_rows = get_visible_line_count() + 1;
 
-			Color color = !editable ? theme_cache.font_readonly_color : theme_cache.font_color;
+			Color color = !editable ? font_readonly_color : font_color;
 
-			if (theme_cache.background_color.a > 0.01) {
-				RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(Point2i(), get_size()), theme_cache.background_color);
+			Color background_color = _get_current_background_color();
+			if (background_color.a > 0.01) {
+				RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(Point2i(), get_size()), background_color);
 			}
 
 			Vector<BraceMatchingData> brace_matching;
@@ -762,7 +787,7 @@ void TextEdit::_notification(int p_what) {
 					viewport_alpha = 0.1;
 				}
 
-				const Color viewport_color = (theme_cache.background_color.get_v() < 0.5) ? Color(1, 1, 1, viewport_alpha) : Color(0, 0, 0, viewport_alpha);
+				const Color viewport_color = (background_color.get_v() < 0.5) ? Color(1, 1, 1, viewport_alpha) : Color(0, 0, 0, viewport_alpha);
 				if (rtl) {
 					RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(size.width - (xmargin_end + 2) - minimap_width, viewport_offset_y, minimap_width, viewport_height), viewport_color);
 				} else {
@@ -791,16 +816,16 @@ void TextEdit::_notification(int p_what) {
 
 					Color line_background_color = text.get_line_background_color(minimap_line);
 
-					if (line_background_color != theme_cache.background_color) {
+					if (line_background_color != background_color) {
 						// Make non-default background colors more visible, such as error markers.
 						line_background_color.a = 1.0;
 					} else {
 						line_background_color.a *= 0.6;
 					}
 
-					Color current_color = theme_cache.font_color;
+					Color current_color = _get_current_font_color();
 					if (!editable) {
-						current_color = theme_cache.font_readonly_color;
+						current_color = _get_current_font_readonly_color();
 					}
 
 					Vector<String> wrap_rows = get_line_wrapped_text(minimap_line);
@@ -828,9 +853,9 @@ void TextEdit::_notification(int p_what) {
 
 						if (caret_line_wrap_index_map.has(minimap_line) && caret_line_wrap_index_map[minimap_line].has(line_wrap_index) && highlight_current_line) {
 							if (rtl) {
-								RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(size.width - (xmargin_end + 2) - minimap_width, i * 3, minimap_width, 2), theme_cache.current_line_color);
+								RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(size.width - (xmargin_end + 2) - minimap_width, i * 3, minimap_width, 2), _get_current_current_line_color());
 							} else {
-								RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2((xmargin_end + 2), i * 3, minimap_width, 2), theme_cache.current_line_color);
+								RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2((xmargin_end + 2), i * 3, minimap_width, 2), _get_current_current_line_color());
 							}
 						} else if (line_background_color != Color(0, 0, 0, 0)) {
 							if (rtl) {
@@ -846,9 +871,9 @@ void TextEdit::_notification(int p_what) {
 						for (int j = 0; j < str.length(); j++) {
 							const Variant *color_data = color_map.getptr(last_wrap_column + j);
 							if (color_data != nullptr) {
-								current_color = (color_data->operator Dictionary()).get("color", theme_cache.font_color);
+								current_color = (color_data->operator Dictionary()).get("color", _get_current_font_color());
 								if (!editable) {
-									current_color.a = theme_cache.font_readonly_color.a;
+									current_color.a = _get_current_font_readonly_color().a;
 								}
 							}
 							color = current_color;
@@ -910,11 +935,11 @@ void TextEdit::_notification(int p_what) {
 			int top_limit_y = 0;
 			int bottom_limit_y = get_size().height;
 			if (!editable) {
-				top_limit_y += theme_cache.style_readonly->get_margin(SIDE_TOP);
-				bottom_limit_y -= theme_cache.style_readonly->get_margin(SIDE_BOTTOM);
+				top_limit_y += style_readonly->get_margin(SIDE_TOP);
+				bottom_limit_y -= style_readonly->get_margin(SIDE_BOTTOM);
 			} else {
-				top_limit_y += theme_cache.style_normal->get_margin(SIDE_TOP);
-				bottom_limit_y -= theme_cache.style_normal->get_margin(SIDE_BOTTOM);
+				top_limit_y += style_normal->get_margin(SIDE_TOP);
+				bottom_limit_y -= style_normal->get_margin(SIDE_BOTTOM);
 			}
 
 			// Draw main text.
@@ -944,9 +969,9 @@ void TextEdit::_notification(int p_what) {
 				Dictionary color_map = _get_line_syntax_highlighting(line);
 
 				// Ensure we at least use the font color.
-				Color current_color = !editable ? theme_cache.font_readonly_color : theme_cache.font_color;
+				Color current_color = !editable ? _get_current_font_readonly_color() : _get_current_font_color();
 				if (draw_placeholder) {
-					current_color = theme_cache.font_placeholder_color;
+					current_color = _get_current_font_placeholder_color();
 				}
 
 				const Ref<TextParagraph> ldata = draw_placeholder ? placeholder_data_buf : text.get_line_data(line);
@@ -968,11 +993,11 @@ void TextEdit::_notification(int p_what) {
 					int ofs_x = 0;
 					int ofs_y = 0;
 					if (!editable) {
-						ofs_x = theme_cache.style_readonly->get_offset().x / 2;
-						ofs_x -= theme_cache.style_normal->get_offset().x / 2;
-						ofs_y = theme_cache.style_readonly->get_offset().y / 2;
+						ofs_x = style_readonly->get_offset().x / 2;
+						ofs_x -= style_normal->get_offset().x / 2;
+						ofs_y = style_readonly->get_offset().y / 2;
 					} else {
-						ofs_y = theme_cache.style_normal->get_offset().y / 2;
+						ofs_y = style_normal->get_offset().y / 2;
 					}
 
 					ofs_y += i * row_height + theme_cache.line_spacing / 2;
@@ -1004,18 +1029,18 @@ void TextEdit::_notification(int p_what) {
 						// Draw line background if empty as we won't loop at all.
 						if (caret_line_wrap_index_map.has(line) && caret_line_wrap_index_map[line].has(line_wrap_index) && highlight_current_line) {
 							if (rtl) {
-								RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(size.width - ofs_x - xmargin_end, ofs_y, xmargin_end, row_height), theme_cache.current_line_color);
+								RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(size.width - ofs_x - xmargin_end, ofs_y, xmargin_end, row_height), _get_current_current_line_color());
 							} else {
-								RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(ofs_x, ofs_y, xmargin_end, row_height), theme_cache.current_line_color);
+								RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(ofs_x, ofs_y, xmargin_end, row_height), _get_current_current_line_color());
 							}
 						}
 					} else {
 						// If it has text, then draw current line marker in the margin, as line number etc will draw over it, draw the rest of line marker later.
 						if (caret_line_wrap_index_map.has(line) && caret_line_wrap_index_map[line].has(line_wrap_index) && highlight_current_line) {
 							if (rtl) {
-								RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(size.width - ofs_x - xmargin_end, ofs_y, xmargin_end, row_height), theme_cache.current_line_color);
+								RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(size.width - ofs_x - xmargin_end, ofs_y, xmargin_end, row_height), _get_current_current_line_color());
 							} else {
-								RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(ofs_x, ofs_y, xmargin_end, row_height), theme_cache.current_line_color);
+								RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(ofs_x, ofs_y, xmargin_end, row_height), _get_current_current_line_color());
 							}
 						}
 					}
@@ -1025,7 +1050,7 @@ void TextEdit::_notification(int p_what) {
 
 						cache_entry.y_offset = ofs_y;
 
-						int gutter_offset = theme_cache.style_normal->get_margin(SIDE_LEFT);
+						int gutter_offset = style_normal->get_margin(SIDE_LEFT);
 						for (int g = 0; g < gutters.size(); g++) {
 							const GutterInfo gutter = gutters[g];
 
@@ -1045,8 +1070,9 @@ void TextEdit::_notification(int p_what) {
 									tl->add_string(txt, theme_cache.font, theme_cache.font_size);
 
 									int yofs = ofs_y + (row_height - tl->get_size().y) / 2;
-									if (theme_cache.outline_size > 0 && theme_cache.outline_color.a > 0) {
-										tl->draw_outline(ci, Point2(gutter_offset + ofs_x, yofs), theme_cache.outline_size, theme_cache.outline_color);
+
+									if (theme_cache.font_outline_size > 0 && font_outline_color.a > 0) {
+										tl->draw_outline(ci, Point2(gutter_offset + ofs_x, yofs), theme_cache.font_outline_size, font_outline_color);
 									}
 									tl->draw(ci, Point2(gutter_offset + ofs_x, yofs), get_line_gutter_item_color(line, g));
 								} break;
@@ -1134,7 +1160,7 @@ void TextEdit::_notification(int p_what) {
 								if (rect.position.x + rect.size.x > xmargin_end) {
 									rect.size.x = xmargin_end - rect.position.x;
 								}
-								draw_rect(rect, theme_cache.selection_color, true);
+								draw_rect(rect, selection_color, true);
 							}
 						}
 					}
@@ -1156,8 +1182,8 @@ void TextEdit::_notification(int p_what) {
 								} else if (rect.position.x + rect.size.x > xmargin_end) {
 									rect.size.x = xmargin_end - rect.position.x;
 								}
-								draw_rect(rect, theme_cache.search_result_color, true);
-								draw_rect(rect, theme_cache.search_result_border_color, false);
+								draw_rect(rect, search_result_color, true);
+								draw_rect(rect, search_result_border_color, false);
 							}
 
 							search_text_col = _get_column_pos_of_word(search_text, str, search_flags, search_text_col + search_text_len);
@@ -1180,7 +1206,7 @@ void TextEdit::_notification(int p_what) {
 								} else if (rect.position.x + rect.size.x > xmargin_end) {
 									rect.size.x = xmargin_end - rect.position.x;
 								}
-								draw_rect(rect, theme_cache.word_highlighted_color);
+								draw_rect(rect, word_highlighted_color);
 							}
 
 							highlighted_text_col = _get_column_pos_of_word(highlighted_text, str, SEARCH_MATCH_CASE | SEARCH_WHOLE_WORDS, highlighted_text_col + highlighted_text_len);
@@ -1225,12 +1251,12 @@ void TextEdit::_notification(int p_what) {
 					int last_visible_char = TS->shaped_text_get_range(rid).x;
 
 					float char_ofs = 0;
-					if (theme_cache.outline_size > 0 && theme_cache.outline_color.a > 0) {
+					if (theme_cache.font_outline_size > 0 && font_outline_color.a > 0) {
 						for (int j = 0; j < gl_size; j++) {
 							for (int k = 0; k < glyphs[j].repeat; k++) {
 								if ((char_ofs + char_margin) >= xmargin_beg && (char_ofs + glyphs[j].advance + char_margin) <= xmargin_end) {
 									if (glyphs[j].font_rid != RID()) {
-										TS->font_draw_glyph_outline(glyphs[j].font_rid, ci, glyphs[j].font_size, theme_cache.outline_size, Vector2(char_margin + char_ofs + ofs_x + glyphs[j].x_off, ofs_y + glyphs[j].y_off), glyphs[j].index, theme_cache.outline_color);
+										TS->font_draw_glyph_outline(glyphs[j].font_rid, ci, glyphs[j].font_size, theme_cache.font_outline_size, Vector2(char_margin + char_ofs + ofs_x + glyphs[j].x_off, ofs_y + glyphs[j].y_off), glyphs[j].index, font_outline_color);
 									}
 								}
 								char_ofs += glyphs[j].advance;
@@ -1252,9 +1278,9 @@ void TextEdit::_notification(int p_what) {
 						}
 						const Variant *color_data = (color_start >= 0) ? color_map.getptr(color_start) : nullptr;
 						if (color_data != nullptr) {
-							current_color = (color_data->operator Dictionary()).get("color", theme_cache.font_color);
-							if (!editable && current_color.a > theme_cache.font_readonly_color.a) {
-								current_color.a = theme_cache.font_readonly_color.a;
+							current_color = (color_data->operator Dictionary()).get("color", font_color);
+							if (!editable && current_color.a > font_readonly_color.a) {
+								current_color.a = font_readonly_color.a;
 							}
 						}
 						Color gl_color = current_color;
@@ -1265,7 +1291,7 @@ void TextEdit::_notification(int p_what) {
 								int sel_to = (line < get_selection_to_line(c)) ? TS->shaped_text_get_range(rid).y : get_selection_to_column(c);
 
 								if (glyphs[j].start >= sel_from && glyphs[j].end <= sel_to && use_selected_font_color) {
-									gl_color = theme_cache.font_selected_color;
+									gl_color = font_selected_color;
 								}
 							}
 						}
@@ -1394,17 +1420,17 @@ void TextEdit::_notification(int p_what) {
 													ts_caret.t_caret.size.y = h;
 												}
 												ts_caret.t_caret.position += Vector2(char_margin + ofs_x, ofs_y);
-												draw_rect(ts_caret.t_caret, theme_cache.caret_color, overtype_mode);
+												draw_rect(ts_caret.t_caret, caret_color, overtype_mode);
 
 												if (ts_caret.l_caret != Rect2() && ts_caret.l_dir != ts_caret.t_dir) {
 													// Draw split caret (leading part).
 													ts_caret.l_caret.position += Vector2(char_margin + ofs_x, ofs_y);
 													ts_caret.l_caret.size.x = caret_width;
-													draw_rect(ts_caret.l_caret, theme_cache.caret_color);
+													draw_rect(ts_caret.l_caret, caret_color);
 													// Draw extra direction marker on top of split caret.
 													float d = (ts_caret.l_dir == TextServer::DIRECTION_LTR) ? 0.5 : -3;
 													Rect2 trect = Rect2(ts_caret.l_caret.position.x + d * caret_width, ts_caret.l_caret.position.y + ts_caret.l_caret.size.y - caret_width, 3 * caret_width, caret_width);
-													RenderingServer::get_singleton()->canvas_item_add_rect(ci, trect, theme_cache.caret_color);
+													RenderingServer::get_singleton()->canvas_item_add_rect(ci, trect, caret_color);
 												}
 											} else { // End of the line.
 												if (gl_size > 0) {
@@ -1429,7 +1455,7 @@ void TextEdit::_notification(int p_what) {
 												if (ts_caret.l_dir == TextServer::DIRECTION_RTL) {
 													ts_caret.l_caret.position.x -= ts_caret.l_caret.size.x;
 												}
-												draw_rect(ts_caret.l_caret, theme_cache.caret_color, overtype_mode);
+												draw_rect(ts_caret.l_caret, caret_color, overtype_mode);
 											}
 										} else {
 											// Normal caret.
@@ -1437,28 +1463,28 @@ void TextEdit::_notification(int p_what) {
 												// Draw extra marker on top of mid caret.
 												Rect2 trect = Rect2(ts_caret.l_caret.position.x - 2.5 * caret_width, ts_caret.l_caret.position.y, 6 * caret_width, caret_width);
 												trect.position += Vector2(char_margin + ofs_x, ofs_y);
-												RenderingServer::get_singleton()->canvas_item_add_rect(ci, trect, theme_cache.caret_color);
+												RenderingServer::get_singleton()->canvas_item_add_rect(ci, trect, caret_color);
 											} else if (ts_caret.l_caret != Rect2() && ts_caret.t_caret != Rect2() && ts_caret.l_dir != ts_caret.t_dir) {
 												// Draw extra direction marker on top of split caret.
 												float d = (ts_caret.l_dir == TextServer::DIRECTION_LTR) ? 0.5 : -3;
 												Rect2 trect = Rect2(ts_caret.l_caret.position.x + d * caret_width, ts_caret.l_caret.position.y + ts_caret.l_caret.size.y - caret_width, 3 * caret_width, caret_width);
 												trect.position += Vector2(char_margin + ofs_x, ofs_y);
-												RenderingServer::get_singleton()->canvas_item_add_rect(ci, trect, theme_cache.caret_color);
+												RenderingServer::get_singleton()->canvas_item_add_rect(ci, trect, caret_color);
 
 												d = (ts_caret.t_dir == TextServer::DIRECTION_LTR) ? 0.5 : -3;
 												trect = Rect2(ts_caret.t_caret.position.x + d * caret_width, ts_caret.t_caret.position.y, 3 * caret_width, caret_width);
 												trect.position += Vector2(char_margin + ofs_x, ofs_y);
-												RenderingServer::get_singleton()->canvas_item_add_rect(ci, trect, theme_cache.caret_color);
+												RenderingServer::get_singleton()->canvas_item_add_rect(ci, trect, caret_color);
 											}
 											ts_caret.l_caret.position += Vector2(char_margin + ofs_x, ofs_y);
 											ts_caret.l_caret.size.x = caret_width;
 
-											draw_rect(ts_caret.l_caret, theme_cache.caret_color);
+											draw_rect(ts_caret.l_caret, caret_color);
 
 											ts_caret.t_caret.position += Vector2(char_margin + ofs_x, ofs_y);
 											ts_caret.t_caret.size.x = caret_width;
 
-											draw_rect(ts_caret.t_caret, theme_cache.caret_color);
+											draw_rect(ts_caret.t_caret, caret_color);
 										}
 									}
 								}
@@ -1479,7 +1505,7 @@ void TextEdit::_notification(int p_what) {
 											rect.size.x = xmargin_end - rect.position.x;
 										}
 										rect.size.y = caret_width;
-										draw_rect(rect, theme_cache.caret_color);
+										draw_rect(rect, caret_color);
 										carets.write[c].draw_pos.x = rect.position.x;
 									}
 								}
@@ -1498,7 +1524,7 @@ void TextEdit::_notification(int p_what) {
 											rect.size.x = xmargin_end - rect.position.x;
 										}
 										rect.size.y = caret_width * 3;
-										draw_rect(rect, theme_cache.caret_color);
+										draw_rect(rect, caret_color);
 										carets.write[c].draw_pos.x = rect.position.x;
 									}
 								}
@@ -1712,8 +1738,9 @@ void TextEdit::gui_input(const Ref<InputEvent> &p_gui_input) {
 				Point2i pos = get_line_column_at_pos(mpos);
 				int row = pos.y;
 				int col = pos.x;
+				Ref<StyleBox> style_normal = _get_current_default_stylebox();
 
-				int left_margin = theme_cache.style_normal->get_margin(SIDE_LEFT);
+				int left_margin = style_normal->get_margin(SIDE_LEFT);
 				for (int i = 0; i < gutters.size(); i++) {
 					if (!gutters[i].draw || gutters[i].width <= 0) {
 						continue;
@@ -1986,7 +2013,8 @@ void TextEdit::gui_input(const Ref<InputEvent> &p_gui_input) {
 		// Check if user is hovering a different gutter, and update if yes.
 		Vector2i current_hovered_gutter = Vector2i(-1, -1);
 
-		int left_margin = theme_cache.style_normal->get_margin(SIDE_LEFT);
+		Ref<StyleBox> style_normal = _get_current_default_stylebox();
+		int left_margin = style_normal->get_margin(SIDE_LEFT);
 		if (mpos.x <= left_margin + gutters_width + gutter_padding) {
 			int hovered_row = get_line_column_at_pos(mpos).y;
 			for (int i = 0; i < gutters.size(); i++) {
@@ -3005,7 +3033,9 @@ void TextEdit::_update_theme_item_cache() {
 	Control::_update_theme_item_cache();
 
 	theme_cache.base_scale = get_theme_default_base_scale();
-	use_selected_font_color = theme_cache.font_selected_color != Color(0, 0, 0, 0);
+
+	Color font_selected_color = _get_current_font_selected_color();
+	use_selected_font_color = font_selected_color != Color(0, 0, 0, 0);
 
 	if (text.get_line_height() + theme_cache.line_spacing < 1) {
 		WARN_PRINT("Line height is too small, please increase font_size and/or line_spacing");
@@ -3072,7 +3102,9 @@ void TextEdit::_update_ime_text() {
 
 /* General overrides. */
 Size2 TextEdit::get_minimum_size() const {
-	Size2 size = theme_cache.style_normal->get_minimum_size();
+	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+
+	Size2 size = style_normal->get_minimum_size();
 	if (fit_content_height) {
 		size.y += content_height_cache;
 	}
@@ -3167,8 +3199,9 @@ void TextEdit::drop_data(const Point2 &p_point, const Variant &p_data) {
 Control::CursorShape TextEdit::get_cursor_shape(const Point2 &p_pos) const {
 	Point2i pos = get_line_column_at_pos(p_pos);
 	int row = pos.y;
+	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 
-	int left_margin = theme_cache.style_normal->get_margin(SIDE_LEFT);
+	int left_margin = style_normal->get_margin(SIDE_LEFT);
 	int gutter = left_margin + gutters_width;
 	if (p_pos.x < gutter) {
 		for (int i = 0; i < gutters.size(); i++) {
@@ -3186,7 +3219,7 @@ Control::CursorShape TextEdit::get_cursor_shape(const Point2 &p_pos) const {
 		return CURSOR_ARROW;
 	}
 
-	int xmargin_end = get_size().width - theme_cache.style_normal->get_margin(SIDE_RIGHT);
+	int xmargin_end = get_size().width - style_normal->get_margin(SIDE_RIGHT);
 	if (draw_minimap && p_pos.x > xmargin_end - minimap_width && p_pos.x <= xmargin_end) {
 		return CURSOR_ARROW;
 	}
@@ -4327,7 +4360,8 @@ String TextEdit::get_word_at_pos(const Vector2 &p_pos) const {
 
 Point2i TextEdit::get_line_column_at_pos(const Point2i &p_pos, bool p_allow_out_of_bounds) const {
 	float rows = p_pos.y;
-	rows -= theme_cache.style_normal->get_margin(SIDE_TOP);
+	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	rows -= style_normal->get_margin(SIDE_TOP);
 	rows /= get_line_height();
 	rows += _get_v_scroll_offset();
 	int first_vis_line = get_first_visible_line();
@@ -4362,7 +4396,7 @@ Point2i TextEdit::get_line_column_at_pos(const Point2i &p_pos, bool p_allow_out_
 	}
 
 	int col = 0;
-	int colx = p_pos.x - (theme_cache.style_normal->get_margin(SIDE_LEFT) + gutters_width + gutter_padding);
+	int colx = p_pos.x - (style_normal->get_margin(SIDE_LEFT) + gutters_width + gutter_padding);
 	colx += first_visible_col;
 	col = _get_char_pos_for_line(colx, row, wrap_index);
 	if (get_line_wrapping_mode() != LineWrappingMode::LINE_WRAPPING_NONE && wrap_index < get_line_wrap_count(row)) {
@@ -4428,7 +4462,8 @@ Rect2i TextEdit::get_rect_at_line_column(int p_line, int p_column) const {
 
 	Point2i pos, size;
 	pos.y = cache_entry.y_offset + get_line_height() * wrap_index;
-	pos.x = get_total_gutter_width() + theme_cache.style_normal->get_margin(SIDE_LEFT) - get_h_scroll();
+	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	pos.x = get_total_gutter_width() + style_normal->get_margin(SIDE_LEFT) - get_h_scroll();
 
 	RID text_rid = text.get_line_data(p_line)->get_line_rid(wrap_index);
 	Vector2 col_bounds = TS->shaped_text_get_grapheme_bounds(text_rid, p_column);
@@ -4442,7 +4477,8 @@ Rect2i TextEdit::get_rect_at_line_column(int p_line, int p_column) const {
 
 int TextEdit::get_minimap_line_at_pos(const Point2i &p_pos) const {
 	float rows = p_pos.y;
-	rows -= theme_cache.style_normal->get_margin(SIDE_TOP);
+	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	rows -= style_normal->get_margin(SIDE_TOP);
 	rows /= (minimap_char_size.y + minimap_line_spacing);
 	rows += _get_v_scroll_offset();
 
@@ -5616,8 +5652,8 @@ void TextEdit::adjust_viewport_to_caret(int p_caret) {
 		// Caret is below screen.
 		set_line_as_last_visible(cur_line, cur_wrap);
 	}
-
-	int visible_width = get_size().width - theme_cache.style_normal->get_minimum_size().width - gutters_width - gutter_padding;
+	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	int visible_width = get_size().width - style_normal->get_minimum_size().width - gutters_width - gutter_padding;
 	if (draw_minimap) {
 		visible_width -= minimap_width;
 	}
@@ -5666,7 +5702,8 @@ void TextEdit::center_viewport_to_caret(int p_caret) {
 	minimap_clicked = false;
 
 	set_line_as_center_visible(get_caret_line(p_caret), get_caret_wrap_index(p_caret));
-	int visible_width = get_size().width - theme_cache.style_normal->get_minimum_size().width - gutters_width - gutter_padding;
+	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	int visible_width = get_size().width - style_normal->get_minimum_size().width - gutters_width - gutter_padding;
 	if (draw_minimap) {
 		visible_width -= minimap_width;
 	}
@@ -6091,7 +6128,417 @@ bool TextEdit::is_drawing_spaces() const {
 }
 
 Color TextEdit::get_font_color() const {
-	return theme_cache.font_color;
+	return _get_current_font_color();
+}
+
+bool TextEdit::_has_current_default_stylebox_with_state(State p_state) const {
+	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
+bool TextEdit::_has_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	return _has_current_default_stylebox_with_state(cur_state);
+}
+
+Ref<StyleBox> TextEdit::_get_current_default_stylebox_with_state(State p_state) const {
+	Ref<StyleBox> style;
+	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			style = theme_cache.default_stylebox.get_data(E);
+			break; 
+		}
+	}
+	return style;
+}
+
+Ref<StyleBox> TextEdit::_get_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	Ref<StyleBox> style;
+	style = _get_current_default_stylebox_with_state(cur_state);
+	return style;
+}
+
+bool TextEdit::_has_current_focus_default_stylebox() const {
+	State cur_state = get_current_focus_state();
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> TextEdit::_get_current_focus_default_stylebox() const {
+	State cur_state = get_current_focus_state();
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			style = theme_cache.default_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+bool TextEdit::_has_current_state_layer_stylebox() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.state_layer_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.state_layer_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> TextEdit::_get_current_state_layer_stylebox() const {
+	State cur_state = get_current_state_with_focus();
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.state_layer_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.state_layer_stylebox.get_state_data_name(E))) {
+			style = theme_cache.state_layer_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+
+bool TextEdit::_has_current_read_only_stylebox() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.read_only_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.read_only_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> TextEdit::_get_current_read_only_stylebox() const {
+	State cur_state = get_current_state_with_focus();
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.read_only_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.read_only_stylebox.get_state_data_name(E))) {
+			style = theme_cache.read_only_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+
+bool TextEdit::_has_current_search_result_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.search_result_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.search_result_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextEdit::_get_current_search_result_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.search_result_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.search_result_color.get_state_data_name(E))) {
+			cur_color = theme_cache.search_result_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+bool TextEdit::_has_current_search_result_border_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.search_result_border_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.search_result_border_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextEdit::_get_current_search_result_border_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.search_result_border_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.search_result_border_color.get_state_data_name(E))) {
+			cur_color = theme_cache.search_result_border_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool TextEdit::_has_current_caret_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.caret_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.caret_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextEdit::_get_current_caret_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.caret_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.caret_color.get_state_data_name(E))) {
+			cur_color = theme_cache.caret_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+bool TextEdit::_has_current_caret_background_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.caret_background_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.caret_background_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextEdit::_get_current_caret_background_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.caret_background_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.caret_background_color.get_state_data_name(E))) {
+			cur_color = theme_cache.caret_background_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool TextEdit::_has_current_font_selected_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_selected_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_selected_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextEdit::_get_current_font_selected_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.font_selected_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_selected_color.get_state_data_name(E))) {
+			cur_color = theme_cache.font_selected_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool TextEdit::_has_current_selection_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.selection_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.selection_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextEdit::_get_current_selection_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.selection_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.selection_color.get_state_data_name(E))) {
+			cur_color = theme_cache.selection_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool TextEdit::_has_current_font_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextEdit::_get_current_font_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.font_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
+			cur_color = theme_cache.font_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+bool TextEdit::_has_current_font_readonly_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_readonly_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_readonly_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextEdit::_get_current_font_readonly_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.font_readonly_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_readonly_color.get_state_data_name(E))) {
+			cur_color = theme_cache.font_readonly_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+bool TextEdit::_has_current_font_placeholder_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_placeholder_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_placeholder_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextEdit::_get_current_font_placeholder_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.font_placeholder_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_placeholder_color.get_state_data_name(E))) {
+			cur_color = theme_cache.font_placeholder_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool TextEdit::_has_current_font_outline_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextEdit::_get_current_font_outline_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
+			cur_color = theme_cache.font_outline_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool TextEdit::_has_current_background_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.background_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.background_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextEdit::_get_current_background_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.background_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.background_color.get_state_data_name(E))) {
+			cur_color = theme_cache.background_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool TextEdit::_has_current_current_line_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.current_line_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.current_line_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextEdit::_get_current_current_line_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.current_line_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.current_line_color.get_state_data_name(E))) {
+			cur_color = theme_cache.current_line_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+bool TextEdit::_has_current_word_highlighted_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.word_highlighted_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.word_highlighted_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color TextEdit::_get_current_word_highlighted_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.word_highlighted_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.word_highlighted_color.get_state_data_name(E))) {
+			cur_color = theme_cache.word_highlighted_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
 }
 
 void TextEdit::_bind_methods() {
@@ -6553,93 +7000,61 @@ void TextEdit::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("gutter_removed"));
 
 	/* Theme items */
-
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, default_color_scheme);
-
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, TextEdit, default_stylebox);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, TextEdit, read_only_stylebox);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, TextEdit, state_layer_stylebox);
+	
 	/* Search */
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, search_result_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, search_result_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, search_result_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, search_result_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, search_result_border_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, search_result_border_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, search_result_border_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, search_result_border_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, search_result_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, search_result_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, search_result_border_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, search_result_border_color);
 
 	/* Caret */
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextEdit, caret_width);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, caret_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, caret_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, caret_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, caret_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, caret_background_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, caret_background_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, caret_background_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, caret_background_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, caret_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, caret_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, caret_background_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, caret_background_color);
 
 	/* Selection */
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_selected_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, font_selected_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_selected_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_selected_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, selection_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, selection_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, selection_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, selection_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_selected_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, font_selected_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, selection_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, selection_color);
 
 	/* Other visuals */
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, TextEdit, style_normal, "normal");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, TextEdit, style_focus, "focus");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, TextEdit, style_readonly, "read_only");
-
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, TextEdit, tab_icon, "tab");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, TextEdit, space_icon, "space");
+	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, TextEdit, tab_icon);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, TextEdit, space_icon);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, TextEdit, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, TextEdit, font_size);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, font_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, font_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_readonly_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, font_readonly_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_readonly_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_readonly_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_readonly_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, font_readonly_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_placeholder_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, font_placeholder_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_placeholder_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, font_placeholder_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_placeholder_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, font_placeholder_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextEdit, outline_size);
-
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, TextEdit, outline_color_scale, "font_outline_color_scale");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, outline_color_scheme, "font_outline_color_scheme");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, outline_color_role, "font_outline_color_role");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, TextEdit, outline_color, "font_outline_color");
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_outline_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextEdit, font_outline_size);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextEdit, line_spacing);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, background_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, background_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, background_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, background_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, background_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, background_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, current_line_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, current_line_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, current_line_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, current_line_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, current_line_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, current_line_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, word_highlighted_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, word_highlighted_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, word_highlighted_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextEdit, word_highlighted_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, word_highlighted_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, word_highlighted_color);
 
 	/* Settings. */
 	GLOBAL_DEF(PropertyInfo(Variant::FLOAT, "gui/timers/text_edit_idle_detect_sec", PROPERTY_HINT_RANGE, "0,10,0.01,or_greater"), 3);
@@ -7397,7 +7812,9 @@ void TextEdit::_post_shift_selection(int p_caret) {
 
 /* Line Wrapping */
 void TextEdit::_update_wrap_at_column(bool p_force) {
-	int new_wrap_at = get_size().width - theme_cache.style_normal->get_minimum_size().width - gutters_width - gutter_padding;
+	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+
+	int new_wrap_at = get_size().width - style_normal->get_minimum_size().width - gutters_width - gutter_padding;
 	if (draw_minimap) {
 		new_wrap_at -= minimap_width;
 	}
@@ -7449,9 +7866,10 @@ void TextEdit::_update_scrollbars() {
 	Size2 size = get_size();
 	Size2 hmin = h_scroll->get_combined_minimum_size();
 	Size2 vmin = v_scroll->get_combined_minimum_size();
+	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 
-	v_scroll->set_begin(Point2(size.width - vmin.width, theme_cache.style_normal->get_margin(SIDE_TOP)));
-	v_scroll->set_end(Point2(size.width, size.height - theme_cache.style_normal->get_margin(SIDE_TOP) - theme_cache.style_normal->get_margin(SIDE_BOTTOM)));
+	v_scroll->set_begin(Point2(size.width - vmin.width, style_normal->get_margin(SIDE_TOP)));
+	v_scroll->set_end(Point2(size.width, size.height - style_normal->get_margin(SIDE_TOP) - style_normal->get_margin(SIDE_BOTTOM)));
 
 	h_scroll->set_begin(Point2(0, size.height - hmin.height));
 	h_scroll->set_end(Point2(size.width - vmin.width, size.height));
@@ -7464,7 +7882,7 @@ void TextEdit::_update_scrollbars() {
 		total_rows += visible_rows - 1;
 	}
 
-	int visible_width = size.width - theme_cache.style_normal->get_minimum_size().width;
+	int visible_width = size.width - style_normal->get_minimum_size().width;
 	int total_width = (draw_placeholder ? placeholder_max_width : text.get_max_width()) + gutters_width + gutter_padding;
 
 	if (draw_minimap) {
@@ -7515,7 +7933,9 @@ void TextEdit::_update_scrollbars() {
 
 int TextEdit::_get_control_height() const {
 	int control_height = get_size().height;
-	control_height -= theme_cache.style_normal->get_minimum_size().height;
+	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+
+	control_height -= style_normal->get_minimum_size().height;
 	if (h_scroll->is_visible_in_tree()) {
 		control_height -= h_scroll->get_size().height;
 	}
@@ -7677,7 +8097,9 @@ void TextEdit::_scroll_lines_down() {
 
 void TextEdit::_update_minimap_hover() {
 	const Point2 mp = get_local_mouse_pos();
-	const int xmargin_end = get_size().width - theme_cache.style_normal->get_margin(SIDE_RIGHT);
+	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+
+	const int xmargin_end = get_size().width - style_normal->get_margin(SIDE_RIGHT);
 
 	const bool hovering_sidebar = mp.x > xmargin_end - minimap_width && mp.x < xmargin_end;
 	if (!hovering_sidebar) {
@@ -7703,8 +8125,9 @@ void TextEdit::_update_minimap_hover() {
 
 void TextEdit::_update_minimap_click() {
 	Point2 mp = get_local_mouse_pos();
+	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 
-	int xmargin_end = get_size().width - theme_cache.style_normal->get_margin(SIDE_RIGHT);
+	int xmargin_end = get_size().width - style_normal->get_margin(SIDE_RIGHT);
 	if (!dragging_minimap && (mp.x < xmargin_end - minimap_width || mp.y > xmargin_end)) {
 		minimap_clicked = false;
 		return;
