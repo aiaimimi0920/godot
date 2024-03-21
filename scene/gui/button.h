@@ -125,6 +125,8 @@ protected:
 	Color _get_current_icon_color() const;
 	bool _has_current_text_icon_color() const;
 	Color _get_current_text_icon_color() const;
+
+	String _get_trans_text(const String &p_text_icon);
 public:
 	virtual Size2 get_minimum_size() const override;
 

@@ -1035,8 +1035,12 @@ void PopupMenu::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_THEME_CHANGED: {
-			scroll_container->add_theme_style_override("panel_style", _get_current_default_stylebox_with_state(State::NormalNoneLTR););
-
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("panel_style");
+			for (int i = 0; i < STATE_MAX; i++) {  
+				State cur_state = static_cast<State>(i);
+				scroll_container->add_theme_style_override(cur_theme_data.get_state_data_name(cur_state), _get_current_default_stylebox_with_state(cur_state));
+			}
 			[[fallthrough]];
 		}
 		case Control::NOTIFICATION_LAYOUT_DIRECTION_CHANGED:
@@ -2629,8 +2633,6 @@ bool PopupMenu::_set(const StringName &p_name, const Variant &p_value) {
 	return false;
 }
 
-
-
 bool PopupMenu::_has_current_default_stylebox_with_state(State p_state) const {
 	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
 		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
@@ -2641,7 +2643,7 @@ bool PopupMenu::_has_current_default_stylebox_with_state(State p_state) const {
 }
 
 
-bool PopupMenu::_has_current_default_stylebox_with_state() const {
+bool PopupMenu::_has_current_default_stylebox() const {
 	State cur_state = get_current_state();
 	return _has_current_default_stylebox_with_state(cur_state);
 }
@@ -2810,7 +2812,7 @@ Ref<Texture2D> PopupMenu::_get_current_icon_with_state(State p_state) const {
 Ref<Texture2D> PopupMenu::_get_current_icon() const {
 	State cur_state = get_current_state_with_focus();
 	Ref<Texture2D> cur_icon;
-	cur_icon = _get_current_icon_with_state(cur_state)
+	cur_icon = _get_current_icon_with_state(cur_state);
 	return cur_icon;
 }
 
@@ -2844,7 +2846,7 @@ Ref<Texture2D> PopupMenu::_get_current_radio_icon_with_state(State p_state) cons
 Ref<Texture2D> PopupMenu::_get_current_radio_icon() const {
 	State cur_state = get_current_state_with_focus();
 	Ref<Texture2D> cur_icon;
-	cur_icon = _get_current_radio_icon_with_state(cur_state)
+	cur_icon = _get_current_radio_icon_with_state(cur_state);
 	return cur_icon;
 }
 
@@ -2877,7 +2879,7 @@ Ref<Texture2D> PopupMenu::_get_current_submenu_with_state(State p_state) const {
 Ref<Texture2D> PopupMenu::_get_current_submenu() const {
 	State cur_state = get_current_state_with_focus();
 	Ref<Texture2D> cur_icon;
-	cur_icon = _get_current_submenu_with_state(cur_state)
+	cur_icon = _get_current_submenu_with_state(cur_state);
 	return cur_icon;
 }
 

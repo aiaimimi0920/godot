@@ -44,7 +44,7 @@ class Popup : public Window {
 	bool popped_up = false;
 
 	struct ThemeCache {
-		Ref<StyleBox> panel_style;
+		ThemeStyleboxData panel_style{"panel_style"};
 	} theme_cache;
 
 	void _initialize_visible_parents();
@@ -74,7 +74,7 @@ class PopupPanel : public Popup {
 	Panel *panel = nullptr;
 
 	struct ThemeCache {
-		Ref<StyleBox> panel_style;
+		ThemeStyleboxData panel_style{"panel_style"};
 	} theme_cache;
 
 protected:
@@ -84,6 +84,11 @@ protected:
 	static void _bind_methods();
 
 	virtual Size2 _get_contents_minimum_size() const override;
+
+	bool _has_current_default_stylebox_with_state(State p_state) const;
+	bool _has_current_default_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_default_stylebox() const;
 
 public:
 	PopupPanel();

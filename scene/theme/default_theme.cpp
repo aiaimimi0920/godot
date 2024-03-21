@@ -139,6 +139,32 @@ void fill_default_theme_panel(Ref<Theme> &theme, const Ref<Font> &default_font, 
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Panel", make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0, 0, 0, 0));
 }
 
+void fill_default_theme_button_variations(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
+	ThemeIntData cur_theme_data;
+	theme->set_type_variation("FlatButton", "Button");
+	Ref<StyleBoxEmpty> flat_button_normal = make_empty_stylebox();
+	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+
+	for (int i = 0; i < 4; i++) {
+		flat_button_normal->set_content_margin((Side)i, default_stylebox_normal->get_margin((Side)i) + default_stylebox_normal->get_border_width((Side)i));
+	}
+	const Ref<StyleBoxFlat> button_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	Ref<StyleBoxFlat> flat_button_pressed = button_pressed->duplicate();
+	flat_button_pressed->set_bg_color_role(ColorRole::PRIMARY_38);
+
+	cur_theme_data.set_data_name("default_stylebox");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FlatButton", flat_button_normal);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "FlatButton", flat_button_normal);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "FlatButton", flat_button_pressed);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "FlatButton", flat_button_normal);
+
+	theme->set_type_variation("FlatMenuButton", "MenuButton");
+	cur_theme_data.set_data_name("default_stylebox");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FlatMenuButton", flat_button_normal);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "FlatMenuButton", flat_button_normal);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "FlatMenuButton", flat_button_pressed);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "FlatMenuButton", flat_button_normal);
+}
 
 void fill_default_theme_label(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
 	ThemeIntData cur_theme_data;
@@ -247,6 +273,456 @@ void fill_default_theme_texture_button(Ref<Theme> &theme, const Ref<Font> &defau
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TextureButton", Color(1, 1, 1, 1));
 }
 
+void fill_default_theme_popup_menu(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
+	ThemeIntData cur_theme_data;
+	theme->set_color_scheme("default_color_scheme", "PopupMenu", default_color_scheme);
+	scale = p_scale;
+	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	default_stylebox_normal->set_border_width_all(2);
+	default_stylebox_normal->set_border_color_role(ColorRole::OUTLINE);
+	const Ref<StyleBoxFlat> default_stylebox_hover = make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+
+	const Ref<StyleBoxFlat> default_stylebox_disabled = make_color_role_flat_stylebox(ColorRole::PRIMARY_12, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	default_stylebox_disabled->set_border_width_all(2);
+	default_stylebox_disabled->set_border_color_role(ColorRole::OUTLINE);
+
+	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
+
+	const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY_CONTAINER_08, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	Ref<StyleBoxFlat> state_layer_stylebox_focus = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY_10, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+
+	cur_theme_data.set_data_name("default_stylebox");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", default_stylebox_normal);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", default_stylebox_hover);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", default_stylebox_disabled);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupMenu", default_stylebox_focus);
+
+	cur_theme_data.set_data_name("state_layer_stylebox");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", state_layer_stylebox_hover);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupMenu", state_layer_stylebox_focus);
+
+	Ref<StyleBoxLine> separator_horizontal = memnew(StyleBoxLine);
+	separator_horizontal->set_thickness(Math::round(scale));
+	separator_horizontal->set_color_role(ColorRole::OUTLINE);
+	separator_horizontal->set_content_margin_individual(default_margin, 0, default_margin, 0);
+	Ref<StyleBoxLine> separator_vertical = separator_horizontal->duplicate();
+	separator_vertical->set_vertical(true);
+	separator_vertical->set_content_margin_individual(0, default_margin, 0, default_margin);
+
+	cur_theme_data.set_data_name("separator_style");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", separator_horizontal);
+
+	cur_theme_data.set_data_name("labeled_separator_left");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", separator_horizontal);
+
+	cur_theme_data.set_data_name("labeled_separator_right");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", separator_horizontal);
+
+	cur_theme_data.set_data_name("icon");
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "PopupMenu", icons["checked"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "PopupMenu", icons["checked"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "PopupMenu", icons["unchecked"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "PopupMenu", icons["unchecked"]);
+	cur_theme_data.set_data_name("radio_icon");
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "PopupMenu", icons["radio_checked"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "PopupMenu", icons["radio_checked"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "PopupMenu", icons["radio_unchecked"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "PopupMenu", icons["radio_unchecked"]);
+	cur_theme_data.set_data_name("submenu");
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", icons["popup_menu_arrow_right"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneRTL), "PopupMenu", icons["popup_menu_arrow_left"]);
+
+	theme->set_font("font", "PopupMenu", Ref<Font>());
+	theme->set_font("font_separator", "PopupMenu", Ref<Font>());
+	theme->set_font_size("font_size", "PopupMenu", -1);
+	theme->set_font_size("font_separator_size", "PopupMenu", -1);
+
+	theme->set_constant("indent", "PopupMenu", Math::round(10 * scale));
+	theme->set_constant("h_separation", "PopupMenu", Math::round(4 * scale));
+	theme->set_constant("v_separation", "PopupMenu", Math::round(4 * scale));
+	theme->set_constant("font_outline_size", "PopupMenu", 0);
+	theme->set_constant("font_separator_outline_size", "PopupMenu", 0);
+	theme->set_constant("item_start_padding", "PopupMenu", Math::round(2 * scale));
+	theme->set_constant("item_end_padding", "PopupMenu", Math::round(2 * scale));
+	theme->set_constant("icon_max_width", "PopupMenu", 0);
+
+	cur_theme_data.set_data_name("font_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY_CONTAINER);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY_38);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY);
+
+	cur_theme_data.set_data_name("font_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("font_accelerator_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY_FIXED);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY_FIXED_VARIANT);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY_FIXED);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY_FIXED_38);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY_FIXED);
+
+	cur_theme_data.set_data_name("font_accelerator_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("font_outline_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", ColorRole::OUTLINE);
+
+	cur_theme_data.set_data_name("font_outline_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("font_separator_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", ColorRole::OUTLINE);
+
+	cur_theme_data.set_data_name("font_separator_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("font_separator_outline_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", ColorRole::OUTLINE_VARIANT);
+
+	cur_theme_data.set_data_name("font_separator_outline_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+}
+
+void fill_default_theme_checkbox(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
+	ThemeIntData cur_theme_data;
+	theme->set_color_scheme("default_color_scheme", "CheckBox", default_color_scheme);
+
+	scale = p_scale;
+
+	Ref<StyleBox> cbx_empty = memnew(StyleBoxEmpty);
+	cbx_empty->set_content_margin_all(Math::round(4 * scale));
+	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
+	default_stylebox_focus->set_content_margin_all(Math::round(4 * scale));
+
+	const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY_08, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	state_layer_stylebox_hover->set_content_margin_all(Math::round(4 * scale));
+	const Ref<StyleBoxFlat> state_layer_stylebox_pressed = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY_10, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	state_layer_stylebox_pressed->set_content_margin_all(Math::round(4 * scale));
+	Ref<StyleBoxFlat> state_layer_stylebox_focus = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY_10, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	state_layer_stylebox_focus->set_content_margin_all(Math::round(4 * scale));
+
+	cur_theme_data.set_data_name("default_stylebox");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", cbx_empty);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", cbx_empty);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", cbx_empty);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", cbx_empty);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", default_stylebox_focus);
+
+	cur_theme_data.set_data_name("state_layer_stylebox");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", state_layer_stylebox_hover);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", state_layer_stylebox_pressed);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", state_layer_stylebox_focus);
+
+	theme->set_font("font", "CheckBox", default_font);
+	theme->set_font("text_icon_font", "CheckBox", default_icon_font);
+
+	theme->set_font_size("font_size", "CheckBox", -1);
+	theme->set_font_size("text_icon_font_size", "CheckBox", -1);
+	theme->set_constant("font_outline_size", "CheckBox", 0);
+
+	theme->set_constant("icon_max_width", "CheckBox", 0);
+	theme->set_constant("h_separation", "CheckBox", Math::round(4 * scale));
+
+	cur_theme_data.set_data_name("text_icon_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", ColorRole::INVERSE_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", ColorRole::ON_PRIMARY_38);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", ColorRole::ON_PRIMARY);
+
+	cur_theme_data.set_data_name("text_icon_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("icon_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", ColorRole::STATIC_COLOR);
+
+	cur_theme_data.set_data_name("icon_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", Color(1, 1, 1, 0.4));
+	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("font_outline_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", ColorRole::OUTLINE);
+
+	cur_theme_data.set_data_name("font_outline_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("font_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", ColorRole::INVERSE_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", ColorRole::ON_PRIMARY_38);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", ColorRole::ON_PRIMARY);
+
+	cur_theme_data.set_data_name("font_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("icon");
+	Ref<Texture2D> empty_icon = memnew(ImageTexture);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", empty_icon);
+
+	theme->set_constant("check_v_offset", "CheckBox", 0);
+
+
+	cur_theme_data.set_data_name("check_icon");
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckBox", icons["checked"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckBox", icons["unchecked"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckBox", icons["checked"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckBox", icons["unchecked"]);
+
+
+	cur_theme_data.set_data_name("radio_check_icon");
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckBox", icons["radio_checked"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckBox", icons["radio_unchecked"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckBox", icons["radio_checked"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckBox", icons["radio_unchecked"]);
+
+
+	cur_theme_data.set_data_name("check_icon_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", ColorRole::INVERSE_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", ColorRole::ON_PRIMARY_38);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", ColorRole::ON_PRIMARY);
+
+	cur_theme_data.set_data_name("check_icon_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("text_check_icon");
+	theme->set_str(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckBox", "checkbox-marked");
+	theme->set_str(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckBox", "checkbox-blank-outline");
+	theme->set_str(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckBox", "checkbox-marked");
+	theme->set_str(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckBox", "checkbox-blank-outline");
+
+
+	cur_theme_data.set_data_name("text_radio_check_icon");
+	theme->set_str(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckBox", "radiobox-marked");
+	theme->set_str(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckBox", "radiobox-blank");
+	theme->set_str(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckBox", "radiobox-marked");
+	theme->set_str(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckBox", "radiobox-blank");
+
+	cur_theme_data.set_data_name("text_check_icon_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", ColorRole::INVERSE_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", ColorRole::ON_PRIMARY_38);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", ColorRole::ON_PRIMARY);
+
+	cur_theme_data.set_data_name("text_check_icon_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+}
+
+
+void fill_default_theme_check_button(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
+	ThemeIntData cur_theme_data;
+	theme->set_color_scheme("default_color_scheme", "CheckBox", default_color_scheme);
+
+	scale = p_scale;
+
+	Ref<StyleBox> cb_empty = memnew(StyleBoxEmpty);
+	cb_empty->set_content_margin_individual(Math::round(6 * scale), Math::round(4 * scale), Math::round(6 * scale), Math::round(4 * scale));
+	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
+
+	const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY_08, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	state_layer_stylebox_hover->set_content_margin_all(Math::round(4 * scale));
+	const Ref<StyleBoxFlat> state_layer_stylebox_pressed = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY_10, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	state_layer_stylebox_pressed->set_content_margin_all(Math::round(4 * scale));
+	Ref<StyleBoxFlat> state_layer_stylebox_focus = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY_10, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	state_layer_stylebox_focus->set_content_margin_all(Math::round(4 * scale));
+
+	cur_theme_data.set_data_name("default_stylebox");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", cb_empty);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", cb_empty);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", cb_empty);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", cb_empty);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", default_stylebox_focus);
+
+	cur_theme_data.set_data_name("state_layer_stylebox");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", state_layer_stylebox_hover);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", state_layer_stylebox_pressed);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", state_layer_stylebox_focus);
+
+	theme->set_font("font", "CheckButton", default_font);
+	theme->set_font("text_icon_font", "CheckButton", default_icon_font);
+
+	theme->set_font_size("font_size", "CheckButton", -1);
+	theme->set_font_size("text_icon_font_size", "CheckButton", -1);
+	theme->set_constant("font_outline_size", "CheckButton", 0);
+
+	theme->set_constant("icon_max_width", "CheckButton", 0);
+	theme->set_constant("h_separation", "CheckButton", Math::round(4 * scale));
+
+	cur_theme_data.set_data_name("text_icon_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", ColorRole::INVERSE_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", ColorRole::ON_PRIMARY_38);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", ColorRole::ON_PRIMARY);
+
+	cur_theme_data.set_data_name("text_icon_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("icon_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", ColorRole::STATIC_COLOR);
+
+	cur_theme_data.set_data_name("icon_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", Color(1, 1, 1, 0.4));
+	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("font_outline_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", ColorRole::OUTLINE);
+
+	cur_theme_data.set_data_name("font_outline_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("font_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", ColorRole::INVERSE_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", ColorRole::ON_PRIMARY_38);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", ColorRole::ON_PRIMARY);
+
+	cur_theme_data.set_data_name("font_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("icon");
+	Ref<Texture2D> empty_icon = memnew(ImageTexture);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", empty_icon);
+
+	theme->set_constant("check_v_offset", "CheckButton", 0);
+
+
+	cur_theme_data.set_data_name("check_icon");
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckButton", icons["toggle_on"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckButton", icons["toggle_off"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckButton", icons["toggle_on_disabled"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckButton", icons["toggle_off_disabled"]);
+
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedRTL), "CheckButton", icons["toggle_on_mirrored"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedRTL), "CheckButton", icons["toggle_off_mirrored"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedRTL), "CheckButton", icons["toggle_on_disabled_mirrored"]);
+	theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedRTL), "CheckButton", icons["toggle_off_disabled_mirrored"]);
+
+	cur_theme_data.set_data_name("check_icon_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", ColorRole::INVERSE_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", ColorRole::ON_PRIMARY_38);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", ColorRole::ON_PRIMARY);
+
+	cur_theme_data.set_data_name("check_icon_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("text_check_icon");
+	theme->set_str(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckButton", "toggle-switch");
+	theme->set_str(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckButton", "toggle-switch-off-outline");
+
+	theme->set_str(cur_theme_data.get_state_data_name(State::NormalCheckedRTL), "CheckButton", "toggle-switch-off");
+	theme->set_str(cur_theme_data.get_state_data_name(State::NormalUncheckedRTL), "CheckButton", "toggle-switch-outline");
+
+
+	cur_theme_data.set_data_name("text_check_icon_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckButton", ColorRole::PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckButton", ColorRole::OUTLINE);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverCheckedLTR), "CheckButton", ColorRole::PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverUncheckedLTR), "CheckButton", ColorRole::ON_SURFACE_VARIANT);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedCheckedLTR), "CheckButton", ColorRole::PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedUncheckedLTR), "CheckButton", ColorRole::ON_SURFACE_VARIANT);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusCheckedLTR), "CheckButton", ColorRole::PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusUncheckedLTR), "CheckButton", ColorRole::ON_SURFACE_VARIANT);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckButton", ColorRole::ON_SURFACE_38);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckButton", ColorRole::ON_SURFACE_38);
+
+
+	cur_theme_data.set_data_name("text_check_icon_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+
+
+	cur_theme_data.set_data_name("text_check_icon_bg_1");
+	theme->set_str(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", "toggle-switch-off");
+
+	cur_theme_data.set_data_name("text_check_icon_bg_2");
+	theme->set_str(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", "toggle-switch");
+
+	cur_theme_data.set_data_name("text_check_icon_bg_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckButton", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckButton", ColorRole::SURFACE_CONTAINER_HIGHEST);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverCheckedLTR), "CheckButton", ColorRole::PRIMARY_CONTAINER);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverUncheckedLTR), "CheckButton", ColorRole::SURFACE_CONTAINER_HIGHEST);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedCheckedLTR), "CheckButton", ColorRole::PRIMARY_CONTAINER);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedUncheckedLTR), "CheckButton", ColorRole::SURFACE_CONTAINER_HIGHEST);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusCheckedLTR), "CheckButton", ColorRole::PRIMARY_CONTAINER);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusUncheckedLTR), "CheckButton", ColorRole::SURFACE_CONTAINER_HIGHEST);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckButton", ColorRole::SURFACE_38);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckButton", ColorRole::SURFACE_CONTAINER_HIGHEST_38);
+
+
+	cur_theme_data.set_data_name("text_check_icon_bg_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckButton", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckButton", Color(1, 1, 1, 0.38));
+}
+
+
 void fill_default_theme_button(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
 	ThemeIntData cur_theme_data;
 	theme->set_color_scheme("default_color_scheme", "Button", default_color_scheme);
@@ -301,17 +777,17 @@ void fill_default_theme_button(Ref<Theme> &theme, const Ref<Font> &default_font,
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("icon_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", ColorRole::ON_PRIMARY);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", ColorRole::ON_PRIMARY);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", ColorRole::INVERSE_PRIMARY);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", ColorRole::ON_PRIMARY_38);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", ColorRole::STATIC_COLOR);
 
 	cur_theme_data.set_data_name("icon_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", Color(1, 1, 1, 1));
 	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", Color(1, 1, 1, 1));
 	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", Color(1, 1, 1, 1));
-	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", Color(1, 1, 1, 0.4));
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("font_outline_color_role");
@@ -339,7 +815,6 @@ void fill_default_theme_button(Ref<Theme> &theme, const Ref<Font> &default_font,
 	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", empty_icon);
 	// theme->set_icon(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", empty_icon);
 }
-
 
 
 void fill_default_theme_menu_button(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
@@ -396,17 +871,17 @@ void fill_default_theme_menu_button(Ref<Theme> &theme, const Ref<Font> &default_
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("icon_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", ColorRole::ON_PRIMARY);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", ColorRole::ON_PRIMARY);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuButton", ColorRole::INVERSE_PRIMARY);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", ColorRole::ON_PRIMARY_38);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", ColorRole::STATIC_COLOR);
 
 	cur_theme_data.set_data_name("icon_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", Color(1, 1, 1, 1));
 	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", Color(1, 1, 1, 1));
 	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuButton", Color(1, 1, 1, 1));
-	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", Color(1, 1, 1, 0.4));
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("font_outline_color_role");
@@ -549,17 +1024,17 @@ void fill_default_theme_elevated_button(Ref<Theme> &theme, const Ref<Font> &defa
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ElevatedButton", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("icon_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ElevatedButton", ColorRole::ON_SURFACE);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "ElevatedButton", ColorRole::ON_SURFACE);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "ElevatedButton", ColorRole::INVERSE_SURFACE);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ElevatedButton", ColorRole::ON_SURFACE_38);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ElevatedButton", ColorRole::ON_SURFACE);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ElevatedButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "ElevatedButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "ElevatedButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ElevatedButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ElevatedButton", ColorRole::STATIC_COLOR);
 
 	cur_theme_data.set_data_name("icon_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ElevatedButton", Color(1, 1, 1, 1));
 	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "ElevatedButton", Color(1, 1, 1, 1));
 	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "ElevatedButton", Color(1, 1, 1, 1));
-	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ElevatedButton", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ElevatedButton", Color(1, 1, 1, 0.4));
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ElevatedButton", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("font_outline_color_role");
@@ -650,17 +1125,17 @@ void fill_default_theme_option_button(Ref<Theme> &theme, const Ref<Font> &defaul
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("icon_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", ColorRole::ON_PRIMARY);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", ColorRole::ON_PRIMARY);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", ColorRole::INVERSE_PRIMARY);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", ColorRole::ON_PRIMARY_38);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", ColorRole::STATIC_COLOR);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", ColorRole::STATIC_COLOR);
 
 	cur_theme_data.set_data_name("icon_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", Color(1, 1, 1, 1));
 	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", Color(1, 1, 1, 1));
 	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", Color(1, 1, 1, 1));
-	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", Color(1, 1, 1, 0.38));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", Color(1, 1, 1, 0.4));
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("font_outline_color_role");
@@ -692,7 +1167,7 @@ void fill_default_theme_scroll_container(Ref<Theme> &theme, const Ref<Font> &def
 	ThemeIntData cur_theme_data;
 	Ref<StyleBoxEmpty> empty;
 	empty.instantiate();
-
+	
 	cur_theme_data.set_data_name("panel_style");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ScrollContainer", empty);
 }
@@ -830,6 +1305,30 @@ void fill_default_theme_menu_bar(Ref<Theme> &theme, const Ref<Font> &default_fon
 }
 
 
+void fill_default_theme_popup_panel(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
+	ThemeIntData cur_theme_data;
+	theme->set_color_scheme("default_color_scheme", "PopupPanel", default_color_scheme);
+
+	scale = p_scale;
+
+	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> default_stylebox_hover = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_1, default_color_scheme);
+	const Ref<StyleBoxFlat> default_stylebox_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> default_stylebox_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE_12, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
+
+	cur_theme_data.set_data_name("panel_style");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupPanel", default_stylebox_normal);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupPanel", default_stylebox_hover);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "PopupPanel", default_stylebox_pressed);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupPanel", default_stylebox_disabled);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupPanel", default_stylebox_focus);
+}
+
+
+
+
 
 void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme) {
 	scale = p_scale;
@@ -914,8 +1413,8 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	// Panel
 	fill_default_theme_panel(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
 
-	// // ColorRect
-	// theme->set_color_scheme("default_color_scheme", "ColorRect", default_color_scheme);
+	// ColorRect
+	theme->set_color_scheme("default_color_scheme", "ColorRect", default_color_scheme);
 
 	// Button
 	fill_default_theme_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
@@ -949,6 +1448,20 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	// MenuButton
 	fill_default_theme_menu_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
 
+	// PopupMenu
+	fill_default_theme_popup_menu(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+
+	// CheckBox
+	fill_default_theme_checkbox(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	
+	// CheckButton
+	fill_default_theme_check_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+
+	// Popup
+	fill_default_theme_popup_panel(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+
+	// Button variations
+	fill_default_theme_button_variations(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
 
 	{
 		const Ref<StyleBoxFlat> button_normal = make_flat_stylebox(style_normal_color);
@@ -958,105 +1471,6 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		Ref<StyleBoxFlat> focus = make_flat_stylebox(style_focus_color, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 		// Make the focus outline appear to be flush with the buttons it's focusing.
 		focus->set_expand_margin_all(Math::round(2 * scale));
-
-		// CheckBox
-
-		Ref<StyleBox> cbx_empty = memnew(StyleBoxEmpty);
-		cbx_empty->set_content_margin_all(Math::round(4 * scale));
-		Ref<StyleBox> cbx_focus = focus;
-		cbx_focus->set_content_margin_all(Math::round(4 * scale));
-
-		theme->set_stylebox("normal", "CheckBox", cbx_empty);
-		theme->set_stylebox("pressed", "CheckBox", cbx_empty);
-		theme->set_stylebox("disabled", "CheckBox", cbx_empty);
-		theme->set_stylebox("hover", "CheckBox", cbx_empty);
-		theme->set_stylebox("hover_pressed", "CheckBox", cbx_empty);
-		theme->set_stylebox("focus", "CheckBox", cbx_focus);
-
-		theme->set_icon("checked", "CheckBox", icons["checked"]);
-		theme->set_icon("checked_disabled", "CheckBox", icons["checked"]);
-		theme->set_icon("unchecked", "CheckBox", icons["unchecked"]);
-		theme->set_icon("unchecked_disabled", "CheckBox", icons["unchecked"]);
-		theme->set_icon("radio_checked", "CheckBox", icons["radio_checked"]);
-		theme->set_icon("radio_checked_disabled", "CheckBox", icons["radio_checked"]);
-		theme->set_icon("radio_unchecked", "CheckBox", icons["radio_unchecked"]);
-		theme->set_icon("radio_unchecked_disabled", "CheckBox", icons["radio_unchecked"]);
-
-		theme->set_font("font", "CheckBox", Ref<Font>());
-		theme->set_font_size("font_size", "CheckBox", -1);
-
-		theme->set_color("font_color", "CheckBox", control_font_color);
-		theme->set_color("font_pressed_color", "CheckBox", control_font_pressed_color);
-		theme->set_color("font_hover_color", "CheckBox", control_font_hover_color);
-		theme->set_color("font_hover_pressed_color", "CheckBox", control_font_pressed_color);
-		theme->set_color("font_focus_color", "CheckBox", control_font_focus_color);
-		theme->set_color("font_disabled_color", "CheckBox", control_font_disabled_color);
-		theme->set_color("font_outline_color", "CheckBox", Color(1, 1, 1));
-
-		theme->set_constant("h_separation", "CheckBox", Math::round(4 * scale));
-		theme->set_constant("check_v_offset", "CheckBox", 0);
-		theme->set_constant("outline_size", "CheckBox", 0);
-
-		// CheckButton
-
-		Ref<StyleBox> cb_empty = memnew(StyleBoxEmpty);
-		cb_empty->set_content_margin_individual(Math::round(6 * scale), Math::round(4 * scale), Math::round(6 * scale), Math::round(4 * scale));
-
-		theme->set_stylebox("normal", "CheckButton", cb_empty);
-		theme->set_stylebox("pressed", "CheckButton", cb_empty);
-		theme->set_stylebox("disabled", "CheckButton", cb_empty);
-		theme->set_stylebox("hover", "CheckButton", cb_empty);
-		theme->set_stylebox("hover_pressed", "CheckButton", cb_empty);
-		theme->set_stylebox("focus", "CheckButton", focus);
-
-		theme->set_icon("checked", "CheckButton", icons["toggle_on"]);
-		theme->set_icon("checked_disabled", "CheckButton", icons["toggle_on_disabled"]);
-		theme->set_icon("unchecked", "CheckButton", icons["toggle_off"]);
-		theme->set_icon("unchecked_disabled", "CheckButton", icons["toggle_off_disabled"]);
-
-		theme->set_icon("checked_mirrored", "CheckButton", icons["toggle_on_mirrored"]);
-		theme->set_icon("checked_disabled_mirrored", "CheckButton", icons["toggle_on_disabled_mirrored"]);
-		theme->set_icon("unchecked_mirrored", "CheckButton", icons["toggle_off_mirrored"]);
-		theme->set_icon("unchecked_disabled_mirrored", "CheckButton", icons["toggle_off_disabled_mirrored"]);
-
-		theme->set_font("font", "CheckButton", Ref<Font>());
-		theme->set_font_size("font_size", "CheckButton", -1);
-
-		theme->set_color("font_color", "CheckButton", control_font_color);
-		theme->set_color("font_pressed_color", "CheckButton", control_font_pressed_color);
-		theme->set_color("font_hover_color", "CheckButton", control_font_hover_color);
-		theme->set_color("font_hover_pressed_color", "CheckButton", control_font_pressed_color);
-		theme->set_color("font_focus_color", "CheckButton", control_font_focus_color);
-		theme->set_color("font_disabled_color", "CheckButton", control_font_disabled_color);
-		theme->set_color("font_outline_color", "CheckButton", Color(1, 1, 1));
-
-		theme->set_constant("h_separation", "CheckButton", Math::round(4 * scale));
-		theme->set_constant("check_v_offset", "CheckButton", 0);
-		theme->set_constant("outline_size", "CheckButton", 0);
-
-		// Button variations
-
-		theme->set_type_variation("FlatButton", "Button");
-		theme->set_type_variation("FlatMenuButton", "MenuButton");
-
-		Ref<StyleBoxEmpty> flat_button_normal = make_empty_stylebox();
-		for (int i = 0; i < 4; i++) {
-			flat_button_normal->set_content_margin((Side)i, button_normal->get_margin((Side)i) + button_normal->get_border_width((Side)i));
-		}
-		Ref<StyleBoxFlat> flat_button_pressed = button_pressed->duplicate();
-		flat_button_pressed->set_bg_color(style_pressed_color * Color(1, 1, 1, 0.85));
-
-		theme->set_stylebox("normal", "FlatButton", flat_button_normal);
-		theme->set_stylebox("hover", "FlatButton", flat_button_normal);
-		theme->set_stylebox("pressed", "FlatButton", flat_button_pressed);
-		theme->set_stylebox("disabled", "FlatButton", flat_button_normal);
-
-		theme->set_stylebox("normal", "FlatMenuButton", flat_button_normal);
-		theme->set_stylebox("hover", "FlatMenuButton", flat_button_normal);
-		theme->set_stylebox("pressed", "FlatMenuButton", flat_button_pressed);
-		theme->set_stylebox("disabled", "FlatMenuButton", flat_button_normal);
-
-	
 
 		// LineEdit
 
@@ -1265,68 +1679,6 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		theme->set_color("folder_icon_color", "FileDialog", Color(1, 1, 1));
 		theme->set_color("file_icon_color", "FileDialog", Color(1, 1, 1));
 		theme->set_color("file_disabled_color", "FileDialog", Color(1, 1, 1, 0.25));
-
-		// Popup
-
-		theme->set_stylebox("panel", "PopupPanel", make_flat_stylebox(style_normal_color));
-
-		// PopupDialog
-
-		theme->set_stylebox("panel", "PopupDialog", make_flat_stylebox(style_normal_color));
-
-		// PopupMenu
-
-		Ref<StyleBoxLine> separator_horizontal = memnew(StyleBoxLine);
-		separator_horizontal->set_thickness(Math::round(scale));
-		separator_horizontal->set_color(style_separator_color);
-		separator_horizontal->set_content_margin_individual(default_margin, 0, default_margin, 0);
-		Ref<StyleBoxLine> separator_vertical = separator_horizontal->duplicate();
-		separator_vertical->set_vertical(true);
-		separator_vertical->set_content_margin_individual(0, default_margin, 0, default_margin);
-
-		// Always display a border for PopupMenus so they can be distinguished from their background.
-		Ref<StyleBoxFlat> style_popup_panel = make_flat_stylebox(style_popup_color);
-		style_popup_panel->set_border_width_all(2);
-		style_popup_panel->set_border_color(style_popup_border_color);
-
-		theme->set_stylebox("panel", "PopupMenu", style_popup_panel);
-		theme->set_stylebox("hover", "PopupMenu", make_flat_stylebox(style_popup_hover_color));
-		theme->set_stylebox("separator", "PopupMenu", separator_horizontal);
-		theme->set_stylebox("labeled_separator_left", "PopupMenu", separator_horizontal);
-		theme->set_stylebox("labeled_separator_right", "PopupMenu", separator_horizontal);
-
-		theme->set_icon("checked", "PopupMenu", icons["checked"]);
-		theme->set_icon("checked_disabled", "PopupMenu", icons["checked"]);
-		theme->set_icon("unchecked", "PopupMenu", icons["unchecked"]);
-		theme->set_icon("unchecked_disabled", "PopupMenu", icons["unchecked"]);
-		theme->set_icon("radio_checked", "PopupMenu", icons["radio_checked"]);
-		theme->set_icon("radio_checked_disabled", "PopupMenu", icons["radio_checked"]);
-		theme->set_icon("radio_unchecked", "PopupMenu", icons["radio_unchecked"]);
-		theme->set_icon("radio_unchecked_disabled", "PopupMenu", icons["radio_unchecked"]);
-		theme->set_icon("submenu", "PopupMenu", icons["popup_menu_arrow_right"]);
-		theme->set_icon("submenu_mirrored", "PopupMenu", icons["popup_menu_arrow_left"]);
-
-		theme->set_font("font", "PopupMenu", Ref<Font>());
-		theme->set_font("font_separator", "PopupMenu", Ref<Font>());
-		theme->set_font_size("font_size", "PopupMenu", -1);
-		theme->set_font_size("font_separator_size", "PopupMenu", -1);
-
-		theme->set_color("font_color", "PopupMenu", control_font_color);
-		theme->set_color("font_accelerator_color", "PopupMenu", Color(0.7, 0.7, 0.7, 0.8));
-		theme->set_color("font_disabled_color", "PopupMenu", Color(0.4, 0.4, 0.4, 0.8));
-		theme->set_color("font_hover_color", "PopupMenu", control_font_color);
-		theme->set_color("font_separator_color", "PopupMenu", control_font_color);
-		theme->set_color("font_outline_color", "PopupMenu", Color(1, 1, 1));
-		theme->set_color("font_separator_outline_color", "PopupMenu", Color(1, 1, 1));
-
-		theme->set_constant("indent", "PopupMenu", Math::round(10 * scale));
-		theme->set_constant("h_separation", "PopupMenu", Math::round(4 * scale));
-		theme->set_constant("v_separation", "PopupMenu", Math::round(4 * scale));
-		theme->set_constant("outline_size", "PopupMenu", 0);
-		theme->set_constant("separator_outline_size", "PopupMenu", 0);
-		theme->set_constant("item_start_padding", "PopupMenu", Math::round(2 * scale));
-		theme->set_constant("item_end_padding", "PopupMenu", Math::round(2 * scale));
-		theme->set_constant("icon_max_width", "PopupMenu", 0);
 
 		// GraphNode
 
@@ -3770,463 +4122,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	// theme->set_constant("h_separation", "MenuButton", Math::round(4 * scale));
 	// theme->set_constant("outline_size", "MenuButton", 0);
 
-	// // CheckBox
-	// {
-	// 	theme->set_color_scheme("default_color_scheme", "CheckBox", default_color_scheme);
-
-	// 	const Ref<StyleBoxFlat> check_box_button_normal = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	// 	const Ref<StyleBoxFlat> check_box_button_hover = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	// 	const Ref<StyleBoxFlat> check_box_button_pressed = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	// 	const Ref<StyleBoxFlat> check_box_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-
-	// 	Ref<StyleBoxFlat> check_box_button_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
-	// 	// Make the focus outline appear to be flush with the buttons it's focusing.
-	// 	check_box_button_focus->set_expand_margin_all(Math::round(2 * scale));
-
-	// 	const Ref<StyleBoxFlat> selected_check_hover_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	// 	const Ref<StyleBoxFlat> selected_check_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	// 	Ref<StyleBoxFlat> selected_check_focus_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-
-	// 	const Ref<StyleBoxFlat> unselected_check_hover_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	// 	const Ref<StyleBoxFlat> unselected_check_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	// 	Ref<StyleBoxFlat> unselected_check_focus_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-
-	// 	theme->set_stylebox("normal", "CheckBox", check_box_button_normal);
-	// 	theme->set_stylebox("hover", "CheckBox", check_box_button_hover);
-	// 	theme->set_stylebox("pressed", "CheckBox", check_box_button_pressed);
-	// 	theme->set_stylebox("disabled", "CheckBox", check_box_button_disabled);
-	// 	theme->set_stylebox("focus", "CheckBox", check_box_button_focus);
-
-	// 	theme->set_stylebox("selected_check_hover_state_layer", "CheckBox", selected_check_hover_state_layer);
-	// 	theme->set_stylebox("selected_check_pressed_state_layer", "CheckBox", selected_check_pressed_state_layer);
-	// 	theme->set_stylebox("selected_check_focus_state_layer", "CheckBox",
-	// 			selected_check_focus_state_layer);
-
-	// 	theme->set_stylebox("unselected_check_hover_state_layer", "CheckBox", unselected_check_hover_state_layer);
-	// 	theme->set_stylebox("unselected_check_pressed_state_layer", "CheckBox", unselected_check_pressed_state_layer);
-	// 	theme->set_stylebox("unselected_check_focus_state_layer", "CheckBox", unselected_check_focus_state_layer);
-
-	// 	theme->set_font("font", "CheckBox", default_font);
-	// 	theme->set_font("text_icon_font", "CheckBox", default_icon_font);
-	// 	theme->set_font_size("font_size", "CheckBox", -1);
-	// 	theme->set_font_size("text_icon_font_size", "CheckBox", 18);
-	// 	theme->set_constant("outline_size", "CheckBox", 0);
-
-	// 	theme->set_color("font_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("font_focus_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("font_pressed_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("font_hover_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("font_hover_pressed_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("font_disabled_color_scale", "CheckBox", Color(one_color_scale, 0.38));
-	// 	theme->set_color("font_outline_color_scale", "CheckBox", one_color_scale);
-
-	// 	theme->set_color("icon_normal_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("icon_focus_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("icon_pressed_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("icon_hover_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("icon_hover_pressed_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("icon_disabled_color_scale", "CheckBox", Color(one_color_scale, 0.38));
-
-	// 	theme->set_color("text_icon_normal_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("text_icon_focus_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("text_icon_pressed_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("text_icon_hover_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("text_icon_hover_pressed_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("text_icon_disabled_color_scale", "CheckBox", Color(one_color_scale, 0.38));
-
-	// 	theme->set_color_scheme("font_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("font_pressed_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("font_hover_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("font_focus_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("font_hover_pressed_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("font_disabled_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("font_outline_color_scheme", "CheckBox", Ref<ColorScheme>());
-
-	// 	theme->set_color_scheme("icon_normal_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("icon_pressed_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("icon_hover_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("icon_focus_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("icon_hover_pressed_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("icon_disabled_color_scheme", "CheckBox", Ref<ColorScheme>());
-
-	// 	theme->set_color_scheme("text_icon_normal_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("text_icon_pressed_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("text_icon_hover_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("text_icon_focus_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("text_icon_hover_pressed_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("text_icon_disabled_color_scheme", "CheckBox", Ref<ColorScheme>());
-
-	// 	theme->set_color_role("font_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("font_pressed_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("font_hover_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("font_focus_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("font_hover_pressed_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("font_disabled_color_role", "CheckBox", ColorRole::ON_SURFACE);
-	// 	theme->set_color_role("font_outline_color_role", "CheckBox", ColorRole::OUTLINE);
-
-	// 	theme->set_color_role("icon_normal_color_role", "CheckBox", ColorRole::STATIC_COLOR);
-	// 	theme->set_color_role("icon_pressed_color_role", "CheckBox", ColorRole::STATIC_COLOR);
-	// 	theme->set_color_role("icon_hover_color_role", "CheckBox", ColorRole::STATIC_COLOR);
-	// 	theme->set_color_role("icon_hover_pressed_color_role", "CheckBox", ColorRole::STATIC_COLOR);
-	// 	theme->set_color_role("icon_focus_color_role", "CheckBox", ColorRole::STATIC_COLOR);
-	// 	theme->set_color_role("icon_disabled_color_role", "CheckBox", ColorRole::STATIC_COLOR);
-
-	// 	theme->set_color_role("text_icon_normal_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("text_icon_pressed_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("text_icon_hover_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("text_icon_hover_pressed_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("text_icon_focus_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("text_icon_disabled_color_role", "CheckBox", ColorRole::ON_SURFACE);
-
-	// 	theme->set_color("font_color", "CheckBox", control_font_color);
-	// 	theme->set_color("font_pressed_color", "CheckBox", control_font_pressed_color);
-	// 	theme->set_color("font_hover_color", "CheckBox", control_font_hover_color);
-	// 	theme->set_color("font_focus_color", "CheckBox", control_font_focus_color);
-	// 	theme->set_color("font_hover_pressed_color", "CheckBox", control_font_pressed_color);
-	// 	theme->set_color("font_disabled_color", "CheckBox", control_font_disabled_color);
-	// 	theme->set_color("font_outline_color", "CheckBox", Color(1, 1, 1));
-
-	// 	theme->set_color("icon_normal_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("icon_pressed_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("icon_hover_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("icon_hover_pressed_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("icon_focus_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("icon_disabled_color", "CheckBox", Color(1, 1, 1, 0.4));
-
-	// 	theme->set_color("text_icon_normal_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("text_icon_pressed_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("text_icon_hover_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("text_icon_hover_pressed_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("text_icon_focus_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("text_icon_disabled_color", "CheckBox", Color(1, 1, 1, 0.4));
-
-	// 	theme->set_constant("h_separation", "CheckBox", Math::round(4 * scale));
-	// 	theme->set_constant("icon_max_width", "CheckBox", 0);
-
-	// 	theme->set_constant("check_v_offset", "CheckBox", 0);
-
-	// 	theme->set_color("selected_check_text_icon_normal_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("selected_check_text_icon_pressed_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("selected_check_text_icon_hover_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("selected_check_text_icon_focus_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("selected_check_text_icon_hover_pressed_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("selected_check_text_icon_disabled_color_scale", "CheckBox", Color(one_color_scale, 0.38));
-
-	// 	theme->set_color_scheme("selected_check_text_icon_normal_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_check_text_icon_pressed_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_check_text_icon_hover_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_check_text_icon_focus_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_check_text_icon_hover_pressed_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_check_text_icon_disabled_color_scheme", "CheckBox", Ref<ColorScheme>());
-
-	// 	theme->set_color_role("selected_check_text_icon_normal_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("selected_check_text_icon_pressed_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("selected_check_text_icon_hover_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("selected_check_text_icon_focus_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("selected_check_text_icon_hover_pressed_color_role", "CheckBox", ColorRole::PRIMARY);
-	// 	theme->set_color_role("selected_check_text_icon_disabled_color_role", "CheckBox", ColorRole::ON_SURFACE);
-
-	// 	theme->set_color("selected_check_text_icon_normal_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_check_text_icon_pressed_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_check_text_icon_hover_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_check_text_icon_focus_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_check_text_icon_hover_pressed_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_check_text_icon_disabled_color", "CheckBox", Color(1, 1, 1, 0.4));
-
-	// 	theme->set_color("unselected_check_text_icon_normal_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("unselected_check_text_icon_pressed_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("unselected_check_text_icon_hover_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("unselected_check_text_icon_focus_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("unselected_check_text_icon_hover_pressed_color_scale", "CheckBox", one_color_scale);
-	// 	theme->set_color("unselected_check_text_icon_disabled_color_scale", "CheckBox", Color(one_color_scale, 0.38));
-
-	// 	theme->set_color_scheme("unselected_check_text_icon_normal_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_check_text_icon_pressed_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_check_text_icon_hover_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_check_text_icon_focus_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_check_text_icon_hover_pressed_color_scheme", "CheckBox", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_check_text_icon_disabled_color_scheme", "CheckBox", Ref<ColorScheme>());
-
-	// 	theme->set_color_role("unselected_check_text_icon_normal_color_role", "CheckBox", ColorRole::ON_SURFACE);
-	// 	theme->set_color_role("unselected_check_text_icon_pressed_color_role", "CheckBox", ColorRole::ON_SURFACE);
-	// 	theme->set_color_role("unselected_check_text_icon_hover_color_role", "CheckBox", ColorRole::ON_SURFACE);
-	// 	theme->set_color_role("unselected_check_text_icon_focus_color_role", "CheckBox", ColorRole::ON_SURFACE);
-	// 	theme->set_color_role("unselected_check_text_icon_hover_pressed_color_role", "CheckBox", ColorRole::ON_SURFACE);
-	// 	theme->set_color_role("unselected_check_text_icon_disabled_color_role", "CheckBox", ColorRole::PRIMARY);
-
-	// 	theme->set_color("unselected_check_text_icon_normal_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_check_text_icon_pressed_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_check_text_icon_hover_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_check_text_icon_focus_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_check_text_icon_hover_pressed_color", "CheckBox", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_check_text_icon_disabled_color", "CheckBox", Color(1, 1, 1, 0.4));
-
-	// 	theme->set_icon("checked", "CheckBox", icons["checked"]);
-	// 	theme->set_icon("checked_disabled", "CheckBox", icons["checked"]);
-	// 	theme->set_icon("unchecked", "CheckBox", icons["unchecked"]);
-	// 	theme->set_icon("unchecked_disabled", "CheckBox", icons["unchecked"]);
-	// 	theme->set_icon("radio_checked", "CheckBox", icons["radio_checked"]);
-	// 	theme->set_icon("radio_checked_disabled", "CheckBox", icons["radio_checked"]);
-	// 	theme->set_icon("radio_unchecked", "CheckBox", icons["radio_unchecked"]);
-	// 	theme->set_icon("radio_unchecked_disabled", "CheckBox", icons["radio_unchecked"]);
-	// }
-	// // CheckButton
-	// {
-	// 	theme->set_color_scheme("default_color_scheme", "CheckButton", default_color_scheme);
-
-	// 	const Ref<StyleBoxFlat> check_button_normal = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	// 	const Ref<StyleBoxFlat> check_button_hover = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	// 	const Ref<StyleBoxFlat> check_button_pressed = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	// 	const Ref<StyleBoxFlat> check_button_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-
-	// 	Ref<StyleBoxFlat> check_button_focus = make_color_role_flat_stylebox(ColorRole::SECONDARY, style_zero_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
-	// 	// Make the focus outline appear to be flush with the buttons it's focusing.
-	// 	check_button_focus->set_expand_margin_all(Math::round(2 * scale));
-
-	// 	const Ref<StyleBoxFlat> check_button_selected_hover_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	// 	const Ref<StyleBoxFlat> check_button_selected_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	// 	Ref<StyleBoxFlat> check_button_selected_focus_state_layer = make_color_role_flat_stylebox(ColorRole::PRIMARY, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-
-	// 	const Ref<StyleBoxFlat> check_button_unselected_hover_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, hover_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	// 	const Ref<StyleBoxFlat> check_button_unselected_pressed_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, pressed_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-	// 	Ref<StyleBoxFlat> check_button_unselected_focus_state_layer = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, focus_state_layer_color_scale, StyleBoxFlat::ElevationLevel::Elevation_Level_0);
-
-	// 	theme->set_stylebox("normal", "CheckButton", check_button_normal);
-	// 	theme->set_stylebox("hover", "CheckButton", check_button_hover);
-	// 	theme->set_stylebox("pressed", "CheckButton", check_button_pressed);
-	// 	theme->set_stylebox("disabled", "CheckButton", check_button_disabled);
-	// 	theme->set_stylebox("focus", "CheckButton", check_button_focus);
-
-	// 	theme->set_stylebox("selected_check_hover_state_layer", "CheckButton", check_button_selected_hover_state_layer);
-	// 	theme->set_stylebox("selected_check_pressed_state_layer", "CheckButton", check_button_selected_pressed_state_layer);
-	// 	theme->set_stylebox("selected_check_focus_state_layer", "CheckButton",
-	// 			check_button_selected_focus_state_layer);
-
-	// 	theme->set_stylebox("unselected_check_hover_state_layer", "CheckButton", check_button_unselected_hover_state_layer);
-	// 	theme->set_stylebox("unselected_check_pressed_state_layer", "CheckButton", check_button_unselected_pressed_state_layer);
-	// 	theme->set_stylebox("unselected_check_focus_state_layer", "CheckButton", check_button_unselected_focus_state_layer);
-
-	// 	theme->set_font("font", "CheckButton", default_font);
-	// 	theme->set_font("text_icon_font", "CheckButton", default_icon_font);
-	// 	theme->set_font_size("font_size", "CheckButton", -1);
-	// 	theme->set_font_size("text_icon_font_size", "CheckButton", 18);
-	// 	theme->set_constant("outline_size", "CheckButton", 0);
-
-	// 	theme->set_color("font_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("font_focus_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("font_pressed_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("font_hover_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("font_hover_pressed_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("font_disabled_color_scale", "CheckButton", Color(one_color_scale, 0.38));
-	// 	theme->set_color("font_outline_color_scale", "CheckButton", one_color_scale);
-
-	// 	theme->set_color("icon_normal_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("icon_focus_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("icon_pressed_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("icon_hover_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("icon_hover_pressed_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("icon_disabled_color_scale", "CheckButton", Color(one_color_scale, 0.38));
-
-	// 	theme->set_color("text_icon_normal_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("text_icon_focus_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("text_icon_pressed_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("text_icon_hover_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("text_icon_hover_pressed_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("text_icon_disabled_color_scale", "CheckButton", Color(one_color_scale, 0.38));
-
-	// 	theme->set_color_scheme("font_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("font_pressed_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("font_hover_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("font_focus_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("font_hover_pressed_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("font_disabled_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("font_outline_color_scheme", "CheckButton", Ref<ColorScheme>());
-
-	// 	theme->set_color_scheme("icon_normal_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("icon_pressed_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("icon_hover_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("icon_focus_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("icon_hover_pressed_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("icon_disabled_color_scheme", "CheckButton", Ref<ColorScheme>());
-
-	// 	theme->set_color_scheme("text_icon_normal_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("text_icon_pressed_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("text_icon_hover_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("text_icon_focus_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("text_icon_hover_pressed_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("text_icon_disabled_color_scheme", "CheckButton", Ref<ColorScheme>());
-
-	// 	theme->set_color_role("font_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("font_pressed_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("font_hover_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("font_focus_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("font_hover_pressed_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("font_disabled_color_role", "CheckButton", ColorRole::ON_SURFACE);
-	// 	theme->set_color_role("font_outline_color_role", "CheckButton", ColorRole::OUTLINE);
-
-	// 	theme->set_color_role("icon_normal_color_role", "CheckButton", ColorRole::STATIC_COLOR);
-	// 	theme->set_color_role("icon_pressed_color_role", "CheckButton", ColorRole::STATIC_COLOR);
-	// 	theme->set_color_role("icon_hover_color_role", "CheckButton", ColorRole::STATIC_COLOR);
-	// 	theme->set_color_role("icon_hover_pressed_color_role", "CheckButton", ColorRole::STATIC_COLOR);
-	// 	theme->set_color_role("icon_focus_color_role", "CheckButton", ColorRole::STATIC_COLOR);
-	// 	theme->set_color_role("icon_disabled_color_role", "CheckButton", ColorRole::STATIC_COLOR);
-
-	// 	theme->set_color_role("text_icon_normal_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("text_icon_pressed_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("text_icon_hover_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("text_icon_hover_pressed_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("text_icon_focus_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("text_icon_disabled_color_role", "CheckButton", ColorRole::ON_SURFACE);
-
-	// 	theme->set_color("font_color", "CheckButton", control_font_color);
-	// 	theme->set_color("font_pressed_color", "CheckButton", control_font_pressed_color);
-	// 	theme->set_color("font_hover_color", "CheckButton", control_font_hover_color);
-	// 	theme->set_color("font_focus_color", "CheckButton", control_font_focus_color);
-	// 	theme->set_color("font_hover_pressed_color", "CheckButton", control_font_pressed_color);
-	// 	theme->set_color("font_disabled_color", "CheckButton", control_font_disabled_color);
-	// 	theme->set_color("font_outline_color", "CheckButton", Color(1, 1, 1));
-
-	// 	theme->set_color("icon_normal_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("icon_pressed_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("icon_hover_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("icon_hover_pressed_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("icon_focus_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("icon_disabled_color", "CheckButton", Color(1, 1, 1, 0.4));
-
-	// 	theme->set_color("text_icon_normal_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("text_icon_pressed_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("text_icon_hover_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("text_icon_hover_pressed_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("text_icon_focus_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("text_icon_disabled_color", "CheckButton", Color(1, 1, 1, 0.4));
-
-	// 	theme->set_constant("h_separation", "CheckButton", Math::round(4 * scale));
-	// 	theme->set_constant("icon_max_width", "CheckButton", 0);
-
-	// 	theme->set_constant("check_v_offset", "CheckButton", 0);
-
-	// 	theme->set_color("selected_check_text_icon_normal_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("selected_check_text_icon_pressed_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("selected_check_text_icon_hover_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("selected_check_text_icon_focus_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("selected_check_text_icon_hover_pressed_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("selected_check_text_icon_disabled_color_scale", "CheckButton", Color(one_color_scale, 0.38));
-
-	// 	theme->set_color_scheme("selected_check_text_icon_normal_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_check_text_icon_pressed_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_check_text_icon_hover_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_check_text_icon_focus_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_check_text_icon_hover_pressed_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_check_text_icon_disabled_color_scheme", "CheckButton", Ref<ColorScheme>());
-
-	// 	theme->set_color_role("selected_check_text_icon_normal_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("selected_check_text_icon_pressed_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("selected_check_text_icon_hover_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("selected_check_text_icon_focus_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("selected_check_text_icon_hover_pressed_color_role", "CheckButton", ColorRole::PRIMARY);
-	// 	theme->set_color_role("selected_check_text_icon_disabled_color_role", "CheckButton", ColorRole::ON_SURFACE);
-
-	// 	theme->set_color("selected_check_text_icon_normal_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_check_text_icon_pressed_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_check_text_icon_hover_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_check_text_icon_focus_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_check_text_icon_hover_pressed_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_check_text_icon_disabled_color", "CheckButton", Color(1, 1, 1, 0.4));
-
-	// 	theme->set_color("unselected_check_text_icon_normal_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("unselected_check_text_icon_pressed_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("unselected_check_text_icon_hover_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("unselected_check_text_icon_focus_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("unselected_check_text_icon_hover_pressed_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("unselected_check_text_icon_disabled_color_scale", "CheckButton", Color(one_color_scale, 0.38));
-
-	// 	theme->set_color_scheme("unselected_check_text_icon_normal_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_check_text_icon_pressed_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_check_text_icon_hover_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_check_text_icon_focus_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_check_text_icon_hover_pressed_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_check_text_icon_disabled_color_scheme", "CheckButton", Ref<ColorScheme>());
-
-	// 	theme->set_color_role("unselected_check_text_icon_normal_color_role", "CheckButton", ColorRole::OUTLINE);
-	// 	theme->set_color_role("unselected_check_text_icon_pressed_color_role", "CheckButton", ColorRole::OUTLINE);
-	// 	theme->set_color_role("unselected_check_text_icon_hover_color_role", "CheckButton", ColorRole::OUTLINE);
-	// 	theme->set_color_role("unselected_check_text_icon_focus_color_role", "CheckButton", ColorRole::OUTLINE);
-	// 	theme->set_color_role("unselected_check_text_icon_hover_pressed_color_role", "CheckButton", ColorRole::OUTLINE);
-	// 	theme->set_color_role("unselected_check_text_icon_disabled_color_role", "CheckButton", ColorRole::ON_SURFACE);
-
-	// 	theme->set_color("unselected_check_text_icon_normal_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_check_text_icon_pressed_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_check_text_icon_hover_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_check_text_icon_focus_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_check_text_icon_hover_pressed_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_check_text_icon_disabled_color", "CheckButton", Color(1, 1, 1, 0.4));
-
-	// 	theme->set_color("selected_bg_check_text_icon_normal_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("selected_bg_check_text_icon_pressed_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("selected_bg_check_text_icon_hover_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("selected_bg_check_text_icon_focus_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("selected_bg_check_text_icon_hover_pressed_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("selected_bg_check_text_icon_disabled_color_scale", "CheckButton", Color(one_color_scale, 0.38));
-
-	// 	theme->set_color_scheme("selected_bg_check_text_icon_normal_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_bg_check_text_icon_pressed_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_bg_check_text_icon_hover_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_bg_check_text_icon_focus_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_bg_check_text_icon_hover_pressed_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("selected_bg_check_text_icon_disabled_color_scheme", "CheckButton", Ref<ColorScheme>());
-
-	// 	theme->set_color_role("selected_bg_check_text_icon_normal_color_role", "CheckButton", ColorRole::ON_PRIMARY);
-	// 	theme->set_color_role("selected_bg_check_text_icon_pressed_color_role", "CheckButton", ColorRole::ON_PRIMARY);
-	// 	theme->set_color_role("selected_bg_check_text_icon_hover_color_role", "CheckButton", ColorRole::ON_PRIMARY);
-	// 	theme->set_color_role("selected_bg_check_text_icon_focus_color_role", "CheckButton", ColorRole::ON_PRIMARY);
-	// 	theme->set_color_role("selected_bg_check_text_icon_hover_pressed_color_role", "CheckButton", ColorRole::ON_PRIMARY);
-	// 	theme->set_color_role("selected_bg_check_text_icon_disabled_color_role", "CheckButton", ColorRole::SURFACE);
-
-	// 	theme->set_color("selected_bg_check_text_icon_normal_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_bg_check_text_icon_pressed_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_bg_check_text_icon_hover_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_bg_check_text_icon_focus_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_bg_check_text_icon_hover_pressed_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("selected_bg_check_text_icon_disabled_color", "CheckButton", Color(1, 1, 1, 0.4));
-
-	// 	theme->set_color("unselected_bg_check_text_icon_normal_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("unselected_bg_check_text_icon_pressed_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("unselected_bg_check_text_icon_hover_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("unselected_bg_check_text_icon_focus_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("unselected_bg_check_text_icon_hover_pressed_color_scale", "CheckButton", one_color_scale);
-	// 	theme->set_color("unselected_bg_check_text_icon_disabled_color_scale", "CheckButton", Color(one_color_scale, 0.38));
-
-	// 	theme->set_color_scheme("unselected_bg_check_text_icon_normal_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_bg_check_text_icon_pressed_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_bg_check_text_icon_hover_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_bg_check_text_icon_focus_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_bg_check_text_icon_hover_pressed_color_scheme", "CheckButton", Ref<ColorScheme>());
-	// 	theme->set_color_scheme("unselected_bg_check_text_icon_disabled_color_scheme", "CheckButton", Ref<ColorScheme>());
-
-	// 	theme->set_color_role("unselected_bg_check_text_icon_normal_color_role", "CheckButton", ColorRole::SURFACE_CONTAINER_HIGHEST);
-	// 	theme->set_color_role("unselected_bg_check_text_icon_pressed_color_role", "CheckButton", ColorRole::SURFACE_CONTAINER_HIGHEST);
-	// 	theme->set_color_role("unselected_bg_check_text_icon_hover_color_role", "CheckButton", ColorRole::SURFACE_CONTAINER_HIGHEST);
-	// 	theme->set_color_role("unselected_bg_check_text_icon_focus_color_role", "CheckButton", ColorRole::SURFACE_CONTAINER_HIGHEST);
-	// 	theme->set_color_role("unselected_bg_check_text_icon_hover_pressed_color_role", "CheckButton", ColorRole::SURFACE_CONTAINER_HIGHEST);
-	// 	theme->set_color_role("unselected_bg_check_text_icon_disabled_color_role", "CheckButton", ColorRole::SURFACE_CONTAINER_HIGHEST);
-
-	// 	theme->set_color("unselected_bg_check_text_icon_normal_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_bg_check_text_icon_pressed_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_bg_check_text_icon_hover_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_bg_check_text_icon_focus_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_bg_check_text_icon_hover_pressed_color", "CheckButton", Color(1, 1, 1, 1));
-	// 	theme->set_color("unselected_bg_check_text_icon_disabled_color", "CheckButton", Color(1, 1, 1, 0.4));
-
-	// 	theme->set_icon("checked", "CheckButton", icons["toggle_on"]);
-	// 	theme->set_icon("checked_disabled", "CheckButton", icons["toggle_on_disabled"]);
-	// 	theme->set_icon("unchecked", "CheckButton", icons["toggle_off"]);
-	// 	theme->set_icon("unchecked_disabled", "CheckButton", icons["toggle_off_disabled"]);
-
-	// 	theme->set_icon("checked_mirrored", "CheckButton", icons["toggle_on_mirrored"]);
-	// 	theme->set_icon("checked_disabled_mirrored", "CheckButton", icons["toggle_on_disabled_mirrored"]);
-	// 	theme->set_icon("unchecked_mirrored", "CheckButton", icons["toggle_off_mirrored"]);
-	// 	theme->set_icon("unchecked_disabled_mirrored", "CheckButton", icons["toggle_off_disabled_mirrored"]);
-	// }
+	
 	// // Button variations
 
 	// theme->set_type_variation("FlatButton", "Button");
@@ -4689,90 +4585,6 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	// // PopupDialog
 
 	// theme->set_stylebox("panel", "PopupDialog", make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, style_normal_color_scale));
-
-	// // PopupMenu
-
-	// Ref<StyleBoxLine> separator_horizontal = memnew(StyleBoxLine);
-	// separator_horizontal->set_thickness(Math::round(scale));
-	// separator_horizontal->set_color(style_separator_color);
-	// separator_horizontal->set_color_scale(style_separator_color_scale);
-	// separator_horizontal->set_content_margin_individual(default_margin, 0, default_margin, 0);
-	// separator_horizontal->set_color_scheme(default_color_scheme);
-	// separator_horizontal->set_color_role(ColorRole::SURFACE_CONTAINER_HIGHEST);
-
-	// Ref<StyleBoxLine> separator_vertical = separator_horizontal->duplicate();
-	// separator_vertical->set_vertical(true);
-	// separator_vertical->set_content_margin_individual(0, default_margin, 0, default_margin);
-
-	// // Always display a border for PopupMenus so they can be distinguished from their background.
-	// Ref<StyleBoxFlat> style_popup_panel = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER, style_popup_color_scale);
-	// style_popup_panel->set_border_width_all(2);
-	// style_popup_panel->set_border_color_scale(Color(1.0, 1.0, 1.0));
-
-	// theme->set_stylebox("panel", "PopupMenu", style_popup_panel);
-	// theme->set_stylebox("hover", "PopupMenu", make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER, style_popup_hover_color_scale));
-	// theme->set_stylebox("separator", "PopupMenu", separator_horizontal);
-	// theme->set_stylebox("labeled_separator_left", "PopupMenu", separator_horizontal);
-	// theme->set_stylebox("labeled_separator_right", "PopupMenu", separator_horizontal);
-
-	// theme->set_icon("checked", "PopupMenu", icons["checked"]);
-	// theme->set_icon("checked_disabled", "PopupMenu", icons["checked"]);
-	// theme->set_icon("unchecked", "PopupMenu", icons["unchecked"]);
-	// theme->set_icon("unchecked_disabled", "PopupMenu", icons["unchecked"]);
-	// theme->set_icon("radio_checked", "PopupMenu", icons["radio_checked"]);
-	// theme->set_icon("radio_checked_disabled", "PopupMenu", icons["radio_checked"]);
-	// theme->set_icon("radio_unchecked", "PopupMenu", icons["radio_unchecked"]);
-	// theme->set_icon("radio_unchecked_disabled", "PopupMenu", icons["radio_unchecked"]);
-	// theme->set_icon("submenu", "PopupMenu", icons["popup_menu_arrow_right"]);
-	// theme->set_icon("submenu_mirrored", "PopupMenu", icons["popup_menu_arrow_left"]);
-
-	// theme->set_font("font", "PopupMenu", Ref<Font>());
-	// theme->set_font("font_separator", "PopupMenu", Ref<Font>());
-	// theme->set_font_size("font_size", "PopupMenu", -1);
-	// theme->set_font_size("font_separator_size", "PopupMenu", -1);
-
-	// theme->set_color_scheme("default_color_scheme", "PopupMenu", default_color_scheme);
-
-	// theme->set_color("font_color_scale", "PopupMenu", control_font_color_scale);
-	// theme->set_color("font_accelerator_color_scale", "PopupMenu", Color(0.9, 0.9, 0.9, 0.8));
-	// theme->set_color("font_disabled_color_scale", "PopupMenu", Color(0.45, 0.45, 0.45, 0.8));
-	// theme->set_color("font_hover_color_scale", "PopupMenu", Color(1, 1, 1, 1));
-	// theme->set_color("font_separator_color_scale", "PopupMenu", Color(1, 1, 1, 1));
-	// theme->set_color("font_outline_color_scale", "PopupMenu", Color(1, 1, 1));
-	// theme->set_color("font_separator_outline_color_scale", "PopupMenu", Color(1, 1, 1));
-
-	// theme->set_color_scheme("font_color_scheme", "PopupMenu", Ref<ColorScheme>());
-	// theme->set_color_scheme("font_accelerator_color_scheme", "PopupMenu", Ref<ColorScheme>());
-	// theme->set_color_scheme("font_disabled_color_scheme", "PopupMenu", Ref<ColorScheme>());
-	// theme->set_color_scheme("font_hover_color_scheme", "PopupMenu", Ref<ColorScheme>());
-	// theme->set_color_scheme("font_separator_color_scheme", "PopupMenu", Ref<ColorScheme>());
-	// theme->set_color_scheme("font_outline_color_scheme", "PopupMenu", Ref<ColorScheme>());
-	// theme->set_color_scheme("font_separator_outline_color_scheme", "PopupMenu", Ref<ColorScheme>());
-
-	// theme->set_color_role("font_color_role", "PopupMenu", ColorRole::ON_SURFACE);
-	// theme->set_color_role("font_accelerator_color_role", "PopupMenu", ColorRole::ON_SURFACE);
-	// theme->set_color_role("font_disabled_color_role", "PopupMenu", ColorRole::ON_SURFACE);
-	// theme->set_color_role("font_hover_color_role", "PopupMenu", ColorRole::ON_SURFACE);
-	// theme->set_color_role("font_separator_color_role", "PopupMenu", ColorRole::ON_SURFACE);
-	// theme->set_color_role("font_outline_color_role", "PopupMenu", ColorRole::OUTLINE);
-	// theme->set_color_role("font_separator_outline_color_role", "PopupMenu", ColorRole::OUTLINE_VARIANT);
-
-	// theme->set_color("font_color", "PopupMenu", control_font_color);
-	// theme->set_color("font_accelerator_color", "PopupMenu", Color(0.7, 0.7, 0.7, 0.8));
-	// theme->set_color("font_disabled_color", "PopupMenu", Color(0.4, 0.4, 0.4, 0.8));
-	// theme->set_color("font_hover_color", "PopupMenu", control_font_color);
-	// theme->set_color("font_separator_color", "PopupMenu", control_font_color);
-	// theme->set_color("font_outline_color", "PopupMenu", Color(1, 1, 1));
-	// theme->set_color("font_separator_outline_color", "PopupMenu", Color(1, 1, 1));
-
-	// theme->set_constant("indent", "PopupMenu", Math::round(10 * scale));
-	// theme->set_constant("h_separation", "PopupMenu", Math::round(4 * scale));
-	// theme->set_constant("v_separation", "PopupMenu", Math::round(4 * scale));
-	// theme->set_constant("outline_size", "PopupMenu", 0);
-	// theme->set_constant("separator_outline_size", "PopupMenu", 0);
-	// theme->set_constant("item_start_padding", "PopupMenu", Math::round(2 * scale));
-	// theme->set_constant("item_end_padding", "PopupMenu", Math::round(2 * scale));
-	// theme->set_constant("icon_max_width", "PopupMenu", 0);
 
 	// // GraphNode
 

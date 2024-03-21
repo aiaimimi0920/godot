@@ -350,14 +350,7 @@ void Button::_notification(int p_what) {
 			if (_text_icon.is_empty()) {
 				if (_has_current_text_icon()) {
 					_text_icon = _get_current_text_icon();
-					String local_name = text_icon_font->get_path().get_file().get_basename();
-					Ref<Translation> trans = TranslationServer::get_singleton()->get_translation_object(local_name);
-					if (trans.is_valid()) {
-						_text_icon = trans->get_message(_text_icon);
-						if (!_text_icon.is_empty()) {
-							_text_icon = String::chr(("0x" + _text_icon.to_lower()).hex_to_int());
-						}
-					}
+					_text_icon = _get_trans_text(_text_icon);
 				}
 			}
 
@@ -789,6 +782,28 @@ void Button::_shape(Ref<TextParagraph> p_paragraph, String p_text) {
 	p_paragraph->set_text_overrun_behavior(overrun_behavior);
 }
 
+String Button::_get_trans_text(const String &p_text_icon) {
+	Ref<Font> text_icon_font = theme_cache.text_icon_font;
+
+	String local_name = text_icon_font->get_path().get_file().get_basename();
+	if (local_name.is_empty()) {
+		local_name = text_icon_font->get_name();
+	}
+
+	Ref<Translation> trans = TranslationServer::get_singleton()->get_translation_object(local_name);
+	String result_text = "";
+	if (trans.is_valid()) {
+		result_text = trans->get_message(p_text_icon);
+		if (!result_text.is_empty()) {
+			result_text = String::chr(("0x" + result_text.to_lower()).hex_to_int());
+		}
+	} else {
+		result_text = "";
+	}
+	return result_text;
+}
+
+
 void Button::_icon_shape(Ref<TextParagraph> p_paragraph, String p_text_icon, int expand_icon_size) {
 	if (p_paragraph.is_null()) {
 		p_paragraph = text_icon_buf;
@@ -800,14 +815,7 @@ void Button::_icon_shape(Ref<TextParagraph> p_paragraph, String p_text_icon, int
 	if (p_text_icon.is_empty()) {
 		if (_has_current_text_icon()) {
 			p_text_icon = _get_current_text_icon();
-			String local_name = font->get_path().get_file().get_basename();
-			Ref<Translation> trans = TranslationServer::get_singleton()->get_translation_object(local_name);
-			if (trans.is_valid()) {
-				p_text_icon = trans->get_message(p_text_icon);
-				if (!p_text_icon.is_empty()) {
-					p_text_icon = String::chr(("0x" + p_text_icon.to_lower()).hex_to_int());
-				}
-			}
+			p_text_icon = _get_trans_text(p_text_icon);
 		}
 	}
 

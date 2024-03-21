@@ -39,237 +39,29 @@ class CheckButton : public Button {
 
 
 	Ref<TextParagraph> text_icon_buf;
-	Ref<TextParagraph> bg_text_icon_buf;
-
-	String code_selected_check_text_icon_normal;
-	String selected_check_text_icon_normal = "toggle-switch";
-	String code_selected_check_text_icon_pressed;
-	String selected_check_text_icon_pressed = "toggle-switch";
-	String code_selected_check_text_icon_hover;
-	String selected_check_text_icon_hover = "toggle-switch";
-	String code_selected_check_text_icon_disabled;
-	String selected_check_text_icon_disabled = "toggle-switch";
-
-	String code_unselected_check_text_icon_normal;
-	String unselected_check_text_icon_normal = "toggle-switch-off-outline";
-	String code_unselected_check_text_icon_pressed;
-	String unselected_check_text_icon_pressed = "toggle-switch-off-outline";
-	String code_unselected_check_text_icon_hover;
-	String unselected_check_text_icon_hover = "toggle-switch-off-outline";
-	String code_unselected_check_text_icon_disabled;
-	String unselected_check_text_icon_disabled = "toggle-switch-off-outline";
-
-	String code_selected_bg_check_text_icon_normal;
-	String selected_bg_check_text_icon_normal = "toggle-switch-outline";
-	String code_selected_bg_check_text_icon_pressed;
-	String selected_bg_check_text_icon_pressed = "toggle-switch-outline";
-	String code_selected_bg_check_text_icon_hover;
-	String selected_bg_check_text_icon_hover = "toggle-switch-outline";
-	String code_selected_bg_check_text_icon_disabled;
-	String selected_bg_check_text_icon_disabled = "toggle-switch-outline";
-
-	String code_unselected_bg_check_text_icon_normal;
-	String unselected_bg_check_text_icon_normal = "toggle-switch-off";
-	String code_unselected_bg_check_text_icon_pressed;
-	String unselected_bg_check_text_icon_pressed = "toggle-switch-off";
-	String code_unselected_bg_check_text_icon_hover;
-	String unselected_bg_check_text_icon_hover = "toggle-switch-off";
-	String code_unselected_bg_check_text_icon_disabled;
-	String unselected_bg_check_text_icon_disabled = "toggle-switch-off";
-
-	String code_selected_check_text_icon_normal_mirrored;
-	String selected_check_text_icon_normal_mirrored = "toggle-switch-off";
-	String code_selected_check_text_icon_pressed_mirrored;
-	String selected_check_text_icon_pressed_mirrored = "toggle-switch-off";
-	String code_selected_check_text_icon_hover_mirrored;
-	String selected_check_text_icon_hover_mirrored = "toggle-switch-off";
-	String code_selected_check_text_icon_disabled_mirrored;
-	String selected_check_text_icon_disabled_mirrored = "toggle-switch-off";
-
-	String code_unselected_check_text_icon_normal_mirrored;
-	String unselected_check_text_icon_normal_mirrored = "toggle-switch-outline";
-	String code_unselected_check_text_icon_pressed_mirrored;
-	String unselected_check_text_icon_pressed_mirrored = "toggle-switch-outline";
-	String code_unselected_check_text_icon_hover_mirrored;
-	String unselected_check_text_icon_hover_mirrored = "toggle-switch-outline";
-	String code_unselected_check_text_icon_disabled_mirrored;
-	String unselected_check_text_icon_disabled_mirrored = "toggle-switch-outline";
-
-	String code_selected_bg_check_text_icon_normal_mirrored;
-	String selected_bg_check_text_icon_normal_mirrored = "toggle-switch-off-outline";
-	String code_selected_bg_check_text_icon_pressed_mirrored;
-	String selected_bg_check_text_icon_pressed_mirrored = "toggle-switch-off-outline";
-	String code_selected_bg_check_text_icon_hover_mirrored;
-	String selected_bg_check_text_icon_hover_mirrored = "toggle-switch-off-outline";
-	String code_selected_bg_check_text_icon_disabled_mirrored;
-	String selected_bg_check_text_icon_disabled_mirrored = "toggle-switch-off-outline";
-
-	String code_unselected_bg_check_text_icon_normal_mirrored;
-	String unselected_bg_check_text_icon_normal_mirrored = "toggle-switch";
-	String code_unselected_bg_check_text_icon_pressed_mirrored;
-	String unselected_bg_check_text_icon_pressed_mirrored = "toggle-switch";
-	String code_unselected_bg_check_text_icon_hover_mirrored;
-	String unselected_bg_check_text_icon_hover_mirrored = "toggle-switch";
-	String code_unselected_bg_check_text_icon_disabled_mirrored;
-	String unselected_bg_check_text_icon_disabled_mirrored = "toggle-switch";
-
-
-	String _get_trans_text(const String &p_text_icon);
-
+	Ref<TextParagraph> text_icon_bg_1_buf;
+	Ref<TextParagraph> text_icon_bg_2_buf;
 
 	struct ThemeCache {
-		Ref<Font> text_icon_font;
-		int text_icon_font_size = 0;
-		int icon_max_width = 0;
-
 		int h_separation = 0;
 		int check_v_offset = 0;
-		Ref<StyleBox> normal_style;
+		int icon_max_width;
+		int text_icon_font_size;
+		Ref<Font> text_icon_font;
 
-		Ref<Texture2D> checked;
-		Ref<Texture2D> unchecked;
-		Ref<Texture2D> checked_disabled;
-		Ref<Texture2D> unchecked_disabled;
-		Ref<Texture2D> checked_mirrored;
-		Ref<Texture2D> unchecked_mirrored;
-		Ref<Texture2D> checked_disabled_mirrored;
-		Ref<Texture2D> unchecked_disabled_mirrored;
+		ThemeIconData check_icon{ "check_icon" };
+		ThemeColorData check_icon_color{"check_icon_color"};
+		ThemeColorRoleData check_icon_color_role{"check_icon_color_role"};
 
-		Ref<StyleBox> selected_check_hover_state_layer;
-		Ref<StyleBox> selected_check_hover_state_layer_mirrored;
-		Ref<StyleBox> selected_check_pressed_state_layer;
-		Ref<StyleBox> selected_check_pressed_state_layer_mirrored;
-		Ref<StyleBox> selected_check_hover_pressed_state_layer;
-		Ref<StyleBox> selected_check_hover_pressed_state_layer_mirrored;
-		Ref<StyleBox> selected_check_focus_state_layer;
+		ThemeStrData text_check_icon{"text_check_icon"};
+		ThemeColorData text_check_icon_color{"text_check_icon_color"};
+		ThemeColorRoleData text_check_icon_color_role{"text_check_icon_color_role"};
 
-		Color selected_check_text_icon_normal_color_scale;
-		Ref<ColorScheme> selected_check_text_icon_normal_color_scheme;
-		ColorRole selected_check_text_icon_normal_color_role;
-		Color selected_check_text_icon_normal_color;
 
-		Color selected_check_text_icon_pressed_color_scale;
-		Ref<ColorScheme> selected_check_text_icon_pressed_color_scheme;
-		ColorRole selected_check_text_icon_pressed_color_role;
-		Color selected_check_text_icon_pressed_color;
-
-		Color selected_check_text_icon_hover_color_scale;
-		Ref<ColorScheme> selected_check_text_icon_hover_color_scheme;
-		ColorRole selected_check_text_icon_hover_color_role;
-		Color selected_check_text_icon_hover_color;
-
-		Color selected_check_text_icon_focus_color_scale;
-		Ref<ColorScheme> selected_check_text_icon_focus_color_scheme;
-		ColorRole selected_check_text_icon_focus_color_role;
-		Color selected_check_text_icon_focus_color;
-
-		Color selected_check_text_icon_hover_pressed_color_scale;
-		Ref<ColorScheme> selected_check_text_icon_hover_pressed_color_scheme;
-		ColorRole selected_check_text_icon_hover_pressed_color_role;
-		Color selected_check_text_icon_hover_pressed_color;
-
-		Color selected_check_text_icon_disabled_color_scale;
-		Ref<ColorScheme> selected_check_text_icon_disabled_color_scheme;
-		ColorRole selected_check_text_icon_disabled_color_role;
-		Color selected_check_text_icon_disabled_color;
-
-		Ref<StyleBox> unselected_check_hover_state_layer;
-		Ref<StyleBox> unselected_check_hover_state_layer_mirrored;
-		Ref<StyleBox> unselected_check_pressed_state_layer;
-		Ref<StyleBox> unselected_check_pressed_state_layer_mirrored;
-		Ref<StyleBox> unselected_check_hover_pressed_state_layer;
-		Ref<StyleBox> unselected_check_hover_pressed_state_layer_mirrored;
-		Ref<StyleBox> unselected_check_focus_state_layer;
-
-		Color unselected_check_text_icon_normal_color_scale;
-		Ref<ColorScheme> unselected_check_text_icon_normal_color_scheme;
-		ColorRole unselected_check_text_icon_normal_color_role;
-		Color unselected_check_text_icon_normal_color;
-
-		Color unselected_check_text_icon_pressed_color_scale;
-		Ref<ColorScheme> unselected_check_text_icon_pressed_color_scheme;
-		ColorRole unselected_check_text_icon_pressed_color_role;
-		Color unselected_check_text_icon_pressed_color;
-
-		Color unselected_check_text_icon_hover_color_scale;
-		Ref<ColorScheme> unselected_check_text_icon_hover_color_scheme;
-		ColorRole unselected_check_text_icon_hover_color_role;
-		Color unselected_check_text_icon_hover_color;
-
-		Color unselected_check_text_icon_focus_color_scale;
-		Ref<ColorScheme> unselected_check_text_icon_focus_color_scheme;
-		ColorRole unselected_check_text_icon_focus_color_role;
-		Color unselected_check_text_icon_focus_color;
-
-		Color unselected_check_text_icon_hover_pressed_color_scale;
-		Ref<ColorScheme> unselected_check_text_icon_hover_pressed_color_scheme;
-		ColorRole unselected_check_text_icon_hover_pressed_color_role;
-		Color unselected_check_text_icon_hover_pressed_color;
-
-		Color unselected_check_text_icon_disabled_color_scale;
-		Ref<ColorScheme> unselected_check_text_icon_disabled_color_scheme;
-		ColorRole unselected_check_text_icon_disabled_color_role;
-		Color unselected_check_text_icon_disabled_color;
-
-		Color selected_bg_check_text_icon_normal_color_scale;
-		Ref<ColorScheme> selected_bg_check_text_icon_normal_color_scheme;
-		ColorRole selected_bg_check_text_icon_normal_color_role;
-		Color selected_bg_check_text_icon_normal_color;
-
-		Color selected_bg_check_text_icon_pressed_color_scale;
-		Ref<ColorScheme> selected_bg_check_text_icon_pressed_color_scheme;
-		ColorRole selected_bg_check_text_icon_pressed_color_role;
-		Color selected_bg_check_text_icon_pressed_color;
-
-		Color selected_bg_check_text_icon_hover_color_scale;
-		Ref<ColorScheme> selected_bg_check_text_icon_hover_color_scheme;
-		ColorRole selected_bg_check_text_icon_hover_color_role;
-		Color selected_bg_check_text_icon_hover_color;
-
-		Color selected_bg_check_text_icon_focus_color_scale;
-		Ref<ColorScheme> selected_bg_check_text_icon_focus_color_scheme;
-		ColorRole selected_bg_check_text_icon_focus_color_role;
-		Color selected_bg_check_text_icon_focus_color;
-
-		Color selected_bg_check_text_icon_hover_pressed_color_scale;
-		Ref<ColorScheme> selected_bg_check_text_icon_hover_pressed_color_scheme;
-		ColorRole selected_bg_check_text_icon_hover_pressed_color_role;
-		Color selected_bg_check_text_icon_hover_pressed_color;
-
-		Color selected_bg_check_text_icon_disabled_color_scale;
-		Ref<ColorScheme> selected_bg_check_text_icon_disabled_color_scheme;
-		ColorRole selected_bg_check_text_icon_disabled_color_role;
-		Color selected_bg_check_text_icon_disabled_color;
-
-		Color unselected_bg_check_text_icon_normal_color_scale;
-		Ref<ColorScheme> unselected_bg_check_text_icon_normal_color_scheme;
-		ColorRole unselected_bg_check_text_icon_normal_color_role;
-		Color unselected_bg_check_text_icon_normal_color;
-
-		Color unselected_bg_check_text_icon_pressed_color_scale;
-		Ref<ColorScheme> unselected_bg_check_text_icon_pressed_color_scheme;
-		ColorRole unselected_bg_check_text_icon_pressed_color_role;
-		Color unselected_bg_check_text_icon_pressed_color;
-
-		Color unselected_bg_check_text_icon_hover_color_scale;
-		Ref<ColorScheme> unselected_bg_check_text_icon_hover_color_scheme;
-		ColorRole unselected_bg_check_text_icon_hover_color_role;
-		Color unselected_bg_check_text_icon_hover_color;
-
-		Color unselected_bg_check_text_icon_focus_color_scale;
-		Ref<ColorScheme> unselected_bg_check_text_icon_focus_color_scheme;
-		ColorRole unselected_bg_check_text_icon_focus_color_role;
-		Color unselected_bg_check_text_icon_focus_color;
-
-		Color unselected_bg_check_text_icon_hover_pressed_color_scale;
-		Ref<ColorScheme> unselected_bg_check_text_icon_hover_pressed_color_scheme;
-		ColorRole unselected_bg_check_text_icon_hover_pressed_color_role;
-		Color unselected_bg_check_text_icon_hover_pressed_color;
-
-		Color unselected_bg_check_text_icon_disabled_color_scale;
-		Ref<ColorScheme> unselected_bg_check_text_icon_disabled_color_scheme;
-		ColorRole unselected_bg_check_text_icon_disabled_color_role;
-		Color unselected_bg_check_text_icon_disabled_color;
+		ThemeStrData text_check_icon_bg_1{"text_check_icon_bg_1"};
+		ThemeStrData text_check_icon_bg_2{"text_check_icon_bg_2"};
+		ThemeColorData text_check_icon_bg_color{"text_check_icon_bg_color"};
+		ThemeColorRoleData text_check_icon_bg_color_role{"text_check_icon_bg_color_role"};
 
 	} theme_cache;
 
@@ -280,82 +72,30 @@ protected:
 	void _notification(int p_what);
 	static void _bind_methods();
 
-	Ref<StyleBox> _get_focus_state_layer_stylebox() const;
-	Ref<StyleBox> _get_current_state_layer_stylebox() const;
+	bool _has_current_check_icon_with_state(State p_state) const;
+	bool _has_current_check_icon() const;
+	Ref<Texture2D> _get_current_check_icon_with_state(State p_state) const;
+	Ref<Texture2D> _get_current_check_icon() const;
 
+	bool _has_current_check_icon_color() const;
+	Color _get_current_check_icon_color() const;
+
+	bool _has_current_text_check_icon() const;
+	String _get_current_text_check_icon() const;
+
+	bool _has_current_text_check_icon_bg_1() const;
+	String _get_current_text_check_icon_bg_1() const;
+
+	bool _has_current_text_check_icon_bg_2() const;
+	String _get_current_text_check_icon_bg_2() const;
+
+	bool _has_current_text_check_icon_color() const;
+	Color _get_current_text_check_icon_color() const;
+
+	bool _has_current_text_check_icon_bg_color() const;
+	Color _get_current_text_check_icon_bg_color() const;
 
 public:
-	void set_selected_check_text_icon_normal(const String &p_selected_check_text_icon_normal);
-	String get_selected_check_text_icon_normal() const;
-	void set_selected_check_text_icon_pressed(const String &p_selected_check_text_icon_pressed);
-	String get_selected_check_text_icon_pressed() const;
-	void set_selected_check_text_icon_hover(const String &p_selected_check_text_icon_hover);
-	String get_selected_check_text_icon_hover() const;
-	void set_selected_check_text_icon_disabled(const String &p_selected_check_text_icon_disabled);
-	String get_selected_check_text_icon_disabled() const;
-
-	void set_unselected_check_text_icon_normal(const String &p_unselected_check_text_icon_normal);
-	String get_unselected_check_text_icon_normal() const;
-	void set_unselected_check_text_icon_pressed(const String &p_unselected_check_text_icon_pressed);
-	String get_unselected_check_text_icon_pressed() const;
-	void set_unselected_check_text_icon_hover(const String &p_unselected_check_text_icon_hover);
-	String get_unselected_check_text_icon_hover() const;
-	void set_unselected_check_text_icon_disabled(const String &p_unselected_check_text_icon_disabled);
-	String get_unselected_check_text_icon_disabled() const;
-
-	void set_selected_bg_check_text_icon_normal(const String &p_selected_bg_check_text_icon_normal);
-	String get_selected_bg_check_text_icon_normal() const;
-	void set_selected_bg_check_text_icon_pressed(const String &p_selected_bg_check_text_icon_pressed);
-	String get_selected_bg_check_text_icon_pressed() const;
-	void set_selected_bg_check_text_icon_hover(const String &p_selected_bg_check_text_icon_hover);
-	String get_selected_bg_check_text_icon_hover() const;
-	void set_selected_bg_check_text_icon_disabled(const String &p_selected_bg_check_text_icon_disabled);
-	String get_selected_bg_check_text_icon_disabled() const;
-
-	void set_unselected_bg_check_text_icon_normal(const String &p_unselected_bg_check_text_icon_normal);
-	String get_unselected_bg_check_text_icon_normal() const;
-	void set_unselected_bg_check_text_icon_pressed(const String &p_unselected_bg_check_text_icon_pressed);
-	String get_unselected_bg_check_text_icon_pressed() const;
-	void set_unselected_bg_check_text_icon_hover(const String &p_unselected_bg_check_text_icon_hover);
-	String get_unselected_bg_check_text_icon_hover() const;
-	void set_unselected_bg_check_text_icon_disabled(const String &p_unselected_bg_check_text_icon_disabled);
-	String get_unselected_bg_check_text_icon_disabled() const;
-
-	void set_selected_check_text_icon_normal_mirrored(const String &p_selected_check_text_icon_normal);
-	String get_selected_check_text_icon_normal_mirrored() const;
-	void set_selected_check_text_icon_pressed_mirrored(const String &p_selected_check_text_icon_pressed);
-	String get_selected_check_text_icon_pressed_mirrored() const;
-	void set_selected_check_text_icon_hover_mirrored(const String &p_selected_check_text_icon_hover);
-	String get_selected_check_text_icon_hover_mirrored() const;
-	void set_selected_check_text_icon_disabled_mirrored(const String &p_selected_check_text_icon_disabled);
-	String get_selected_check_text_icon_disabled_mirrored() const;
-
-	void set_unselected_check_text_icon_normal_mirrored(const String &p_unselected_check_text_icon_normal);
-	String get_unselected_check_text_icon_normal_mirrored() const;
-	void set_unselected_check_text_icon_pressed_mirrored(const String &p_unselected_check_text_icon_pressed);
-	String get_unselected_check_text_icon_pressed_mirrored() const;
-	void set_unselected_check_text_icon_hover_mirrored(const String &p_unselected_check_text_icon_hover);
-	String get_unselected_check_text_icon_hover_mirrored() const;
-	void set_unselected_check_text_icon_disabled_mirrored(const String &p_unselected_check_text_icon_disabled);
-	String get_unselected_check_text_icon_disabled_mirrored() const;
-
-	void set_selected_bg_check_text_icon_normal_mirrored(const String &p_selected_bg_check_text_icon_normal);
-	String get_selected_bg_check_text_icon_normal_mirrored() const;
-	void set_selected_bg_check_text_icon_pressed_mirrored(const String &p_selected_bg_check_text_icon_pressed);
-	String get_selected_bg_check_text_icon_pressed_mirrored() const;
-	void set_selected_bg_check_text_icon_hover_mirrored(const String &p_selected_bg_check_text_icon_hover);
-	String get_selected_bg_check_text_icon_hover_mirrored() const;
-	void set_selected_bg_check_text_icon_disabled_mirrored(const String &p_selected_bg_check_text_icon_disabled);
-	String get_selected_bg_check_text_icon_disabled_mirrored() const;
-
-	void set_unselected_bg_check_text_icon_normal_mirrored(const String &p_unselected_bg_check_text_icon_normal);
-	String get_unselected_bg_check_text_icon_normal_mirrored() const;
-	void set_unselected_bg_check_text_icon_pressed_mirrored(const String &p_unselected_bg_check_text_icon_pressed);
-	String get_unselected_bg_check_text_icon_pressed_mirrored() const;
-	void set_unselected_bg_check_text_icon_hover_mirrored(const String &p_unselected_bg_check_text_icon_hover);
-	String get_unselected_bg_check_text_icon_hover_mirrored() const;
-	void set_unselected_bg_check_text_icon_disabled_mirrored(const String &p_unselected_bg_check_text_icon_disabled);
-	String get_unselected_bg_check_text_icon_disabled_mirrored() const;
 
 	CheckButton(const String &p_text = String());
 	~CheckButton();

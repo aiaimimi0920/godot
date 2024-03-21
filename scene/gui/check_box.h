@@ -39,139 +39,22 @@ class CheckBox : public Button {
 
 	Ref<TextParagraph> text_icon_buf;
 
-	String code_selected_check_text_icon_normal;
-	String selected_check_text_icon_normal = "checkbox-marked";
-	String code_selected_check_text_icon_pressed;
-	String selected_check_text_icon_pressed = "checkbox-marked";
-	String code_selected_check_text_icon_hover;
-	String selected_check_text_icon_hover = "checkbox-marked";
-	String code_selected_check_text_icon_disabled;
-	String selected_check_text_icon_disabled = "checkbox-marked";
-
-	String code_unselected_check_text_icon_normal;
-	String unselected_check_text_icon_normal = "checkbox-blank-outline";
-	String code_unselected_check_text_icon_pressed;
-	String unselected_check_text_icon_pressed = "checkbox-blank-outline";
-	String code_unselected_check_text_icon_hover;
-	String unselected_check_text_icon_hover = "checkbox-blank-outline";
-	String code_unselected_check_text_icon_disabled;
-	String unselected_check_text_icon_disabled = "checkbox-blank-outline";
-
-	String code_selected_radio_check_text_icon_normal;
-	String selected_radio_check_text_icon_normal = "radiobox-marked";
-	String code_selected_radio_check_text_icon_pressed;
-	String selected_radio_check_text_icon_pressed = "radiobox-marked";
-	String code_selected_radio_check_text_icon_hover;
-	String selected_radio_check_text_icon_hover = "radiobox-marked";
-	String code_selected_radio_check_text_icon_disabled;
-	String selected_radio_check_text_icon_disabled = "radiobox-marked";
-
-	String code_unselected_radio_check_text_icon_normal;
-	String unselected_radio_check_text_icon_normal = "radiobox-blank";
-	String code_unselected_radio_check_text_icon_pressed;
-	String unselected_radio_check_text_icon_pressed = "radiobox-blank";
-	String code_unselected_radio_check_text_icon_hover;
-	String unselected_radio_check_text_icon_hover = "radiobox-blank";
-	String code_unselected_radio_check_text_icon_disabled;
-	String unselected_radio_check_text_icon_disabled = "radiobox-blank";
-	
-	String _get_trans_text(const String &p_text_icon);
-
-
 	struct ThemeCache {
-		Ref<Font> text_icon_font;
-		int text_icon_font_size = 0;
-		int icon_max_width = 0;
-
 		int h_separation = 0;
 		int check_v_offset = 0;
-		Ref<StyleBox> normal_style;
+		int icon_max_width;
+		int text_icon_font_size;
+		Ref<Font> text_icon_font;
 
-		Ref<Texture2D> checked;
-		Ref<Texture2D> unchecked;
-		Ref<Texture2D> radio_checked;
-		Ref<Texture2D> radio_unchecked;
-		Ref<Texture2D> checked_disabled;
-		Ref<Texture2D> unchecked_disabled;
-		Ref<Texture2D> radio_checked_disabled;
-		Ref<Texture2D> radio_unchecked_disabled;
+		ThemeIconData check_icon{ "check_icon" };
+		ThemeIconData radio_check_icon{ "radio_check_icon" };
+		ThemeColorData check_icon_color{"check_icon_color"};
+		ThemeColorRoleData check_icon_color_role{"check_icon_color_role"};
 
-		Ref<StyleBox> selected_check_hover_state_layer;
-		Ref<StyleBox> selected_check_hover_state_layer_mirrored;
-		Ref<StyleBox> selected_check_pressed_state_layer;
-		Ref<StyleBox> selected_check_pressed_state_layer_mirrored;
-		Ref<StyleBox> selected_check_hover_pressed_state_layer;
-		Ref<StyleBox> selected_check_hover_pressed_state_layer_mirrored;
-		Ref<StyleBox> selected_check_focus_state_layer;
-
-		Color selected_check_text_icon_normal_color_scale;
-		Ref<ColorScheme> selected_check_text_icon_normal_color_scheme;
-		ColorRole selected_check_text_icon_normal_color_role;
-		Color selected_check_text_icon_normal_color;
-
-		Color selected_check_text_icon_pressed_color_scale;
-		Ref<ColorScheme> selected_check_text_icon_pressed_color_scheme;
-		ColorRole selected_check_text_icon_pressed_color_role;
-		Color selected_check_text_icon_pressed_color;
-
-		Color selected_check_text_icon_hover_color_scale;
-		Ref<ColorScheme> selected_check_text_icon_hover_color_scheme;
-		ColorRole selected_check_text_icon_hover_color_role;
-		Color selected_check_text_icon_hover_color;
-
-		Color selected_check_text_icon_focus_color_scale;
-		Ref<ColorScheme> selected_check_text_icon_focus_color_scheme;
-		ColorRole selected_check_text_icon_focus_color_role;
-		Color selected_check_text_icon_focus_color;
-
-		Color selected_check_text_icon_hover_pressed_color_scale;
-		Ref<ColorScheme> selected_check_text_icon_hover_pressed_color_scheme;
-		ColorRole selected_check_text_icon_hover_pressed_color_role;
-		Color selected_check_text_icon_hover_pressed_color;
-
-		Color selected_check_text_icon_disabled_color_scale;
-		Ref<ColorScheme> selected_check_text_icon_disabled_color_scheme;
-		ColorRole selected_check_text_icon_disabled_color_role;
-		Color selected_check_text_icon_disabled_color;
-
-		Ref<StyleBox> unselected_check_hover_state_layer;
-		Ref<StyleBox> unselected_check_hover_state_layer_mirrored;
-		Ref<StyleBox> unselected_check_pressed_state_layer;
-		Ref<StyleBox> unselected_check_pressed_state_layer_mirrored;
-		Ref<StyleBox> unselected_check_hover_pressed_state_layer;
-		Ref<StyleBox> unselected_check_hover_pressed_state_layer_mirrored;
-		Ref<StyleBox> unselected_check_focus_state_layer;
-
-		Color unselected_check_text_icon_normal_color_scale;
-		Ref<ColorScheme> unselected_check_text_icon_normal_color_scheme;
-		ColorRole unselected_check_text_icon_normal_color_role;
-		Color unselected_check_text_icon_normal_color;
-
-		Color unselected_check_text_icon_pressed_color_scale;
-		Ref<ColorScheme> unselected_check_text_icon_pressed_color_scheme;
-		ColorRole unselected_check_text_icon_pressed_color_role;
-		Color unselected_check_text_icon_pressed_color;
-
-		Color unselected_check_text_icon_hover_color_scale;
-		Ref<ColorScheme> unselected_check_text_icon_hover_color_scheme;
-		ColorRole unselected_check_text_icon_hover_color_role;
-		Color unselected_check_text_icon_hover_color;
-
-		Color unselected_check_text_icon_focus_color_scale;
-		Ref<ColorScheme> unselected_check_text_icon_focus_color_scheme;
-		ColorRole unselected_check_text_icon_focus_color_role;
-		Color unselected_check_text_icon_focus_color;
-
-		Color unselected_check_text_icon_hover_pressed_color_scale;
-		Ref<ColorScheme> unselected_check_text_icon_hover_pressed_color_scheme;
-		ColorRole unselected_check_text_icon_hover_pressed_color_role;
-		Color unselected_check_text_icon_hover_pressed_color;
-
-		Color unselected_check_text_icon_disabled_color_scale;
-		Ref<ColorScheme> unselected_check_text_icon_disabled_color_scheme;
-		ColorRole unselected_check_text_icon_disabled_color_role;
-		Color unselected_check_text_icon_disabled_color;
-
+		ThemeStrData text_check_icon{"text_check_icon"};
+		ThemeStrData text_radio_check_icon{"text_radio_check_icon"};
+		ThemeColorData text_check_icon_color{"text_check_icon_color"};
+		ThemeColorRoleData text_check_icon_color_role{"text_check_icon_color_role"};
 	} theme_cache;
 
 protected:
@@ -180,47 +63,32 @@ protected:
 
 	void _notification(int p_what);
 	static void _bind_methods();
-	Ref<StyleBox> _get_focus_state_layer_stylebox() const;
-	Ref<StyleBox> _get_current_state_layer_stylebox() const;
 
 	bool is_radio();
 
+	bool _has_current_check_icon_with_state(State p_state) const;
+	bool _has_current_check_icon() const;
+	Ref<Texture2D> _get_current_check_icon_with_state(State p_state) const;
+	Ref<Texture2D> _get_current_check_icon() const;
+
+	bool _has_current_radio_check_icon_with_state(State p_state) const;
+	bool _has_current_radio_check_icon() const;
+	Ref<Texture2D> _get_current_radio_check_icon_with_state(State p_state) const;
+	Ref<Texture2D> _get_current_radio_check_icon() const;
+
+	bool _has_current_check_icon_color() const;
+	Color _get_current_check_icon_color() const;
+
+	bool _has_current_text_check_icon() const;
+	String _get_current_text_check_icon() const;
+
+	bool _has_current_text_radio_check_icon() const;
+	String _get_current_text_radio_check_icon() const;
+
+	bool _has_current_text_check_icon_color() const;
+	Color _get_current_text_check_icon_color() const;
+
 public:
-	void set_selected_check_text_icon_normal(const String &p_selected_check_text_icon_normal);
-	String get_selected_check_text_icon_normal() const;
-	void set_selected_check_text_icon_pressed(const String &p_selected_check_text_icon_pressed);
-	String get_selected_check_text_icon_pressed() const;
-	void set_selected_check_text_icon_hover(const String &p_selected_check_text_icon_hover);
-	String get_selected_check_text_icon_hover() const;
-	void set_selected_check_text_icon_disabled(const String &p_selected_check_text_icon_disabled);
-	String get_selected_check_text_icon_disabled() const;
-
-	void set_unselected_check_text_icon_normal(const String &p_unselected_check_text_icon_normal);
-	String get_unselected_check_text_icon_normal() const;
-	void set_unselected_check_text_icon_pressed(const String &p_unselected_check_text_icon_pressed);
-	String get_unselected_check_text_icon_pressed() const;
-	void set_unselected_check_text_icon_hover(const String &p_unselected_check_text_icon_hover);
-	String get_unselected_check_text_icon_hover() const;
-	void set_unselected_check_text_icon_disabled(const String &p_unselected_check_text_icon_disabled);
-	String get_unselected_check_text_icon_disabled() const;
-
-	void set_selected_radio_check_text_icon_normal(const String &p_selected_radio_check_text_icon_normal);
-	String get_selected_radio_check_text_icon_normal() const;
-	void set_selected_radio_check_text_icon_pressed(const String &p_selected_radio_check_text_icon_pressed);
-	String get_selected_radio_check_text_icon_pressed() const;
-	void set_selected_radio_check_text_icon_hover(const String &p_selected_radio_check_text_icon_hover);
-	String get_selected_radio_check_text_icon_hover() const;
-	void set_selected_radio_check_text_icon_disabled(const String &p_selected_radio_check_text_icon_disabled);
-	String get_selected_radio_check_text_icon_disabled() const;
-
-	void set_unselected_radio_check_text_icon_normal(const String &p_unselected_radio_check_text_icon_normal);
-	String get_unselected_radio_check_text_icon_normal() const;
-	void set_unselected_radio_check_text_icon_pressed(const String &p_unselected_radio_check_text_icon_pressed);
-	String get_unselected_radio_check_text_icon_pressed() const;
-	void set_unselected_radio_check_text_icon_hover(const String &p_unselected_radio_check_text_icon_hover);
-	String get_unselected_radio_check_text_icon_hover() const;
-	void set_unselected_radio_check_text_icon_disabled(const String &p_unselected_radio_check_text_icon_disabled);
-	String get_unselected_radio_check_text_icon_disabled() const;
 
 	CheckBox(const String &p_text = String());
 	~CheckBox();

@@ -194,8 +194,7 @@ Rect2i Popup::_popup_adjust_rect() const {
 
 void Popup::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("popup_hide"));
-
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, Popup, panel_style, "panel");
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, Popup, panel_style);
 }
 
 Popup::Popup() {
@@ -227,13 +226,14 @@ Size2 PopupPanel::_get_contents_minimum_size() const {
 		ms.x = MAX(cms.x, ms.x);
 		ms.y = MAX(cms.y, ms.y);
 	}
-
-	return ms + theme_cache.panel_style->get_minimum_size();
+	Ref<StyleBox> panel_style = _get_current_default_stylebox();
+	return ms + panel_style->get_minimum_size();
 }
 
 void PopupPanel::_update_child_rects() {
-	Vector2 cpos(theme_cache.panel_style->get_offset());
-	Vector2 csize(get_size() - theme_cache.panel_style->get_minimum_size());
+	Ref<StyleBox> panel_style = _get_current_default_stylebox();
+	Vector2 cpos(panel_style->get_offset());
+	Vector2 csize(get_size() - panel_style->get_minimum_size());
 
 	for (int i = 0; i < get_child_count(); i++) {
 		Control *c = Object::cast_to<Control>(get_child(i));
@@ -259,7 +259,12 @@ void PopupPanel::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_READY:
 		case NOTIFICATION_THEME_CHANGED: {
-			panel->add_theme_style_override("panel", theme_cache.panel_style);
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("panel_style");
+			for (int i = 0; i < STATE_MAX; i++) {  
+				State cur_state = static_cast<State>(i);
+				panel->add_theme_style_override(cur_theme_data.get_state_data_name(cur_state), _get_current_default_stylebox_with_state(cur_state));
+			}
 			_update_child_rects();
 		} break;
 
@@ -269,8 +274,42 @@ void PopupPanel::_notification(int p_what) {
 	}
 }
 
+
+bool PopupPanel::_has_current_default_stylebox_with_state(State p_state) const {
+	for (const State &E : theme_cache.panel_style.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.panel_style.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
+bool PopupPanel::_has_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	return _has_current_default_stylebox_with_state(cur_state);
+}
+
+Ref<StyleBox> PopupPanel::_get_current_default_stylebox_with_state(State p_state) const {
+	Ref<StyleBox> style;
+	for (const State &E : theme_cache.panel_style.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.panel_style.get_state_data_name(E))) {
+			style = theme_cache.panel_style.get_data(E);
+			break; 
+		}
+	}
+	return style;
+}
+
+Ref<StyleBox> PopupPanel::_get_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	Ref<StyleBox> style;
+	style = _get_current_default_stylebox_with_state(cur_state);
+	return style;
+}
+
 void PopupPanel::_bind_methods() {
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, PopupPanel, panel_style, "panel");
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupPanel, panel_style);
 }
 
 PopupPanel::PopupPanel() {

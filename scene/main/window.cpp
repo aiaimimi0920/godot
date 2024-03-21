@@ -2803,7 +2803,7 @@ bool Window::has_theme_color_scheme_override(const StringName &p_name) const {
 
 bool Window::has_theme_str_override(const StringName &p_name) const {
 	ERR_READ_THREAD_GUARD_V(false);
-	const String *str = data.theme_str_override.getptr(p_name);
+	const String *str = theme_str_override.getptr(p_name);
 	return str != nullptr;
 }
 
