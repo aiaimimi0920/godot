@@ -1320,7 +1320,7 @@ void fill_default_theme_line_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
 
-	cur_theme_data.set_data_name("default_stylebox");
+	cur_theme_data.set_data_name("default_style");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", default_stylebox_normal);
 
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "LineEdit", default_stylebox_focus);
@@ -1328,7 +1328,7 @@ void fill_default_theme_line_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	Ref<StyleBoxFlat> read_only_stylebox = make_color_role_flat_stylebox(ColorRole::SURFACE_12, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	read_only_stylebox->set_border_width(SIDE_BOTTOM, 2);
 	read_only_stylebox->set_border_color_role(ColorRole::ON_PRIMARY_38);
-	cur_theme_data.set_data_name("read_only_stylebox");
+	cur_theme_data.set_data_name("read_only");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", read_only_stylebox);
 
 	theme->set_font("font", "LineEdit", default_font);
@@ -1359,7 +1359,7 @@ void fill_default_theme_line_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	cur_theme_data.set_data_name("font_outline_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", Color(1, 1, 1, 1));
 
-	theme->set_constant("font_outline_size", "LineEdit", 0);
+	theme->set_constant("outline_size", "LineEdit", 0);
 
 	cur_theme_data.set_data_name("font_placeholder_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", ColorRole::PRIMARY_38);
@@ -1381,7 +1381,7 @@ void fill_default_theme_line_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	cur_theme_data.set_data_name("selection_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", Color(1, 1, 1, 1));
 
-	theme->set_icon("clear_icon", "LineEdit", icons["line_edit_clear"]);
+	theme->set_icon("clear", "LineEdit", icons["line_edit_clear"]);
 
 	cur_theme_data.set_data_name("clear_button_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", ColorRole::ON_PRIMARY_38);
@@ -1408,14 +1408,14 @@ void fill_default_theme_text_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
 
-	cur_theme_data.set_data_name("default_stylebox");
+	cur_theme_data.set_data_name("default_style");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", default_stylebox_normal);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TextEdit", default_stylebox_focus);
 
 	Ref<StyleBoxFlat> read_only_stylebox = make_color_role_flat_stylebox(ColorRole::SURFACE_12, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	read_only_stylebox->set_border_width(SIDE_BOTTOM, 2);
 	read_only_stylebox->set_border_color_role(ColorRole::ON_PRIMARY_38);
-	cur_theme_data.set_data_name("read_only_stylebox");
+	cur_theme_data.set_data_name("read_only");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", read_only_stylebox);
 
 	theme->set_constant("base_scale", "TextEdit", 1);
@@ -1458,8 +1458,8 @@ void fill_default_theme_text_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	cur_theme_data.set_data_name("selection_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", Color(1, 1, 1, 1));
 
-	theme->set_icon("tab_icon", "TextEdit", icons["text_edit_tab"]);
-	theme->set_icon("space_icon", "TextEdit", icons["text_edit_space"]);
+	theme->set_icon("tab", "TextEdit", icons["text_edit_tab"]);
+	theme->set_icon("space", "TextEdit", icons["text_edit_space"]);
 
 	theme->set_font("font", "TextEdit", Ref<Font>());
 	theme->set_font_size("font_size", "TextEdit", -1);
@@ -1488,7 +1488,182 @@ void fill_default_theme_text_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	cur_theme_data.set_data_name("font_outline_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", Color(1, 1, 1, 1));
 
-	theme->set_constant("font_outline_size", "TextEdit", 0);
+	theme->set_constant("outline_size", "TextEdit", 0);
+}
+
+// CodeEdit
+void fill_default_theme_code_edit(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
+	ThemeIntData cur_theme_data;
+	theme->set_color_scheme("default_color_scheme", "CodeEdit", default_color_scheme);
+
+	scale = p_scale;
+
+	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	default_stylebox_normal->set_border_width(SIDE_BOTTOM, 2);
+	default_stylebox_normal->set_border_color_role(ColorRole::ON_PRIMARY);
+
+	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
+
+	cur_theme_data.set_data_name("default_style");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", default_stylebox_normal);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CodeEdit", default_stylebox_focus);
+
+	Ref<StyleBoxFlat> read_only_stylebox = make_color_role_flat_stylebox(ColorRole::SURFACE_12, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+	read_only_stylebox->set_border_width(SIDE_BOTTOM, 2);
+	read_only_stylebox->set_border_color_role(ColorRole::ON_PRIMARY_38);
+	cur_theme_data.set_data_name("read_only");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", read_only_stylebox);
+
+	theme->set_stylebox("completion", "CodeEdit", make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0, 0, 0, 0));
+
+	theme->set_icon("tab", "CodeEdit", icons["text_edit_tab"]);
+	theme->set_icon("space", "CodeEdit", icons["text_edit_space"]);
+	theme->set_icon("breakpoint", "CodeEdit", icons["breakpoint"]);
+	theme->set_icon("bookmark", "CodeEdit", icons["bookmark"]);
+	theme->set_icon("executing_line", "CodeEdit", icons["arrow_right"]);
+	theme->set_icon("can_fold", "CodeEdit", icons["arrow_down"]);
+	theme->set_icon("folded", "CodeEdit", icons["arrow_right"]);
+	theme->set_icon("can_fold_code_region", "CodeEdit", icons["region_unfolded"]);
+	theme->set_icon("folded_code_region", "CodeEdit", icons["region_folded"]);
+	theme->set_icon("folded_eol_icon", "CodeEdit", icons["text_edit_ellipsis"]);
+
+	theme->set_font("font", "CodeEdit", Ref<Font>());
+	theme->set_font_size("font_size", "CodeEdit", -1);
+
+	cur_theme_data.set_data_name("background_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::STATIC_TRANSPARENT);
+	cur_theme_data.set_data_name("background_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0, 0, 0, 0));
+
+	cur_theme_data.set_data_name("completion_background_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::TERTIARY_CONTAINER);
+	cur_theme_data.set_data_name("completion_background_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.17, 0.16, 0.2));
+
+	cur_theme_data.set_data_name("completion_selected_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_SECONDARY_CONTAINER);
+	cur_theme_data.set_data_name("completion_selected_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.26, 0.26, 0.27));
+
+	cur_theme_data.set_data_name("completion_existing_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_SECONDARY_CONTAINER_12);
+	cur_theme_data.set_data_name("completion_existing_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.87, 0.87, 0.87, 0.13));
+
+	cur_theme_data.set_data_name("completion_scroll_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::INVERSE_PRIMARY_16);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CodeEdit", ColorRole::INVERSE_PRIMARY_38);
+	cur_theme_data.set_data_name("completion_scroll_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 0.29));
+	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CodeEdit", Color(1, 1, 1, 0.4));
+
+	cur_theme_data.set_data_name("font_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_PRIMARY);
+	cur_theme_data.set_data_name("font_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("font_selected_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_PRIMARY_CONTAINER);
+	cur_theme_data.set_data_name("font_selected_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("font_readonly_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_SURFACE_38);
+	cur_theme_data.set_data_name("font_readonly_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("font_placeholder_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::PRIMARY_38);
+	cur_theme_data.set_data_name("font_placeholder_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("font_outline_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::OUTLINE);
+	cur_theme_data.set_data_name("font_outline_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("selection_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::PRIMARY_CONTAINER);
+	cur_theme_data.set_data_name("selection_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("bookmark_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_TERTIARY_CONTAINER);
+	cur_theme_data.set_data_name("bookmark_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.5, 0.64, 1, 0.8));
+
+	cur_theme_data.set_data_name("breakpoint_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ERROR);
+	cur_theme_data.set_data_name("breakpoint_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.9, 0.29, 0.3));
+
+	cur_theme_data.set_data_name("executing_line_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::TERTIARY_CONTAINER);
+	cur_theme_data.set_data_name("executing_line_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.98, 0.89, 0.27));
+
+	cur_theme_data.set_data_name("current_line_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::TERTIARY_38);
+	cur_theme_data.set_data_name("current_line_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.25, 0.25, 0.26, 0.8));
+
+	cur_theme_data.set_data_name("code_folding_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::TERTIARY_38);
+	cur_theme_data.set_data_name("code_folding_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.8, 0.8, 0.8, 0.8));
+
+	cur_theme_data.set_data_name("folded_code_region_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::TERTIARY_16);
+	cur_theme_data.set_data_name("folded_code_region_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.68, 0.46, 0.77, 0.2));
+
+	cur_theme_data.set_data_name("caret_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::SECONDARY);
+	cur_theme_data.set_data_name("caret_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1));
+
+	cur_theme_data.set_data_name("caret_background_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::SECONDARY_CONTAINER);
+	cur_theme_data.set_data_name("caret_background_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0, 0, 0));
+
+	cur_theme_data.set_data_name("brace_mismatch_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::SECONDARY_CONTAINER);
+	cur_theme_data.set_data_name("brace_mismatch_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 0.2, 0.2));
+
+	cur_theme_data.set_data_name("line_number_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::PRIMARY_38);
+	cur_theme_data.set_data_name("line_number_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.67, 0.67, 0.67, 0.4));
+
+	cur_theme_data.set_data_name("word_highlighted_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::PRIMARY_16);
+	cur_theme_data.set_data_name("word_highlighted_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.8, 0.9, 0.9, 0.15));
+
+	cur_theme_data.set_data_name("line_length_guideline_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_PRIMARY_10);
+	cur_theme_data.set_data_name("line_length_guideline_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.3, 0.5, 0.8, 0.1));
+
+	cur_theme_data.set_data_name("search_result_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_SECONDARY);
+	cur_theme_data.set_data_name("search_result_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.3, 0.3, 0.3));
+
+	cur_theme_data.set_data_name("search_result_border_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_SECONDARY_38);
+
+	cur_theme_data.set_data_name("search_result_border_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.3, 0.3, 0.3, 0.4));
+
+	theme->set_constant("completion_lines", "CodeEdit", 7);
+	theme->set_constant("completion_max_width", "CodeEdit", 50);
+	theme->set_constant("completion_scroll_width", "CodeEdit", 6);
+	theme->set_constant("line_spacing", "CodeEdit", Math::round(4 * scale));
+	theme->set_constant("outline_size", "CodeEdit", 0);
 }
 
 void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme) {
@@ -1630,6 +1805,9 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	// TextEdit
 	fill_default_theme_text_edit(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
 
+	// CodeEdit
+	fill_default_theme_code_edit(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+
 	{
 		const Ref<StyleBoxFlat> button_normal = make_flat_stylebox(style_normal_color);
 		const Ref<StyleBoxFlat> button_hover = make_flat_stylebox(style_hover_color);
@@ -1651,8 +1829,6 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		theme->set_color("font_outline_color", "ProgressBar", Color(1, 1, 1));
 
 		theme->set_constant("outline_size", "ProgressBar", 0);
-
-		// CodeEdit
 
 		Ref<StyleBoxFlat> style_line_edit = make_flat_stylebox(style_normal_color);
 		// Add a line at the bottom to make LineEdits distinguishable from Buttons.

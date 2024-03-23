@@ -573,8 +573,8 @@ private:
 		ThemeColorRoleData selection_color_role{ "selection_color_role" };
 
 		/* Other visuals */
-		ThemeStyleboxData default_stylebox{ "default_stylebox" };
-		ThemeStyleboxData read_only_stylebox{ "read_only_stylebox" };
+		ThemeStyleboxData default_style{ "default_style" };
+		ThemeStyleboxData style_readonly{ "style_readonly" };
 		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
 
 		Ref<Texture2D> tab_icon;
@@ -591,10 +591,10 @@ private:
 
 		ThemeColorData font_placeholder_color{ "font_placeholder_color" };
 		ThemeColorRoleData font_placeholder_color_role{ "font_placeholder_color_role" };
-		
-		ThemeColorData font_outline_color{ "font_outline_color" };
-		ThemeColorRoleData font_outline_color_role{ "font_outline_color_role" };
-		int font_outline_size = 0;
+
+		ThemeColorData outline_color{ "outline_color" };
+		ThemeColorRoleData outline_color_role{ "outline_color_role" };
+		int outline_size = 0;
 
 		int line_spacing = 1;
 
@@ -707,16 +707,16 @@ protected:
 	GDVIRTUAL1(_paste, int)
 	GDVIRTUAL1(_paste_primary_clipboard, int)
 
-	bool _has_current_default_stylebox_with_state(State p_state) const;
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
-	bool _has_current_focus_default_stylebox() const;
-	Ref<StyleBox> _get_current_focus_default_stylebox() const;
+	bool _has_current_default_style_with_state(State p_state) const;
+	bool _has_current_default_style() const;
+	Ref<StyleBox> _get_current_default_style_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_default_style() const;
+	bool _has_current_focus_default_style() const;
+	Ref<StyleBox> _get_current_focus_default_style() const;
 	bool _has_current_state_layer_stylebox() const;
 	Ref<StyleBox> _get_current_state_layer_stylebox() const;
-	bool _has_current_read_only_stylebox() const;
-	Ref<StyleBox> _get_current_read_only_stylebox() const;
+	bool _has_current_style_readonly() const;
+	Ref<StyleBox> _get_current_style_readonly() const;
 
 	bool _has_current_search_result_color() const;
 	Color _get_current_search_result_color() const;
@@ -742,8 +742,8 @@ protected:
 	bool _has_current_font_placeholder_color() const;
 	Color _get_current_font_placeholder_color() const;
 
-	bool _has_current_font_outline_color() const;
-	Color _get_current_font_outline_color() const;
+	bool _has_current_outline_color() const;
+	Color _get_current_outline_color() const;
 
 	bool _has_current_background_color() const;
 	Color _get_current_background_color() const;
@@ -753,6 +753,7 @@ protected:
 
 	bool _has_current_word_highlighted_color() const;
 	Color _get_current_word_highlighted_color() const;
+
 public:
 	/* General overrides. */
 	virtual void unhandled_key_input(const Ref<InputEvent> &p_event) override;

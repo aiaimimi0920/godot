@@ -238,102 +238,63 @@ private:
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
 		/* Gutters */
-		Color code_folding_color_scale;
-		Ref<ColorScheme> code_folding_color_scheme;
-		ColorRole code_folding_color_role;
-		Color code_folding_color = Color(1, 1, 1);
-
-		Color folded_code_region_color_scale;
-		Ref<ColorScheme> folded_code_region_color_scheme;
-		ColorRole folded_code_region_color_role;
-		Color folded_code_region_color = Color(1, 1, 1);
-
+		ThemeColorData code_folding_color{ "code_folding_color" };
+		ThemeColorRoleData code_folding_color_role{ "code_folding_color_role" };
+		ThemeColorData folded_code_region_color{ "folded_code_region_color" };
+		ThemeColorRoleData folded_code_region_color_role{ "folded_code_region_color_role" };
 		Ref<Texture2D> can_fold_icon;
 		Ref<Texture2D> folded_icon;
 		Ref<Texture2D> can_fold_code_region_icon;
 		Ref<Texture2D> folded_code_region_icon;
 		Ref<Texture2D> folded_eol_icon;
 
-		Color breakpoint_color_scale;
-		Ref<ColorScheme> breakpoint_color_scheme;
-		ColorRole breakpoint_color_role;
-		Color breakpoint_color = Color(1, 1, 1);
-
+		ThemeColorData breakpoint_color{ "breakpoint_color" };
+		ThemeColorRoleData breakpoint_color_role{ "breakpoint_color_role" };
 		Ref<Texture2D> breakpoint_icon = Ref<Texture2D>();
 
-		Color bookmark_color_scale;
-		Ref<ColorScheme> bookmark_color_scheme;
-		ColorRole bookmark_color_role;
-		Color bookmark_color = Color(1, 1, 1);
-
+		ThemeColorData bookmark_color{ "bookmark_color" };
+		ThemeColorRoleData bookmark_color_role{ "bookmark_color_role" };
 		Ref<Texture2D> bookmark_icon = Ref<Texture2D>();
 
-		Color executing_line_color_scale;
-		Ref<ColorScheme> executing_line_color_scheme;
-		ColorRole executing_line_color_role;
-		Color executing_line_color = Color(1, 1, 1);
-
+		ThemeColorData executing_line_color{ "executing_line_color" };
+		ThemeColorRoleData executing_line_color_role{ "executing_line_color_role" };
 		Ref<Texture2D> executing_line_icon = Ref<Texture2D>();
 
-		Color line_number_color_scale;
-		Ref<ColorScheme> line_number_color_scheme;
-		ColorRole line_number_color_role;
-		Color line_number_color = Color(1, 1, 1);
+		ThemeColorData line_number_color{ "line_number_color" };
+		ThemeColorRoleData line_number_color_role{ "line_number_color_role" };
 
 		/* Code Completion */
-		Ref<StyleBox> code_completion_style;
+		ThemeStyleboxData code_completion_style{ "code_completion_style" };
 		int code_completion_icon_separation = 0;
 
 		int code_completion_max_width = 0;
 		int code_completion_max_lines = 7;
 		int code_completion_scroll_width = 0;
 
-		Color code_completion_scroll_color_scale;
-		Ref<ColorScheme> code_completion_scroll_color_scheme;
-		ColorRole code_completion_scroll_color_role;
-		Color code_completion_scroll_color = Color(0, 0, 0, 0);
+		ThemeColorData code_completion_scroll_color{ "code_completion_scroll_color" };
+		ThemeColorRoleData code_completion_scroll_color_role{ "code_completion_scroll_color_role" };
 
-		Color code_completion_scroll_hovered_color_scale;
-		Ref<ColorScheme> code_completion_scroll_hovered_color_scheme;
-		ColorRole code_completion_scroll_hovered_color_role;
-		Color code_completion_scroll_hovered_color = Color(0, 0, 0, 0);
+		ThemeColorData code_completion_background_color{ "code_completion_background_color" };
+		ThemeColorRoleData code_completion_background_color_role{ "code_completion_background_color_role" };
 
-		Color code_completion_background_color_scale;
-		Ref<ColorScheme> code_completion_background_color_scheme;
-		ColorRole code_completion_background_color_role;
-		Color code_completion_background_color = Color(0, 0, 0, 0);
+		ThemeColorData code_completion_selected_color{ "code_completion_selected_color" };
+		ThemeColorRoleData code_completion_selected_color_role{ "code_completion_selected_color_role" };
 
-		Color code_completion_selected_color_scale;
-		Ref<ColorScheme> code_completion_selected_color_scheme;
-		ColorRole code_completion_selected_color_role;
-		Color code_completion_selected_color = Color(0, 0, 0, 0);
-
-		Color code_completion_existing_color_scale;
-		Ref<ColorScheme> code_completion_existing_color_scheme;
-		ColorRole code_completion_existing_color_role;
-		Color code_completion_existing_color = Color(0, 0, 0, 0);
+		ThemeColorData code_completion_existing_color{ "code_completion_existing_color" };
+		ThemeColorRoleData code_completion_existing_color_role{ "code_completion_existing_color_role" };
 
 		/* Code hint */
-		Ref<StyleBox> code_hint_style;
-
-		Color code_hint_color_scale;
-		Ref<ColorScheme> code_hint_color_scheme;
-		ColorRole code_hint_color_role;
-		Color code_hint_color;
+		ThemeStyleboxData code_hint_style{ "code_hint_style" };
+		ThemeColorData code_hint_color{ "code_hint_color" };
+		ThemeColorRoleData code_hint_color_role{ "code_hint_color_role" };
 
 		/* Line length guideline */
-		Color line_length_guideline_color_scale;
-		Ref<ColorScheme> line_length_guideline_color_scheme;
-		ColorRole line_length_guideline_color_role;
-		Color line_length_guideline_color;
+		ThemeColorData line_length_guideline_color{ "line_length_guideline_color" };
+		ThemeColorRoleData line_length_guideline_color_role{ "line_length_guideline_color_role" };
 
 		/* Other visuals */
-		Ref<StyleBox> style_normal;
-
-		Color brace_mismatch_color_scale;
-		Ref<ColorScheme> brace_mismatch_color_scheme;
-		ColorRole brace_mismatch_color_role;
-		Color brace_mismatch_color;
+		ThemeColorData brace_mismatch_color{ "brace_mismatch_color" };
+		ThemeColorRoleData brace_mismatch_color_role{ "brace_mismatch_color_role" };
 
 		Ref<Font> font;
 		int font_size = 16;
@@ -372,6 +333,51 @@ protected:
 	GDVIRTUAL1(_confirm_code_completion, bool)
 	GDVIRTUAL1(_request_code_completion, bool)
 	GDVIRTUAL1RC(TypedArray<Dictionary>, _filter_code_completion_candidates, TypedArray<Dictionary>)
+
+	bool _has_current_code_folding_color() const;
+	Color _get_current_code_folding_color() const;
+	bool _has_current_folded_code_region_color() const;
+	Color _get_current_folded_code_region_color() const;
+
+	bool _has_current_breakpoint_color() const;
+	Color _get_current_breakpoint_color() const;
+	bool _has_current_bookmark_color() const;
+	Color _get_current_bookmark_color() const;
+
+	bool _has_current_executing_line_color() const;
+	Color _get_current_executing_line_color() const;
+
+	bool _has_current_line_number_color() const;
+	Color _get_current_line_number_color() const;
+
+	bool _has_current_code_completion_style() const;
+	Ref<StyleBox> _get_current_code_completion_style() const;
+
+	bool _has_current_code_completion_scroll_color_with_state(State p_state) const;
+	bool _has_current_code_completion_scroll_color() const;
+	Color _get_current_code_completion_scroll_color_with_state(State p_state) const;
+	Color _get_current_code_completion_scroll_color() const;
+
+	bool _has_current_code_completion_background_color() const;
+	Color _get_current_code_completion_background_color() const;
+
+	bool _has_current_code_completion_selected_color() const;
+	Color _get_current_code_completion_selected_color() const;
+
+	bool _has_current_code_completion_existing_color() const;
+	Color _get_current_code_completion_existing_color() const;
+
+	bool _has_current_code_hint_style() const;
+	Ref<StyleBox> _get_current_code_hint_style() const;
+
+	bool _has_current_code_hint_color() const;
+	Color _get_current_code_hint_color() const;
+
+	bool _has_current_line_length_guideline_color() const;
+	Color _get_current_line_length_guideline_color() const;
+
+	bool _has_current_brace_mismatch_color() const;
+	Color _get_current_brace_mismatch_color() const;
 
 public:
 	/* General overrides */

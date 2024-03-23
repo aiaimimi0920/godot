@@ -540,11 +540,11 @@ void TextEdit::_notification(int p_what) {
 
 			RID ci = get_canvas_item();
 			RenderingServer::get_singleton()->canvas_item_set_clip(get_canvas_item(), true);
-			Ref<StyleBox> style_normal = _get_current_default_stylebox();
-			Ref<StyleBox> style_readonly = _get_current_read_only_stylebox();
-			Ref<StyleBox> style_focus = _get_current_focus_default_stylebox();
-			
-			Color font_outline_color = _get_current_font_outline_color();
+			Ref<StyleBox> style_normal = _get_current_default_style();
+			Ref<StyleBox> style_readonly = _get_current_style_readonly();
+			Ref<StyleBox> style_focus = _get_current_focus_default_style();
+
+			Color font_outline_color = _get_current_outline_color();
 
 			Color font_color = _get_current_font_color();
 
@@ -559,9 +559,8 @@ void TextEdit::_notification(int p_what) {
 			Color font_readonly_color = _get_current_font_readonly_color();
 
 			Color font_selected_color = _get_current_font_selected_color();
-			
-			Color caret_color = _get_current_caret_color();
 
+			Color caret_color = _get_current_caret_color();
 
 			int xmargin_beg = style_normal->get_margin(SIDE_LEFT) + gutters_width + gutter_padding;
 
@@ -576,7 +575,6 @@ void TextEdit::_notification(int p_what) {
 				draw_caret = is_drawing_caret_when_editable_disabled();
 			}
 			if (has_focus()) {
-				
 				style_focus->draw(ci, Rect2(Point2(), size));
 			}
 
@@ -1071,8 +1069,8 @@ void TextEdit::_notification(int p_what) {
 
 									int yofs = ofs_y + (row_height - tl->get_size().y) / 2;
 
-									if (theme_cache.font_outline_size > 0 && font_outline_color.a > 0) {
-										tl->draw_outline(ci, Point2(gutter_offset + ofs_x, yofs), theme_cache.font_outline_size, font_outline_color);
+									if (theme_cache.outline_size > 0 && font_outline_color.a > 0) {
+										tl->draw_outline(ci, Point2(gutter_offset + ofs_x, yofs), theme_cache.outline_size, font_outline_color);
 									}
 									tl->draw(ci, Point2(gutter_offset + ofs_x, yofs), get_line_gutter_item_color(line, g));
 								} break;
@@ -1251,12 +1249,12 @@ void TextEdit::_notification(int p_what) {
 					int last_visible_char = TS->shaped_text_get_range(rid).x;
 
 					float char_ofs = 0;
-					if (theme_cache.font_outline_size > 0 && font_outline_color.a > 0) {
+					if (theme_cache.outline_size > 0 && font_outline_color.a > 0) {
 						for (int j = 0; j < gl_size; j++) {
 							for (int k = 0; k < glyphs[j].repeat; k++) {
 								if ((char_ofs + char_margin) >= xmargin_beg && (char_ofs + glyphs[j].advance + char_margin) <= xmargin_end) {
 									if (glyphs[j].font_rid != RID()) {
-										TS->font_draw_glyph_outline(glyphs[j].font_rid, ci, glyphs[j].font_size, theme_cache.font_outline_size, Vector2(char_margin + char_ofs + ofs_x + glyphs[j].x_off, ofs_y + glyphs[j].y_off), glyphs[j].index, font_outline_color);
+										TS->font_draw_glyph_outline(glyphs[j].font_rid, ci, glyphs[j].font_size, theme_cache.outline_size, Vector2(char_margin + char_ofs + ofs_x + glyphs[j].x_off, ofs_y + glyphs[j].y_off), glyphs[j].index, font_outline_color);
 									}
 								}
 								char_ofs += glyphs[j].advance;
@@ -1738,7 +1736,7 @@ void TextEdit::gui_input(const Ref<InputEvent> &p_gui_input) {
 				Point2i pos = get_line_column_at_pos(mpos);
 				int row = pos.y;
 				int col = pos.x;
-				Ref<StyleBox> style_normal = _get_current_default_stylebox();
+				Ref<StyleBox> style_normal = _get_current_default_style();
 
 				int left_margin = style_normal->get_margin(SIDE_LEFT);
 				for (int i = 0; i < gutters.size(); i++) {
@@ -2013,7 +2011,7 @@ void TextEdit::gui_input(const Ref<InputEvent> &p_gui_input) {
 		// Check if user is hovering a different gutter, and update if yes.
 		Vector2i current_hovered_gutter = Vector2i(-1, -1);
 
-		Ref<StyleBox> style_normal = _get_current_default_stylebox();
+		Ref<StyleBox> style_normal = _get_current_default_style();
 		int left_margin = style_normal->get_margin(SIDE_LEFT);
 		if (mpos.x <= left_margin + gutters_width + gutter_padding) {
 			int hovered_row = get_line_column_at_pos(mpos).y;
@@ -3102,7 +3100,7 @@ void TextEdit::_update_ime_text() {
 
 /* General overrides. */
 Size2 TextEdit::get_minimum_size() const {
-	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> style_normal = _get_current_default_style_with_state(State::NormalNoneLTR);
 
 	Size2 size = style_normal->get_minimum_size();
 	if (fit_content_height) {
@@ -3199,7 +3197,7 @@ void TextEdit::drop_data(const Point2 &p_point, const Variant &p_data) {
 Control::CursorShape TextEdit::get_cursor_shape(const Point2 &p_pos) const {
 	Point2i pos = get_line_column_at_pos(p_pos);
 	int row = pos.y;
-	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> style_normal = _get_current_default_style_with_state(State::NormalNoneLTR);
 
 	int left_margin = style_normal->get_margin(SIDE_LEFT);
 	int gutter = left_margin + gutters_width;
@@ -4360,7 +4358,7 @@ String TextEdit::get_word_at_pos(const Vector2 &p_pos) const {
 
 Point2i TextEdit::get_line_column_at_pos(const Point2i &p_pos, bool p_allow_out_of_bounds) const {
 	float rows = p_pos.y;
-	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> style_normal = _get_current_default_style_with_state(State::NormalNoneLTR);
 	rows -= style_normal->get_margin(SIDE_TOP);
 	rows /= get_line_height();
 	rows += _get_v_scroll_offset();
@@ -4462,7 +4460,7 @@ Rect2i TextEdit::get_rect_at_line_column(int p_line, int p_column) const {
 
 	Point2i pos, size;
 	pos.y = cache_entry.y_offset + get_line_height() * wrap_index;
-	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> style_normal = _get_current_default_style_with_state(State::NormalNoneLTR);
 	pos.x = get_total_gutter_width() + style_normal->get_margin(SIDE_LEFT) - get_h_scroll();
 
 	RID text_rid = text.get_line_data(p_line)->get_line_rid(wrap_index);
@@ -4477,7 +4475,7 @@ Rect2i TextEdit::get_rect_at_line_column(int p_line, int p_column) const {
 
 int TextEdit::get_minimap_line_at_pos(const Point2i &p_pos) const {
 	float rows = p_pos.y;
-	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> style_normal = _get_current_default_style_with_state(State::NormalNoneLTR);
 	rows -= style_normal->get_margin(SIDE_TOP);
 	rows /= (minimap_char_size.y + minimap_line_spacing);
 	rows += _get_v_scroll_offset();
@@ -5652,7 +5650,7 @@ void TextEdit::adjust_viewport_to_caret(int p_caret) {
 		// Caret is below screen.
 		set_line_as_last_visible(cur_line, cur_wrap);
 	}
-	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> style_normal = _get_current_default_style_with_state(State::NormalNoneLTR);
 	int visible_width = get_size().width - style_normal->get_minimum_size().width - gutters_width - gutter_padding;
 	if (draw_minimap) {
 		visible_width -= minimap_width;
@@ -5702,7 +5700,7 @@ void TextEdit::center_viewport_to_caret(int p_caret) {
 	minimap_clicked = false;
 
 	set_line_as_center_visible(get_caret_line(p_caret), get_caret_wrap_index(p_caret));
-	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> style_normal = _get_current_default_style_with_state(State::NormalNoneLTR);
 	int visible_width = get_size().width - style_normal->get_minimum_size().width - gutters_width - gutter_padding;
 	if (draw_minimap) {
 		visible_width -= minimap_width;
@@ -6131,56 +6129,55 @@ Color TextEdit::get_font_color() const {
 	return _get_current_font_color();
 }
 
-bool TextEdit::_has_current_default_stylebox_with_state(State p_state) const {
-	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+bool TextEdit::_has_current_default_style_with_state(State p_state) const {
+	for (const State &E : theme_cache.default_style.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.default_style.get_state_data_name(E))) {
 			return true;
 		}
 	}
 	return false;
 }
 
-
-bool TextEdit::_has_current_default_stylebox() const {
+bool TextEdit::_has_current_default_style() const {
 	State cur_state = get_current_state();
-	return _has_current_default_stylebox_with_state(cur_state);
+	return _has_current_default_style_with_state(cur_state);
 }
 
-Ref<StyleBox> TextEdit::_get_current_default_stylebox_with_state(State p_state) const {
+Ref<StyleBox> TextEdit::_get_current_default_style_with_state(State p_state) const {
 	Ref<StyleBox> style;
-	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
-			style = theme_cache.default_stylebox.get_data(E);
-			break; 
+	for (const State &E : theme_cache.default_style.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.default_style.get_state_data_name(E))) {
+			style = theme_cache.default_style.get_data(E);
+			break;
 		}
 	}
 	return style;
 }
 
-Ref<StyleBox> TextEdit::_get_current_default_stylebox() const {
+Ref<StyleBox> TextEdit::_get_current_default_style() const {
 	State cur_state = get_current_state();
 	Ref<StyleBox> style;
-	style = _get_current_default_stylebox_with_state(cur_state);
+	style = _get_current_default_style_with_state(cur_state);
 	return style;
 }
 
-bool TextEdit::_has_current_focus_default_stylebox() const {
+bool TextEdit::_has_current_focus_default_style() const {
 	State cur_state = get_current_focus_state();
-	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+	for (const State &E : theme_cache.default_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_style.get_state_data_name(E))) {
 			return true;
 		}
 	}
 	return false;
 }
 
-Ref<StyleBox> TextEdit::_get_current_focus_default_stylebox() const {
+Ref<StyleBox> TextEdit::_get_current_focus_default_style() const {
 	State cur_state = get_current_focus_state();
 	Ref<StyleBox> style;
 
-	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
-			style = theme_cache.default_stylebox.get_data(E);
+	for (const State &E : theme_cache.default_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_style.get_state_data_name(E))) {
+			style = theme_cache.default_style.get_data(E);
 			break;
 		}
 	}
@@ -6210,30 +6207,28 @@ Ref<StyleBox> TextEdit::_get_current_state_layer_stylebox() const {
 	return style;
 }
 
-
-bool TextEdit::_has_current_read_only_stylebox() const {
+bool TextEdit::_has_current_style_readonly() const {
 	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.read_only_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.read_only_stylebox.get_state_data_name(E))) {
+	for (const State &E : theme_cache.style_readonly.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.style_readonly.get_state_data_name(E))) {
 			return true;
 		}
 	}
 	return false;
 }
 
-Ref<StyleBox> TextEdit::_get_current_read_only_stylebox() const {
+Ref<StyleBox> TextEdit::_get_current_style_readonly() const {
 	State cur_state = get_current_state_with_focus();
 	Ref<StyleBox> style;
 
-	for (const State &E : theme_cache.read_only_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.read_only_stylebox.get_state_data_name(E))) {
-			style = theme_cache.read_only_stylebox.get_data(E);
+	for (const State &E : theme_cache.style_readonly.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.style_readonly.get_state_data_name(E))) {
+			style = theme_cache.style_readonly.get_data(E);
 			break;
 		}
 	}
 	return style;
 }
-
 
 bool TextEdit::_has_current_search_result_color() const {
 	State cur_state = get_current_state_with_focus();
@@ -6281,7 +6276,6 @@ Color TextEdit::_get_current_search_result_border_color() const {
 	return cur_color;
 }
 
-
 bool TextEdit::_has_current_caret_color() const {
 	State cur_state = get_current_state_with_focus();
 	for (const State &E : theme_cache.caret_color.get_search_order(cur_state)) {
@@ -6328,7 +6322,6 @@ Color TextEdit::_get_current_caret_background_color() const {
 	return cur_color;
 }
 
-
 bool TextEdit::_has_current_font_selected_color() const {
 	State cur_state = get_current_state_with_focus();
 	for (const State &E : theme_cache.font_selected_color.get_search_order(cur_state)) {
@@ -6352,7 +6345,6 @@ Color TextEdit::_get_current_font_selected_color() const {
 	return cur_color;
 }
 
-
 bool TextEdit::_has_current_selection_color() const {
 	State cur_state = get_current_state_with_focus();
 	for (const State &E : theme_cache.selection_color.get_search_order(cur_state)) {
@@ -6375,7 +6367,6 @@ Color TextEdit::_get_current_selection_color() const {
 	}
 	return cur_color;
 }
-
 
 bool TextEdit::_has_current_font_color() const {
 	State cur_state = get_current_state_with_focus();
@@ -6446,30 +6437,28 @@ Color TextEdit::_get_current_font_placeholder_color() const {
 	return cur_color;
 }
 
-
-bool TextEdit::_has_current_font_outline_color() const {
+bool TextEdit::_has_current_outline_color() const {
 	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
+	for (const State &E : theme_cache.outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.outline_color.get_state_data_name(E))) {
 			return true;
 		}
 	}
 	return false;
 }
 
-Color TextEdit::_get_current_font_outline_color() const {
+Color TextEdit::_get_current_outline_color() const {
 	State cur_state = get_current_state_with_focus();
 	Color cur_color;
 
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			cur_color = theme_cache.font_outline_color.get_data(E);
+	for (const State &E : theme_cache.outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.outline_color.get_state_data_name(E))) {
+			cur_color = theme_cache.outline_color.get_data(E);
 			break;
 		}
 	}
 	return cur_color;
 }
-
 
 bool TextEdit::_has_current_background_color() const {
 	State cur_state = get_current_state_with_focus();
@@ -6493,7 +6482,6 @@ Color TextEdit::_get_current_background_color() const {
 	}
 	return cur_color;
 }
-
 
 bool TextEdit::_has_current_current_line_color() const {
 	State cur_state = get_current_state_with_focus();
@@ -7001,10 +6989,10 @@ void TextEdit::_bind_methods() {
 
 	/* Theme items */
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextEdit, default_color_scheme);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, TextEdit, default_stylebox);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, TextEdit, read_only_stylebox);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, TextEdit, default_style, style);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, TextEdit, style_readonly, read_only);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, TextEdit, state_layer_stylebox);
-	
+
 	/* Search */
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, search_result_color_role);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, search_result_color);
@@ -7026,8 +7014,8 @@ void TextEdit::_bind_methods() {
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, selection_color);
 
 	/* Other visuals */
-	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, TextEdit, tab_icon);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, TextEdit, space_icon);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, TextEdit, tab_icon, "tab");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, TextEdit, space_icon, "space");
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, TextEdit, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, TextEdit, font_size);
@@ -7041,9 +7029,9 @@ void TextEdit::_bind_methods() {
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_placeholder_color_role);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, font_placeholder_color);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_outline_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, font_outline_color);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextEdit, font_outline_size);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, outline_color_role, "font_outline_color_role");
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, outline_color, "font_outline_color");
+	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextEdit, outline_size);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextEdit, line_spacing);
 
@@ -7812,7 +7800,7 @@ void TextEdit::_post_shift_selection(int p_caret) {
 
 /* Line Wrapping */
 void TextEdit::_update_wrap_at_column(bool p_force) {
-	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> style_normal = _get_current_default_style_with_state(State::NormalNoneLTR);
 
 	int new_wrap_at = get_size().width - style_normal->get_minimum_size().width - gutters_width - gutter_padding;
 	if (draw_minimap) {
@@ -7866,7 +7854,7 @@ void TextEdit::_update_scrollbars() {
 	Size2 size = get_size();
 	Size2 hmin = h_scroll->get_combined_minimum_size();
 	Size2 vmin = v_scroll->get_combined_minimum_size();
-	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> style_normal = _get_current_default_style_with_state(State::NormalNoneLTR);
 
 	v_scroll->set_begin(Point2(size.width - vmin.width, style_normal->get_margin(SIDE_TOP)));
 	v_scroll->set_end(Point2(size.width, size.height - style_normal->get_margin(SIDE_TOP) - style_normal->get_margin(SIDE_BOTTOM)));
@@ -7933,7 +7921,7 @@ void TextEdit::_update_scrollbars() {
 
 int TextEdit::_get_control_height() const {
 	int control_height = get_size().height;
-	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> style_normal = _get_current_default_style_with_state(State::NormalNoneLTR);
 
 	control_height -= style_normal->get_minimum_size().height;
 	if (h_scroll->is_visible_in_tree()) {
@@ -8097,7 +8085,7 @@ void TextEdit::_scroll_lines_down() {
 
 void TextEdit::_update_minimap_hover() {
 	const Point2 mp = get_local_mouse_pos();
-	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> style_normal = _get_current_default_style_with_state(State::NormalNoneLTR);
 
 	const int xmargin_end = get_size().width - style_normal->get_margin(SIDE_RIGHT);
 
@@ -8125,7 +8113,7 @@ void TextEdit::_update_minimap_hover() {
 
 void TextEdit::_update_minimap_click() {
 	Point2 mp = get_local_mouse_pos();
-	Ref<StyleBox> style_normal = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> style_normal = _get_current_default_style_with_state(State::NormalNoneLTR);
 
 	int xmargin_end = get_size().width - style_normal->get_margin(SIDE_RIGHT);
 	if (!dragging_minimap && (mp.x < xmargin_end - minimap_width || mp.y > xmargin_end)) {

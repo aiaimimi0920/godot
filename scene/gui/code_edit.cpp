@@ -52,14 +52,16 @@ void CodeEdit::_notification(int p_what) {
 			const int row_height = get_line_height();
 
 			if (line_length_guideline_columns.size() > 0) {
-				const int xmargin_beg = theme_cache.style_normal->get_margin(SIDE_LEFT) + get_total_gutter_width();
-				const int xmargin_end = size.width - theme_cache.style_normal->get_margin(SIDE_RIGHT) - (is_drawing_minimap() ? get_minimap_width() : 0);
+				Ref<StyleBox> style_normal = _get_current_default_style();
+				Color line_length_guideline_color = _get_current_line_length_guideline_color();
+				const int xmargin_beg = style_normal->get_margin(SIDE_LEFT) + get_total_gutter_width();
+				const int xmargin_end = size.width - style_normal->get_margin(SIDE_RIGHT) - (is_drawing_minimap() ? get_minimap_width() : 0);
 				const float char_size = theme_cache.font->get_char_size('0', theme_cache.font_size).width;
 
 				for (int i = 0; i < line_length_guideline_columns.size(); i++) {
 					const int xoffset = xmargin_beg + char_size * (int)line_length_guideline_columns[i] - get_h_scroll();
 					if (xoffset > xmargin_beg && xoffset < xmargin_end) {
-						Color guideline_color = (i == 0) ? theme_cache.line_length_guideline_color : theme_cache.line_length_guideline_color * Color(1, 1, 1, 0.5);
+						Color guideline_color = (i == 0) ? line_length_guideline_color : line_length_guideline_color * Color(1, 1, 1, 0.5);
 						if (rtl) {
 							RenderingServer::get_singleton()->canvas_item_add_line(ci, Point2(size.width - xoffset, 0), Point2(size.width - xoffset, size.height), guideline_color);
 							continue;
@@ -73,6 +75,9 @@ void CodeEdit::_notification(int p_what) {
 				const bool draw_code_completion = code_completion_active && !code_completion_options.is_empty();
 				const bool draw_code_hint = !code_hint.is_empty();
 
+				Ref<StyleBox> code_hint_style = _get_current_code_hint_style();
+				Color code_hint_color = _get_current_code_hint_color();
+
 				/* Code hint */
 				Size2 code_hint_minsize;
 				if (draw_code_hint) {
@@ -85,7 +90,7 @@ void CodeEdit::_notification(int p_what) {
 					for (int i = 0; i < line_count; i++) {
 						max_width = MAX(max_width, theme_cache.font->get_string_size(code_hint_lines[i], HORIZONTAL_ALIGNMENT_LEFT, -1, theme_cache.font_size).x);
 					}
-					code_hint_minsize = theme_cache.code_hint_style->get_minimum_size() + Size2(max_width, line_count * font_height + (theme_cache.line_spacing * line_count - 1));
+					code_hint_minsize = code_hint_style->get_minimum_size() + Size2(max_width, line_count * font_height + (theme_cache.line_spacing * line_count - 1));
 
 					int offset = theme_cache.font->get_string_size(code_hint_lines[0].substr(0, code_hint_lines[0].find(String::chr(0xFFFF))), HORIZONTAL_ALIGNMENT_LEFT, -1, theme_cache.font_size).x;
 					if (code_hint_xpos == -0xFFFF) {
@@ -98,7 +103,7 @@ void CodeEdit::_notification(int p_what) {
 						hint_ofs.y -= (code_hint_minsize.y + row_height) - theme_cache.line_spacing;
 					}
 
-					draw_style_box(theme_cache.code_hint_style, Rect2(hint_ofs, code_hint_minsize));
+					draw_style_box(code_hint_style, Rect2(hint_ofs, code_hint_minsize));
 
 					int yofs = 0;
 					for (int i = 0; i < line_count; i++) {
@@ -111,19 +116,19 @@ void CodeEdit::_notification(int p_what) {
 							end = theme_cache.font->get_string_size(line.substr(0, line.rfind(String::chr(0xFFFF))), HORIZONTAL_ALIGNMENT_LEFT, -1, theme_cache.font_size).x;
 						}
 
-						Point2 round_ofs = hint_ofs + theme_cache.code_hint_style->get_offset() + Vector2(0, theme_cache.font->get_ascent(theme_cache.font_size) + font_height * i + yofs);
+						Point2 round_ofs = hint_ofs + code_hint_style->get_offset() + Vector2(0, theme_cache.font->get_ascent(theme_cache.font_size) + font_height * i + yofs);
 						round_ofs = round_ofs.round();
-						draw_string(theme_cache.font, round_ofs, line.replace(String::chr(0xFFFF), ""), HORIZONTAL_ALIGNMENT_LEFT, -1, theme_cache.font_size, theme_cache.code_hint_color);
+						draw_string(theme_cache.font, round_ofs, line.replace(String::chr(0xFFFF), ""), HORIZONTAL_ALIGNMENT_LEFT, -1, theme_cache.font_size, code_hint_color);
 						if (end > 0) {
 							// Draw an underline for the currently edited function parameter.
-							const Vector2 b = hint_ofs + theme_cache.code_hint_style->get_offset() + Vector2(begin, font_height + font_height * i + yofs);
-							draw_line(b, b + Vector2(end - begin, 0), theme_cache.code_hint_color, 2);
+							const Vector2 b = hint_ofs + code_hint_style->get_offset() + Vector2(begin, font_height + font_height * i + yofs);
+							draw_line(b, b + Vector2(end - begin, 0), code_hint_color, 2);
 
 							// Draw a translucent text highlight as well.
 							const Rect2 highlight_rect = Rect2(
 									b - Vector2(0, font_height),
 									Vector2(end - begin, font_height));
-							draw_rect(highlight_rect, theme_cache.code_hint_color * Color(1, 1, 1, 0.2));
+							draw_rect(highlight_rect, code_hint_color * Color(1, 1, 1, 0.2));
 						}
 						yofs += theme_cache.line_spacing;
 					}
@@ -139,7 +144,13 @@ void CodeEdit::_notification(int p_what) {
 					code_completion_rect.size.height = lines * row_height;
 
 					const Point2 caret_pos = get_caret_draw_pos();
-					const int total_height = theme_cache.code_completion_style->get_minimum_size().y + code_completion_rect.size.height;
+
+					Ref<StyleBox> code_completion_style = _get_current_code_completion_style();
+					Color code_completion_background_color = _get_current_code_completion_background_color();
+					Color code_completion_selected_color = _get_current_code_completion_selected_color();
+					Color code_completion_existing_color = _get_current_code_completion_existing_color();
+
+					const int total_height = code_completion_style->get_minimum_size().y + code_completion_rect.size.height;
 					int min_y = caret_pos.y - row_height;
 					int max_y = caret_pos.y + row_height + total_height;
 					if (draw_code_hint) {
@@ -172,16 +183,16 @@ void CodeEdit::_notification(int p_what) {
 						code_completion_rect.position.x = caret_pos.x - code_completion_base_width;
 					}
 
-					draw_style_box(theme_cache.code_completion_style, Rect2(code_completion_rect.position - theme_cache.code_completion_style->get_offset(), code_completion_rect.size + theme_cache.code_completion_style->get_minimum_size() + Size2(scroll_width, 0)));
-					if (theme_cache.code_completion_background_color.a > 0.01) {
-						RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(code_completion_rect.position, code_completion_rect.size + Size2(scroll_width, 0)), theme_cache.code_completion_background_color);
+					draw_style_box(code_completion_style, Rect2(code_completion_rect.position - code_completion_style->get_offset(), code_completion_rect.size + code_completion_style->get_minimum_size() + Size2(scroll_width, 0)));
+					if (code_completion_background_color.a > 0.01) {
+						RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(code_completion_rect.position, code_completion_rect.size + Size2(scroll_width, 0)), code_completion_background_color);
 					}
 
 					code_completion_scroll_rect.position = code_completion_rect.position + Vector2(code_completion_rect.size.width, 0);
 					code_completion_scroll_rect.size = Vector2(scroll_width, code_completion_rect.size.height);
 
 					code_completion_line_ofs = CLAMP((code_completion_force_item_center < 0 ? code_completion_current_selected : code_completion_force_item_center) - lines / 2, 0, code_completion_options_count - lines);
-					RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(Point2(code_completion_rect.position.x, code_completion_rect.position.y + (code_completion_current_selected - code_completion_line_ofs) * row_height), Size2(code_completion_rect.size.width, row_height)), theme_cache.code_completion_selected_color);
+					RenderingServer::get_singleton()->canvas_item_add_rect(ci, Rect2(Point2(code_completion_rect.position.x, code_completion_rect.position.y + (code_completion_current_selected - code_completion_line_ofs) * row_height), Size2(code_completion_rect.size.width, row_height)), code_completion_selected_color);
 
 					for (int i = 0; i < lines; i++) {
 						int l = code_completion_line_ofs + i;
@@ -223,14 +234,17 @@ void CodeEdit::_notification(int p_what) {
 							int match_offset = theme_cache.font->get_string_size(code_completion_options[l].display.substr(0, match_segment.first), HORIZONTAL_ALIGNMENT_LEFT, -1, theme_cache.font_size).width;
 							int match_len = theme_cache.font->get_string_size(code_completion_options[l].display.substr(match_segment.first, match_segment.second), HORIZONTAL_ALIGNMENT_LEFT, -1, theme_cache.font_size).width;
 
-							draw_rect(Rect2(match_pos + Point2(match_offset, 0), Size2(match_len, row_height)), theme_cache.code_completion_existing_color);
+							draw_rect(Rect2(match_pos + Point2(match_offset, 0), Size2(match_len, row_height)), code_completion_existing_color);
 						}
 						tl->draw(ci, title_pos, code_completion_options[l].font_color);
 					}
 
+					Color code_completion_scroll_hovered_color = _get_current_code_completion_scroll_color_with_state(State::HoverNoneLTR);
+					Color code_completion_scroll_color = _get_current_code_completion_scroll_color_with_state(State::NormalNoneLTR);
+
 					/* Draw a small scroll rectangle to show a position in the options. */
 					if (scroll_width) {
-						Color scroll_color = is_code_completion_scroll_hovered || is_code_completion_scroll_pressed ? theme_cache.code_completion_scroll_hovered_color : theme_cache.code_completion_scroll_color;
+						Color scroll_color = is_code_completion_scroll_hovered || is_code_completion_scroll_pressed ? code_completion_scroll_hovered_color : code_completion_scroll_color;
 
 						float r = (float)theme_cache.code_completion_max_lines / code_completion_options_count;
 						float o = (float)code_completion_line_ofs / code_completion_options_count;
@@ -1338,10 +1352,11 @@ void CodeEdit::_main_gutter_draw_callback(int p_line, int p_gutter, const Rect2 
 		bool hovering = p_region.has_point(get_local_mouse_pos());
 		bool shift_pressed = Input::get_singleton()->is_key_pressed(Key::SHIFT);
 
+		Color breakpoint_color = _get_current_breakpoint_color();
 		if (breakpointed || (hovering && !is_dragging_cursor() && !shift_pressed)) {
 			int padding = p_region.size.x / 6;
 
-			Color use_color = theme_cache.breakpoint_color;
+			Color use_color = breakpoint_color;
 			if (hovering && !shift_pressed) {
 				use_color = breakpointed ? use_color.lightened(0.3) : use_color.darkened(0.5);
 			}
@@ -1356,12 +1371,12 @@ void CodeEdit::_main_gutter_draw_callback(int p_line, int p_gutter, const Rect2 
 		bool bookmarked = is_line_bookmarked(p_line);
 		bool hovering = p_region.has_point(get_local_mouse_pos());
 		bool shift_pressed = Input::get_singleton()->is_key_pressed(Key::SHIFT);
-
+		Color bookmark_color = _get_current_bookmark_color();
 		if (bookmarked || (hovering && !is_dragging_cursor() && shift_pressed)) {
 			int horizontal_padding = p_region.size.x / 2;
 			int vertical_padding = p_region.size.y / 4;
 
-			Color use_color = theme_cache.bookmark_color;
+			Color use_color = bookmark_color;
 			if (hovering && shift_pressed) {
 				use_color = bookmarked ? use_color.lightened(0.3) : use_color.darkened(0.5);
 			}
@@ -1375,11 +1390,11 @@ void CodeEdit::_main_gutter_draw_callback(int p_line, int p_gutter, const Rect2 
 	if (draw_executing_lines && is_line_executing(p_line) && theme_cache.executing_line_icon.is_valid()) {
 		int horizontal_padding = p_region.size.x / 10;
 		int vertical_padding = p_region.size.y / 4;
-
+		Color executing_line_color = _get_current_executing_line_color();
 		Rect2 icon_region = p_region;
 		icon_region.position += Point2(horizontal_padding, vertical_padding);
 		icon_region.size -= Point2(horizontal_padding, vertical_padding) * 2;
-		theme_cache.executing_line_icon->draw_rect(get_canvas_item(), icon_region, false, theme_cache.executing_line_color);
+		theme_cache.executing_line_icon->draw_rect(get_canvas_item(), icon_region, false, executing_line_color);
 	}
 }
 
@@ -1506,8 +1521,9 @@ void CodeEdit::_line_number_draw_callback(int p_line, int p_gutter, const Rect2 
 	tl->add_string(fc, theme_cache.font, theme_cache.font_size);
 	int yofs = p_region.position.y + (get_line_height() - tl->get_size().y) / 2;
 	Color number_color = get_line_gutter_item_color(p_line, line_number_gutter);
+	Color line_number_color = _get_current_line_number_color();
 	if (number_color == Color(1, 1, 1)) {
-		number_color = theme_cache.line_number_color;
+		number_color = line_number_color;
 	}
 	tl->draw(get_canvas_item(), Point2(p_region.position.x, yofs), number_color);
 }
@@ -1537,7 +1553,7 @@ void CodeEdit::_fold_gutter_draw_callback(int p_line, int p_gutter, Rect2 p_regi
 	bool can_fold = can_fold_line(p_line);
 
 	if (is_line_code_region_start(p_line)) {
-		Color region_icon_color = theme_cache.folded_code_region_color;
+		Color region_icon_color = _get_current_folded_code_region_color();
 		region_icon_color.a = MAX(region_icon_color.a, 0.4f);
 		if (can_fold) {
 			theme_cache.can_fold_code_region_icon->draw_rect(get_canvas_item(), p_region, false, region_icon_color);
@@ -1546,11 +1562,12 @@ void CodeEdit::_fold_gutter_draw_callback(int p_line, int p_gutter, Rect2 p_regi
 		}
 		return;
 	}
+	Color code_folding_color = _get_current_code_folding_color();
 	if (can_fold) {
-		theme_cache.can_fold_icon->draw_rect(get_canvas_item(), p_region, false, theme_cache.code_folding_color);
+		theme_cache.can_fold_icon->draw_rect(get_canvas_item(), p_region, false, code_folding_color);
 		return;
 	}
-	theme_cache.folded_icon->draw_rect(get_canvas_item(), p_region, false, theme_cache.code_folding_color);
+	theme_cache.folded_icon->draw_rect(get_canvas_item(), p_region, false, code_folding_color);
 }
 
 /* Line Folding */
@@ -1647,6 +1664,7 @@ void CodeEdit::fold_line(int p_line) {
 	int end_line = line_count;
 
 	// Fold code region.
+	Color folded_code_region_color = _get_current_folded_code_region_color();
 	if (is_line_code_region_start(p_line)) {
 		int region_level = 0;
 		for (int endregion_line = p_line + 1; endregion_line < get_line_count(); endregion_line++) {
@@ -1661,7 +1679,7 @@ void CodeEdit::fold_line(int p_line) {
 				}
 			}
 		}
-		set_line_background_color(p_line, theme_cache.folded_code_region_color);
+		set_line_background_color(p_line, folded_code_region_color);
 	}
 
 	int in_comment = is_in_comment(p_line);
@@ -2474,34 +2492,358 @@ void CodeEdit::duplicate_lines() {
 
 /* Visual */
 Color CodeEdit::_get_brace_mismatch_color() const {
-	return theme_cache.brace_mismatch_color;
+	return _get_current_brace_mismatch_color();
 }
 
 Color CodeEdit::_get_code_folding_color() const {
-	return theme_cache.code_folding_color;
+	return _get_current_code_folding_color();
 }
 
 Ref<Texture2D> CodeEdit::_get_folded_eol_icon() const {
 	return theme_cache.folded_eol_icon;
 }
 
+bool CodeEdit::_has_current_code_folding_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.code_folding_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.code_folding_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
 
+Color CodeEdit::_get_current_code_folding_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	for (const State &E : theme_cache.code_folding_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.code_folding_color.get_state_data_name(E))) {
+			cur_color = theme_cache.code_folding_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
 
+bool CodeEdit::_has_current_folded_code_region_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.folded_code_region_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.folded_code_region_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
 
+Color CodeEdit::_get_current_folded_code_region_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	for (const State &E : theme_cache.folded_code_region_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.folded_code_region_color.get_state_data_name(E))) {
+			cur_color = theme_cache.folded_code_region_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
 
+bool CodeEdit::_has_current_breakpoint_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.breakpoint_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.breakpoint_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
 
+Color CodeEdit::_get_current_breakpoint_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	for (const State &E : theme_cache.breakpoint_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.breakpoint_color.get_state_data_name(E))) {
+			cur_color = theme_cache.breakpoint_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
 
+bool CodeEdit::_has_current_bookmark_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.bookmark_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.bookmark_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
 
+Color CodeEdit::_get_current_bookmark_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	for (const State &E : theme_cache.bookmark_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.bookmark_color.get_state_data_name(E))) {
+			cur_color = theme_cache.bookmark_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
 
+bool CodeEdit::_has_current_executing_line_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.executing_line_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.executing_line_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
 
+Color CodeEdit::_get_current_executing_line_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	for (const State &E : theme_cache.executing_line_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.executing_line_color.get_state_data_name(E))) {
+			cur_color = theme_cache.executing_line_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
 
+bool CodeEdit::_has_current_line_number_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.line_number_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.line_number_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
 
+Color CodeEdit::_get_current_line_number_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	for (const State &E : theme_cache.line_number_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.line_number_color.get_state_data_name(E))) {
+			cur_color = theme_cache.line_number_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
 
+bool CodeEdit::_has_current_code_completion_style() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.code_completion_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.code_completion_style.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
 
+Ref<StyleBox> CodeEdit::_get_current_code_completion_style() const {
+	State cur_state = get_current_state_with_focus();
+	Ref<StyleBox> style;
 
+	for (const State &E : theme_cache.code_completion_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.code_completion_style.get_state_data_name(E))) {
+			style = theme_cache.code_completion_style.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
 
+bool CodeEdit::_has_current_code_completion_scroll_color_with_state(State p_state) const {
+	for (const State &E : theme_cache.code_completion_scroll_color.get_search_order(p_state)) {
+		if (has_theme_color(theme_cache.code_completion_scroll_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
 
+bool CodeEdit::_has_current_code_completion_scroll_color() const {
+	State cur_state = get_current_state_with_focus();
+	return _has_current_code_completion_scroll_color_with_state(cur_state);
+}
 
+Color CodeEdit::_get_current_code_completion_scroll_color_with_state(State p_state) const {
+	Color cur_color;
+	for (const State &E : theme_cache.code_completion_scroll_color.get_search_order(p_state)) {
+		if (has_theme_color(theme_cache.code_completion_scroll_color.get_state_data_name(E))) {
+			cur_color = theme_cache.code_completion_scroll_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+Color CodeEdit::_get_current_code_completion_scroll_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	cur_color = _get_current_code_completion_scroll_color_with_state(cur_state);
+	return cur_color;
+}
+
+bool CodeEdit::_has_current_code_completion_background_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.code_completion_background_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.code_completion_background_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color CodeEdit::_get_current_code_completion_background_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	for (const State &E : theme_cache.code_completion_background_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.code_completion_background_color.get_state_data_name(E))) {
+			cur_color = theme_cache.code_completion_background_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+bool CodeEdit::_has_current_code_completion_selected_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.code_completion_selected_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.code_completion_selected_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color CodeEdit::_get_current_code_completion_selected_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	for (const State &E : theme_cache.code_completion_selected_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.code_completion_selected_color.get_state_data_name(E))) {
+			cur_color = theme_cache.code_completion_selected_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+bool CodeEdit::_has_current_code_completion_existing_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.code_completion_existing_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.code_completion_existing_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color CodeEdit::_get_current_code_completion_existing_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	for (const State &E : theme_cache.code_completion_existing_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.code_completion_existing_color.get_state_data_name(E))) {
+			cur_color = theme_cache.code_completion_existing_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+bool CodeEdit::_has_current_code_hint_style() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.code_hint_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.code_hint_style.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> CodeEdit::_get_current_code_hint_style() const {
+	State cur_state = get_current_state_with_focus();
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.code_hint_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.code_hint_style.get_state_data_name(E))) {
+			style = theme_cache.code_hint_style.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+bool CodeEdit::_has_current_code_hint_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.code_hint_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.code_hint_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color CodeEdit::_get_current_code_hint_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	for (const State &E : theme_cache.code_hint_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.code_hint_color.get_state_data_name(E))) {
+			cur_color = theme_cache.code_hint_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+bool CodeEdit::_has_current_line_length_guideline_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.line_length_guideline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.line_length_guideline_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color CodeEdit::_get_current_line_length_guideline_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	for (const State &E : theme_cache.line_length_guideline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.line_length_guideline_color.get_state_data_name(E))) {
+			cur_color = theme_cache.line_length_guideline_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+bool CodeEdit::_has_current_brace_mismatch_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.brace_mismatch_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.brace_mismatch_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color CodeEdit::_get_current_brace_mismatch_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	for (const State &E : theme_cache.brace_mismatch_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.brace_mismatch_color.get_state_data_name(E))) {
+			cur_color = theme_cache.brace_mismatch_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
 
 void CodeEdit::_bind_methods() {
 	/* Indent management */
@@ -2741,18 +3083,11 @@ void CodeEdit::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("symbol_validate", PropertyInfo(Variant::STRING, "symbol")));
 
 	/* Theme items */
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, default_color_scheme);
-
 	/* Gutters */
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, code_folding_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, code_folding_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_folding_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, code_folding_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, folded_code_region_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, folded_code_region_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, folded_code_region_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, folded_code_region_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_folding_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, code_folding_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, folded_code_region_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, folded_code_region_color);
 
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, CodeEdit, can_fold_icon, "can_fold");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, CodeEdit, folded_icon, "folded");
@@ -2760,86 +3095,54 @@ void CodeEdit::_bind_methods() {
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, CodeEdit, folded_code_region_icon, "folded_code_region");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, CodeEdit, folded_eol_icon);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, breakpoint_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, breakpoint_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, breakpoint_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, breakpoint_color);
-
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, breakpoint_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, breakpoint_color);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, CodeEdit, breakpoint_icon, "breakpoint");
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, bookmark_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, bookmark_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, bookmark_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, bookmark_color);
-
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, bookmark_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, bookmark_color);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, CodeEdit, bookmark_icon, "bookmark");
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, executing_line_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, executing_line_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, executing_line_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, executing_line_color);
-
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, executing_line_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, executing_line_color);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, CodeEdit, executing_line_icon, "executing_line");
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, line_number_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, line_number_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, line_number_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, line_number_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, line_number_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, line_number_color);
 
 	/* Code Completion */
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, CodeEdit, code_completion_style, "completion");
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, CodeEdit, code_completion_style, completion);
 	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_CONSTANT, CodeEdit, code_completion_icon_separation, "h_separation", "ItemList");
 
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, CodeEdit, code_completion_max_width, "completion_max_width");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, CodeEdit, code_completion_max_lines, "completion_lines");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, CodeEdit, code_completion_scroll_width, "completion_scroll_width");
-	
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_scroll_color_scale, "completion_scroll_color_scale");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, code_completion_scroll_color_scheme, "completion_scroll_color_scheme");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_scroll_color_role, "completion_scroll_color_role");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_scroll_color, "completion_scroll_color");
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_scroll_hovered_color_scale, "completion_scroll_hovered_color_scale");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, code_completion_scroll_hovered_color_scheme, "completion_scroll_hovered_color_scheme");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_scroll_hovered_color_role, "completion_scroll_hovered_color_role");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_scroll_hovered_color, "completion_scroll_hovered_color");
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_scroll_color_role, completion_scroll_color_role);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_scroll_color, completion_scroll_color);
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_background_color_scale, "completion_background_color_scale");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, code_completion_background_color_scheme, "completion_background_color_scheme");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_background_color_role, "completion_background_color_role");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_background_color, "completion_background_color");
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_background_color_role, completion_background_color_role);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_background_color, completion_background_color);
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_selected_color_scale, "completion_selected_color_scale");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, code_completion_selected_color_scheme, "completion_selected_color_scheme");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_selected_color_role, "completion_selected_color_role");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_selected_color, "completion_selected_color");
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_selected_color_role, completion_selected_color_role);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_selected_color, completion_selected_color);
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_existing_color_scale, "completion_existing_color_scale");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, code_completion_existing_color_scheme, "completion_existing_color_scheme");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_existing_color_role, "completion_existing_color_role");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_existing_color, "completion_existing_color");
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_existing_color_role, completion_existing_color_role);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_existing_color, completion_existing_color);
 
 	/* Code hint */
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_STYLEBOX, CodeEdit, code_hint_style, "panel", "TooltipPanel");
+	BIND_THEME_ITEM_EXT_MULTI(Theme::DATA_TYPE_STYLEBOX, CodeEdit, code_hint_style, panel, "TooltipPanel");
 
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, CodeEdit, code_hint_color_scale, "font_color_scale", "TooltipLabel");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, code_hint_color_scheme, "font_color_scheme", "TooltipLabel");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_hint_color_role, "font_color_role", "TooltipLabel");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, CodeEdit, code_hint_color, "font_color", "TooltipLabel");
+	BIND_THEME_ITEM_EXT_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, code_hint_color_role, font_color_role, "TooltipLabel");
+	BIND_THEME_ITEM_EXT_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, code_hint_color, font_color, "TooltipLabel");
 
 	/* Line length guideline */
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, line_length_guideline_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, line_length_guideline_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, line_length_guideline_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, line_length_guideline_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, line_length_guideline_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, line_length_guideline_color);
 
 	/* Other visuals */
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, CodeEdit, style_normal, "normal");
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, brace_mismatch_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, brace_mismatch_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, brace_mismatch_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, brace_mismatch_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, brace_mismatch_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, brace_mismatch_color);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, CodeEdit, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, CodeEdit, font_size);

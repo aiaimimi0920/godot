@@ -182,8 +182,8 @@ private:
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
-		ThemeStyleboxData default_stylebox{ "default_stylebox" };
-		ThemeStyleboxData read_only_stylebox{ "read_only_stylebox" };
+		ThemeStyleboxData default_style{ "default_style" };
+		ThemeStyleboxData read_only{ "read_only" };
 		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
 
 		ThemeColorData font_color{ "font_color" };
@@ -272,16 +272,16 @@ protected:
 	virtual void unhandled_key_input(const Ref<InputEvent> &p_event) override;
 	virtual void gui_input(const Ref<InputEvent> &p_event) override;
 
-	bool _has_current_default_stylebox_with_state(State p_state) const;
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
-	bool _has_current_focus_default_stylebox() const;
-	Ref<StyleBox> _get_current_focus_default_stylebox() const;
+	bool _has_current_default_style_with_state(State p_state) const;
+	bool _has_current_default_style() const;
+	Ref<StyleBox> _get_current_default_style_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_default_style() const;
+	bool _has_current_focus_default_style() const;
+	Ref<StyleBox> _get_current_focus_default_style() const;
 	bool _has_current_state_layer_stylebox() const;
 	Ref<StyleBox> _get_current_state_layer_stylebox() const;
-	bool _has_current_read_only_stylebox() const;
-	Ref<StyleBox> _get_current_read_only_stylebox() const;
+	bool _has_current_read_only() const;
+	Ref<StyleBox> _get_current_read_only() const;
 
 	bool _has_current_font_color() const;
 	Color _get_current_font_color() const;
