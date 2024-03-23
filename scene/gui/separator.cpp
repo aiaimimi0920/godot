@@ -91,7 +91,7 @@ Ref<StyleBox> Separator::_get_current_default_stylebox() const {
 
 void Separator::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Separator, separation);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, Separator, separator_style);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, Separator, separator_style, separator);
 }
 
 Separator::Separator() {

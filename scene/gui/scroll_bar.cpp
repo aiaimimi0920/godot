@@ -667,16 +667,17 @@ void ScrollBar::_bind_methods() {
 
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, ScrollBar, scroll_style);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, ScrollBar, grabber_style);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, ScrollBar, grabber_hl_style);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, ScrollBar, grabber_pressed_style);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollBar, grabber_style, "grabber");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollBar, grabber_hl_style, "grabber_highlight");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollBar, grabber_pressed_style, "grabber_pressed");
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, ScrollBar, increment_icon);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, ScrollBar, increment_hl_icon);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, ScrollBar, increment_pressed_icon);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, ScrollBar, decrement_icon);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, ScrollBar, decrement_hl_icon);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, ScrollBar, decrement_pressed_icon);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, ScrollBar, increment_icon, "increment");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, ScrollBar, increment_hl_icon, "increment_highlight");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, ScrollBar, increment_pressed_icon, "increment_pressed");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, ScrollBar, decrement_icon, "decrement");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, ScrollBar, decrement_hl_icon, "decrement_highlight");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, ScrollBar, decrement_pressed_icon, "decrement_pressed");
+
 }
 
 ScrollBar::ScrollBar(Orientation p_orientation) {

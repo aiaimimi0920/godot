@@ -134,7 +134,7 @@ static Ref<StyleBox> make_empty_stylebox(float p_margin_left = -1, float p_margi
 void fill_default_theme_panel(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
 	ThemeIntData cur_theme_data;
 
-	cur_theme_data.set_data_name("panel_style");
+	cur_theme_data.set_data_name("panel");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Panel", make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0, 0, 0, 0));
 }
 
@@ -306,7 +306,7 @@ void fill_default_theme_popup_menu(Ref<Theme> &theme, const Ref<Font> &default_f
 	separator_vertical->set_vertical(true);
 	separator_vertical->set_content_margin_individual(0, default_margin, 0, default_margin);
 
-	cur_theme_data.set_data_name("separator_style");
+	cur_theme_data.set_data_name("separator");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", separator_horizontal);
 
 	cur_theme_data.set_data_name("labeled_separator_left");
@@ -337,8 +337,8 @@ void fill_default_theme_popup_menu(Ref<Theme> &theme, const Ref<Font> &default_f
 	theme->set_constant("indent", "PopupMenu", Math::round(10 * scale));
 	theme->set_constant("h_separation", "PopupMenu", Math::round(4 * scale));
 	theme->set_constant("v_separation", "PopupMenu", Math::round(4 * scale));
-	theme->set_constant("font_outline_size", "PopupMenu", 0);
-	theme->set_constant("font_separator_outline_size", "PopupMenu", 0);
+	theme->set_constant("outline_size", "PopupMenu", 0);
+	theme->set_constant("separator_outline_size", "PopupMenu", 0);
 	theme->set_constant("item_start_padding", "PopupMenu", Math::round(2 * scale));
 	theme->set_constant("item_end_padding", "PopupMenu", Math::round(2 * scale));
 	theme->set_constant("icon_max_width", "PopupMenu", 0);
@@ -1149,7 +1149,7 @@ void fill_default_theme_scroll_container(Ref<Theme> &theme, const Ref<Font> &def
 	Ref<StyleBoxEmpty> empty;
 	empty.instantiate();
 
-	cur_theme_data.set_data_name("panel_style");
+	cur_theme_data.set_data_name("panel");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ScrollContainer", empty);
 }
 
@@ -1197,31 +1197,31 @@ void fill_default_theme_scrollbar(Ref<Theme> &theme, const Ref<Font> &default_fo
 	cur_theme_data.set_data_name("scroll_style");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "HScrollBar", style_h_scrollbar);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "HScrollBar", default_scrollbar_stylebox_focus);
-	theme->set_stylebox("grabber_style", "HScrollBar", style_scrollbar_grabber);
-	theme->set_stylebox("grabber_hl_style", "HScrollBar", style_scrollbar_grabber_highlight);
-	theme->set_stylebox("grabber_pressed_style", "HScrollBar", style_scrollbar_grabber_pressed);
+	theme->set_stylebox("grabber", "HScrollBar", style_scrollbar_grabber);
+	theme->set_stylebox("grabber_highlight", "HScrollBar", style_scrollbar_grabber_highlight);
+	theme->set_stylebox("grabber_pressed", "HScrollBar", style_scrollbar_grabber_pressed);
 
-	theme->set_icon("increment_icon", "HScrollBar", empty_icon);
-	theme->set_icon("increment_hl_icon", "HScrollBar", empty_icon);
-	theme->set_icon("increment_pressed_icon", "HScrollBar", empty_icon);
-	theme->set_icon("decrement_icon", "HScrollBar", empty_icon);
-	theme->set_icon("decrement_hl_icon", "HScrollBar", empty_icon);
-	theme->set_icon("decrement_pressed_icon", "HScrollBar", empty_icon);
+	theme->set_icon("increment", "HScrollBar", empty_icon);
+	theme->set_icon("increment_highlight", "HScrollBar", empty_icon);
+	theme->set_icon("increment_pressed", "HScrollBar", empty_icon);
+	theme->set_icon("decrement", "HScrollBar", empty_icon);
+	theme->set_icon("decrement_highlight", "HScrollBar", empty_icon);
+	theme->set_icon("decrement_pressed", "HScrollBar", empty_icon);
 
 	// VScrollBar
 	cur_theme_data.set_data_name("scroll_style");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "VScrollBar", style_v_scrollbar);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "VScrollBar", default_scrollbar_stylebox_focus);
-	theme->set_stylebox("grabber_style", "VScrollBar", style_scrollbar_grabber);
-	theme->set_stylebox("grabber_hl_style", "VScrollBar", style_scrollbar_grabber_highlight);
-	theme->set_stylebox("grabber_pressed_style", "VScrollBar", style_scrollbar_grabber_pressed);
+	theme->set_stylebox("grabber", "VScrollBar", style_scrollbar_grabber);
+	theme->set_stylebox("grabber_highlight", "VScrollBar", style_scrollbar_grabber_highlight);
+	theme->set_stylebox("grabber_pressed", "VScrollBar", style_scrollbar_grabber_pressed);
 
-	theme->set_icon("increment_icon", "VScrollBar", empty_icon);
-	theme->set_icon("increment_hl_icon", "VScrollBar", empty_icon);
-	theme->set_icon("increment_pressed_icon", "VScrollBar", empty_icon);
-	theme->set_icon("decrement_icon", "VScrollBar", empty_icon);
-	theme->set_icon("decrement_hl_icon", "VScrollBar", empty_icon);
-	theme->set_icon("decrement_pressed_icon", "VScrollBar", empty_icon);
+	theme->set_icon("increment", "VScrollBar", empty_icon);
+	theme->set_icon("increment_highlight", "VScrollBar", empty_icon);
+	theme->set_icon("increment_pressed", "VScrollBar", empty_icon);
+	theme->set_icon("decrement", "VScrollBar", empty_icon);
+	theme->set_icon("decrement_highlight", "VScrollBar", empty_icon);
+	theme->set_icon("decrement_pressed", "VScrollBar", empty_icon);
 }
 
 void fill_default_theme_menu_bar(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
@@ -1298,7 +1298,7 @@ void fill_default_theme_popup_panel(Ref<Theme> &theme, const Ref<Font> &default_
 	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
 
-	cur_theme_data.set_data_name("panel_style");
+	cur_theme_data.set_data_name("panel");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupPanel", default_stylebox_normal);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupPanel", default_stylebox_hover);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "PopupPanel", default_stylebox_pressed);

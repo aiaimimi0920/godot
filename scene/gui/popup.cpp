@@ -194,7 +194,7 @@ Rect2i Popup::_popup_adjust_rect() const {
 
 void Popup::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("popup_hide"));
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, Popup, panel_style);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, Popup, panel_style, panel);
 }
 
 Popup::Popup() {
@@ -260,7 +260,7 @@ void PopupPanel::_notification(int p_what) {
 		case NOTIFICATION_READY:
 		case NOTIFICATION_THEME_CHANGED: {
 			ThemeIntData cur_theme_data;
-			cur_theme_data.set_data_name("panel_style");
+			cur_theme_data.set_data_name("panel");
 			for (int i = 0; i < STATE_MAX; i++) {  
 				State cur_state = static_cast<State>(i);
 				panel->add_theme_style_override(cur_theme_data.get_state_data_name(cur_state), _get_current_default_stylebox_with_state(cur_state));
@@ -309,7 +309,7 @@ Ref<StyleBox> PopupPanel::_get_current_default_stylebox() const {
 }
 
 void PopupPanel::_bind_methods() {
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupPanel, panel_style);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupPanel, panel_style, panel);
 }
 
 PopupPanel::PopupPanel() {

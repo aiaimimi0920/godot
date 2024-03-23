@@ -1036,7 +1036,7 @@ void PopupMenu::_notification(int p_what) {
 
 		case NOTIFICATION_THEME_CHANGED: {
 			ThemeIntData cur_theme_data;
-			cur_theme_data.set_data_name("panel_style");
+			cur_theme_data.set_data_name("panel");
 			for (int i = 0; i < STATE_MAX; i++) {  
 				State cur_state = static_cast<State>(i);
 				scroll_container->add_theme_style_override(cur_theme_data.get_state_data_name(cur_state), _get_current_default_stylebox_with_state(cur_state));
@@ -3134,7 +3134,7 @@ void PopupMenu::_bind_methods() {
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupMenu, default_stylebox);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupMenu, state_layer_stylebox);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupMenu, separator_style);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupMenu, separator_style, separator);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupMenu, labeled_separator_left);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupMenu, labeled_separator_right);
 
@@ -3161,11 +3161,11 @@ void PopupMenu::_bind_methods() {
 
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_outline_color_role);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, PopupMenu, font_outline_color);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, PopupMenu, font_outline_size);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, PopupMenu, font_outline_size, "outline_size");
 
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_separator_outline_color_role);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, PopupMenu, font_separator_outline_color);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, PopupMenu, font_separator_outline_size);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, PopupMenu, font_separator_outline_size, "separator_outline_size");
 
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_accelerator_color_role);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, PopupMenu, font_accelerator_color);

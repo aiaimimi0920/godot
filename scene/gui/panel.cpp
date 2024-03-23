@@ -66,7 +66,7 @@ Ref<StyleBox> Panel::_get_current_default_stylebox() const {
 }
 
 void Panel::_bind_methods() {
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, Panel, panel_style);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, Panel, panel_style, panel);
 }
 
 Panel::Panel() {

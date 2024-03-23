@@ -661,8 +661,7 @@ void ScrollContainer::_bind_methods() {
 	BIND_ENUM_CONSTANT(SCROLL_MODE_SHOW_ALWAYS);
 	BIND_ENUM_CONSTANT(SCROLL_MODE_SHOW_NEVER);
 
-	// BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollContainer, panel_style, "panel");
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, ScrollContainer, panel_style);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, ScrollContainer, panel_style, panel);
 
 	GLOBAL_DEF("gui/common/default_scroll_deadzone", 0);
 };
