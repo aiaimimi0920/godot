@@ -6130,8 +6130,10 @@ Color TextEdit::get_font_color() const {
 }
 
 bool TextEdit::_has_current_default_style_with_state(State p_state) const {
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("style");
 	for (const State &E : theme_cache.default_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.default_style.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -6145,8 +6147,10 @@ bool TextEdit::_has_current_default_style() const {
 
 Ref<StyleBox> TextEdit::_get_current_default_style_with_state(State p_state) const {
 	Ref<StyleBox> style;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("style");
 	for (const State &E : theme_cache.default_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.default_style.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			style = theme_cache.default_style.get_data(E);
 			break;
 		}
@@ -6163,8 +6167,10 @@ Ref<StyleBox> TextEdit::_get_current_default_style() const {
 
 bool TextEdit::_has_current_focus_default_style() const {
 	State cur_state = get_current_focus_state();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("style");
 	for (const State &E : theme_cache.default_style.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.default_style.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -6174,9 +6180,10 @@ bool TextEdit::_has_current_focus_default_style() const {
 Ref<StyleBox> TextEdit::_get_current_focus_default_style() const {
 	State cur_state = get_current_focus_state();
 	Ref<StyleBox> style;
-
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("style");
 	for (const State &E : theme_cache.default_style.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.default_style.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			style = theme_cache.default_style.get_data(E);
 			break;
 		}
@@ -6209,8 +6216,11 @@ Ref<StyleBox> TextEdit::_get_current_state_layer_stylebox() const {
 
 bool TextEdit::_has_current_style_readonly() const {
 	State cur_state = get_current_state_with_focus();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("read_only");
+	
 	for (const State &E : theme_cache.style_readonly.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.style_readonly.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -6220,9 +6230,11 @@ bool TextEdit::_has_current_style_readonly() const {
 Ref<StyleBox> TextEdit::_get_current_style_readonly() const {
 	State cur_state = get_current_state_with_focus();
 	Ref<StyleBox> style;
-
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("read_only");
+	
 	for (const State &E : theme_cache.style_readonly.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.style_readonly.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			style = theme_cache.style_readonly.get_data(E);
 			break;
 		}
@@ -6439,8 +6451,10 @@ Color TextEdit::_get_current_font_placeholder_color() const {
 
 bool TextEdit::_has_current_outline_color() const {
 	State cur_state = get_current_state_with_focus();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("font_outline_color");
 	for (const State &E : theme_cache.outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.outline_color.get_state_data_name(E))) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -6450,9 +6464,10 @@ bool TextEdit::_has_current_outline_color() const {
 Color TextEdit::_get_current_outline_color() const {
 	State cur_state = get_current_state_with_focus();
 	Color cur_color;
-
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("font_outline_color");
 	for (const State &E : theme_cache.outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.outline_color.get_state_data_name(E))) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
 			cur_color = theme_cache.outline_color.get_data(E);
 			break;
 		}
@@ -7029,8 +7044,8 @@ void TextEdit::_bind_methods() {
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, font_placeholder_color_role);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, font_placeholder_color);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, outline_color_role, "font_outline_color_role");
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, outline_color, "font_outline_color");
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextEdit, outline_color_role, font_outline_color_role);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_COLOR, TextEdit, outline_color, font_outline_color);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextEdit, outline_size);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextEdit, line_spacing);

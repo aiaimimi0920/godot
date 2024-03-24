@@ -471,9 +471,10 @@ void ScrollContainer::_scroll_moved(float) {
 
 Ref<StyleBox> ScrollContainer::_get_current_default_stylebox_with_state(State p_state) const {
 	Ref<StyleBox> style;
-
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("panel");
 	for (const State &E : theme_cache.panel_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.panel_style.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			style = theme_cache.panel_style.get_data(E);
 			break;
 		}
@@ -482,10 +483,13 @@ Ref<StyleBox> ScrollContainer::_get_current_default_stylebox_with_state(State p_
 }
 
 
+
 bool ScrollContainer::_has_current_default_stylebox() const {
 	State cur_state = get_current_state();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("panel");
 	for (const State &E : theme_cache.panel_style.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.panel_style.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -499,6 +503,7 @@ Ref<StyleBox> ScrollContainer::_get_current_default_stylebox() const {
 
 	return style;
 }
+
 
 void ScrollContainer::set_h_scroll(int p_pos) {
 	h_scroll->set_value(p_pos);

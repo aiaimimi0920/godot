@@ -55,9 +55,10 @@ bool Panel::_has_current_default_stylebox() const {
 Ref<StyleBox> Panel::_get_current_default_stylebox() const {
 	State cur_state = get_current_state();
 	Ref<StyleBox> style;
-
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("panel");
 	for(const State &E : theme_cache.panel_style.get_search_order(cur_state)){
-		if(has_theme_stylebox(theme_cache.panel_style.get_state_data_name(E))){
+		if(has_theme_stylebox(cur_theme_data.get_state_data_name(E))){
 			style = theme_cache.panel_style.get_data(E);
 			break;
 		}

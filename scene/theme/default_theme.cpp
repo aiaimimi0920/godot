@@ -1306,6 +1306,100 @@ void fill_default_theme_popup_panel(Ref<Theme> &theme, const Ref<Font> &default_
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupPanel", default_stylebox_focus);
 }
 
+// Dialogs
+void fill_default_theme_dialogs(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
+	ThemeIntData cur_theme_data;
+	// AcceptDialog is currently the base dialog, so this defines styles for all extending nodes.
+	theme->set_color_scheme("default_color_scheme", "AcceptDialog", default_color_scheme);
+	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, Math::round(8 * scale), Math::round(8 * scale), Math::round(8 * scale), Math::round(8 * scale));
+	cur_theme_data.set_data_name("panel");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "AcceptDialog", default_stylebox_normal);
+
+	theme->set_constant("buttons_separation", "AcceptDialog", Math::round(10 * scale));
+
+	// File Dialog
+
+	theme->set_icon("parent_folder", "FileDialog", icons["folder_up"]);
+	theme->set_icon("back_folder", "FileDialog", icons["arrow_left"]);
+	theme->set_icon("forward_folder", "FileDialog", icons["arrow_right"]);
+	theme->set_icon("reload", "FileDialog", icons["reload"]);
+	theme->set_icon("toggle_hidden", "FileDialog", icons["visibility_visible"]);
+	theme->set_icon("folder", "FileDialog", icons["folder"]);
+	theme->set_icon("file", "FileDialog", icons["file"]);
+
+
+	theme->set_color("folder_icon_color", "FileDialog", Color(1, 1, 1));
+	theme->set_color("file_icon_color", "FileDialog", Color(1, 1, 1));
+	theme->set_color("file_disabled_color", "FileDialog", Color(1, 1, 1, 0.25));
+
+
+	cur_theme_data.set_data_name("folder_icon_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", ColorRole::ON_PRIMARY);
+
+	cur_theme_data.set_data_name("folder_icon_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", Color(1, 1, 1, 1));
+
+	cur_theme_data.set_data_name("file_icon_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", ColorRole::ON_PRIMARY);
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "FileDialog", ColorRole::ON_PRIMARY_38);
+
+	cur_theme_data.set_data_name("file_icon_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", Color(1, 1, 1, 1));
+	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "FileDialog", Color(1, 1, 1, 0.25));
+
+	cur_theme_data.set_data_name("icon_color_role");
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", ColorRole::ON_PRIMARY);
+
+	cur_theme_data.set_data_name("icon_color");
+	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog",  Color(1, 1, 1, 1));
+}
+
+
+
+// Containers
+void fill_default_theme_containers(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
+	ThemeIntData cur_theme_data;
+	theme->set_color_scheme("default_color_scheme", "Container", default_color_scheme);
+	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0,0,0,0);
+
+	theme->set_icon("h_grabber", "SplitContainer", icons["hsplitter"]);
+	theme->set_icon("v_grabber", "SplitContainer", icons["vsplitter"]);
+	theme->set_icon("grabber", "VSplitContainer", icons["vsplitter"]);
+	theme->set_icon("grabber", "HSplitContainer", icons["hsplitter"]);
+
+	theme->set_constant("separation", "BoxContainer", Math::round(4 * scale));
+	theme->set_constant("separation", "HBoxContainer", Math::round(4 * scale));
+	theme->set_constant("separation", "VBoxContainer", Math::round(4 * scale));
+	theme->set_constant("margin_left", "MarginContainer", 0);
+	theme->set_constant("margin_top", "MarginContainer", 0);
+	theme->set_constant("margin_right", "MarginContainer", 0);
+	theme->set_constant("margin_bottom", "MarginContainer", 0);
+	theme->set_constant("h_separation", "GridContainer", Math::round(4 * scale));
+	theme->set_constant("v_separation", "GridContainer", Math::round(4 * scale));
+	theme->set_constant("separation", "SplitContainer", Math::round(12 * scale));
+	theme->set_constant("separation", "HSplitContainer", Math::round(12 * scale));
+	theme->set_constant("separation", "VSplitContainer", Math::round(12 * scale));
+	theme->set_constant("minimum_grab_thickness", "SplitContainer", Math::round(6 * scale));
+	theme->set_constant("minimum_grab_thickness", "HSplitContainer", Math::round(6 * scale));
+	theme->set_constant("minimum_grab_thickness", "VSplitContainer", Math::round(6 * scale));
+	theme->set_constant("autohide", "SplitContainer", 1);
+	theme->set_constant("autohide", "HSplitContainer", 1);
+	theme->set_constant("autohide", "VSplitContainer", 1);
+	theme->set_constant("h_separation", "FlowContainer", Math::round(4 * scale));
+	theme->set_constant("v_separation", "FlowContainer", Math::round(4 * scale));
+	theme->set_constant("h_separation", "HFlowContainer", Math::round(4 * scale));
+	theme->set_constant("v_separation", "HFlowContainer", Math::round(4 * scale));
+	theme->set_constant("h_separation", "VFlowContainer", Math::round(4 * scale));
+	theme->set_constant("v_separation", "VFlowContainer", Math::round(4 * scale));
+
+	// cur_theme_data.set_data_name("panel_style");
+	// theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PanelContainer", default_stylebox_normal);
+	cur_theme_data.set_data_name("panel");
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PanelContainer", default_stylebox_normal);
+}
+
+
+
 // LineEdit
 void fill_default_theme_line_edit(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
 	ThemeIntData cur_theme_data;
@@ -1408,7 +1502,7 @@ void fill_default_theme_text_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
 
-	cur_theme_data.set_data_name("default_style");
+	cur_theme_data.set_data_name("style");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", default_stylebox_normal);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TextEdit", default_stylebox_focus);
 
@@ -1666,6 +1760,44 @@ void fill_default_theme_code_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_constant("outline_size", "CodeEdit", 0);
 }
 
+
+
+
+void fill_default_theme_slider(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
+	ThemeIntData cur_theme_data;
+	const Ref<StyleBoxFlat> style_slider = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4);
+	const Ref<StyleBoxFlat> style_slider_grabber = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4);
+	const Ref<StyleBoxFlat> style_slider_grabber_highlight = make_color_role_flat_stylebox(ColorRole::INVERSE_PRIMARY_60, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4);
+	// HSlider
+
+	theme->set_stylebox("slider", "HSlider", style_slider);
+	theme->set_stylebox("grabber_area", "HSlider", style_slider_grabber);
+	theme->set_stylebox("grabber_area_highlight", "HSlider", style_slider_grabber_highlight);
+
+	theme->set_icon("grabber", "HSlider", icons["slider_grabber"]);
+	theme->set_icon("grabber_highlight", "HSlider", icons["slider_grabber_hl"]);
+	theme->set_icon("grabber_disabled", "HSlider", icons["slider_grabber_disabled"]);
+	theme->set_icon("tick", "HSlider", icons["hslider_tick"]);
+
+	theme->set_constant("center_grabber", "HSlider", 0);
+	theme->set_constant("grabber_offset", "HSlider", 0);
+
+	// VSlider
+
+	theme->set_stylebox("slider", "VSlider", style_slider);
+	theme->set_stylebox("grabber_area", "VSlider", style_slider_grabber);
+	theme->set_stylebox("grabber_area_highlight", "VSlider", style_slider_grabber_highlight);
+
+	theme->set_icon("grabber", "VSlider", icons["slider_grabber"]);
+	theme->set_icon("grabber_highlight", "VSlider", icons["slider_grabber_hl"]);
+	theme->set_icon("grabber_disabled", "VSlider", icons["slider_grabber_disabled"]);
+	theme->set_icon("tick", "VSlider", icons["vslider_tick"]);
+
+	theme->set_constant("center_grabber", "VSlider", 0);
+	theme->set_constant("grabber_offset", "VSlider", 0);
+}
+
+
 void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme) {
 	scale = p_scale;
 
@@ -1808,6 +1940,19 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	// CodeEdit
 	fill_default_theme_code_edit(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
 
+	// Sliders
+	fill_default_theme_slider(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+
+	// SpinBox
+	theme->set_icon("updown", "SpinBox", icons["updown"]);
+
+	// Dialogs
+	fill_default_theme_dialogs(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+
+	// Containers
+	fill_default_theme_containers(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+
+
 	{
 		const Ref<StyleBoxFlat> button_normal = make_flat_stylebox(style_normal_color);
 		const Ref<StyleBoxFlat> button_hover = make_flat_stylebox(style_hover_color);
@@ -1840,95 +1985,11 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		style_line_edit_read_only->set_border_width(SIDE_BOTTOM, 2);
 		style_line_edit_read_only->set_border_color(style_pressed_color * Color(1, 1, 1, 0.5));
 
-		theme->set_stylebox("normal", "CodeEdit", style_line_edit);
-		theme->set_stylebox("focus", "CodeEdit", focus);
-		theme->set_stylebox("read_only", "CodeEdit", style_line_edit_read_only);
-		theme->set_stylebox("completion", "CodeEdit", make_flat_stylebox(style_normal_color, 0, 0, 0, 0));
-
-		theme->set_icon("tab", "CodeEdit", icons["text_edit_tab"]);
-		theme->set_icon("space", "CodeEdit", icons["text_edit_space"]);
-		theme->set_icon("breakpoint", "CodeEdit", icons["breakpoint"]);
-		theme->set_icon("bookmark", "CodeEdit", icons["bookmark"]);
-		theme->set_icon("executing_line", "CodeEdit", icons["arrow_right"]);
-		theme->set_icon("can_fold", "CodeEdit", icons["arrow_down"]);
-		theme->set_icon("folded", "CodeEdit", icons["arrow_right"]);
-		theme->set_icon("can_fold_code_region", "CodeEdit", icons["region_unfolded"]);
-		theme->set_icon("folded_code_region", "CodeEdit", icons["region_folded"]);
-		theme->set_icon("folded_eol_icon", "CodeEdit", icons["text_edit_ellipsis"]);
-
-		theme->set_font("font", "CodeEdit", Ref<Font>());
-		theme->set_font_size("font_size", "CodeEdit", -1);
-
-		theme->set_color("background_color", "CodeEdit", Color(0, 0, 0, 0));
-		theme->set_color("completion_background_color", "CodeEdit", Color(0.17, 0.16, 0.2));
-		theme->set_color("completion_selected_color", "CodeEdit", Color(0.26, 0.26, 0.27));
-		theme->set_color("completion_existing_color", "CodeEdit", Color(0.87, 0.87, 0.87, 0.13));
-		theme->set_color("completion_scroll_color", "CodeEdit", control_font_pressed_color * Color(1, 1, 1, 0.29));
-		theme->set_color("completion_scroll_hovered_color", "CodeEdit", control_font_pressed_color * Color(1, 1, 1, 0.4));
-		theme->set_color("font_color", "CodeEdit", control_font_color);
-		theme->set_color("font_selected_color", "CodeEdit", Color(0, 0, 0, 0));
-		theme->set_color("font_readonly_color", "CodeEdit", Color(control_font_color.r, control_font_color.g, control_font_color.b, 0.5f));
-		theme->set_color("font_placeholder_color", "CodeEdit", control_font_placeholder_color);
-		theme->set_color("font_outline_color", "CodeEdit", Color(1, 1, 1));
-		theme->set_color("selection_color", "CodeEdit", control_selection_color);
-		theme->set_color("bookmark_color", "CodeEdit", Color(0.5, 0.64, 1, 0.8));
-		theme->set_color("breakpoint_color", "CodeEdit", Color(0.9, 0.29, 0.3));
-		theme->set_color("executing_line_color", "CodeEdit", Color(0.98, 0.89, 0.27));
-		theme->set_color("current_line_color", "CodeEdit", Color(0.25, 0.25, 0.26, 0.8));
-		theme->set_color("code_folding_color", "CodeEdit", Color(0.8, 0.8, 0.8, 0.8));
-		theme->set_color("folded_code_region_color", "CodeEdit", Color(0.68, 0.46, 0.77, 0.2));
-		theme->set_color("caret_color", "CodeEdit", control_font_color);
-		theme->set_color("caret_background_color", "CodeEdit", Color(0, 0, 0));
-		theme->set_color("brace_mismatch_color", "CodeEdit", Color(1, 0.2, 0.2));
-		theme->set_color("line_number_color", "CodeEdit", Color(0.67, 0.67, 0.67, 0.4));
-		theme->set_color("word_highlighted_color", "CodeEdit", Color(0.8, 0.9, 0.9, 0.15));
-		theme->set_color("line_length_guideline_color", "CodeEdit", Color(0.3, 0.5, 0.8, 0.1));
-		theme->set_color("search_result_color", "CodeEdit", Color(0.3, 0.3, 0.3));
-		theme->set_color("search_result_border_color", "CodeEdit", Color(0.3, 0.3, 0.3, 0.4));
-
-		theme->set_constant("completion_lines", "CodeEdit", 7);
-		theme->set_constant("completion_max_width", "CodeEdit", 50);
-		theme->set_constant("completion_scroll_width", "CodeEdit", 6);
-		theme->set_constant("line_spacing", "CodeEdit", Math::round(4 * scale));
-		theme->set_constant("outline_size", "CodeEdit", 0);
-
 		Ref<Texture2D> empty_icon = memnew(ImageTexture);
 
 		const Ref<StyleBoxFlat> style_slider = make_flat_stylebox(style_normal_color, 4, 4, 4, 4, 4);
 		const Ref<StyleBoxFlat> style_slider_grabber = make_flat_stylebox(style_progress_color, 4, 4, 4, 4, 4);
 		const Ref<StyleBoxFlat> style_slider_grabber_highlight = make_flat_stylebox(style_focus_color, 4, 4, 4, 4, 4);
-
-		// HSlider
-
-		theme->set_stylebox("slider", "HSlider", style_slider);
-		theme->set_stylebox("grabber_area", "HSlider", style_slider_grabber);
-		theme->set_stylebox("grabber_area_highlight", "HSlider", style_slider_grabber_highlight);
-
-		theme->set_icon("grabber", "HSlider", icons["slider_grabber"]);
-		theme->set_icon("grabber_highlight", "HSlider", icons["slider_grabber_hl"]);
-		theme->set_icon("grabber_disabled", "HSlider", icons["slider_grabber_disabled"]);
-		theme->set_icon("tick", "HSlider", icons["hslider_tick"]);
-
-		theme->set_constant("center_grabber", "HSlider", 0);
-		theme->set_constant("grabber_offset", "HSlider", 0);
-
-		// VSlider
-
-		theme->set_stylebox("slider", "VSlider", style_slider);
-		theme->set_stylebox("grabber_area", "VSlider", style_slider_grabber);
-		theme->set_stylebox("grabber_area_highlight", "VSlider", style_slider_grabber_highlight);
-
-		theme->set_icon("grabber", "VSlider", icons["slider_grabber"]);
-		theme->set_icon("grabber_highlight", "VSlider", icons["slider_grabber_hl"]);
-		theme->set_icon("grabber_disabled", "VSlider", icons["slider_grabber_disabled"]);
-		theme->set_icon("tick", "VSlider", icons["vslider_tick"]);
-
-		theme->set_constant("center_grabber", "VSlider", 0);
-		theme->set_constant("grabber_offset", "VSlider", 0);
-
-		// SpinBox
-
-		theme->set_icon("updown", "SpinBox", icons["updown"]);
 
 		// Window
 
@@ -1948,24 +2009,7 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		theme->set_constant("close_h_offset", "Window", 18 * scale);
 		theme->set_constant("close_v_offset", "Window", 24 * scale);
 
-		// Dialogs
 
-		// AcceptDialog is currently the base dialog, so this defines styles for all extending nodes.
-		theme->set_stylebox("panel", "AcceptDialog", make_flat_stylebox(style_popup_color, Math::round(8 * scale), Math::round(8 * scale), Math::round(8 * scale), Math::round(8 * scale)));
-		theme->set_constant("buttons_separation", "AcceptDialog", Math::round(10 * scale));
-
-		// File Dialog
-
-		theme->set_icon("parent_folder", "FileDialog", icons["folder_up"]);
-		theme->set_icon("back_folder", "FileDialog", icons["arrow_left"]);
-		theme->set_icon("forward_folder", "FileDialog", icons["arrow_right"]);
-		theme->set_icon("reload", "FileDialog", icons["reload"]);
-		theme->set_icon("toggle_hidden", "FileDialog", icons["visibility_visible"]);
-		theme->set_icon("folder", "FileDialog", icons["folder"]);
-		theme->set_icon("file", "FileDialog", icons["file"]);
-		theme->set_color("folder_icon_color", "FileDialog", Color(1, 1, 1));
-		theme->set_color("file_icon_color", "FileDialog", Color(1, 1, 1));
-		theme->set_color("file_disabled_color", "FileDialog", Color(1, 1, 1, 0.25));
 
 		// GraphNode
 
@@ -2342,39 +2386,8 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		theme->set_constant("text_highlight_h_padding", "RichTextLabel", Math::round(3 * scale));
 		theme->set_constant("text_highlight_v_padding", "RichTextLabel", Math::round(3 * scale));
 
-		// Containers
 
-		theme->set_icon("h_grabber", "SplitContainer", icons["hsplitter"]);
-		theme->set_icon("v_grabber", "SplitContainer", icons["vsplitter"]);
-		theme->set_icon("grabber", "VSplitContainer", icons["vsplitter"]);
-		theme->set_icon("grabber", "HSplitContainer", icons["hsplitter"]);
 
-		theme->set_constant("separation", "BoxContainer", Math::round(4 * scale));
-		theme->set_constant("separation", "HBoxContainer", Math::round(4 * scale));
-		theme->set_constant("separation", "VBoxContainer", Math::round(4 * scale));
-		theme->set_constant("margin_left", "MarginContainer", 0);
-		theme->set_constant("margin_top", "MarginContainer", 0);
-		theme->set_constant("margin_right", "MarginContainer", 0);
-		theme->set_constant("margin_bottom", "MarginContainer", 0);
-		theme->set_constant("h_separation", "GridContainer", Math::round(4 * scale));
-		theme->set_constant("v_separation", "GridContainer", Math::round(4 * scale));
-		theme->set_constant("separation", "SplitContainer", Math::round(12 * scale));
-		theme->set_constant("separation", "HSplitContainer", Math::round(12 * scale));
-		theme->set_constant("separation", "VSplitContainer", Math::round(12 * scale));
-		theme->set_constant("minimum_grab_thickness", "SplitContainer", Math::round(6 * scale));
-		theme->set_constant("minimum_grab_thickness", "HSplitContainer", Math::round(6 * scale));
-		theme->set_constant("minimum_grab_thickness", "VSplitContainer", Math::round(6 * scale));
-		theme->set_constant("autohide", "SplitContainer", 1);
-		theme->set_constant("autohide", "HSplitContainer", 1);
-		theme->set_constant("autohide", "VSplitContainer", 1);
-		theme->set_constant("h_separation", "FlowContainer", Math::round(4 * scale));
-		theme->set_constant("v_separation", "FlowContainer", Math::round(4 * scale));
-		theme->set_constant("h_separation", "HFlowContainer", Math::round(4 * scale));
-		theme->set_constant("v_separation", "HFlowContainer", Math::round(4 * scale));
-		theme->set_constant("h_separation", "VFlowContainer", Math::round(4 * scale));
-		theme->set_constant("v_separation", "VFlowContainer", Math::round(4 * scale));
-
-		theme->set_stylebox("panel", "PanelContainer", make_flat_stylebox(style_normal_color, 0, 0, 0, 0));
 
 		theme->set_icon("zoom_out", "GraphEdit", icons["zoom_less"]);
 		theme->set_icon("zoom_in", "GraphEdit", icons["zoom_more"]);

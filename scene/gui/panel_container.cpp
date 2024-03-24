@@ -48,8 +48,9 @@ Size2 PanelContainer::get_minimum_size() const {
 		ms.height = MAX(ms.height, minsize.height);
 	}
 
-	if (theme_cache.panel_style.is_valid()) {
-		ms += theme_cache.panel_style->get_minimum_size();
+	Ref<StyleBox> panel_style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	if (panel_style.is_valid()) {
+		ms += panel_style->get_minimum_size();
 	}
 	return ms;
 }
@@ -75,16 +76,21 @@ Vector<int> PanelContainer::get_allowed_size_flags_vertical() const {
 void PanelContainer::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_DRAW: {
+			Ref<StyleBox> panel_style = _get_current_default_stylebox();
 			RID ci = get_canvas_item();
-			theme_cache.panel_style->draw(ci, Rect2(Point2(), get_size()));
+			if(panel_style.is_valid()){
+				panel_style->draw(ci, Rect2(Point2(), get_size()));
+			}
+			
 		} break;
 
 		case NOTIFICATION_SORT_CHILDREN: {
 			Size2 size = get_size();
 			Point2 ofs;
-			if (theme_cache.panel_style.is_valid()) {
-				size -= theme_cache.panel_style->get_minimum_size();
-				ofs += theme_cache.panel_style->get_offset();
+			Ref<StyleBox> panel_style = _get_current_default_stylebox();
+			if (panel_style.is_valid()) {
+				size -= panel_style->get_minimum_size();
+				ofs += panel_style->get_offset();
 			}
 
 			for (int i = 0; i < get_child_count(); i++) {
@@ -102,8 +108,44 @@ void PanelContainer::_notification(int p_what) {
 	}
 }
 
+bool PanelContainer::_has_current_default_stylebox_with_state(State p_state) const {
+	for (const State &E : theme_cache.panel_style.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.panel_style.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
+bool PanelContainer::_has_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	return _has_current_default_stylebox_with_state(cur_state);
+}
+
+Ref<StyleBox> PanelContainer::_get_current_default_stylebox_with_state(State p_state) const {
+	Ref<StyleBox> style;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("panel");
+	for (const State &E : theme_cache.panel_style.get_search_order(p_state)) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+			style = theme_cache.panel_style.get_data(E);
+			break; 
+		}
+	}
+	return style;
+}
+
+Ref<StyleBox> PanelContainer::_get_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	Ref<StyleBox> style;
+	style = _get_current_default_stylebox_with_state(cur_state);
+	return style;
+}
+
+
 void PanelContainer::_bind_methods() {
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, PanelContainer, panel_style, "panel");
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, PanelContainer, panel_style, panel);
 }
 
 PanelContainer::PanelContainer() {

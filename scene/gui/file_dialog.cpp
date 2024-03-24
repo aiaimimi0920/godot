@@ -188,47 +188,49 @@ void FileDialog::_notification(int p_what) {
 			refresh->set_icon(theme_cache.reload);
 			show_hidden->set_icon(theme_cache.toggle_hidden);
 			makedir->set_icon(theme_cache.create_folder);
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("icon_color");
 
 			dir_up->begin_bulk_theme_override();
-			dir_up->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
-			dir_up->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
-			dir_up->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
-			dir_up->add_theme_color_override("icon_pressed_color", theme_cache.icon_pressed_color);
+			for (int i = 0; i < STATE_MAX; i++) {  
+				State cur_state = static_cast<State>(i);
+				dir_up->add_theme_color_override(cur_theme_data.get_state_data_name(cur_state), _get_current_icon_color_with_state(cur_state));
+			}
 			dir_up->end_bulk_theme_override();
 
 			dir_prev->begin_bulk_theme_override();
-			dir_prev->add_theme_color_override("icon_color_normal", theme_cache.icon_normal_color);
-			dir_prev->add_theme_color_override("icon_color_hover", theme_cache.icon_hover_color);
-			dir_prev->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
-			dir_prev->add_theme_color_override("icon_color_pressed", theme_cache.icon_pressed_color);
+			for (int i = 0; i < STATE_MAX; i++) {  
+				State cur_state = static_cast<State>(i);
+				dir_prev->add_theme_color_override(cur_theme_data.get_state_data_name(cur_state), _get_current_icon_color_with_state(cur_state));
+			}
 			dir_prev->end_bulk_theme_override();
 
 			dir_next->begin_bulk_theme_override();
-			dir_next->add_theme_color_override("icon_color_normal", theme_cache.icon_normal_color);
-			dir_next->add_theme_color_override("icon_color_hover", theme_cache.icon_hover_color);
-			dir_next->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
-			dir_next->add_theme_color_override("icon_color_pressed", theme_cache.icon_pressed_color);
+			for (int i = 0; i < STATE_MAX; i++) {  
+				State cur_state = static_cast<State>(i);
+				dir_next->add_theme_color_override(cur_theme_data.get_state_data_name(cur_state), _get_current_icon_color_with_state(cur_state));
+			}
 			dir_next->end_bulk_theme_override();
 
 			refresh->begin_bulk_theme_override();
-			refresh->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
-			refresh->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
-			refresh->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
-			refresh->add_theme_color_override("icon_pressed_color", theme_cache.icon_pressed_color);
+			for (int i = 0; i < STATE_MAX; i++) {  
+				State cur_state = static_cast<State>(i);
+				refresh->add_theme_color_override(cur_theme_data.get_state_data_name(cur_state), _get_current_icon_color_with_state(cur_state));
+			}
 			refresh->end_bulk_theme_override();
 
 			show_hidden->begin_bulk_theme_override();
-			show_hidden->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
-			show_hidden->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
-			show_hidden->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
-			show_hidden->add_theme_color_override("icon_pressed_color", theme_cache.icon_pressed_color);
+			for (int i = 0; i < STATE_MAX; i++) {  
+				State cur_state = static_cast<State>(i);
+				show_hidden->add_theme_color_override(cur_theme_data.get_state_data_name(cur_state), _get_current_icon_color_with_state(cur_state));
+			}
 			show_hidden->end_bulk_theme_override();
 
 			makedir->begin_bulk_theme_override();
-			makedir->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
-			makedir->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
-			makedir->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
-			makedir->add_theme_color_override("icon_pressed_color", theme_cache.icon_pressed_color);
+			for (int i = 0; i < STATE_MAX; i++) {  
+				State cur_state = static_cast<State>(i);
+				makedir->add_theme_color_override(cur_theme_data.get_state_data_name(cur_state), _get_current_icon_color_with_state(cur_state));
+			}
 			makedir->end_bulk_theme_override();
 
 			invalidate();
@@ -673,13 +675,13 @@ void FileDialog::update_file_list() {
 
 	dirs.sort_custom<NaturalNoCaseComparator>();
 	files.sort_custom<NaturalNoCaseComparator>();
-
+	Color folder_icon_color = _get_current_file_icon_color();
 	while (!dirs.is_empty()) {
 		String &dir_name = dirs.front()->get();
 		TreeItem *ti = tree->create_item(root);
 		ti->set_text(0, dir_name);
 		ti->set_icon(0, theme_cache.folder);
-		ti->set_icon_modulate(0, theme_cache.folder_icon_color);
+		ti->set_icon_modulate(0, folder_icon_color);
 
 		Dictionary d;
 		d["name"] = dir_name;
@@ -717,7 +719,8 @@ void FileDialog::update_file_list() {
 	}
 
 	String base_dir = dir_access->get_current_dir();
-
+	Color file_icon_color = _get_current_file_icon_color_with_state(State::NormalNoneLTR);
+	Color file_disabled_color = _get_current_file_icon_color_with_state(State::DisabledNoneLTR);
 	while (!files.is_empty()) {
 		bool match = patterns.is_empty();
 		String match_str;
@@ -740,10 +743,10 @@ void FileDialog::update_file_list() {
 			} else {
 				ti->set_icon(0, theme_cache.file);
 			}
-			ti->set_icon_modulate(0, theme_cache.file_icon_color);
+			ti->set_icon_modulate(0, file_icon_color);
 
 			if (mode == FILE_MODE_OPEN_DIR) {
-				ti->set_custom_color(0, theme_cache.file_disabled_color);
+				ti->set_custom_color(0, file_disabled_color);
 				ti->set_selectable(0, false);
 			}
 			Dictionary d;
@@ -1286,6 +1289,119 @@ void FileDialog::_get_property_list(List<PropertyInfo> *p_list) const {
 	}
 }
 
+
+bool FileDialog::_has_current_folder_icon_color_with_state(State p_state) const {
+	for (const State &E : theme_cache.folder_icon_color.get_search_order(p_state)) {
+		if (has_theme_color(theme_cache.folder_icon_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool FileDialog::_has_current_folder_icon_color() const {
+	State cur_state = get_current_state_with_focus();
+	return _has_current_folder_icon_color_with_state(cur_state);
+}
+
+
+Color FileDialog::_get_current_folder_icon_color_with_state(State p_state) const {
+	Color cur_color;
+
+	for (const State &E : theme_cache.folder_icon_color.get_search_order(p_state)) {
+		if (has_theme_color(theme_cache.folder_icon_color.get_state_data_name(E))) {
+			cur_color = theme_cache.folder_icon_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+Color FileDialog::_get_current_folder_icon_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	cur_color = _get_current_folder_icon_color_with_state(cur_state);
+	return cur_color;
+}
+
+bool FileDialog::_has_current_file_icon_color_with_state(State p_state) const {
+	for (const State &E : theme_cache.file_icon_color.get_search_order(p_state)) {
+		if (has_theme_color(theme_cache.file_icon_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool FileDialog::_has_current_file_icon_color() const {
+	State cur_state = get_current_state_with_focus();
+	return _has_current_file_icon_color_with_state(cur_state);
+}
+
+
+Color FileDialog::_get_current_file_icon_color_with_state(State p_state) const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.file_icon_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.file_icon_color.get_state_data_name(E))) {
+			cur_color = theme_cache.file_icon_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+Color FileDialog::_get_current_file_icon_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	cur_color = _get_current_file_icon_color_with_state(cur_state);
+	return cur_color;
+}
+
+
+bool FileDialog::_has_current_icon_color_with_state(State p_state) const {
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("font_color");
+
+	for (const State &E : theme_cache.icon_color.get_search_order(p_state)) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool FileDialog::_has_current_icon_color() const {
+	State cur_state = get_current_state_with_focus();
+	return _has_current_icon_color_with_state(cur_state);
+}
+
+
+Color FileDialog::_get_current_icon_color_with_state(State p_state) const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("font_color");
+
+	for (const State &E : theme_cache.icon_color.get_search_order(cur_state)) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
+			cur_color = theme_cache.icon_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+Color FileDialog::_get_current_icon_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	cur_color = _get_current_icon_color_with_state(cur_state);
+	return cur_color;
+}
+
+
+
 void FileDialog::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_cancel_pressed"), &FileDialog::_cancel_pressed);
 
@@ -1364,42 +1480,15 @@ void FileDialog::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, file);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, create_folder);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, folder_icon_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, folder_icon_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, folder_icon_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, folder_icon_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, folder_icon_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, FileDialog, folder_icon_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, file_icon_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, file_icon_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, file_icon_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, file_icon_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, file_disabled_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, file_disabled_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, file_disabled_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, file_disabled_color);
-
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, file_icon_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, FileDialog, file_icon_color);
 
 	// TODO: Define own colors?
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_normal_color_scale, "font_color_scale", "Button");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, icon_normal_color_scheme, "font_color_scheme", "Button");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_normal_color_role, "font_color_role", "Button");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_normal_color, "font_color", "Button");
-
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_hover_color_scale, "font_hover_color_scale", "Button");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, icon_hover_color_scheme, "font_hover_color_scheme", "Button");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_hover_color_role, "font_hover_color_role", "Button");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_hover_color, "font_hover_color", "Button");
-
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_focus_color_scale, "font_focus_color_scale", "Button");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, icon_focus_color_scheme, "font_focus_color_scheme", "Button");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_focus_color_role, "font_focus_color_role", "Button");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_focus_color, "font_focus_color", "Button");
-
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_pressed_color_scale, "font_pressed_color_scale", "Button");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, icon_pressed_color_scheme, "font_pressed_color_scheme", "Button");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_pressed_color_role, "font_pressed_color_role", "Button");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_pressed_color, "font_pressed_color", "Button");
+	BIND_THEME_ITEM_EXT_MULTI(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_color_role, font_color_role, "Button");
+	BIND_THEME_ITEM_EXT_MULTI(Theme::DATA_TYPE_COLOR, FileDialog, icon_color, font_color, "Button");
 }
 
 void FileDialog::set_show_hidden_files(bool p_show) {

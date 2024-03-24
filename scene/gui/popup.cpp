@@ -227,13 +227,21 @@ Size2 PopupPanel::_get_contents_minimum_size() const {
 		ms.y = MAX(cms.y, ms.y);
 	}
 	Ref<StyleBox> panel_style = _get_current_default_stylebox();
-	return ms + panel_style->get_minimum_size();
+	if(panel_style.is_valid()){
+		ms += panel_style->get_minimum_size();
+	}
+	return ms;
 }
 
 void PopupPanel::_update_child_rects() {
 	Ref<StyleBox> panel_style = _get_current_default_stylebox();
-	Vector2 cpos(panel_style->get_offset());
-	Vector2 csize(get_size() - panel_style->get_minimum_size());
+	Vector2 cpos(0,0);
+	Vector2 csize(0,0);
+	if(panel_style.is_valid()){
+		cpos= Vector2(panel_style->get_offset());
+		csize = Vector2(get_size() - panel_style->get_minimum_size());
+	}
+
 
 	for (int i = 0; i < get_child_count(); i++) {
 		Control *c = Object::cast_to<Control>(get_child(i));
@@ -292,8 +300,10 @@ bool PopupPanel::_has_current_default_stylebox() const {
 
 Ref<StyleBox> PopupPanel::_get_current_default_stylebox_with_state(State p_state) const {
 	Ref<StyleBox> style;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("panel");
 	for (const State &E : theme_cache.panel_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.panel_style.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			style = theme_cache.panel_style.get_data(E);
 			break; 
 		}

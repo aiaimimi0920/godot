@@ -669,10 +669,15 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_theme, ThemeConfiguration &p_config) {
 	// Panels.
 	{
-		// Panel.
+	// Panel.
 		p_theme->set_stylebox("panel", "Panel", make_flat_stylebox(p_config.dark_color_1, 6, 4, 6, 4, p_config.corner_radius));
 
+		
 		// PanelContainer.
+		// ThemeIntData cur_theme_data;
+		// cur_theme_data.set_data_name("panel");
+		// p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PanelContainer", p_config.panel_container_style);
+
 		p_theme->set_stylebox("panel", "PanelContainer", p_config.panel_container_style);
 
 		// TooltipPanel & TooltipLabel.
@@ -1361,43 +1366,43 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 	{
 		Ref<Texture2D> empty_icon = memnew(ImageTexture);
 
-		// HScrollBar.
+		// // HScrollBar.
 
-		if (p_config.increase_scrollbar_touch_area) {
-			p_theme->set_stylebox("scroll", "HScrollBar", make_line_stylebox(p_config.separator_color, 50));
-		} else {
-			p_theme->set_stylebox("scroll", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, -5, 1, -5, 1));
-		}
-		p_theme->set_stylebox("scroll_focus", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
-		p_theme->set_stylebox("grabber", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabber"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
-		p_theme->set_stylebox("grabber_highlight", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberHl"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
-		p_theme->set_stylebox("grabber_pressed", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberPressed"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
+		// if (p_config.increase_scrollbar_touch_area) {
+		// 	p_theme->set_stylebox("scroll", "HScrollBar", make_line_stylebox(p_config.separator_color, 50));
+		// } else {
+		// 	p_theme->set_stylebox("scroll", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, -5, 1, -5, 1));
+		// }
+		// p_theme->set_stylebox("scroll_focus", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
+		// p_theme->set_stylebox("grabber", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabber"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
+		// p_theme->set_stylebox("grabber_highlight", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberHl"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
+		// p_theme->set_stylebox("grabber_pressed", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberPressed"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
 
-		p_theme->set_icon("increment", "HScrollBar", empty_icon);
-		p_theme->set_icon("increment_highlight", "HScrollBar", empty_icon);
-		p_theme->set_icon("increment_pressed", "HScrollBar", empty_icon);
-		p_theme->set_icon("decrement", "HScrollBar", empty_icon);
-		p_theme->set_icon("decrement_highlight", "HScrollBar", empty_icon);
-		p_theme->set_icon("decrement_pressed", "HScrollBar", empty_icon);
+		// p_theme->set_icon("increment", "HScrollBar", empty_icon);
+		// p_theme->set_icon("increment_highlight", "HScrollBar", empty_icon);
+		// p_theme->set_icon("increment_pressed", "HScrollBar", empty_icon);
+		// p_theme->set_icon("decrement", "HScrollBar", empty_icon);
+		// p_theme->set_icon("decrement_highlight", "HScrollBar", empty_icon);
+		// p_theme->set_icon("decrement_pressed", "HScrollBar", empty_icon);
 
-		// VScrollBar.
+		// // VScrollBar.
 
-		if (p_config.increase_scrollbar_touch_area) {
-			p_theme->set_stylebox("scroll", "VScrollBar", make_line_stylebox(p_config.separator_color, 50, 1, 1, true));
-		} else {
-			p_theme->set_stylebox("scroll", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, -5, 1, -5));
-		}
-		p_theme->set_stylebox("scroll_focus", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
-		p_theme->set_stylebox("grabber", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabber"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
-		p_theme->set_stylebox("grabber_highlight", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberHl"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
-		p_theme->set_stylebox("grabber_pressed", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberPressed"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
+		// if (p_config.increase_scrollbar_touch_area) {
+		// 	p_theme->set_stylebox("scroll", "VScrollBar", make_line_stylebox(p_config.separator_color, 50, 1, 1, true));
+		// } else {
+		// 	p_theme->set_stylebox("scroll", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, -5, 1, -5));
+		// }
+		// p_theme->set_stylebox("scroll_focus", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
+		// p_theme->set_stylebox("grabber", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabber"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
+		// p_theme->set_stylebox("grabber_highlight", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberHl"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
+		// p_theme->set_stylebox("grabber_pressed", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberPressed"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
 
-		p_theme->set_icon("increment", "VScrollBar", empty_icon);
-		p_theme->set_icon("increment_highlight", "VScrollBar", empty_icon);
-		p_theme->set_icon("increment_pressed", "VScrollBar", empty_icon);
-		p_theme->set_icon("decrement", "VScrollBar", empty_icon);
-		p_theme->set_icon("decrement_highlight", "VScrollBar", empty_icon);
-		p_theme->set_icon("decrement_pressed", "VScrollBar", empty_icon);
+		// p_theme->set_icon("increment", "VScrollBar", empty_icon);
+		// p_theme->set_icon("increment_highlight", "VScrollBar", empty_icon);
+		// p_theme->set_icon("increment_pressed", "VScrollBar", empty_icon);
+		// p_theme->set_icon("decrement", "VScrollBar", empty_icon);
+		// p_theme->set_icon("decrement_highlight", "VScrollBar", empty_icon);
+		// p_theme->set_icon("decrement_pressed", "VScrollBar", empty_icon);
 
 		// HSlider.
 		p_theme->set_icon("grabber_highlight", "HSlider", p_theme->get_icon(SNAME("GuiSliderGrabberHl"), EditorStringName(EditorIcons)));

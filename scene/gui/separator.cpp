@@ -61,9 +61,10 @@ void Separator::_notification(int p_what) {
 
 Ref<StyleBox> Separator::_get_current_default_stylebox_with_state(State p_state) const {
 	Ref<StyleBox> style;
-
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("separator");
 	for (const State &E : theme_cache.separator_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.separator_style.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			style = theme_cache.separator_style.get_data(E);
 			break;
 		}
@@ -73,8 +74,10 @@ Ref<StyleBox> Separator::_get_current_default_stylebox_with_state(State p_state)
 
 bool Separator::_has_current_default_stylebox() const {
 	State cur_state = get_current_state();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("separator");
 	for (const State &E : theme_cache.separator_style.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.separator_style.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			return true;
 		}
 	}

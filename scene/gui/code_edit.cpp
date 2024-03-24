@@ -2637,8 +2637,10 @@ Color CodeEdit::_get_current_line_number_color() const {
 
 bool CodeEdit::_has_current_code_completion_style() const {
 	State cur_state = get_current_state_with_focus();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("completion");
 	for (const State &E : theme_cache.code_completion_style.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.code_completion_style.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -2648,9 +2650,10 @@ bool CodeEdit::_has_current_code_completion_style() const {
 Ref<StyleBox> CodeEdit::_get_current_code_completion_style() const {
 	State cur_state = get_current_state_with_focus();
 	Ref<StyleBox> style;
-
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("completion");
 	for (const State &E : theme_cache.code_completion_style.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.code_completion_style.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			style = theme_cache.code_completion_style.get_data(E);
 			break;
 		}
@@ -2659,8 +2662,10 @@ Ref<StyleBox> CodeEdit::_get_current_code_completion_style() const {
 }
 
 bool CodeEdit::_has_current_code_completion_scroll_color_with_state(State p_state) const {
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("completion_scroll_color");
 	for (const State &E : theme_cache.code_completion_scroll_color.get_search_order(p_state)) {
-		if (has_theme_color(theme_cache.code_completion_scroll_color.get_state_data_name(E))) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -2674,8 +2679,10 @@ bool CodeEdit::_has_current_code_completion_scroll_color() const {
 
 Color CodeEdit::_get_current_code_completion_scroll_color_with_state(State p_state) const {
 	Color cur_color;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("completion_scroll_color");
 	for (const State &E : theme_cache.code_completion_scroll_color.get_search_order(p_state)) {
-		if (has_theme_color(theme_cache.code_completion_scroll_color.get_state_data_name(E))) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
 			cur_color = theme_cache.code_completion_scroll_color.get_data(E);
 			break;
 		}
@@ -2692,8 +2699,10 @@ Color CodeEdit::_get_current_code_completion_scroll_color() const {
 
 bool CodeEdit::_has_current_code_completion_background_color() const {
 	State cur_state = get_current_state_with_focus();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("completion_background_color");
 	for (const State &E : theme_cache.code_completion_background_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.code_completion_background_color.get_state_data_name(E))) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -2703,8 +2712,10 @@ bool CodeEdit::_has_current_code_completion_background_color() const {
 Color CodeEdit::_get_current_code_completion_background_color() const {
 	State cur_state = get_current_state_with_focus();
 	Color cur_color;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("completion_background_color");
 	for (const State &E : theme_cache.code_completion_background_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.code_completion_background_color.get_state_data_name(E))) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
 			cur_color = theme_cache.code_completion_background_color.get_data(E);
 			break;
 		}
@@ -2714,8 +2725,10 @@ Color CodeEdit::_get_current_code_completion_background_color() const {
 
 bool CodeEdit::_has_current_code_completion_selected_color() const {
 	State cur_state = get_current_state_with_focus();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("completion_selected_color");
 	for (const State &E : theme_cache.code_completion_selected_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.code_completion_selected_color.get_state_data_name(E))) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -2725,8 +2738,10 @@ bool CodeEdit::_has_current_code_completion_selected_color() const {
 Color CodeEdit::_get_current_code_completion_selected_color() const {
 	State cur_state = get_current_state_with_focus();
 	Color cur_color;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("completion_selected_color");
 	for (const State &E : theme_cache.code_completion_selected_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.code_completion_selected_color.get_state_data_name(E))) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
 			cur_color = theme_cache.code_completion_selected_color.get_data(E);
 			break;
 		}
@@ -2736,8 +2751,10 @@ Color CodeEdit::_get_current_code_completion_selected_color() const {
 
 bool CodeEdit::_has_current_code_completion_existing_color() const {
 	State cur_state = get_current_state_with_focus();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("completion_existing_color");
 	for (const State &E : theme_cache.code_completion_existing_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.code_completion_existing_color.get_state_data_name(E))) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -2747,8 +2764,10 @@ bool CodeEdit::_has_current_code_completion_existing_color() const {
 Color CodeEdit::_get_current_code_completion_existing_color() const {
 	State cur_state = get_current_state_with_focus();
 	Color cur_color;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("completion_existing_color");
 	for (const State &E : theme_cache.code_completion_existing_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.code_completion_existing_color.get_state_data_name(E))) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
 			cur_color = theme_cache.code_completion_existing_color.get_data(E);
 			break;
 		}
@@ -2758,8 +2777,10 @@ Color CodeEdit::_get_current_code_completion_existing_color() const {
 
 bool CodeEdit::_has_current_code_hint_style() const {
 	State cur_state = get_current_state_with_focus();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("panel");
 	for (const State &E : theme_cache.code_hint_style.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.code_hint_style.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -2769,9 +2790,10 @@ bool CodeEdit::_has_current_code_hint_style() const {
 Ref<StyleBox> CodeEdit::_get_current_code_hint_style() const {
 	State cur_state = get_current_state_with_focus();
 	Ref<StyleBox> style;
-
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("panel");
 	for (const State &E : theme_cache.code_hint_style.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.code_hint_style.get_state_data_name(E))) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
 			style = theme_cache.code_hint_style.get_data(E);
 			break;
 		}
@@ -2781,8 +2803,10 @@ Ref<StyleBox> CodeEdit::_get_current_code_hint_style() const {
 
 bool CodeEdit::_has_current_code_hint_color() const {
 	State cur_state = get_current_state_with_focus();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("font_color");
 	for (const State &E : theme_cache.code_hint_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.code_hint_color.get_state_data_name(E))) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -2792,8 +2816,10 @@ bool CodeEdit::_has_current_code_hint_color() const {
 Color CodeEdit::_get_current_code_hint_color() const {
 	State cur_state = get_current_state_with_focus();
 	Color cur_color;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("font_color");
 	for (const State &E : theme_cache.code_hint_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.code_hint_color.get_state_data_name(E))) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
 			cur_color = theme_cache.code_hint_color.get_data(E);
 			break;
 		}

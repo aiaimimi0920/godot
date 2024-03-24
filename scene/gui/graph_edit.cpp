@@ -602,7 +602,13 @@ void GraphEdit::_notification(int p_what) {
 
 			zoom_label->set_custom_minimum_size(Size2(48, 0) * theme_cache.base_scale);
 
-			menu_panel->add_theme_style_override("panel", theme_cache.menu_panel);
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("panel");
+			for (int i = 0; i < STATE_MAX; i++) {  
+				State cur_state = static_cast<State>(i);
+				// menu_panel->add_theme_style_override(cur_theme_data.get_state_data_name(cur_state), _get_current_default_stylebox_with_state(cur_state));
+				menu_panel->add_theme_style_override(cur_theme_data.get_state_data_name(cur_state), theme_cache.menu_panel);
+			}
 		} break;
 		case NOTIFICATION_READY: {
 			Size2 hmin = h_scrollbar->get_combined_minimum_size();
