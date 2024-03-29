@@ -205,28 +205,23 @@ private:
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
 
-		Ref<StyleBox> embedded_border;
-		Ref<StyleBox> embedded_unfocused_border;
+		ThemeStyleboxData embedded_border{"embedded_border"};
+		ThemeStyleboxData embedded_unfocused_border{"embedded_unfocused_border"};
 
 		Ref<Font> title_font;
 		int title_font_size = 0;
 
-		Color title_color_scale;
-		Ref<ColorScheme> title_color_scheme;
-		ColorRole title_color_role;
-		Color title_color;
+		ThemeColorData title_color{"title_color"};
+		ThemeColorRoleData title_color_role{"title_color_role"};
 
 		int title_height = 0;
 
-		Color title_outline_modulate_scale;
-		Ref<ColorScheme> title_outline_modulate_scheme;
-		ColorRole title_outline_modulate_role;
-		Color title_outline_modulate;
+		ThemeColorData title_outline_modulate{"title_outline_modulate"};
+		ThemeColorRoleData title_outline_modulate_role{"title_outline_modulate_role"};
 
 		int title_outline_size = 0;
 
-		Ref<Texture2D> close;
-		Ref<Texture2D> close_pressed;
+		ThemeIconData close;
 		int close_h_offset = 0;
 		int close_v_offset = 0;
 
@@ -277,6 +272,32 @@ protected:
 	virtual void remove_child_notify(Node *p_child) override;
 
 	GDVIRTUAL0RC(Vector2, _get_contents_minimum_size)
+
+
+	bool _has_current_embedded_border_with_state(State p_state) const;
+	bool _has_current_embedded_border() const;
+	Ref<StyleBox> _get_current_embedded_border_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_embedded_border() const;
+
+	bool _has_current_embedded_unfocused_border_with_state(State p_state) const;
+	bool _has_current_embedded_unfocused_border() const;
+	Ref<StyleBox> _get_current_embedded_unfocused_border_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_embedded_unfocused_border() const;
+
+	bool _has_current_title_color_with_state(State p_state) const;
+	bool _has_current_title_color() const;
+	Color _get_current_title_color_with_state(State p_state) const;
+	Color _get_current_title_color() const;
+	bool _has_current_title_outline_modulate_with_state(State p_state) const;
+	bool _has_current_title_outline_modulate() const;
+	Color _get_current_title_outline_modulate_with_state(State p_state) const;
+	Color _get_current_title_outline_modulate() const;
+
+
+	bool _has_current_close_with_state(State p_state) const;
+	bool _has_current_close() const;
+	Ref<Texture2D> _get_current_close_with_state(State p_state) const;
+	Ref<Texture2D> _get_current_close() const;
 
 public:
 	enum {

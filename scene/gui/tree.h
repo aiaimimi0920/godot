@@ -524,92 +524,53 @@ private:
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
 
-		Ref<StyleBox> panel_style;
-		Ref<StyleBox> focus_style;
+		ThemeStyleboxData default_style{"default_style"};
 
 		Ref<Font> font;
 		Ref<Font> tb_font;
 		int font_size = 0;
 		int tb_font_size = 0;
 
-		Ref<StyleBox> selected;
-		Ref<StyleBox> selected_focus;
-		Ref<StyleBox> cursor;
-		Ref<StyleBox> cursor_unfocus;
+		ThemeStyleboxData selected{"selected"};
+		ThemeStyleboxData cursor{"cursor"};
 		Ref<StyleBox> button_pressed;
-		Ref<StyleBox> title_button;
-		Ref<StyleBox> title_button_hover;
-		Ref<StyleBox> title_button_pressed;
-		Ref<StyleBox> custom_button;
-		Ref<StyleBox> custom_button_hover;
-		Ref<StyleBox> custom_button_pressed;
+		ThemeStyleboxData title_button{"title_button"};
+		ThemeStyleboxData custom_button{"custom_button"};
 
-		Ref<Texture2D> checked;
-		Ref<Texture2D> unchecked;
-		Ref<Texture2D> checked_disabled;
-		Ref<Texture2D> unchecked_disabled;
-		Ref<Texture2D> indeterminate;
-		Ref<Texture2D> indeterminate_disabled;
+		Color title_button_color;
+		ColorRole title_button_color_role;
+		
+		ThemeIconData checked{"checked"};
+		ThemeIconData indeterminate{"indeterminate"};
 		Ref<Texture2D> arrow;
 		Ref<Texture2D> arrow_collapsed;
 		Ref<Texture2D> arrow_collapsed_mirrored;
 		Ref<Texture2D> select_arrow;
 		Ref<Texture2D> updown;
 
-		Color title_button_color_scale;
-		Ref<ColorScheme> title_button_color_scheme;
-		ColorRole title_button_color_role;
-		Color title_button_color;
+		ThemeColorData font_color{"font_color"};
+		ThemeColorRoleData font_color_role{"font_color_role"};
 
-		Color font_color_scale;
-		Ref<ColorScheme> font_color_scheme;
-		ColorRole font_color_role;
-		Color font_color;
-
-		Color font_selected_color_scale;
-		Ref<ColorScheme> font_selected_color_scheme;
-		ColorRole font_selected_color_role;
-		Color font_selected_color;
-
-		Color font_disabled_color_scale;
-		Ref<ColorScheme> font_disabled_color_scheme;
-		ColorRole font_disabled_color_role;
-		Color font_disabled_color;
-
-		Color guide_color_scale;
-		Ref<ColorScheme> guide_color_scheme;
-		ColorRole guide_color_role;
 		Color guide_color;
+		ColorRole guide_color_role;
 
-		Color drop_position_color_scale;
-		Ref<ColorScheme> drop_position_color_scheme;
-		ColorRole drop_position_color_role;
 		Color drop_position_color;
+		ColorRole drop_position_color_role;
 
-		Color relationship_line_color_scale;
-		Ref<ColorScheme> relationship_line_color_scheme;
-		ColorRole relationship_line_color_role;
 		Color relationship_line_color;
+		ColorRole relationship_line_color_role;
 
-		Color parent_hl_line_color_scale;
-		Ref<ColorScheme> parent_hl_line_color_scheme;
-		ColorRole parent_hl_line_color_role;
 		Color parent_hl_line_color;
+		ColorRole parent_hl_line_color_role;
 
-		Color children_hl_line_color_scale;
-		Ref<ColorScheme> children_hl_line_color_scheme;
-		ColorRole children_hl_line_color_role;
 		Color children_hl_line_color;
+		ColorRole children_hl_line_color_role;
 
-		Color custom_button_font_highlight_scale;
-		Ref<ColorScheme> custom_button_font_highlight_scheme;
-		ColorRole custom_button_font_highlight_role;
 		Color custom_button_font_highlight;
+		ColorRole custom_button_font_highlight_role;
 
-		Color font_outline_color_scale;
-		Ref<ColorScheme> font_outline_color_scheme;
-		ColorRole font_outline_color_role;
 		Color font_outline_color;
+		ColorRole font_outline_color_role;
 
 		float base_scale = 1.0;
 		int font_outline_size = 0;
@@ -734,6 +695,46 @@ protected:
 
 	void _notification(int p_what);
 	static void _bind_methods();
+
+	bool _has_current_default_style_with_state(State p_state) const;
+	bool _has_current_default_style() const;
+	Ref<StyleBox> _get_current_default_style_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_default_style() const;
+
+	bool _has_current_selected_with_state(State p_state) const;
+	bool _has_current_selected() const;
+	Ref<StyleBox> _get_current_selected_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_selected() const;
+
+	bool _has_current_cursor_with_state(State p_state) const;
+	bool _has_current_cursor() const;
+	Ref<StyleBox> _get_current_cursor_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_cursor() const;
+
+	bool _has_current_title_button_with_state(State p_state) const;
+	bool _has_current_title_button() const;
+	Ref<StyleBox> _get_current_title_button_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_title_button() const;
+
+	bool _has_current_custom_button_with_state(State p_state) const;
+	bool _has_current_custom_button() const;
+	Ref<StyleBox> _get_current_custom_button_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_custom_button() const;
+
+	bool _has_current_checked_icon_with_state(State p_state) const;
+	bool _has_current_checked_icon() const;
+	Ref<Texture2D> _get_current_checked_icon_with_state(State p_state) const;
+	Ref<Texture2D> _get_current_checked_icon() const;
+
+	bool _has_current_indeterminate_icon_with_state(State p_state) const;
+	bool _has_current_indeterminate_icon() const;
+	Ref<Texture2D> _get_current_indeterminate_icon_with_state(State p_state) const;
+	Ref<Texture2D> _get_current_indeterminate_icon() const;
+
+	bool _has_current_font_color_with_state(State p_state) const;
+	bool _has_current_font_color() const;
+	Color _get_current_font_color_with_state(State p_state) const;
+	Color _get_current_font_color() const;
 
 public:
 	virtual void gui_input(const Ref<InputEvent> &p_event) override;

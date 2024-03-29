@@ -53,8 +53,13 @@ class EditorThemeManager {
 		String preset;
 		String spacing_preset;
 
+		Color default_color_scheme_color;
+		Ref<ColorScheme> default_color_scheme;
+
 		Color base_color;
+		ColorRole base_color_role;
 		Color accent_color;
+		ColorRole accent_color_role;
 		float contrast = 1.0;
 		float icon_saturation = 1.0;
 
@@ -89,40 +94,74 @@ class EditorThemeManager {
 		int forced_even_separation = 0;
 
 		Color mono_color;
+		ColorRole mono_color_role;
 		Color dark_color_1;
+		ColorRole dark_color_1_role;
 		Color dark_color_2;
+		ColorRole dark_color_2_role;
 		Color dark_color_3;
+		ColorRole dark_color_3_role;
 		Color contrast_color_1;
+		ColorRole contrast_color_1_role;
 		Color contrast_color_2;
+		ColorRole contrast_color_2_role;
 		Color highlight_color;
+		ColorRole highlight_color_role;
 		Color highlight_disabled_color;
+		ColorRole highlight_disabled_color_role;
 		Color success_color;
+		ColorRole success_color_role;
 		Color warning_color;
+		ColorRole warning_color_role;
 		Color error_color;
+		ColorRole error_color_role;
 		Color extra_border_color_1;
+		ColorRole extra_border_color_1_role;
 		Color extra_border_color_2;
+		ColorRole extra_border_color_2_role;
 
 		Color font_color;
+		ColorRole font_color_role;
+
 		Color font_focus_color;
+		ColorRole font_focus_color_role;
 		Color font_hover_color;
+		ColorRole font_hover_color_role;
 		Color font_pressed_color;
+		ColorRole font_pressed_color_role;
+
 		Color font_hover_pressed_color;
+		ColorRole font_hover_pressed_color_role;
 		Color font_disabled_color;
+		ColorRole font_disabled_color_role;
 		Color font_readonly_color;
+		ColorRole font_readonly_color_role;
 		Color font_placeholder_color;
+		ColorRole font_placeholder_color_role;
 		Color font_outline_color;
+		ColorRole font_outline_color_role;
 
 		Color icon_normal_color;
+		ColorRole icon_normal_color_role;
 		Color icon_focus_color;
+		ColorRole icon_focus_color_role;
 		Color icon_hover_color;
+		ColorRole icon_hover_color_role;
 		Color icon_pressed_color;
+		ColorRole icon_pressed_color_role;
 		Color icon_disabled_color;
+		ColorRole icon_disabled_color_role;
 
 		Color shadow_color;
+		ColorRole shadow_color_role;
 		Color selection_color;
+		ColorRole selection_color_role;
 		Color disabled_border_color;
+		ColorRole disabled_border_color_role;
 		Color disabled_bg_color;
+		ColorRole disabled_bg_color_role;
 		Color separator_color;
+		ColorRole separator_color_role;
 
 		Ref<StyleBoxFlat> base_style;
 		Ref<StyleBoxEmpty> base_empty_style;

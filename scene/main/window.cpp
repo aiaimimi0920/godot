@@ -3108,6 +3108,172 @@ State Window::get_current_focus_state() const {
 	return cur_state;
 }
 
+
+
+bool Window::_has_current_embedded_border_with_state(State p_state) const {
+	for (const State &E : theme_cache.embedded_border.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.embedded_border.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Window::_has_current_embedded_border() const {
+	State cur_state = get_current_state();
+	return _has_current_embedded_border_with_state(cur_state);
+}
+
+Ref<StyleBox> Window::_get_current_embedded_border_with_state(State p_state) const {
+	Ref<StyleBox> style;
+	for (const State &E : theme_cache.embedded_border.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.embedded_border.get_state_data_name(E))) {
+			style = theme_cache.embedded_border.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+Ref<StyleBox> Window::_get_current_embedded_border() const {
+	State cur_state = get_current_state();
+	Ref<StyleBox> style;
+	style = _get_current_embedded_border_with_state(cur_state);
+	return style;
+}
+
+bool Window::_has_current_embedded_unfocused_border_with_state(State p_state) const {
+	for (const State &E : theme_cache.embedded_unfocused_border.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.embedded_unfocused_border.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Window::_has_current_embedded_unfocused_border() const {
+	State cur_state = get_current_state();
+	return _has_current_embedded_unfocused_border_with_state(cur_state);
+}
+
+Ref<StyleBox> Window::_get_current_embedded_unfocused_border_with_state(State p_state) const {
+	Ref<StyleBox> style;
+	for (const State &E : theme_cache.embedded_unfocused_border.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.embedded_unfocused_border.get_state_data_name(E))) {
+			style = theme_cache.embedded_unfocused_border.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+Ref<StyleBox> Window::_get_current_embedded_unfocused_border() const {
+	State cur_state = get_current_state();
+	Ref<StyleBox> style;
+	style = _get_current_embedded_unfocused_border_with_state(cur_state);
+	return style;
+}
+
+
+
+
+bool Window::_has_current_title_color_with_state(State p_state) const {
+	for (const State &E : theme_cache.title_color.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.title_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Window::_has_current_title_color() const {
+	State cur_state = get_current_state();
+	return _has_current_title_color_with_state(cur_state);
+}
+
+Color Window::_get_current_title_color_with_state(State p_state) const {
+	Color color;
+	for (const State &E : theme_cache.title_color.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.title_color.get_state_data_name(E))) {
+			color = theme_cache.title_color.get_data(E);
+			break;
+		}
+	}
+	return color;
+}
+
+Color Window::_get_current_title_color() const {
+	State cur_state = get_current_state();
+	Color color = _get_current_title_color_with_state(cur_state);
+	return color;
+}
+
+
+bool Window::_has_current_title_outline_modulate_with_state(State p_state) const {
+	for (const State &E : theme_cache.title_outline_modulate.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.title_outline_modulate.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Window::_has_current_title_outline_modulate() const {
+	State cur_state = get_current_state();
+	return _has_current_title_outline_modulate_with_state(cur_state);
+}
+
+Color Window::_get_current_title_outline_modulate_with_state(State p_state) const {
+	Color color;
+	for (const State &E : theme_cache.title_outline_modulate.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.title_outline_modulate.get_state_data_name(E))) {
+			color = theme_cache.title_outline_modulate.get_data(E);
+			break;
+		}
+	}
+	return color;
+}
+
+Color Window::_get_current_title_outline_modulate() const {
+	State cur_state = get_current_state();
+	Color color = _get_current_title_outline_modulate_with_state(cur_state);
+	return color;
+}
+
+
+
+bool Window::_has_current_close_with_state(State p_state) const {
+	for (const State &E : theme_cache.close.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.close.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Window::_has_current_close() const {
+	State cur_state = get_current_state();
+	return _has_current_close_with_state(cur_state);
+}
+
+Ref<Texture2D> Window::_get_current_close_with_state(State p_state) const {
+	Ref<Texture2D> cur_icon;
+	for (const State &E : theme_cache.close.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.close.get_state_data_name(E))) {
+			cur_icon = theme_cache.close.get_data(E);
+			break;
+		}
+	}
+	return cur_icon;
+}
+
+Ref<Texture2D> Window::_get_current_close() const {
+	State cur_state = get_current_state();
+	Ref<Texture2D> cur_icon = _get_current_close_with_state(cur_state);
+	return cur_icon;
+}
+
+
 void Window::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_title", "title"), &Window::set_title);
 	ClassDB::bind_method(D_METHOD("get_title"), &Window::get_title);
@@ -3406,28 +3572,23 @@ void Window::_bind_methods() {
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Window, default_color_scheme);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Window, embedded_border);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Window, embedded_unfocused_border);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, Window, embedded_border);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, Window, embedded_unfocused_border);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, Window, title_font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, Window, title_font_size);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Window, title_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Window, title_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Window, title_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Window, title_color);
-
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, Window, title_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, Window, title_color);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Window, title_height);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Window, title_outline_modulate_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Window, title_outline_modulate_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Window, title_outline_modulate_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Window, title_outline_modulate);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, Window, title_outline_modulate_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, Window, title_outline_modulate);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Window, title_outline_size);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, Window, close);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, Window, close_pressed);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_ICON, Window, close);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Window, close_h_offset);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Window, close_v_offset);
 

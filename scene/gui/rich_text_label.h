@@ -610,50 +610,34 @@ private:
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
 
-		Ref<StyleBox> normal_style;
-		Ref<StyleBox> focus_style;
-		Ref<StyleBox> progress_bg_style;
-		Ref<StyleBox> progress_fg_style;
+		ThemeStyleboxData default_stylebox{"default_stylebox"};
+
+		ThemeStyleboxData progress_bg_style{"progress_bg_style"};
+		ThemeStyleboxData progress_fg_style{"progress_fg_style"};
 
 		int line_separation;
 
 		Ref<Font> normal_font;
 		int normal_font_size;
 
-		Color font_default_color_scale;
-		Ref<ColorScheme> font_default_color_scheme;
-		ColorRole font_default_color_role;
-		Color font_default_color;
-
-		Color font_selected_color_scale;
-		Ref<ColorScheme> font_selected_color_scheme;
-		ColorRole font_selected_color_role;
-		Color font_selected_color;
-	
-		Color selection_color_scale;
-		Ref<ColorScheme> selection_color_scheme;
-		ColorRole selection_color_role;
-		Color selection_color;
-
-		Color font_outline_color_scale;
-		Ref<ColorScheme> font_outline_color_scheme;
-		ColorRole font_outline_color_role;
-		Color font_outline_color;
-
-		Color font_shadow_color_scale;
-		Ref<ColorScheme> font_shadow_color_scheme;
-		ColorRole font_shadow_color_role;
-		Color font_shadow_color;
+		ThemeColorData default_color{"default_color"};
+		ThemeColorRoleData default_color_role{"default_color_role"};
+		ThemeColorData font_selected_color{"font_selected_color"};
+		ThemeColorRoleData font_selected_color_role{"font_selected_color_role"};
+		ThemeColorData selection_color{"selection_color"};
+		ThemeColorRoleData selection_color_role{"selection_color_role"};
+		ThemeColorData font_outline_color{"font_outline_color"};
+		ThemeColorRoleData font_outline_color_role{"font_outline_color_role"};
+		ThemeColorData font_shadow_color{"font_shadow_color"};
+		ThemeColorRoleData font_shadow_color_role{"font_shadow_color_role"};
 
 		int shadow_outline_size;
 		int shadow_offset_x;
 		int shadow_offset_y;
 		int outline_size;
 
-		Color outline_color_scale;
-		Ref<ColorScheme> outline_color_scheme;
-		ColorRole outline_color_role;
-		Color outline_color;
+		ThemeColorData outline_color{"outline_color"};
+		ThemeColorRoleData outline_color_role{"outline_color_role"};
 
 		Ref<Font> bold_font;
 		int bold_font_size;
@@ -669,21 +653,13 @@ private:
 
 		int table_h_separation;
 		int table_v_separation;
+		ThemeColorData table_odd_row_bg{"table_odd_row_bg"};
+		ThemeColorRoleData table_odd_row_bg_role{"table_odd_row_bg_role"};
 
-		Color table_odd_row_bg_scale;
-		Ref<ColorScheme> table_odd_row_bg_scheme;
-		ColorRole table_odd_row_bg_role;
-		Color table_odd_row_bg;
-
-		Color table_even_row_bg_scale;
-		Ref<ColorScheme> table_even_row_bg_scheme;
-		ColorRole table_even_row_bg_role;
-		Color table_even_row_bg;
-		
-		Color table_border_scale;
-		Ref<ColorScheme> table_border_scheme;
-		ColorRole table_border_role;
-		Color table_border;
+		ThemeColorData table_even_row_bg{"table_even_row_bg"};
+		ThemeColorRoleData table_even_row_bg_role{"table_even_row_bg_role"};
+		ThemeColorData table_border{"table_border"};
+		ThemeColorRoleData table_border_role{"table_border_role"};
 
 		float base_scale = 1.0;
 	} theme_cache;
@@ -863,6 +839,46 @@ public:
 	void install_effect(const Variant effect);
 
 	virtual Size2 get_minimum_size() const override;
+
+	bool _has_current_default_stylebox_with_state(State p_state) const;
+	bool _has_current_default_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_default_stylebox() const;
+
+	bool _has_current_focus_default_stylebox() const;
+	Ref<StyleBox> _get_current_focus_default_stylebox() const;
+
+	bool _has_current_progress_bg_style() const;
+	Ref<StyleBox> _get_current_progress_bg_style() const;
+
+	bool _has_current_progress_fg_style() const;
+	Ref<StyleBox> _get_current_progress_fg_style() const;
+
+	bool _has_current_default_color() const;
+	Color _get_current_default_color() const;
+	bool _has_current_font_selected_color() const;
+	Color _get_current_font_selected_color() const;
+
+	bool _has_current_selection_color() const;
+	Color _get_current_selection_color() const;
+
+	bool _has_current_font_outline_color() const;
+	Color _get_current_font_outline_color() const;
+
+	bool _has_current_font_shadow_color() const;
+	Color _get_current_font_shadow_color() const;
+
+	bool _has_current_outline_color() const;
+	Color _get_current_outline_color() const;
+
+	bool _has_current_table_odd_row_bg() const;
+	Color _get_current_table_odd_row_bg() const;
+
+	bool _has_current_table_even_row_bg() const;
+	Color _get_current_table_even_row_bg() const;
+
+	bool _has_current_table_border() const;
+	Color _get_current_table_border() const;
 
 	RichTextLabel(const String &p_text = String());
 	~RichTextLabel();

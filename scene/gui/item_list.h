@@ -135,46 +135,28 @@ private:
 		int h_separation = 0;
 		int v_separation = 0;
 
-		Ref<StyleBox> panel_style;
-		Ref<StyleBox> focus_style;
+		ThemeStyleboxData default_panel{"default_panel"};
 
 		Ref<Font> font;
 		int font_size = 0;
 
-		Color font_color_scale;
-		Ref<ColorScheme> font_color_scheme;
-		ColorRole font_color_role;
-		Color font_color;
-
-		Color font_hovered_color_scale;
-		Ref<ColorScheme> font_hovered_color_scheme;
-		ColorRole font_hovered_color_role;
-		Color font_hovered_color;
-
-		Color font_selected_color_scale;
-		Ref<ColorScheme> font_selected_color_scheme;
-		ColorRole font_selected_color_role;
-		Color font_selected_color;
+		ThemeColorData font_color{"font_color"};
+		ThemeColorRoleData font_color_role{"font_color_role"};
 
 		int font_outline_size = 0;
 
-		Color font_outline_color_scale;
-		Ref<ColorScheme> font_outline_color_scheme;
-		ColorRole font_outline_color_role;
-		Color font_outline_color;
+		ThemeColorData font_outline_color{"font_outline_color"};
+		ThemeColorRoleData font_outline_color_role{"font_outline_color_role"};
 
 		int line_separation = 0;
 		int icon_margin = 0;
-		Ref<StyleBox> hovered_style;
-		Ref<StyleBox> selected_style;
-		Ref<StyleBox> selected_focus_style;
-		Ref<StyleBox> cursor_style;
-		Ref<StyleBox> cursor_focus_style;
 
-		Color guide_color_scale;
-		Ref<ColorScheme> guide_color_scheme;
-		ColorRole guide_color_role;
-		Color guide_color;
+		ThemeStyleboxData item_style{"item_style"};
+
+		ThemeStyleboxData cursor_style{"cursor_style"};
+
+		ThemeColorData guide_color{"guide_color"};
+		ThemeColorRoleData guide_color_role{"guide_color_role"};
 	} theme_cache;
 
 	void _scroll_changed(double);
@@ -189,6 +171,35 @@ protected:
 	bool _property_can_revert(const StringName &p_name) const { return property_helper.property_can_revert(p_name); }
 	bool _property_get_revert(const StringName &p_name, Variant &r_property) const { return property_helper.property_get_revert(p_name, r_property); }
 	static void _bind_methods();
+
+	bool _has_current_default_panel_style_with_state(State p_state) const;
+	bool _has_current_default_panel_style() const;
+	Ref<StyleBox> _get_current_default_panel_style_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_default_panel_style() const;
+
+	bool _has_current_focus_default_stylebox() const;
+	Ref<StyleBox> _get_current_focus_default_stylebox() const;
+
+	bool _has_current_item_style_with_state(State p_state) const;
+	bool _has_current_item_style() const;
+	Ref<StyleBox> _get_current_item_style_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_item_style() const;
+
+	bool _has_current_cursor_style_with_state(State p_state) const;
+	bool _has_current_cursor_style() const;
+	Ref<StyleBox> _get_current_cursor_style_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_cursor_style() const;
+
+	bool _has_current_font_color_with_state(State p_state) const;
+	bool _has_current_font_color() const;
+	Color _get_current_font_color_with_state(State p_state) const;
+	Color _get_current_font_color() const;
+
+	bool _has_current_font_outline_color() const;
+	Color _get_current_font_outline_color() const;
+
+	bool _has_current_guide_color() const;
+	Color _get_current_guide_color() const;
 
 public:
 	virtual void gui_input(const Ref<InputEvent> &p_event) override;

@@ -80,16 +80,14 @@ class GraphEditMinimap : public Control {
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
 
-		Ref<StyleBox> panel;
-		Ref<StyleBox> node_style;
-		Ref<StyleBox> camera_style;
+		ThemeStyleboxData panel{"panel"};
+		ThemeStyleboxData node_style{"node_style"};
+		ThemeStyleboxData camera_style{"camera_style"};
 
 		Ref<Texture2D> resizer;
-		
-		Color resizer_color_scale;
-		Ref<ColorScheme> resizer_color_scheme;
-		ColorRole resizer_color_role;
-		Color resizer_color;
+
+		ThemeColorData resizer_color{"resizer_color"};
+		ThemeColorRoleData resizer_color_role{"resizer_color_role"};
 	} theme_cache;
 
 	Vector2 _get_render_size();
@@ -105,6 +103,18 @@ class GraphEditMinimap : public Control {
 
 protected:
 	static void _bind_methods();
+
+	bool _has_current_panel() const;
+	Ref<StyleBox> _get_current_panel() const;
+
+	bool _has_current_node_style() const;
+	Ref<StyleBox> _get_current_node_style() const;
+
+	bool _has_current_camera_style() const;
+	Ref<StyleBox> _get_current_camera_style() const;
+
+	bool _has_current_resizer_color() const;
+	Color _get_current_resizer_color() const;
 
 public:
 	virtual CursorShape get_cursor_shape(const Point2 &p_pos = Point2i()) const override;
@@ -271,53 +281,35 @@ private:
 	HashSet<int> valid_right_disconnect_types;
 
 	struct ThemeCache {
-		float base_scale = 1.0;
-		
 		Ref<ColorScheme> default_color_scheme;
+		float base_scale = 1.0;
+		ThemeStyleboxData panel{"panel"};
 
-		Ref<StyleBox> panel;
+		ThemeColorData grid_major{"grid_major"};
+		ThemeColorRoleData grid_major_role{"grid_major_role"};
 
-		Color grid_major_scale;
-		Ref<ColorScheme> grid_major_scheme;
-		ColorRole grid_major_role;
-		Color grid_major;
+		ThemeColorData grid_minor{"grid_minor"};
+		ThemeColorRoleData grid_minor_role{"grid_minor_role"};
 
-		Color grid_minor_scale;
-		Ref<ColorScheme> grid_minor_scheme;
-		ColorRole grid_minor_role;
-		Color grid_minor;
+		ThemeColorData activity_color{"activity_color"};
+		ThemeColorRoleData activity_color_role{"activity_color_role"};
 
-		Color activity_color_scale;
-		Ref<ColorScheme> activity_color_scheme;
-		ColorRole activity_color_role;
-		Color activity_color;
+		ThemeColorData connection_hover_tint_color{"connection_hover_tint_color"};
+		ThemeColorRoleData connection_hover_tint_color_role{"connection_hover_tint_color_role"};
 
-		Color connection_hover_tint_color_scale;
-		Ref<ColorScheme> connection_hover_tint_color_scheme;
-		ColorRole connection_hover_tint_color_role;
-		Color connection_hover_tint_color;
+		ThemeColorData connection_valid_target_tint_color{"connection_valid_target_tint_color"};
+		ThemeColorRoleData connection_valid_target_tint_color_role{"connection_valid_target_tint_color_role"};
 
-		Color connection_valid_target_tint_color_scale;
-		Ref<ColorScheme> connection_valid_target_tint_color_scheme;
-		ColorRole connection_valid_target_tint_color_role;
-		Color connection_valid_target_tint_color;
+		ThemeColorData connection_rim_color{"connection_rim_color"};
+		ThemeColorRoleData connection_rim_color_role{"connection_rim_color_role"};
 
-		Color connection_rim_color_scale;
-		Ref<ColorScheme> connection_rim_color_scheme;
-		ColorRole connection_rim_color_role;
-		Color connection_rim_color;
+		ThemeColorData selection_fill{"selection_fill"};
+		ThemeColorRoleData selection_fill_role{"selection_fill_role"};
 
-		Color selection_fill_scale;
-		Ref<ColorScheme> selection_fill_scheme;
-		ColorRole selection_fill_role;
-		Color selection_fill;
+		ThemeColorData selection_stroke{"selection_stroke"};
+		ThemeColorRoleData selection_stroke_role{"selection_stroke_role"};
 
-		Color selection_stroke_scale;
-		Ref<ColorScheme> selection_stroke_scheme;
-		ColorRole selection_stroke_role;
-		Color selection_stroke;
-
-		Ref<StyleBox> menu_panel;
+		ThemeStyleboxData menu_panel{"menu_panel"};
 
 		Ref<Texture2D> zoom_in;
 		Ref<Texture2D> zoom_out;
@@ -517,6 +509,36 @@ public:
 	void set_warped_panning(bool p_warped);
 
 	void arrange_nodes();
+
+	bool _has_current_panel() const;
+	Ref<StyleBox> _get_current_panel() const;
+
+	bool _has_current_grid_major() const;
+	Color _get_current_grid_major() const;
+
+	bool _has_current_grid_minor() const;
+	Color _get_current_grid_minor() const;
+
+	bool _has_current_activity_color() const;
+	Color _get_current_activity_color() const;
+
+	bool _has_current_connection_hover_tint_color() const;
+	Color _get_current_connection_hover_tint_color() const;
+
+	bool _has_current_connection_valid_target_tint_color() const;
+	Color _get_current_connection_valid_target_tint_color() const;
+
+	bool _has_current_connection_rim_color() const;
+	Color _get_current_connection_rim_color() const;
+
+	bool _has_current_selection_fill() const;
+	Color _get_current_selection_fill() const;
+
+	bool _has_current_selection_stroke() const;
+	Color _get_current_selection_stroke() const;
+
+	bool _has_current_menu_panel() const;
+	Ref<StyleBox> _get_current_menu_panel() const;
 
 	GraphEdit();
 };

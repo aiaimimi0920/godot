@@ -301,7 +301,8 @@ Rect2 ItemList::get_item_rect(int p_idx, bool p_expand) const {
 	ERR_FAIL_INDEX_V(p_idx, items.size(), Rect2());
 
 	Rect2 ret = items[p_idx].rect_cache;
-	ret.position += theme_cache.panel_style->get_offset();
+	
+	ret.position += _get_current_default_panel_style_with_state(State::NormalNoneLTR)->get_offset();
 
 	if (p_expand && p_idx % current_columns == current_columns - 1) {
 		ret.size.width = get_size().width - ret.position.x;
@@ -1021,36 +1022,37 @@ void ItemList::_notification(int p_what) {
 
 		case NOTIFICATION_DRAW: {
 			force_update_list_size();
-
+			Ref<StyleBox> panel_style = _get_current_default_panel_style_with_state(State::NormalNoneLTR);
+			Ref<StyleBox> focus_style = _get_current_focus_default_stylebox();
 			int scroll_bar_minwidth = scroll_bar->get_minimum_size().x;
 			scroll_bar->set_anchor_and_offset(SIDE_LEFT, ANCHOR_END, -scroll_bar_minwidth);
 			scroll_bar->set_anchor_and_offset(SIDE_RIGHT, ANCHOR_END, 0);
-			scroll_bar->set_anchor_and_offset(SIDE_TOP, ANCHOR_BEGIN, theme_cache.panel_style->get_margin(SIDE_TOP));
-			scroll_bar->set_anchor_and_offset(SIDE_BOTTOM, ANCHOR_END, -theme_cache.panel_style->get_margin(SIDE_BOTTOM));
+			scroll_bar->set_anchor_and_offset(SIDE_TOP, ANCHOR_BEGIN, panel_style->get_margin(SIDE_TOP));
+			scroll_bar->set_anchor_and_offset(SIDE_BOTTOM, ANCHOR_END, -panel_style->get_margin(SIDE_BOTTOM));
 
 			Size2 size = get_size();
-			int width = size.width - theme_cache.panel_style->get_minimum_size().width;
+			int width = size.width - panel_style->get_minimum_size().width;
 			if (scroll_bar->is_visible()) {
 				width -= scroll_bar_minwidth;
 			}
 
-			draw_style_box(theme_cache.panel_style, Rect2(Point2(), size));
+			draw_style_box(panel_style, Rect2(Point2(), size));
 
 			Ref<StyleBox> sbsel;
 			Ref<StyleBox> cursor;
-
+			Ref<StyleBox> hovered_style = _get_current_item_style_with_state(State::HoverNoneLTR);
 			if (has_focus()) {
-				sbsel = theme_cache.selected_focus_style;
-				cursor = theme_cache.cursor_focus_style;
+				sbsel = _get_current_item_style_with_state(State::FocusCheckedLTR);
+				cursor = _get_current_cursor_style_with_state(State::FocusNoneLTR);
 			} else {
-				sbsel = theme_cache.selected_style;
-				cursor = theme_cache.cursor_style;
+				sbsel = _get_current_item_style_with_state(State::NormalCheckedLTR);
+				cursor = _get_current_cursor_style_with_state(State::NormalNoneLTR);
 			}
 			bool rtl = is_layout_rtl();
 
 			if (has_focus()) {
 				RenderingServer::get_singleton()->canvas_item_add_clip_ignore(get_canvas_item(), true);
-				draw_style_box(theme_cache.focus_style, Rect2(Point2(), size));
+				draw_style_box(focus_style, Rect2(Point2(), size));
 				RenderingServer::get_singleton()->canvas_item_add_clip_ignore(get_canvas_item(), false);
 			}
 
@@ -1069,7 +1071,7 @@ void ItemList::_notification(int p_what) {
 
 			ensure_selected_visible = false;
 
-			Vector2 base_ofs = theme_cache.panel_style->get_offset();
+			Vector2 base_ofs = panel_style->get_offset();
 			base_ofs.y -= int(scroll_bar->get_value());
 
 			// Define a visible frame to check against and optimize drawing.
@@ -1092,6 +1094,7 @@ void ItemList::_notification(int p_what) {
 			}
 
 			// If not in thumbnails mode, draw visible separators.
+			Color guide_color = _get_current_guide_color();
 			if (icon_mode != ICON_MODE_TOP) {
 				for (int i = first_visible_separator; i < separators.size(); i++) {
 					if (separators[i] > clip.position.y + clip.size.y) {
@@ -1099,7 +1102,7 @@ void ItemList::_notification(int p_what) {
 					}
 
 					const int y = base_ofs.y + separators[i];
-					draw_line(Vector2(theme_cache.panel_style->get_margin(SIDE_LEFT), y), Vector2(width, y), theme_cache.guide_color);
+					draw_line(Vector2(panel_style->get_margin(SIDE_LEFT), y), Vector2(width, y), guide_color);
 				}
 			}
 
@@ -1128,6 +1131,10 @@ void ItemList::_notification(int p_what) {
 			}
 
 			// Draw visible items.
+			Color font_hovered_color = _get_current_font_color_with_state(State::HoverNoneLTR);
+			Color font_selected_color = _get_current_font_color_with_state(State::NormalCheckedLTR);
+			Color font_normal_color = _get_current_font_color_with_state(State::NormalNoneLTR);
+			Color font_outline_color = _get_current_font_outline_color();
 			for (int i = first_item_visible; i < items.size(); i++) {
 				Rect2 rcache = items[i].rect_cache;
 
@@ -1159,7 +1166,7 @@ void ItemList::_notification(int p_what) {
 						draw_style_box(sbsel, r);
 					}
 					if (should_draw_hovered_bg) {
-						draw_style_box(theme_cache.hovered_style, r);
+						draw_style_box(hovered_style, r);
 					}
 					if (should_draw_custom_bg) {
 						draw_rect(r, items[i].custom_bg);
@@ -1248,13 +1255,13 @@ void ItemList::_notification(int p_what) {
 
 					Color txt_modulate;
 					if (items[i].selected) {
-						txt_modulate = theme_cache.font_selected_color;
+						txt_modulate = font_selected_color;
 					} else if (hovered == i) {
-						txt_modulate = theme_cache.font_hovered_color;
+						txt_modulate = font_hovered_color;
 					} else if (items[i].custom_fg != Color()) {
 						txt_modulate = items[i].custom_fg;
 					} else {
-						txt_modulate = theme_cache.font_color;
+						txt_modulate = font_normal_color;
 					}
 
 					if (items[i].disabled) {
@@ -1277,8 +1284,8 @@ void ItemList::_notification(int p_what) {
 						float text_w = items[i].rect_cache.size.width - theme_cache.h_separation;
 						items.write[i].text_buf->set_width(text_w);
 
-						if (theme_cache.font_outline_size > 0 && theme_cache.font_outline_color.a > 0) {
-							items[i].text_buf->draw_outline(get_canvas_item(), text_ofs, theme_cache.font_outline_size, theme_cache.font_outline_color);
+						if (theme_cache.font_outline_size > 0 && font_outline_color.a > 0) {
+							items[i].text_buf->draw_outline(get_canvas_item(), text_ofs, theme_cache.font_outline_size, font_outline_color);
 						}
 
 						items[i].text_buf->draw(get_canvas_item(), text_ofs, txt_modulate);
@@ -1309,8 +1316,8 @@ void ItemList::_notification(int p_what) {
 							items.write[i].text_buf->set_alignment(HORIZONTAL_ALIGNMENT_LEFT);
 						}
 
-						if (theme_cache.font_outline_size > 0 && theme_cache.font_outline_color.a > 0) {
-							items[i].text_buf->draw_outline(get_canvas_item(), text_ofs, theme_cache.font_outline_size, theme_cache.font_outline_color);
+						if (theme_cache.font_outline_size > 0 && font_outline_color.a > 0) {
+							items[i].text_buf->draw_outline(get_canvas_item(), text_ofs, theme_cache.font_outline_size, font_outline_color);
 						}
 
 						if (width - text_ofs.x > 0) {
@@ -1398,8 +1405,8 @@ void ItemList::force_update_list_size() {
 		items.write[i].rect_cache.size = minsize;
 		items.write[i].min_rect_cache.size = minsize;
 	}
-
-	int fit_size = size.x - theme_cache.panel_style->get_minimum_size().width - scroll_bar_minwidth;
+	Ref<StyleBox> panel_style = _get_current_default_panel_style_with_state(State::NormalNoneLTR);
+	int fit_size = size.x - panel_style->get_minimum_size().width - scroll_bar_minwidth;
 
 	//2-attempt best fit
 	current_columns = 0x7FFFFFFF;
@@ -1455,10 +1462,10 @@ void ItemList::force_update_list_size() {
 				items.write[j].rect_cache.size.y = max_h;
 			}
 
-			float page = MAX(0, size.height - theme_cache.panel_style->get_minimum_size().height);
+			float page = MAX(0, size.height - panel_style->get_minimum_size().height);
 			float max = MAX(page, ofs.y + max_h);
 			if (auto_height) {
-				auto_height_value = ofs.y + max_h + theme_cache.panel_style->get_minimum_size().height;
+				auto_height_value = ofs.y + max_h + panel_style->get_minimum_size().height;
 			}
 			scroll_bar->set_max(max);
 			scroll_bar->set_page(page);
@@ -1493,7 +1500,8 @@ void ItemList::_mouse_exited() {
 
 int ItemList::get_item_at_position(const Point2 &p_pos, bool p_exact) const {
 	Vector2 pos = p_pos;
-	pos -= theme_cache.panel_style->get_offset();
+	Ref<StyleBox> panel_style = _get_current_default_panel_style_with_state(State::NormalNoneLTR);
+	pos -= panel_style->get_offset();
 	pos.y += scroll_bar->get_value();
 
 	if (is_layout_rtl()) {
@@ -1529,9 +1537,9 @@ bool ItemList::is_pos_at_end_of_items(const Point2 &p_pos) const {
 	if (items.is_empty()) {
 		return true;
 	}
-
+	Ref<StyleBox> panel_style = _get_current_default_panel_style_with_state(State::NormalNoneLTR);
 	Vector2 pos = p_pos;
-	pos -= theme_cache.panel_style->get_offset();
+	pos -= panel_style->get_offset();
 	pos.y += scroll_bar->get_value();
 
 	if (is_layout_rtl()) {
@@ -1714,6 +1722,219 @@ bool ItemList::_set(const StringName &p_name, const Variant &p_value) {
 	return false;
 }
 
+
+
+bool ItemList::_has_current_default_panel_style_with_state(State p_state) const {
+	for (const State &E : theme_cache.default_panel.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.default_panel.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool ItemList::_has_current_default_panel_style() const {
+	State cur_state = get_current_state();
+	return _has_current_default_panel_style_with_state(cur_state);
+}
+
+
+Ref<StyleBox> ItemList::_get_current_default_panel_style_with_state(State p_state) const {
+	Ref<StyleBox> style;
+	for (const State &E : theme_cache.default_panel.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.default_panel.get_state_data_name(E))) {
+			style = theme_cache.default_panel.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+Ref<StyleBox> ItemList::_get_current_default_panel_style() const {
+	State cur_state = get_current_state();
+	Ref<StyleBox> style;
+	style = _get_current_default_panel_style_with_state(cur_state);
+	return style;
+}
+
+
+bool ItemList::_has_current_focus_default_stylebox() const {
+	State cur_state = get_current_focus_state();
+	for (const State &E : theme_cache.default_panel.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_panel.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+Ref<StyleBox> ItemList::_get_current_focus_default_stylebox() const {
+	State cur_state = get_current_focus_state();
+	Ref<StyleBox> style;
+
+	for (const State &E : theme_cache.default_panel.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_panel.get_state_data_name(E))) {
+			style = theme_cache.default_panel.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+bool ItemList::_has_current_item_style_with_state(State p_state) const {
+	for (const State &E : theme_cache.item_style.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.item_style.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool ItemList::_has_current_item_style() const {
+	State cur_state = get_current_state_with_focus();
+	return _has_current_item_style_with_state(cur_state);
+}
+
+
+Ref<StyleBox> ItemList::_get_current_item_style_with_state(State p_state) const {
+	Ref<StyleBox> style;
+	for (const State &E : theme_cache.item_style.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.item_style.get_state_data_name(E))) {
+			style = theme_cache.item_style.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+Ref<StyleBox> ItemList::_get_current_item_style() const {
+	State cur_state = get_current_state_with_focus();
+	Ref<StyleBox> style;
+	style = _get_current_item_style_with_state(cur_state);
+	return style;
+}
+
+bool ItemList::_has_current_cursor_style_with_state(State p_state) const {
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("cursor");
+	for (const State &E : theme_cache.cursor_style.get_search_order(p_state)) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool ItemList::_has_current_cursor_style() const {
+	State cur_state = get_current_state_with_focus();
+	return _has_current_cursor_style_with_state(cur_state);
+}
+
+
+Ref<StyleBox> ItemList::_get_current_cursor_style_with_state(State p_state) const {
+	Ref<StyleBox> style;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("cursor");
+	for (const State &E : theme_cache.cursor_style.get_search_order(p_state)) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+			style = theme_cache.cursor_style.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+Ref<StyleBox> ItemList::_get_current_cursor_style() const {
+	State cur_state = get_current_state_with_focus();
+	Ref<StyleBox> style;
+	style = _get_current_cursor_style_with_state(cur_state);
+	return style;
+}
+
+
+bool ItemList::_has_current_font_color_with_state(State p_state) const {
+	for (const State &E : theme_cache.font_color.get_search_order(p_state)) {
+		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool ItemList::_has_current_font_color() const {
+	State cur_state = get_current_state_with_focus();
+	return _has_current_font_color_with_state(cur_state);
+}
+
+
+Color ItemList::_get_current_font_color_with_state(State p_state) const {
+	Color cur_font_color;
+	for (const State &E : theme_cache.font_color.get_search_order(p_state)) {
+		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
+			cur_font_color = theme_cache.font_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_color;
+}
+
+Color ItemList::_get_current_font_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_font_color;
+	cur_font_color = _get_current_font_color_with_state(cur_state);
+	return cur_font_color;
+}
+
+
+bool ItemList::_has_current_font_outline_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color ItemList::_get_current_font_outline_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_font_outline_color;
+
+	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
+			cur_font_outline_color = theme_cache.font_outline_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_outline_color;
+}
+
+bool ItemList::_has_current_guide_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.guide_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.guide_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color ItemList::_get_current_guide_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_font_shadow_color;
+
+	for (const State &E : theme_cache.guide_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.guide_color.get_state_data_name(E))) {
+			cur_font_shadow_color = theme_cache.guide_color.get_data(E);
+			break;
+		}
+	}
+	return cur_font_shadow_color;
+}
+
+
+
 void ItemList::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_item", "text", "icon", "selectable"), &ItemList::add_item, DEFVAL(Variant()), DEFVAL(true));
 	ClassDB::bind_method(D_METHOD("add_icon_item", "icon", "selectable"), &ItemList::add_icon_item, DEFVAL(true));
@@ -1861,45 +2082,31 @@ void ItemList::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, ItemList, h_separation);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, ItemList, v_separation);
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ItemList, panel_style, "panel");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ItemList, focus_style, "focus");
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, font_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ItemList, font_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ItemList, font_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, font_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, font_hovered_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ItemList, font_hovered_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ItemList, font_hovered_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, font_hovered_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, font_selected_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ItemList, font_selected_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ItemList, font_selected_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, font_selected_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, font_outline_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ItemList, font_outline_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ItemList, font_outline_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, font_outline_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, guide_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ItemList, guide_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ItemList, guide_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, guide_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, ItemList, default_panel);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, ItemList, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, ItemList, font_size);
+
+
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, ItemList, font_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, ItemList, font_color);
+
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, ItemList, font_outline_size, "outline_size");
+
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, ItemList, font_outline_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, ItemList, font_outline_color);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, ItemList, line_separation);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, ItemList, icon_margin);
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ItemList, hovered_style, "hovered");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ItemList, selected_style, "selected");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ItemList, selected_focus_style, "selected_focus");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ItemList, cursor_style, "cursor_unfocused");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ItemList, cursor_focus_style, "cursor");
+
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, ItemList, item_style);
+
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, ItemList, cursor_style, cursor);
+
+
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, ItemList, guide_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, ItemList, guide_color);
+
 	Item defaults(true);
 
 	base_property_helper.set_prefix("item_");

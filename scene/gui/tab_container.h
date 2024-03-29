@@ -65,8 +65,8 @@ private:
 
 		int side_margin = 0;
 
-		Ref<StyleBox> panel_style;
-		Ref<StyleBox> tabbar_style;
+		ThemeStyleboxData panel_style{"panel_style"};
+		ThemeStyleboxData tabbar_style{"tabbar_style"};
 
 		Ref<Texture2D> menu_icon;
 		Ref<Texture2D> menu_hl_icon;
@@ -76,11 +76,7 @@ private:
 		int icon_max_width = 0;
 		int outline_size = 0;
 
-		Ref<StyleBox> tab_unselected_style;
-		Ref<StyleBox> tab_hovered_style;
-		Ref<StyleBox> tab_selected_style;
-		Ref<StyleBox> tab_disabled_style;
-		Ref<StyleBox> tab_focus_style;
+		ThemeStyleboxData tab_style{"tab_style"};
 
 		Ref<Texture2D> increment_icon;
 		Ref<Texture2D> increment_hl_icon;
@@ -88,36 +84,15 @@ private:
 		Ref<Texture2D> decrement_hl_icon;
 		Ref<Texture2D> drop_mark_icon;
 
-		Color drop_mark_color_scale;
-		Ref<ColorScheme> drop_mark_color_scheme;
-		ColorRole drop_mark_color_role;
-		Color drop_mark_color;
+		ThemeColorData drop_mark_color{"drop_mark_color"};
+		ThemeColorRoleData drop_mark_color_role{"drop_mark_color_role"};
 
-		Color font_selected_color_scale;
-		Ref<ColorScheme> font_selected_color_scheme;
-		ColorRole font_selected_color_role;
-		Color font_selected_color;
+		ThemeColorData font_color{"font_color"};
+		ThemeColorRoleData font_color_role{"font_color_role"};
 
-		Color font_hovered_color_scale;
-		Ref<ColorScheme> font_hovered_color_scheme;
-		ColorRole font_hovered_color_role;
-		Color font_hovered_color;
-
-		Color font_unselected_color_scale;
-		Ref<ColorScheme> font_unselected_color_scheme;
-		ColorRole font_unselected_color_role;
-		Color font_unselected_color;
-
-		Color font_disabled_color_scale;
-		Ref<ColorScheme> font_disabled_color_scheme;
-		ColorRole font_disabled_color_role;
-		Color font_disabled_color;
-
-		Color font_outline_color_scale;
-		Ref<ColorScheme> font_outline_color_scheme;
-		ColorRole font_outline_color_role;
-		Color font_outline_color;
-
+		ThemeColorData font_outline_color{"font_outline_color"};
+		ThemeColorRoleData font_outline_color_role{"font_outline_color_role"};
+		
 		Ref<Font> tab_font;
 		int tab_font_size;
 	} theme_cache;
@@ -151,6 +126,36 @@ protected:
 	virtual void move_child_notify(Node *p_child) override;
 	virtual void remove_child_notify(Node *p_child) override;
 	static void _bind_methods();
+
+	bool _has_current_panel_style_with_state(State p_state) const;
+	bool _has_current_panel_style() const;
+	Ref<StyleBox> _get_current_panel_style_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_panel_style() const;	
+
+	bool _has_current_tabbar_style_with_state(State p_state) const;
+	bool _has_current_tabbar_style() const;
+	Ref<StyleBox> _get_current_tabbar_style_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_tabbar_style() const;	
+
+
+	bool _has_current_tab_style_with_state(State p_state) const;
+	bool _has_current_tab_style() const;
+	Ref<StyleBox> _get_current_tab_style_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_tab_style() const;	
+
+	bool _has_current_focus_tab_style() const;
+	Ref<StyleBox> _get_current_focus_tab_style() const;	
+
+	bool _has_current_drop_mark_color() const;
+	Color _get_current_drop_mark_color() const;
+
+	bool _has_current_font_color_with_state(State p_state) const;
+	bool _has_current_font_color() const;
+	Color _get_current_font_color_with_state(State p_state) const;
+	Color _get_current_font_color() const;
+
+	bool _has_current_font_outline_color() const;
+	Color _get_current_font_outline_color() const;
 
 public:
 	TabBar *get_tab_bar() const;

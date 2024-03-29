@@ -147,7 +147,8 @@ RichTextLabel::Item *RichTextLabel::_get_prev_item(Item *p_item, bool p_free) co
 }
 
 Rect2 RichTextLabel::_get_text_rect() {
-	return Rect2(theme_cache.normal_style->get_offset(), get_size() - theme_cache.normal_style->get_minimum_size());
+	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	return Rect2(style->get_offset(), get_size() - style->get_minimum_size());
 }
 
 RichTextLabel::Item *RichTextLabel::_get_item_at_pos(RichTextLabel::Item *p_item_from, RichTextLabel::Item *p_item_to, int p_position) {
@@ -950,9 +951,10 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 					} break;
 					case ITEM_TABLE: {
 						ItemTable *table = static_cast<ItemTable *>(it);
-						Color odd_row_bg = theme_cache.table_odd_row_bg;
-						Color even_row_bg = theme_cache.table_even_row_bg;
-						Color border = theme_cache.table_border;
+						
+						Color odd_row_bg = _get_current_table_odd_row_bg();
+						Color even_row_bg = _get_current_table_even_row_bg();
+						Color border = _get_current_table_border();
 						int h_separation = theme_cache.table_h_separation;
 
 						int col_count = table->columns.size();
@@ -1189,7 +1191,8 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 		_draw_fbg_boxes(ci, rid, fbg_line_off, it_from, it_to, chr_range.x, chr_range.y, 0);
 
 		// Draw main text.
-		Color selection_bg = theme_cache.selection_color;
+		
+		Color selection_bg = _get_current_selection_color();
 
 		int sel_start = -1;
 		int sel_end = -1;
@@ -1446,7 +1449,7 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 			draw_set_transform_matrix(char_xform);
 
 			if (selected && use_selected_font_color) {
-				font_color = theme_cache.font_selected_color;
+				font_color = _get_current_font_selected_color();
 			}
 
 			// Draw glyphs.
@@ -1858,7 +1861,7 @@ void RichTextLabel::_update_theme_item_cache() {
 	Control::_update_theme_item_cache();
 
 	theme_cache.base_scale = get_theme_default_base_scale();
-	use_selected_font_color = theme_cache.font_selected_color != Color(0, 0, 0, 0);
+	use_selected_font_color = _get_current_font_selected_color() != Color(0, 0, 0, 0);
 }
 
 void RichTextLabel::_notification(int p_what) {
@@ -1918,12 +1921,13 @@ void RichTextLabel::_notification(int p_what) {
 		case NOTIFICATION_DRAW: {
 			RID ci = get_canvas_item();
 			Size2 size = get_size();
-
-			draw_style_box(theme_cache.normal_style, Rect2(Point2(), size));
+			Ref<StyleBox> normal_style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+			draw_style_box(normal_style, Rect2(Point2(), size));
 
 			if (has_focus()) {
 				RenderingServer::get_singleton()->canvas_item_add_clip_ignore(ci, true);
-				draw_style_box(theme_cache.focus_style, Rect2(Point2(), size));
+				Ref<StyleBox> focus_style = _get_current_focus_default_stylebox();
+				draw_style_box(focus_style, Rect2(Point2(), size));
 				RenderingServer::get_singleton()->canvas_item_add_clip_ignore(ci, false);
 			}
 
@@ -1933,20 +1937,23 @@ void RichTextLabel::_notification(int p_what) {
 			} else {
 				// Draw loading progress bar.
 				if ((progress_delay > 0) && (OS::get_singleton()->get_ticks_msec() - loading_started >= (uint64_t)progress_delay)) {
-					Vector2 p_size = Vector2(size.width - (theme_cache.normal_style->get_offset().x + vscroll->get_combined_minimum_size().width) * 2, vscroll->get_combined_minimum_size().width);
-					Vector2 p_pos = Vector2(theme_cache.normal_style->get_offset().x, size.height - theme_cache.normal_style->get_offset().y - vscroll->get_combined_minimum_size().width);
+					Vector2 p_size = Vector2(size.width - (normal_style->get_offset().x + vscroll->get_combined_minimum_size().width) * 2, vscroll->get_combined_minimum_size().width);
+					Vector2 p_pos = Vector2(normal_style->get_offset().x, size.height - normal_style->get_offset().y - vscroll->get_combined_minimum_size().width);
 
-					draw_style_box(theme_cache.progress_bg_style, Rect2(p_pos, p_size));
+					Ref<StyleBox> progress_bg_style = _get_current_progress_bg_style();
+
+					draw_style_box(progress_bg_style, Rect2(p_pos, p_size));
 
 					bool right_to_left = is_layout_rtl();
 					double r = loaded.load();
-					int mp = theme_cache.progress_fg_style->get_minimum_size().width;
+					Ref<StyleBox> progress_fg_style = _get_current_progress_fg_style();
+					int mp = progress_fg_style->get_minimum_size().width;
 					int p = round(r * (p_size.width - mp));
 					if (right_to_left) {
 						int p_remaining = round((1.0 - r) * (p_size.width - mp));
-						draw_style_box(theme_cache.progress_fg_style, Rect2(p_pos + Point2(p_remaining, 0), Size2(p + theme_cache.progress_fg_style->get_minimum_size().width, p_size.height)));
+						draw_style_box(progress_fg_style, Rect2(p_pos + Point2(p_remaining, 0), Size2(p + progress_fg_style->get_minimum_size().width, p_size.height)));
 					} else {
-						draw_style_box(theme_cache.progress_fg_style, Rect2(p_pos, Size2(p + theme_cache.progress_fg_style->get_minimum_size().width, p_size.height)));
+						draw_style_box(progress_fg_style, Rect2(p_pos, Size2(p + progress_fg_style->get_minimum_size().width, p_size.height)));
 					}
 				}
 			}
@@ -1971,7 +1978,7 @@ void RichTextLabel::_notification(int p_what) {
 				MutexLock lock(main->lines[from_line].text_buf->get_mutex());
 
 				visible_paragraph_count++;
-				visible_line_count += _draw_line(main, from_line, ofs, text_rect.size.x, theme_cache.font_default_color, theme_cache.outline_size, theme_cache.font_outline_color, theme_cache.font_shadow_color, theme_cache.shadow_outline_size, shadow_ofs, processed_glyphs);
+				visible_line_count += _draw_line(main, from_line, ofs, text_rect.size.x, _get_current_default_color(), theme_cache.outline_size, _get_current_font_outline_color(), _get_current_font_shadow_color(), theme_cache.shadow_outline_size, shadow_ofs, processed_glyphs);
 				ofs.y += main->lines[from_line].text_buf->get_size().y + main->lines[from_line].text_buf->get_line_count() * theme_cache.line_separation;
 				from_line++;
 			}
@@ -4624,8 +4631,8 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 
 			int fs = theme_cache.normal_font_size * 3;
 			Ref<Font> f = theme_cache.normal_font;
-			Color color = theme_cache.font_default_color;
-			Color outline_color = theme_cache.font_outline_color;
+			Color color = _get_current_default_color();
+			Color outline_color = _get_current_font_outline_color();
 			int outline_size = theme_cache.outline_size;
 			Rect2 dropcap_margins;
 
@@ -4781,14 +4788,14 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 			tag_stack.push_front(bbcode_name);
 		} else if (tag.begins_with("color=")) {
 			String color_str = tag.substr(6, tag.length()).unquote();
-			Color color = Color::from_string(color_str, theme_cache.font_default_color);
+			Color color = Color::from_string(color_str, _get_current_default_color());
 			push_color(color);
 			pos = brk_end + 1;
 			tag_stack.push_front("color");
 
 		} else if (tag.begins_with("outline_color=")) {
 			String color_str = tag.substr(14, tag.length()).unquote();
-			Color color = Color::from_string(color_str, theme_cache.font_default_color);
+			Color color = Color::from_string(color_str, _get_current_default_color());
 			push_outline_color(color);
 			pos = brk_end + 1;
 			tag_stack.push_front("outline_color");
@@ -5093,7 +5100,7 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 			set_process_internal(true);
 		} else if (tag.begins_with("bgcolor=")) {
 			String color_str = tag.substr(8, tag.length()).unquote();
-			Color color = Color::from_string(color_str, theme_cache.font_default_color);
+			Color color = Color::from_string(color_str, _get_current_default_color());
 
 			push_bgcolor(color);
 			pos = brk_end + 1;
@@ -5101,7 +5108,7 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 
 		} else if (tag.begins_with("fgcolor=")) {
 			String color_str = tag.substr(8, tag.length()).unquote();
-			Color color = Color::from_string(color_str, theme_cache.font_default_color);
+			Color color = Color::from_string(color_str, _get_current_default_color());
 
 			push_fgcolor(color);
 			pos = brk_end + 1;
@@ -5900,6 +5907,330 @@ bool RichTextLabel::_set(const StringName &p_name, const Variant &p_value) {
 }
 #endif
 
+
+
+bool RichTextLabel::_has_current_default_stylebox_with_state(State p_state) const {
+	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
+bool RichTextLabel::_has_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	return _has_current_default_stylebox_with_state(cur_state);
+}
+
+Ref<StyleBox> RichTextLabel::_get_current_default_stylebox_with_state(State p_state) const {
+	Ref<StyleBox> style;
+	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			style = theme_cache.default_stylebox.get_data(E);
+			break; 
+		}
+	}
+	return style;
+}
+
+Ref<StyleBox> RichTextLabel::_get_current_default_stylebox() const {
+	State cur_state = get_current_state();
+	Ref<StyleBox> style;
+	style = _get_current_default_stylebox_with_state(cur_state);
+	return style;
+}
+
+bool RichTextLabel::_has_current_focus_default_stylebox() const {
+	State cur_state = get_current_focus_state();
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> RichTextLabel::_get_current_focus_default_stylebox() const {
+	State cur_state = get_current_focus_state();
+	Ref<StyleBox> style;
+	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			style = theme_cache.default_stylebox.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+bool RichTextLabel::_has_current_progress_bg_style() const {
+	State cur_state = get_current_focus_state();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("background");
+	for (const State &E : theme_cache.progress_bg_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> RichTextLabel::_get_current_progress_bg_style() const {
+	State cur_state = get_current_focus_state();
+	Ref<StyleBox> style;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("background");
+	for (const State &E : theme_cache.progress_bg_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+			style = theme_cache.progress_bg_style.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+bool RichTextLabel::_has_current_progress_fg_style() const {
+	State cur_state = get_current_focus_state();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("fill");
+	for (const State &E : theme_cache.progress_fg_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> RichTextLabel::_get_current_progress_fg_style() const {
+	State cur_state = get_current_focus_state();
+	Ref<StyleBox> style;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("background");
+	for (const State &E : theme_cache.progress_fg_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+			style = theme_cache.progress_fg_style.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+bool RichTextLabel::_has_current_default_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.default_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.default_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color RichTextLabel::_get_current_default_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.default_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.default_color.get_state_data_name(E))) {
+			cur_color = theme_cache.default_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool RichTextLabel::_has_current_font_selected_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_selected_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_selected_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color RichTextLabel::_get_current_font_selected_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.font_selected_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_selected_color.get_state_data_name(E))) {
+			cur_color = theme_cache.font_selected_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+bool RichTextLabel::_has_current_selection_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.selection_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.selection_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color RichTextLabel::_get_current_selection_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.selection_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.selection_color.get_state_data_name(E))) {
+			cur_color = theme_cache.selection_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+bool RichTextLabel::_has_current_font_outline_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color RichTextLabel::_get_current_font_outline_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
+			cur_color = theme_cache.font_outline_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+
+bool RichTextLabel::_has_current_font_shadow_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.font_shadow_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_shadow_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color RichTextLabel::_get_current_font_shadow_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.font_shadow_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.font_shadow_color.get_state_data_name(E))) {
+			cur_color = theme_cache.font_shadow_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool RichTextLabel::_has_current_outline_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.outline_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color RichTextLabel::_get_current_outline_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.outline_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.outline_color.get_state_data_name(E))) {
+			cur_color = theme_cache.outline_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool RichTextLabel::_has_current_table_odd_row_bg() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.table_odd_row_bg.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.table_odd_row_bg.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color RichTextLabel::_get_current_table_odd_row_bg() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.table_odd_row_bg.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.table_odd_row_bg.get_state_data_name(E))) {
+			cur_color = theme_cache.table_odd_row_bg.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool RichTextLabel::_has_current_table_even_row_bg() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.table_even_row_bg.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.table_even_row_bg.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color RichTextLabel::_get_current_table_even_row_bg() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.table_even_row_bg.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.table_even_row_bg.get_state_data_name(E))) {
+			cur_color = theme_cache.table_even_row_bg.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+
+bool RichTextLabel::_has_current_table_border() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.table_border.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.table_border.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color RichTextLabel::_get_current_table_border() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.table_border.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.table_border.get_state_data_name(E))) {
+			cur_color = theme_cache.table_border.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
 void RichTextLabel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_parsed_text"), &RichTextLabel::get_parsed_text);
 	ClassDB::bind_method(D_METHOD("add_text", "text"), &RichTextLabel::add_text);
@@ -6125,51 +6456,37 @@ void RichTextLabel::_bind_methods() {
 	BIND_BITFIELD_FLAG(UPDATE_WIDTH_IN_PERCENT);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, RichTextLabel, default_color_scheme);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, RichTextLabel, default_stylebox);
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, RichTextLabel, normal_style, "normal");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, RichTextLabel, focus_style, "focus");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_STYLEBOX, RichTextLabel, progress_bg_style, "background", "ProgressBar");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_STYLEBOX, RichTextLabel, progress_fg_style, "fill", "ProgressBar");
+	BIND_THEME_ITEM_EXT_MULTI(Theme::DATA_TYPE_STYLEBOX, RichTextLabel, progress_bg_style, background, "ProgressBar");
+	BIND_THEME_ITEM_EXT_MULTI(Theme::DATA_TYPE_STYLEBOX, RichTextLabel, progress_fg_style, fill, "ProgressBar");
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, RichTextLabel, line_separation);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, RichTextLabel, normal_font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, RichTextLabel, normal_font_size);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, font_default_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, RichTextLabel, font_default_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, font_default_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, font_default_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, default_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, RichTextLabel, default_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, font_selected_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, RichTextLabel, font_selected_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, font_selected_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, font_selected_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, font_selected_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, RichTextLabel, font_selected_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, selection_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, RichTextLabel, selection_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, selection_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, selection_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, font_outline_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, RichTextLabel, font_outline_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, font_outline_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, font_outline_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, selection_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, RichTextLabel, selection_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, font_shadow_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, RichTextLabel, font_shadow_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, font_shadow_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, font_shadow_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, font_outline_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, RichTextLabel, font_outline_color);
+
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, font_shadow_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, RichTextLabel, font_shadow_color);
+
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, RichTextLabel, shadow_outline_size);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, RichTextLabel, shadow_offset_x);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, RichTextLabel, shadow_offset_y);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, RichTextLabel, outline_size);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, outline_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, RichTextLabel, outline_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, outline_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, outline_color);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, RichTextLabel, bold_font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, RichTextLabel, bold_font_size);
@@ -6186,20 +6503,14 @@ void RichTextLabel::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, RichTextLabel, table_h_separation);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, RichTextLabel, table_v_separation);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, table_odd_row_bg_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, RichTextLabel, table_odd_row_bg_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, table_odd_row_bg_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, table_odd_row_bg);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, table_odd_row_bg_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, RichTextLabel, table_odd_row_bg);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, table_even_row_bg_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, RichTextLabel, table_even_row_bg_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, table_even_row_bg_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, table_even_row_bg);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, table_even_row_bg_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, RichTextLabel, table_even_row_bg);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, table_border_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, RichTextLabel, table_border_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, table_border_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, table_border);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, table_border_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, RichTextLabel, table_border);
 }
 
 TextServer::VisibleCharactersBehavior RichTextLabel::get_visible_characters_behavior() const {
@@ -6325,7 +6636,9 @@ int RichTextLabel::get_total_glyph_count() const {
 }
 
 Size2 RichTextLabel::get_minimum_size() const {
-	Size2 sb_min_size = theme_cache.normal_style->get_minimum_size();
+	Ref<StyleBox> normal_style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+
+	Size2 sb_min_size = normal_style->get_minimum_size();
 	Size2 min_size;
 
 	if (fit_content) {

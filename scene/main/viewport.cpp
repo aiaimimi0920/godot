@@ -318,13 +318,13 @@ void Viewport::_sub_window_update(Window *p_window) {
 	Rect2i r = Rect2i(p_window->get_position(), sw.window->get_size());
 
 	if (!p_window->get_flag(Window::FLAG_BORDERLESS)) {
-		Ref<StyleBox> panel = gui.subwindow_focused == p_window ? p_window->theme_cache.embedded_border : p_window->theme_cache.embedded_unfocused_border;
+		Ref<StyleBox> panel = gui.subwindow_focused == p_window ? p_window->_get_current_embedded_border() : p_window->_get_current_embedded_unfocused_border();
 		panel->draw(sw.canvas_item, r);
 
 		// Draw the title bar text.
 		Ref<Font> title_font = p_window->theme_cache.title_font;
 		int font_size = p_window->theme_cache.title_font_size;
-		Color title_color = p_window->theme_cache.title_color;
+		Color title_color = p_window->_get_current_title_color();
 		int title_height = p_window->theme_cache.title_height;
 		int close_h_ofs = p_window->theme_cache.close_h_offset;
 		int close_v_ofs = p_window->theme_cache.close_v_offset;
@@ -335,7 +335,7 @@ void Viewport::_sub_window_update(Window *p_window) {
 		int x = (r.size.width - title_text.get_size().x) / 2;
 		int y = (-title_height - title_text.get_size().y) / 2;
 
-		Color font_outline_color = p_window->theme_cache.title_outline_modulate;
+		Color font_outline_color = p_window->_get_current_title_outline_modulate();
 		int outline_size = p_window->theme_cache.title_outline_size;
 		if (outline_size > 0 && font_outline_color.a > 0) {
 			title_text.draw_outline(sw.canvas_item, r.position + Point2(x, y), outline_size, font_outline_color);
@@ -343,7 +343,7 @@ void Viewport::_sub_window_update(Window *p_window) {
 		title_text.draw(sw.canvas_item, r.position + Point2(x, y), title_color);
 
 		bool pressed = gui.subwindow_focused == sw.window && gui.subwindow_drag == SUB_WINDOW_DRAG_CLOSE && gui.subwindow_drag_close_inside;
-		Ref<Texture2D> close_icon = pressed ? p_window->theme_cache.close_pressed : p_window->theme_cache.close;
+		Ref<Texture2D> close_icon = pressed ? p_window->_get_current_close_with_state(State::PressedNoneLTR) : p_window->_get_current_close_with_state(State::NormalNoneLTR);
 		close_icon->draw(sw.canvas_item, r.position + Vector2(r.size.width - close_h_ofs, -close_v_ofs));
 	}
 
@@ -2998,7 +2998,7 @@ bool Viewport::_sub_windows_forward_input(const Ref<InputEvent> &p_event) {
 
 					int close_h_ofs = sw.window->theme_cache.close_h_offset;
 					int close_v_ofs = sw.window->theme_cache.close_v_offset;
-					Ref<Texture2D> close_icon = sw.window->theme_cache.close;
+					Ref<Texture2D> close_icon = sw.window->_get_current_close_with_state(State::NormalNoneLTR);
 
 					Rect2 close_rect;
 					close_rect.position = Vector2(r.position.x + r.size.x - close_h_ofs, r.position.y - close_v_ofs);

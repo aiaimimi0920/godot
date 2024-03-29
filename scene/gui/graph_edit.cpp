@@ -199,18 +199,118 @@ void GraphEditMinimap::_adjust_graph_scroll(const Vector2 &p_offset) {
 	ge->set_scroll_offset(p_offset + graph_offset - camera_size / 2);
 }
 
+
+bool GraphEditMinimap::_has_current_panel() const {
+	State cur_state = get_current_focus_state();
+	for (const State &E : theme_cache.panel.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.panel.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> GraphEditMinimap::_get_current_panel() const {
+	State cur_state = get_current_focus_state();
+	Ref<StyleBox> style;
+	for (const State &E : theme_cache.panel.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.panel.get_state_data_name(E))) {
+			style = theme_cache.panel.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+bool GraphEditMinimap::_has_current_node_style() const {
+	State cur_state = get_current_focus_state();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("node");
+	for (const State &E : theme_cache.node_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> GraphEditMinimap::_get_current_node_style() const {
+	State cur_state = get_current_focus_state();
+	Ref<StyleBox> style;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("node");
+	for (const State &E : theme_cache.node_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+			style = theme_cache.node_style.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+
+bool GraphEditMinimap::_has_current_camera_style() const {
+	State cur_state = get_current_focus_state();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("node");
+	for (const State &E : theme_cache.camera_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> GraphEditMinimap::_get_current_camera_style() const {
+	State cur_state = get_current_focus_state();
+	Ref<StyleBox> style;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("camera");
+	for (const State &E : theme_cache.camera_style.get_search_order(cur_state)) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+			style = theme_cache.camera_style.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+
+bool GraphEditMinimap::_has_current_resizer_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.resizer_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.resizer_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color GraphEditMinimap::_get_current_resizer_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.resizer_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.resizer_color.get_state_data_name(E))) {
+			cur_color = theme_cache.resizer_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+
 void GraphEditMinimap::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphEditMinimap, default_color_scheme);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, panel);
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, node_style, "node");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, camera_style, "camera");
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, panel);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, node_style, node);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, camera_style, camera);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, GraphEditMinimap, resizer);
-	
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEditMinimap, resizer_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphEditMinimap, resizer_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEditMinimap, resizer_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEditMinimap, resizer_color);
+
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, GraphEditMinimap, resizer_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, GraphEditMinimap, resizer_color);
 }
 
 GraphEditMinimap::GraphEditMinimap(GraphEdit *p_edit) {
@@ -293,7 +393,7 @@ Error GraphEdit::connect_node(const StringName &p_from, int p_from_port, const S
 	line_material->set_shader_parameter("from_type", c->from_port);
 	line_material->set_shader_parameter("to_type", c->to_port);
 
-	Ref<StyleBoxFlat> bg_panel = theme_cache.panel;
+	Ref<StyleBoxFlat> bg_panel = _get_current_panel();
 	Color connection_line_rim_color = bg_panel.is_valid() ? bg_panel->get_bg_color() : Color(0.0, 0.0, 0.0, 0.0);
 	line_material->set_shader_parameter("rim_color", connection_line_rim_color);
 	line->set_material(line_material);
@@ -604,10 +704,10 @@ void GraphEdit::_notification(int p_what) {
 
 			ThemeIntData cur_theme_data;
 			cur_theme_data.set_data_name("panel");
+			Ref<StyleBox> cur_menu_panel = _get_current_menu_panel();
 			for (int i = 0; i < STATE_MAX; i++) {  
 				State cur_state = static_cast<State>(i);
-				// menu_panel->add_theme_style_override(cur_theme_data.get_state_data_name(cur_state), _get_current_default_stylebox_with_state(cur_state));
-				menu_panel->add_theme_style_override(cur_theme_data.get_state_data_name(cur_state), theme_cache.menu_panel);
+				menu_panel->add_theme_style_override(cur_theme_data.get_state_data_name(cur_state), cur_menu_panel);
 			}
 		} break;
 		case NOTIFICATION_READY: {
@@ -626,7 +726,7 @@ void GraphEdit::_notification(int p_what) {
 		} break;
 		case NOTIFICATION_DRAW: {
 			// Draw background fill.
-			draw_style_box(theme_cache.panel, Rect2(Point2(), get_size()));
+			draw_style_box(_get_current_panel(), Rect2(Point2(), get_size()));
 
 			// Draw background grid.
 			if (show_grid) {
@@ -1081,6 +1181,11 @@ void GraphEdit::_update_connections() {
 	// Collect all dead connections and remove them.
 	List<List<Ref<Connection>>::Element *> dead_connections;
 
+	Color connection_rim_color = _get_current_connection_rim_color();
+	Color connection_hover_tint_color = _get_current_connection_hover_tint_color();
+
+	Color activity_color = _get_current_activity_color();
+
 	for (List<Ref<Connection>>::Element *E = connections.front(); E; E = E->next()) {
 		Ref<Connection> &c = E->get();
 
@@ -1126,7 +1231,7 @@ void GraphEdit::_update_connections() {
 			line_material->set_shader_parameter("line_width", line_width);
 			line_material->set_shader_parameter("from_type", from_type);
 			line_material->set_shader_parameter("to_type", to_type);
-			line_material->set_shader_parameter("rim_color", theme_cache.connection_rim_color);
+			line_material->set_shader_parameter("rim_color", connection_rim_color);
 
 			// Compute bounding box of the line, including the line width.
 			c->_cache.aabb = Rect2(line_points[0], Vector2());
@@ -1149,13 +1254,13 @@ void GraphEdit::_update_connections() {
 		Color to_color = c->_cache.to_color;
 
 		if (c->activity > 0) {
-			from_color = from_color.lerp(theme_cache.activity_color, c->activity);
-			to_color = to_color.lerp(theme_cache.activity_color, c->activity);
+			from_color = from_color.lerp(activity_color, c->activity);
+			to_color = to_color.lerp(activity_color, c->activity);
 		}
 
 		if (c == hovered_connection) {
-			from_color = from_color.blend(theme_cache.connection_hover_tint_color);
-			to_color = to_color.blend(theme_cache.connection_hover_tint_color);
+			from_color = from_color.blend(connection_hover_tint_color);
+			to_color = to_color.blend(connection_hover_tint_color);
 		}
 
 		// Update Line2D node.
@@ -1184,9 +1289,10 @@ void GraphEdit::_top_layer_draw() {
 	if (!box_selecting) {
 		return;
 	}
-
-	top_layer->draw_rect(box_selecting_rect, theme_cache.selection_fill);
-	top_layer->draw_rect(box_selecting_rect, theme_cache.selection_stroke, false);
+	Color selection_fill = _get_current_selection_fill();
+	Color selection_stroke = _get_current_selection_stroke();
+	top_layer->draw_rect(box_selecting_rect, selection_fill);
+	top_layer->draw_rect(box_selecting_rect, selection_stroke, false);
 }
 
 void GraphEdit::_update_top_connection_layer() {
@@ -1207,6 +1313,8 @@ void GraphEdit::_update_top_connection_layer() {
 	int to_type = connecting_type;
 	Color from_color;
 	Color to_color = connecting_color;
+	Color connection_valid_target_tint_color = _get_current_connection_valid_target_tint_color();
+
 
 	if (connecting_from_output) {
 		from_pos += graph_node_from->get_output_port_position(connecting_from_port_index);
@@ -1230,8 +1338,8 @@ void GraphEdit::_update_top_connection_layer() {
 		}
 
 		// Highlight the line to the mouse cursor when it's over a valid target port.
-		from_color = from_color.blend(theme_cache.connection_valid_target_tint_color);
-		to_color = to_color.blend(theme_cache.connection_valid_target_tint_color);
+		from_color = from_color.blend(connection_valid_target_tint_color);
+		to_color = to_color.blend(connection_valid_target_tint_color);
 	}
 
 	if (!connecting_from_output) {
@@ -1254,7 +1362,8 @@ void GraphEdit::_update_top_connection_layer() {
 	line_material->set_shader_parameter("line_width", line_width);
 	line_material->set_shader_parameter("from_type", from_type);
 	line_material->set_shader_parameter("to_type", to_type);
-	line_material->set_shader_parameter("rim_color", theme_cache.connection_rim_color);
+	Color connection_rim_color = _get_current_connection_rim_color();
+	line_material->set_shader_parameter("rim_color", connection_rim_color);
 
 	Ref<Gradient> line_gradient = memnew(Gradient);
 	dragged_connection_line->set_width(line_width);
@@ -1273,7 +1382,7 @@ void GraphEdit::_minimap_draw() {
 
 	// Draw the minimap background.
 	Rect2 minimap_rect = Rect2(Point2(), minimap->get_size());
-	minimap->draw_style_box(minimap->theme_cache.panel, minimap_rect);
+	minimap->draw_style_box(minimap->_get_current_panel(), minimap_rect);
 
 	Vector2 graph_offset = minimap->_get_graph_offset();
 	Vector2 minimap_offset = minimap->minimap_offset;
@@ -1289,10 +1398,10 @@ void GraphEdit::_minimap_draw() {
 		Vector2 node_size = minimap->_convert_from_graph_position(graph_node->get_size() * zoom);
 		Rect2 node_rect = Rect2(node_position, node_size);
 
-		Ref<StyleBoxFlat> sb_minimap = minimap->theme_cache.node_style->duplicate();
+		Ref<StyleBoxFlat> sb_minimap = minimap->_get_current_node_style()->duplicate();
 
 		// Override default values with colors provided by the GraphNode's stylebox, if possible.
-		Ref<StyleBoxFlat> sb_frame = graph_node->is_selected() ? graph_node->theme_cache.panel_selected : graph_node->theme_cache.panel;
+		Ref<StyleBoxFlat> sb_frame = graph_node->is_selected() ? graph_node->_get_current_panel_with_state(State::NormalCheckedLTR) : graph_node->_get_current_panel_with_state(State::NormalUncheckedLTR);
 		if (sb_frame.is_valid()) {
 			Color node_color = sb_frame->get_bg_color();
 			sb_minimap->set_bg_color(node_color);
@@ -1302,6 +1411,7 @@ void GraphEdit::_minimap_draw() {
 	}
 
 	// Draw node connections.
+	Color activity_color = _get_current_activity_color();
 	for (const Ref<Connection> &c : connections) {
 		Vector2 from_position = minimap->_convert_from_graph_position(c->_cache.from_pos * zoom - graph_offset) + minimap_offset;
 		Vector2 to_position = minimap->_convert_from_graph_position(c->_cache.to_pos * zoom - graph_offset) + minimap_offset;
@@ -1309,19 +1419,19 @@ void GraphEdit::_minimap_draw() {
 		Color to_color = c->_cache.to_color;
 
 		if (c->activity > 0) {
-			from_color = from_color.lerp(theme_cache.activity_color, c->activity);
-			to_color = to_color.lerp(theme_cache.activity_color, c->activity);
+			from_color = from_color.lerp(activity_color, c->activity);
+			to_color = to_color.lerp(activity_color, c->activity);
 		}
 		_draw_minimap_connection_line(minimap, from_position, to_position, from_color, to_color);
 	}
 
 	// Draw the "camera" viewport.
 	Rect2 camera_rect = minimap->get_camera_rect();
-	minimap->draw_style_box(minimap->theme_cache.camera_style, camera_rect);
+	minimap->draw_style_box(minimap->_get_current_camera_style(), camera_rect);
 
 	// Draw the resizer control.
 	Ref<Texture2D> resizer = minimap->theme_cache.resizer;
-	Color resizer_color = minimap->theme_cache.resizer_color;
+	Color resizer_color = minimap->_get_current_resizer_color();
 	minimap->draw_texture(resizer, Point2(), resizer_color);
 }
 
@@ -1338,9 +1448,9 @@ void GraphEdit::_draw_grid() {
 				Color color;
 
 				if (ABS(i) % GRID_MINOR_STEPS_PER_MAJOR_LINE == 0) {
-					color = theme_cache.grid_major;
+					color = _get_current_grid_major();
 				} else {
-					color = theme_cache.grid_minor;
+					color = _get_current_grid_minor();
 				}
 
 				float base_offset = i * snapping_distance * zoom - offset.x * zoom;
@@ -1351,9 +1461,9 @@ void GraphEdit::_draw_grid() {
 				Color color;
 
 				if (ABS(i) % GRID_MINOR_STEPS_PER_MAJOR_LINE == 0) {
-					color = theme_cache.grid_major;
+					color = _get_current_grid_major();
 				} else {
-					color = theme_cache.grid_minor;
+					color = _get_current_grid_minor();
 				}
 
 				float base_offset = i * snapping_distance * zoom - offset.y * zoom;
@@ -1361,7 +1471,7 @@ void GraphEdit::_draw_grid() {
 			}
 		} break;
 		case GRID_PATTERN_DOTS: {
-			Color transparent_grid_minor = theme_cache.grid_minor;
+			Color transparent_grid_minor = _get_current_grid_minor();
 			transparent_grid_minor.a *= CLAMP(1.0 * (zoom - 0.4), 0, 1);
 
 			for (int i = from_pos.x; i < from_pos.x + len.x; i++) {
@@ -1369,7 +1479,7 @@ void GraphEdit::_draw_grid() {
 					Color color = transparent_grid_minor;
 
 					if (ABS(i) % GRID_MINOR_STEPS_PER_MAJOR_DOT == 0 && ABS(j) % GRID_MINOR_STEPS_PER_MAJOR_DOT == 0) {
-						color = theme_cache.grid_major;
+						color = _get_current_grid_major();
 					}
 
 					if (color.a == 0) {
@@ -2182,6 +2292,248 @@ void GraphEdit::arrange_nodes() {
 	arranger->arrange_nodes();
 }
 
+
+
+bool GraphEdit::_has_current_panel() const {
+	State cur_state = get_current_focus_state();
+	for (const State &E : theme_cache.panel.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.panel.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> GraphEdit::_get_current_panel() const {
+	State cur_state = get_current_focus_state();
+	Ref<StyleBox> style;
+	for (const State &E : theme_cache.panel.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.panel.get_state_data_name(E))) {
+			style = theme_cache.panel.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+
+bool GraphEdit::_has_current_grid_major() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.grid_major.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.grid_major.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color GraphEdit::_get_current_grid_major() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.grid_major.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.grid_major.get_state_data_name(E))) {
+			cur_color = theme_cache.grid_major.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+bool GraphEdit::_has_current_grid_minor() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.grid_minor.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.grid_minor.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color GraphEdit::_get_current_grid_minor() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.grid_minor.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.grid_minor.get_state_data_name(E))) {
+			cur_color = theme_cache.grid_minor.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool GraphEdit::_has_current_activity_color() const {
+	State cur_state = get_current_state_with_focus();
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("activity");
+	for (const State &E : theme_cache.activity_color.get_search_order(cur_state)) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color GraphEdit::_get_current_activity_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+	ThemeIntData cur_theme_data; 
+	cur_theme_data.set_data_name("activity");
+	for (const State &E : theme_cache.activity_color.get_search_order(cur_state)) {
+		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
+			cur_color = theme_cache.activity_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool GraphEdit::_has_current_connection_hover_tint_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.connection_hover_tint_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.connection_hover_tint_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color GraphEdit::_get_current_connection_hover_tint_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.connection_hover_tint_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.connection_hover_tint_color.get_state_data_name(E))) {
+			cur_color = theme_cache.connection_hover_tint_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+
+bool GraphEdit::_has_current_connection_valid_target_tint_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.connection_valid_target_tint_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.connection_valid_target_tint_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color GraphEdit::_get_current_connection_valid_target_tint_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.connection_valid_target_tint_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.connection_valid_target_tint_color.get_state_data_name(E))) {
+			cur_color = theme_cache.connection_valid_target_tint_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool GraphEdit::_has_current_connection_rim_color() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.connection_rim_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.connection_rim_color.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color GraphEdit::_get_current_connection_rim_color() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.connection_rim_color.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.connection_rim_color.get_state_data_name(E))) {
+			cur_color = theme_cache.connection_rim_color.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+bool GraphEdit::_has_current_selection_fill() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.selection_fill.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.selection_fill.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color GraphEdit::_get_current_selection_fill() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.selection_fill.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.selection_fill.get_state_data_name(E))) {
+			cur_color = theme_cache.selection_fill.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool GraphEdit::_has_current_selection_stroke() const {
+	State cur_state = get_current_state_with_focus();
+	for (const State &E : theme_cache.selection_stroke.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.selection_stroke.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Color GraphEdit::_get_current_selection_stroke() const {
+	State cur_state = get_current_state_with_focus();
+	Color cur_color;
+
+	for (const State &E : theme_cache.selection_stroke.get_search_order(cur_state)) {
+		if (has_theme_color(theme_cache.selection_stroke.get_state_data_name(E))) {
+			cur_color = theme_cache.selection_stroke.get_data(E);
+			break;
+		}
+	}
+	return cur_color;
+}
+
+
+bool GraphEdit::_has_current_menu_panel() const {
+	State cur_state = get_current_focus_state();
+	for (const State &E : theme_cache.menu_panel.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.menu_panel.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Ref<StyleBox> GraphEdit::_get_current_menu_panel() const {
+	State cur_state = get_current_focus_state();
+	Ref<StyleBox> style;
+	for (const State &E : theme_cache.menu_panel.get_search_order(cur_state)) {
+		if (has_theme_stylebox(theme_cache.menu_panel.get_state_data_name(E))) {
+			style = theme_cache.menu_panel.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+
 void GraphEdit::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("connect_node", "from_node", "from_port", "to_node", "to_port"), &GraphEdit::connect_node);
 	ClassDB::bind_method(D_METHOD("is_node_connected", "from_node", "from_port", "to_node", "to_port"), &GraphEdit::is_node_connected);
@@ -2342,49 +2694,33 @@ void GraphEdit::_bind_methods() {
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphEdit, default_color_scheme);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphEdit, panel);
-	
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, grid_major_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphEdit, grid_major_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, grid_major_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, grid_major);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, GraphEdit, panel);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, grid_minor_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphEdit, grid_minor_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, grid_minor_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, grid_minor);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, grid_major_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, GraphEdit, grid_major);
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, GraphEdit, activity_color_scale, "activity_scale");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_SCHEME, GraphEdit, activity_color_scheme, "activity_scheme");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, activity_color_role, "activity_role");
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, GraphEdit, activity_color, "activity");
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, grid_minor_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, GraphEdit, grid_minor);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, connection_hover_tint_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphEdit, connection_hover_tint_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, connection_hover_tint_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, connection_hover_tint_color);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, activity_color_role, activity_role);
+	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_COLOR, GraphEdit, activity_color, activity);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, connection_valid_target_tint_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphEdit, connection_valid_target_tint_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, connection_valid_target_tint_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, connection_valid_target_tint_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, connection_hover_tint_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, GraphEdit, connection_hover_tint_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, connection_rim_color_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphEdit, connection_rim_color_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, connection_rim_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, connection_rim_color);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, connection_valid_target_tint_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, GraphEdit, connection_valid_target_tint_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, selection_fill_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphEdit, selection_fill_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, selection_fill_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, selection_fill);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, connection_rim_color_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, GraphEdit, connection_rim_color);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, selection_stroke_scale);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphEdit, selection_stroke_scheme);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, selection_stroke_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, selection_stroke);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, selection_fill_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, GraphEdit, selection_fill);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphEdit, menu_panel);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, selection_stroke_role);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, GraphEdit, selection_stroke);
+
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, GraphEdit, menu_panel);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, GraphEdit, zoom_in);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, GraphEdit, zoom_out);

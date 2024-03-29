@@ -45,6 +45,7 @@
 #include "scene/resources/style_box_line.h"
 #include "scene/resources/style_box_texture.h"
 #include "scene/resources/texture.h"
+#include "scene/theme/theme_db.h"
 
 // Theme configuration.
 
@@ -149,6 +150,29 @@ Ref<StyleBoxFlat> make_flat_stylebox(Color p_color, float p_margin_left = -1, fl
 	return style;
 }
 
+
+static Ref<StyleBoxFlat> make_color_role_flat_stylebox(ColorRole p_color_role, StyleBoxFlat::ElevationLevel p_level = StyleBoxFlat::ElevationLevel::Elevation_Level_0, const Ref<ColorScheme> &default_color_scheme = Ref<ColorScheme>(), float p_margin_left = -1, float p_margin_top = -1, float p_margin_right = -1, float p_margin_bottom = -1, int p_corner_width = 0) {
+	Ref<StyleBoxFlat> style(memnew(StyleBoxFlat));
+	if (default_color_scheme.is_valid()) {
+		style->set_default_color_scheme(default_color_scheme);
+	}
+	style->set_bg_color_role(p_color_role);
+
+	style->set_dynamic_shadow(true);
+	style->set_elevation_level(p_level);
+
+	style->set_shadow_color_role(ColorRole::SHADOW);
+	style->set_border_color_role(ColorRole::OUTLINE);
+
+	style->set_corner_detail(Math::ceil(0.8 * p_corner_width * EDSCALE));
+	style->set_corner_radius_all(p_corner_width * EDSCALE);
+	style->set_content_margin_individual(p_margin_left * EDSCALE, p_margin_top * EDSCALE, p_margin_right * EDSCALE, p_margin_bottom * EDSCALE);
+
+	// Work around issue about antialiased edges being blurrier (GH-35279).
+	style->set_anti_aliased(false);
+	return style;
+}
+
 Ref<StyleBoxLine> make_line_stylebox(Color p_color, int p_thickness = 1, float p_grow_begin = 1, float p_grow_end = 1, bool p_vertical = false) {
 	Ref<StyleBoxLine> style(memnew(StyleBoxLine));
 	style->set_color(p_color);
@@ -223,13 +247,21 @@ Ref<EditorTheme> EditorThemeManager::_create_base_theme(const Ref<EditorTheme> &
 EditorThemeManager::ThemeConfiguration EditorThemeManager::_create_theme_config(const Ref<EditorTheme> &p_theme) {
 	ThemeConfiguration config;
 
+	config.default_color_scheme_color = EDITOR_GET("interface/theme/default_color_scheme_color");
+	Ref<ColorScheme> default_color_scheme;
+	default_color_scheme.instantiate();
+	default_color_scheme->set_source_color(config.default_color_scheme_color);
+	config.default_color_scheme = default_color_scheme;
+
 	// Basic properties.
 
 	config.preset = EDITOR_GET("interface/theme/preset");
 	config.spacing_preset = EDITOR_GET("interface/theme/spacing_preset");
 
 	config.base_color = EDITOR_GET("interface/theme/base_color");
+	config.base_color_role = EDITOR_GET("interface/theme/base_color_role");
 	config.accent_color = EDITOR_GET("interface/theme/accent_color");
+	config.accent_color_role = EDITOR_GET("interface/theme/accent_color_role");
 	config.contrast = EDITOR_GET("interface/theme/contrast");
 	config.icon_saturation = EDITOR_GET("interface/theme/icon_saturation");
 
@@ -406,28 +438,45 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 	// Colors.
 	{
 		// Base colors.
+		p_config.base_color_role = ColorRole::PRIMARY;
+		p_config.accent_color_role = ColorRole::INVERSE_PRIMARY;
 
 		p_theme->set_color("base_color", EditorStringName(Editor), p_config.base_color);
+		p_theme->set_color_role("base_color_role", EditorStringName(Editor), p_config.base_color_role);
 		p_theme->set_color("accent_color", EditorStringName(Editor), p_config.accent_color);
+		p_theme->set_color_role("accent_color_role", EditorStringName(Editor), p_config.accent_color_role);
 
 		// White (dark theme) or black (light theme), will be used to generate the rest of the colors
 		p_config.mono_color = p_config.dark_theme ? Color(1, 1, 1) : Color(0, 0, 0);
+		p_config.mono_color_role = ColorRole::ON_SURFACE;
 
 		// Ensure base colors are in the 0..1 luminance range to avoid 8-bit integer overflow or text rendering issues.
 		// Some places in the editor use 8-bit integer colors.
 		p_config.dark_color_1 = p_config.base_color.lerp(Color(0, 0, 0, 1), p_config.contrast).clamp();
+		p_config.dark_color_1_role = ColorRole::SECONDARY;
 		p_config.dark_color_2 = p_config.base_color.lerp(Color(0, 0, 0, 1), p_config.contrast * 1.5).clamp();
+		p_config.dark_color_2_role = ColorRole::TERTIARY;
 		p_config.dark_color_3 = p_config.base_color.lerp(Color(0, 0, 0, 1), p_config.contrast * 2).clamp();
+		p_config.dark_color_3_role = ColorRole::TERTIARY;
 
 		p_config.contrast_color_1 = p_config.base_color.lerp(p_config.mono_color, MAX(p_config.contrast, p_config.default_contrast));
+		p_config.contrast_color_1_role = ColorRole::SECONDARY_CONTAINER;
 		p_config.contrast_color_2 = p_config.base_color.lerp(p_config.mono_color, MAX(p_config.contrast * 1.5, p_config.default_contrast * 1.5));
+		p_config.contrast_color_2_role = ColorRole::TERTIARY_CONTAINER;
 
 		p_config.highlight_color = Color(p_config.accent_color.r, p_config.accent_color.g, p_config.accent_color.b, 0.275);
+		p_config.highlight_color_role = ColorRole::INVERSE_PRIMARY_38;
+		
 		p_config.highlight_disabled_color = p_config.highlight_color.lerp(p_config.dark_theme ? Color(0, 0, 0) : Color(1, 1, 1), 0.5);
+		p_config.highlight_disabled_color = ColorRole::INVERSE_PRIMARY_16;
 
 		p_config.success_color = Color(0.45, 0.95, 0.5);
+		p_config.success_color_role = ColorRole::SECONDARY;
 		p_config.warning_color = Color(1, 0.87, 0.4);
+		p_config.warning_color_role = ColorRole::TERTIARY;
 		p_config.error_color = Color(1, 0.47, 0.42);
+		p_config.error_color_role = ColorRole::ERROR;
+
 		if (!p_config.dark_theme) {
 			// Darken some colors to be readable on a light background.
 			p_config.success_color = p_config.success_color.lerp(p_config.mono_color, 0.35);
@@ -436,95 +485,158 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 		}
 
 		p_theme->set_color("mono_color", EditorStringName(Editor), p_config.mono_color);
+		p_theme->set_color("mono_color_role", EditorStringName(Editor), p_config.mono_color_role);
 		p_theme->set_color("dark_color_1", EditorStringName(Editor), p_config.dark_color_1);
+		p_theme->set_color("dark_color_1_role", EditorStringName(Editor), p_config.dark_color_1_role);
 		p_theme->set_color("dark_color_2", EditorStringName(Editor), p_config.dark_color_2);
+		p_theme->set_color("dark_color_2_role", EditorStringName(Editor), p_config.dark_color_2_role);
 		p_theme->set_color("dark_color_3", EditorStringName(Editor), p_config.dark_color_3);
+		p_theme->set_color("dark_color_3_role", EditorStringName(Editor), p_config.dark_color_3_role);
 		p_theme->set_color("contrast_color_1", EditorStringName(Editor), p_config.contrast_color_1);
+		p_theme->set_color("contrast_color_1_role", EditorStringName(Editor), p_config.contrast_color_1_role);
 		p_theme->set_color("contrast_color_2", EditorStringName(Editor), p_config.contrast_color_2);
+		p_theme->set_color("contrast_color_2_role", EditorStringName(Editor), p_config.contrast_color_2_role);
 		p_theme->set_color("highlight_color", EditorStringName(Editor), p_config.highlight_color);
+		p_theme->set_color("highlight_color_role", EditorStringName(Editor), p_config.highlight_color_role);
 		p_theme->set_color("highlight_disabled_color", EditorStringName(Editor), p_config.highlight_disabled_color);
+		p_theme->set_color("highlight_disabled_color_role", EditorStringName(Editor), p_config.highlight_disabled_color_role);
 		p_theme->set_color("success_color", EditorStringName(Editor), p_config.success_color);
+		p_theme->set_color("success_color_role", EditorStringName(Editor), p_config.success_color_role);
 		p_theme->set_color("warning_color", EditorStringName(Editor), p_config.warning_color);
+		p_theme->set_color("warning_color_role", EditorStringName(Editor), p_config.warning_color_role);
 		p_theme->set_color("error_color", EditorStringName(Editor), p_config.error_color);
+		p_theme->set_color("error_color_role", EditorStringName(Editor), p_config.error_color_role);
 
 		// Only used when the Draw Extra Borders editor setting is enabled.
 		p_config.extra_border_color_1 = Color(0.5, 0.5, 0.5);
+		p_config.extra_border_color_1_role = ColorRole::OUTLINE;
 		p_config.extra_border_color_2 = p_config.dark_theme ? Color(0.3, 0.3, 0.3) : Color(0.7, 0.7, 0.7);
+		p_config.extra_border_color_2_role = ColorRole::OUTLINE_VARIANT;
 
 		p_theme->set_color("extra_border_color_1", EditorStringName(Editor), p_config.extra_border_color_1);
+		p_theme->set_color("extra_border_color_1_role", EditorStringName(Editor), p_config.extra_border_color_1_role);
 		p_theme->set_color("extra_border_color_2", EditorStringName(Editor), p_config.extra_border_color_2);
+		p_theme->set_color("extra_border_color_2_role", EditorStringName(Editor), p_config.extra_border_color_2_role);
 
 		// Font colors.
-
 		p_config.font_color = p_config.mono_color.lerp(p_config.base_color, 0.25);
+		p_config.font_color_role = ColorRole::TERTIARY;
 		p_config.font_focus_color = p_config.mono_color.lerp(p_config.base_color, 0.125);
+		p_config.font_focus_color_role = ColorRole::PRIMARY;
 		p_config.font_hover_color = p_config.mono_color.lerp(p_config.base_color, 0.125);
+		p_config.font_hover_color_role = ColorRole::PRIMARY;
 		p_config.font_pressed_color = p_config.accent_color;
+		p_config.font_pressed_color_role = p_config.accent_color_role;
+		
 		p_config.font_hover_pressed_color = p_config.font_hover_color.lerp(p_config.accent_color, 0.74);
+		p_config.font_hover_pressed_color_role = ColorRole::SECONDARY;
+
 		p_config.font_disabled_color = Color(p_config.mono_color.r, p_config.mono_color.g, p_config.mono_color.b, 0.35);
+		p_config.font_disabled_color_role = ColorRole::ON_SURFACE_38;
+
 		p_config.font_readonly_color = Color(p_config.mono_color.r, p_config.mono_color.g, p_config.mono_color.b, 0.65);
+		p_config.font_disabled_color_role = ColorRole::ON_SURFACE_65;
+
 		p_config.font_placeholder_color = Color(p_config.mono_color.r, p_config.mono_color.g, p_config.mono_color.b, 0.6);
+		p_config.font_placeholder_color_role = ColorRole::ON_SURFACE_60;
+
 		p_config.font_outline_color = Color(0, 0, 0, 0);
+		p_config.font_outline_color_role = ColorRole::STATIC_TRANSPARENT;
 
 		p_theme->set_color("font_color", EditorStringName(Editor), p_config.font_color);
+		p_theme->set_color("font_color_role", EditorStringName(Editor), p_config.font_color_role);
 		p_theme->set_color("font_focus_color", EditorStringName(Editor), p_config.font_focus_color);
+		p_theme->set_color("font_focus_color_role", EditorStringName(Editor), p_config.font_focus_color_role);
 		p_theme->set_color("font_hover_color", EditorStringName(Editor), p_config.font_hover_color);
+		p_theme->set_color("font_hover_color_role", EditorStringName(Editor), p_config.font_hover_color_role);
 		p_theme->set_color("font_pressed_color", EditorStringName(Editor), p_config.font_pressed_color);
+		p_theme->set_color("font_pressed_color_role", EditorStringName(Editor), p_config.font_pressed_color_role);
 		p_theme->set_color("font_hover_pressed_color", EditorStringName(Editor), p_config.font_hover_pressed_color);
+		p_theme->set_color("font_hover_pressed_color_role", EditorStringName(Editor), p_config.font_hover_pressed_color_role);
 		p_theme->set_color("font_disabled_color", EditorStringName(Editor), p_config.font_disabled_color);
+		p_theme->set_color("font_disabled_color_role", EditorStringName(Editor), p_config.font_disabled_color_role);
 		p_theme->set_color("font_readonly_color", EditorStringName(Editor), p_config.font_readonly_color);
+		p_theme->set_color("font_readonly_color_role", EditorStringName(Editor), p_config.font_readonly_color_role);
 		p_theme->set_color("font_placeholder_color", EditorStringName(Editor), p_config.font_placeholder_color);
+		p_theme->set_color("font_placeholder_color_role", EditorStringName(Editor), p_config.font_placeholder_color_role);
 		p_theme->set_color("font_outline_color", EditorStringName(Editor), p_config.font_outline_color);
+		p_theme->set_color("font_outline_color_role", EditorStringName(Editor), p_config.font_outline_color_role);
 
 		// Icon colors.
 
 		p_config.icon_normal_color = Color(1, 1, 1);
+		p_config.icon_normal_color_role = ColorRole::STATIC_ONE;
 		p_config.icon_focus_color = p_config.icon_normal_color * (p_config.dark_theme ? 1.15 : 1.45);
 		p_config.icon_focus_color.a = 1.0;
+		p_config.icon_focus_color_role = p_config.icon_normal_color_role;
 		p_config.icon_hover_color = p_config.icon_focus_color;
+		p_config.icon_hover_color_role = p_config.icon_focus_color_role;
 		// Make the pressed icon color overbright because icons are not completely white on a dark theme.
 		// On a light theme, icons are dark, so we need to modulate them with an even brighter color.
 		p_config.icon_pressed_color = p_config.accent_color * (p_config.dark_theme ? 1.15 : 3.5);
 		p_config.icon_pressed_color.a = 1.0;
+		p_config.icon_pressed_color_role = p_config.accent_color_role;
 		p_config.icon_disabled_color = Color(p_config.icon_normal_color, 0.4);
+		p_config.icon_disabled_color_role = ColorRole::STATIC_ONE_40;
 
 		p_theme->set_color("icon_normal_color", EditorStringName(Editor), p_config.icon_normal_color);
+		p_theme->set_color("icon_normal_color_role", EditorStringName(Editor), p_config.icon_normal_color_role);
 		p_theme->set_color("icon_focus_color", EditorStringName(Editor), p_config.icon_focus_color);
+		p_theme->set_color("icon_focus_color_role", EditorStringName(Editor), p_config.icon_focus_color_role);
 		p_theme->set_color("icon_hover_color", EditorStringName(Editor), p_config.icon_hover_color);
+		p_theme->set_color("icon_hover_color_role", EditorStringName(Editor), p_config.icon_hover_color_role);
 		p_theme->set_color("icon_pressed_color", EditorStringName(Editor), p_config.icon_pressed_color);
+		p_theme->set_color("icon_pressed_color_role", EditorStringName(Editor), p_config.icon_pressed_color_role);
 		p_theme->set_color("icon_disabled_color", EditorStringName(Editor), p_config.icon_disabled_color);
+		p_theme->set_color("icon_disabled_color_role", EditorStringName(Editor), p_config.icon_disabled_color_role);
 
 		// Additional GUI colors.
 
 		p_config.shadow_color = Color(0, 0, 0, p_config.dark_theme ? 0.3 : 0.1);
+		p_config.shadow_color_role = ColorRole::SHADOW;
 		p_config.selection_color = p_config.accent_color * Color(1, 1, 1, 0.4);
+		p_config.selection_color_role = ColorRole::INVERSE_PRIMARY_38;
 		p_config.disabled_border_color = p_config.mono_color.inverted().lerp(p_config.base_color, 0.7);
+		p_config.disabled_border_color_role = ColorRole::SECONDARY;
 		p_config.disabled_bg_color = p_config.mono_color.inverted().lerp(p_config.base_color, 0.9);
+		p_config.disabled_bg_color_role = ColorRole::SECONDARY_CONTAINER;
 		p_config.separator_color = Color(p_config.mono_color.r, p_config.mono_color.g, p_config.mono_color.b, 0.1);
+		p_config.separator_color_role = ColorRole::ON_SURFACE_10;
 
 		p_theme->set_color("selection_color", EditorStringName(Editor), p_config.selection_color);
+		p_theme->set_color("selection_color_role", EditorStringName(Editor), p_config.selection_color_role);
 		p_theme->set_color("disabled_border_color", EditorStringName(Editor), p_config.disabled_border_color);
+		p_theme->set_color("disabled_border_color_role", EditorStringName(Editor), p_config.disabled_border_color_role);
 		p_theme->set_color("disabled_bg_color", EditorStringName(Editor), p_config.disabled_bg_color);
+		p_theme->set_color("disabled_bg_color_role", EditorStringName(Editor), p_config.disabled_bg_color_role);
 		p_theme->set_color("separator_color", EditorStringName(Editor), p_config.separator_color);
+		p_theme->set_color("separator_color_role", EditorStringName(Editor), p_config.separator_color_role);
 
 		// Additional editor colors.
 
-		p_theme->set_color("box_selection_fill_color", EditorStringName(Editor), p_config.accent_color * Color(1, 1, 1, 0.3));
-		p_theme->set_color("box_selection_stroke_color", EditorStringName(Editor), p_config.accent_color * Color(1, 1, 1, 0.8));
+		p_theme->set_color("box_selection_fill_color", EditorStringName(Editor), ColorRole::INVERSE_PRIMARY_38);
+		p_theme->set_color("box_selection_stroke_color", EditorStringName(Editor), ColorRole::INVERSE_PRIMARY_60);
 
 		p_theme->set_color("axis_x_color", EditorStringName(Editor), Color(0.96, 0.20, 0.32));
+		p_theme->set_color("axis_x_color_role", EditorStringName(Editor), ColorRole::PRIMARY);
 		p_theme->set_color("axis_y_color", EditorStringName(Editor), Color(0.53, 0.84, 0.01));
+		p_theme->set_color("axis_y_color_role", EditorStringName(Editor), ColorRole::SECONDARY);
 		p_theme->set_color("axis_z_color", EditorStringName(Editor), Color(0.16, 0.55, 0.96));
+		p_theme->set_color("axis_z_color_role", EditorStringName(Editor), ColorRole::TERTIARY);
 		p_theme->set_color("axis_w_color", EditorStringName(Editor), Color(0.55, 0.55, 0.55));
+		p_theme->set_color("axis_w_color_role", EditorStringName(Editor), ColorRole::TERTIARY_CONTAINER);
 
 		const float prop_color_saturation = p_config.accent_color.get_s() * 0.75;
 		const float prop_color_value = p_config.accent_color.get_v();
 
 		p_theme->set_color("property_color_x", EditorStringName(Editor), Color().from_hsv(0.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value));
+		p_theme->set_color("property_color_x_role", EditorStringName(Editor), ColorRole::PRIMARY);
 		p_theme->set_color("property_color_y", EditorStringName(Editor), Color().from_hsv(1.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value));
+		p_theme->set_color("property_color_y_role", EditorStringName(Editor), ColorRole::SECONDARY);
 		p_theme->set_color("property_color_z", EditorStringName(Editor), Color().from_hsv(2.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value));
+		p_theme->set_color("property_color_z_role", EditorStringName(Editor), ColorRole::TERTIARY);
 		p_theme->set_color("property_color_w", EditorStringName(Editor), Color().from_hsv(1.5 / 3.0 + 0.05, prop_color_saturation, prop_color_value));
-
+		p_theme->set_color("property_color_w_role", EditorStringName(Editor), ColorRole::TERTIARY_CONTAINER);
 		// Special colors for rendering methods.
 
 		p_theme->set_color("forward_plus_color", EditorStringName(Editor), Color::hex(0x5d8c3fff));
@@ -536,6 +648,7 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 		} else {
 			p_theme->set_color("highend_color", EditorStringName(Editor), Color::hex(0xad1128ff));
 		}
+		p_theme->set_color_role("highend_color_role", EditorStringName(Editor), ColorRole::ERROR);
 	}
 
 	// Constants.
@@ -563,9 +676,11 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 	// Styleboxes.
 	{
 		// This is the basic stylebox, used as a base for most other styleboxes (through `duplicate()`).
-		p_config.base_style = make_flat_stylebox(p_config.base_color, p_config.base_margin, p_config.base_margin, p_config.base_margin, p_config.base_margin, p_config.corner_radius);
+		p_config.base_style = make_color_role_flat_stylebox(p_config.base_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, p_config.base_margin, p_config.base_margin, p_config.base_margin, p_config.base_margin, p_config.corner_radius);
+
 		p_config.base_style->set_border_width_all(p_config.border_width);
 		p_config.base_style->set_border_color(p_config.base_color);
+		p_config.base_style->set_border_color_role(p_config.base_color_role);
 
 		p_config.base_empty_style = make_empty_stylebox(p_config.base_margin, p_config.base_margin, p_config.base_margin, p_config.base_margin);
 
@@ -576,35 +691,46 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 			p_config.button_style = p_config.base_style->duplicate();
 			p_config.button_style->set_content_margin_individual(p_config.widget_margin.x, p_config.widget_margin.y, p_config.widget_margin.x, p_config.widget_margin.y);
 			p_config.button_style->set_bg_color(p_config.dark_color_1);
+			p_config.button_style->set_bg_color_role(p_config.dark_color_1_role);
 			if (p_config.draw_extra_borders) {
 				p_config.button_style->set_border_width_all(Math::round(EDSCALE));
 				p_config.button_style->set_border_color(p_config.extra_border_color_1);
+				p_config.button_style->set_border_color_role(p_config.extra_border_color_1_role);
 			} else {
 				p_config.button_style->set_border_color(p_config.dark_color_2);
+				p_config.button_style->set_border_color_role(p_config.dark_color_2_role);
 			}
 
 			p_config.button_style_disabled = p_config.button_style->duplicate();
 			p_config.button_style_disabled->set_bg_color(p_config.disabled_bg_color);
+			p_config.button_style_disabled->set_bg_color_role(p_config.disabled_bg_color_role);
 			if (p_config.draw_extra_borders) {
 				p_config.button_style_disabled->set_border_color(p_config.extra_border_color_2);
+				p_config.button_style_disabled->set_border_color_role(p_config.extra_border_color_2_role);
 			} else {
 				p_config.button_style_disabled->set_border_color(p_config.disabled_border_color);
+				p_config.button_style_disabled->set_border_color_role(p_config.disabled_border_color_role);
 			}
 
 			p_config.button_style_focus = p_config.button_style->duplicate();
 			p_config.button_style_focus->set_draw_center(false);
 			p_config.button_style_focus->set_border_width_all(Math::round(2 * MAX(1, EDSCALE)));
 			p_config.button_style_focus->set_border_color(p_config.accent_color);
+			p_config.button_style_focus->set_border_color_role(p_config.accent_color_role);
 
 			p_config.button_style_pressed = p_config.button_style->duplicate();
 			p_config.button_style_pressed->set_bg_color(p_config.dark_color_1.darkened(0.125));
+			p_config.button_style_pressed->set_bg_color_role(p_config.dark_color_1_role);
 
 			p_config.button_style_hover = p_config.button_style->duplicate();
 			p_config.button_style_hover->set_bg_color(p_config.mono_color * Color(1, 1, 1, 0.11));
+			p_config.button_style_hover->set_bg_color_role(ColorRole::ON_SURFACE_12);
 			if (p_config.draw_extra_borders) {
 				p_config.button_style_hover->set_border_color(p_config.extra_border_color_1);
+				p_config.button_style_hover->set_border_color_role(p_config.extra_border_color_1_role);
 			} else {
 				p_config.button_style_hover->set_border_color(p_config.mono_color * Color(1, 1, 1, 0.05));
+				p_config.button_style_hover->set_border_color_role(ColorRole::ON_SURFACE_08);
 			}
 		}
 
@@ -613,7 +739,9 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 			p_config.popup_style = p_config.base_style->duplicate();
 			p_config.popup_style->set_content_margin_all(p_config.popup_margin);
 			p_config.popup_style->set_border_color(p_config.contrast_color_1);
+			p_config.popup_style->set_border_color_role(p_config.contrast_color_1_role);
 			p_config.popup_style->set_shadow_color(p_config.shadow_color);
+			p_config.popup_style->set_shadow_color_role(p_config.shadow_color_role);
 			p_config.popup_style->set_shadow_size(4 * EDSCALE);
 			// Popups are separate windows by default in the editor. Windows currently don't support per-pixel transparency
 			// in 4.0, and even if it was, it may not always work in practice (e.g. running with compositing disabled).
@@ -621,6 +749,7 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 
 			p_config.window_style = p_config.popup_style->duplicate();
 			p_config.window_style->set_border_color(p_config.base_color);
+			p_config.window_style->set_border_color_role(p_config.base_color_role);
 			p_config.window_style->set_border_width(SIDE_TOP, 24 * EDSCALE);
 			p_config.window_style->set_expand_margin(SIDE_TOP, 24 * EDSCALE);
 
@@ -645,6 +774,7 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 
 			p_config.content_panel_style = p_config.base_style->duplicate();
 			p_config.content_panel_style->set_border_color(p_config.dark_color_3);
+			p_config.content_panel_style->set_border_color_role(p_config.dark_color_3_role);
 			p_config.content_panel_style->set_border_width_all(p_config.border_width);
 			p_config.content_panel_style->set_border_width(Side::SIDE_TOP, 0);
 			p_config.content_panel_style->set_corner_radius(CORNER_TOP_LEFT, 0);
@@ -659,8 +789,10 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 			if (p_config.draw_extra_borders) {
 				p_config.tree_panel_style->set_border_width_all(Math::round(EDSCALE));
 				p_config.tree_panel_style->set_border_color(p_config.extra_border_color_2);
+				p_config.tree_panel_style->set_border_color_role(p_config.extra_border_color_2_role);
 			} else {
 				p_config.tree_panel_style->set_border_color(p_config.dark_color_3);
+				p_config.tree_panel_style->set_border_color_role(p_config.dark_color_3_role);
 			}
 		}
 	}
@@ -670,9 +802,10 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 	// Panels.
 	{
 	// Panel.
-		p_theme->set_stylebox("panel", "Panel", make_flat_stylebox(p_config.dark_color_1, 6, 4, 6, 4, p_config.corner_radius));
+		// p_theme->set_stylebox("panel", "Panel", make_flat_stylebox(p_config.dark_color_1, 6, 4, 6, 4, p_config.corner_radius));
 
-		
+		p_theme->set_stylebox("panel", "Panel", make_color_role_flat_stylebox(p_config.dark_color_1_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0,p_config.default_color_scheme,  6, 4, 6, 4, p_config.corner_radius));
+
 		// PanelContainer.
 		// ThemeIntData cur_theme_data;
 		// cur_theme_data.set_data_name("panel");
@@ -1366,43 +1499,44 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 	{
 		Ref<Texture2D> empty_icon = memnew(ImageTexture);
 
-		// // HScrollBar.
+		// HScrollBar.
 
-		// if (p_config.increase_scrollbar_touch_area) {
-		// 	p_theme->set_stylebox("scroll", "HScrollBar", make_line_stylebox(p_config.separator_color, 50));
-		// } else {
-		// 	p_theme->set_stylebox("scroll", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, -5, 1, -5, 1));
-		// }
-		// p_theme->set_stylebox("scroll_focus", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
-		// p_theme->set_stylebox("grabber", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabber"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
-		// p_theme->set_stylebox("grabber_highlight", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberHl"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
-		// p_theme->set_stylebox("grabber_pressed", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberPressed"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
+		if (p_config.increase_scrollbar_touch_area) {
+			p_theme->set_stylebox("scroll", "HScrollBar", make_line_stylebox(p_config.separator_color, 50));
+		} else {
+			p_theme->set_stylebox("scroll", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, -5, 1, -5, 1));
+		}
+		p_theme->set_stylebox("scroll_focus", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
+		p_theme->set_stylebox("grabber", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabber"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
+		p_theme->set_stylebox("grabber_highlight", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberHl"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
+		p_theme->set_stylebox("grabber_pressed", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberPressed"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
 
-		// p_theme->set_icon("increment", "HScrollBar", empty_icon);
-		// p_theme->set_icon("increment_highlight", "HScrollBar", empty_icon);
-		// p_theme->set_icon("increment_pressed", "HScrollBar", empty_icon);
-		// p_theme->set_icon("decrement", "HScrollBar", empty_icon);
-		// p_theme->set_icon("decrement_highlight", "HScrollBar", empty_icon);
-		// p_theme->set_icon("decrement_pressed", "HScrollBar", empty_icon);
+		p_theme->set_icon("increment", "HScrollBar", empty_icon);
+		p_theme->set_icon("increment_highlight", "HScrollBar", empty_icon);
+		p_theme->set_icon("increment_pressed", "HScrollBar", empty_icon);
+		p_theme->set_icon("decrement", "HScrollBar", empty_icon);
+		p_theme->set_icon("decrement_highlight", "HScrollBar", empty_icon);
+		p_theme->set_icon("decrement_pressed", "HScrollBar", empty_icon);
 
-		// // VScrollBar.
+		// VScrollBar.
 
-		// if (p_config.increase_scrollbar_touch_area) {
-		// 	p_theme->set_stylebox("scroll", "VScrollBar", make_line_stylebox(p_config.separator_color, 50, 1, 1, true));
-		// } else {
-		// 	p_theme->set_stylebox("scroll", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, -5, 1, -5));
-		// }
-		// p_theme->set_stylebox("scroll_focus", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
-		// p_theme->set_stylebox("grabber", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabber"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
-		// p_theme->set_stylebox("grabber_highlight", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberHl"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
-		// p_theme->set_stylebox("grabber_pressed", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberPressed"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
+		if (p_config.increase_scrollbar_touch_area) {
+			p_theme->set_stylebox("scroll", "VScrollBar", make_line_stylebox(p_config.separator_color, 50, 1, 1, true));
+		} else {
+			p_theme->set_stylebox("scroll", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, -5, 1, -5));
+		}
+		p_theme->set_stylebox("scroll_focus", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
+		p_theme->set_stylebox("grabber", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabber"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
+		p_theme->set_stylebox("grabber_highlight", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberHl"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
+		p_theme->set_stylebox("grabber_pressed", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberPressed"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
 
-		// p_theme->set_icon("increment", "VScrollBar", empty_icon);
-		// p_theme->set_icon("increment_highlight", "VScrollBar", empty_icon);
-		// p_theme->set_icon("increment_pressed", "VScrollBar", empty_icon);
-		// p_theme->set_icon("decrement", "VScrollBar", empty_icon);
-		// p_theme->set_icon("decrement_highlight", "VScrollBar", empty_icon);
-		// p_theme->set_icon("decrement_pressed", "VScrollBar", empty_icon);
+		p_theme->set_icon("increment", "VScrollBar", empty_icon);
+		p_theme->set_icon("increment_highlight", "VScrollBar", empty_icon);
+		p_theme->set_icon("increment_pressed", "VScrollBar", empty_icon);
+		p_theme->set_icon("decrement", "VScrollBar", empty_icon);
+		p_theme->set_icon("decrement_highlight", "VScrollBar", empty_icon);
+		p_theme->set_icon("decrement_pressed", "VScrollBar", empty_icon);
+
 
 		// HSlider.
 		p_theme->set_icon("grabber_highlight", "HSlider", p_theme->get_icon(SNAME("GuiSliderGrabberHl"), EditorStringName(EditorIcons)));
@@ -2446,7 +2580,8 @@ void EditorThemeManager::_reset_dirty_flag() {
 Ref<EditorTheme> EditorThemeManager::generate_theme(const Ref<EditorTheme> &p_old_theme) {
 	OS::get_singleton()->benchmark_begin_measure(get_benchmark_key(), "Generate Theme");
 
-	Ref<EditorTheme> theme = _create_base_theme(p_old_theme);
+	 Ref<EditorTheme> theme = _create_base_theme(p_old_theme);
+	//Ref<EditorTheme> theme = ThemeDB::get_singleton()->get_default_theme();
 
 	OS::get_singleton()->benchmark_begin_measure(get_benchmark_key(), "Merge Custom Theme");
 

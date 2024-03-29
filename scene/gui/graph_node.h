@@ -81,11 +81,11 @@ class GraphNode : public GraphElement {
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
 
-		Ref<StyleBox> panel;
-		Ref<StyleBox> panel_selected;
-		Ref<StyleBox> titlebar;
-		Ref<StyleBox> titlebar_selected;
-		Ref<StyleBox> slot;
+		ThemeStyleboxData panel{"panel"};
+		// ThemeStyleboxData panel_selected{"panel_selected"};
+		ThemeStyleboxData titlebar{"titlebar"};
+		// ThemeStyleboxData titlebar_selected{"titlebar_selected"};
+		ThemeStyleboxData slot{"slot"};
 
 		int separation = 0;
 		int port_h_offset = 0;
@@ -93,10 +93,8 @@ class GraphNode : public GraphElement {
 		Ref<Texture2D> port;
 		Ref<Texture2D> resizer;
 
-		Color resizer_color_scale;
-		Ref<ColorScheme> resizer_color_scheme;
-		ColorRole resizer_color_role;
-		Color resizer_color;		
+		ThemeColorData resizer_color{"resizer_color"};
+		ThemeColorRoleData resizer_color_role{"resizer_color_role"};
 	} theme_cache;
 
 	bool port_pos_dirty = true;
@@ -116,6 +114,21 @@ protected:
 	bool _get(const StringName &p_name, Variant &r_ret) const;
 	void _get_property_list(List<PropertyInfo> *p_list) const;
 
+	bool _has_current_panel_with_state(State p_state) const;
+	bool _has_current_panel() const;
+	Ref<StyleBox> _get_current_panel_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_panel() const;
+
+	bool _has_current_titlebar_with_state(State p_state) const;
+	bool _has_current_titlebar() const;
+	Ref<StyleBox> _get_current_titlebar_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_titlebar() const;
+
+	bool _has_current_slot() const;
+	Ref<StyleBox> _get_current_slot() const;
+
+	bool _has_current_resizer_color() const;
+	Color _get_current_resizer_color() const;
 public:
 	void set_title(const String &p_title);
 	String get_title() const;
@@ -171,6 +184,8 @@ public:
 
 	virtual Vector<int> get_allowed_size_flags_horizontal() const override;
 	virtual Vector<int> get_allowed_size_flags_vertical() const override;
+
+
 
 	GraphNode();
 };

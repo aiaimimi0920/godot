@@ -93,11 +93,14 @@ void ColorPicker::_notification(int p_what) {
 			alpha_label->set_custom_minimum_size(Size2(theme_cache.label_width, 0));
 			alpha_slider->add_theme_constant_override(SNAME("center_grabber"), theme_cache.center_slider_grabbers);
 
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("mode_button_style");
 			for (int i = 0; i < MODE_BUTTON_COUNT; i++) {
 				mode_btns[i]->begin_bulk_theme_override();
-				mode_btns[i]->add_theme_style_override(SNAME("pressed"), theme_cache.mode_button_pressed);
-				mode_btns[i]->add_theme_style_override(SNAME("normal"), theme_cache.mode_button_normal);
-				mode_btns[i]->add_theme_style_override(SNAME("hover"), theme_cache.mode_button_hover);
+				
+				mode_btns[i]->add_theme_style_override(cur_theme_data.get_state_data_name(State::PressedNoneLTR), _get_current_mode_button_style_with_state(State::PressedNoneLTR));
+				mode_btns[i]->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), _get_current_mode_button_style_with_state(State::NormalNoneLTR));
+				mode_btns[i]->add_theme_style_override(cur_theme_data.get_state_data_name(State::HoverNoneLTR), _get_current_mode_button_style_with_state(State::HoverNoneLTR));
 				mode_btns[i]->end_bulk_theme_override();
 			}
 
@@ -1709,6 +1712,45 @@ bool ColorPicker::is_hex_visible() const {
 	return hex_visible;
 }
 
+
+
+bool ColorPicker::_has_current_mode_button_style_with_state(State p_state) const {
+	ThemeIntData cur_theme_data;
+	cur_theme_data.set_data_name("mode_button_style");
+	for (const State &E : theme_cache.mode_button_style.get_search_order(p_state)) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool ColorPicker::_has_current_mode_button_style() const {
+	State cur_state = get_current_state_with_focus();
+	return _has_current_mode_button_style_with_state(cur_state);
+}
+
+Ref<StyleBox> ColorPicker::_get_current_mode_button_style_with_state(State p_state) const {
+	Ref<StyleBox> style;
+	ThemeIntData cur_theme_data;
+	cur_theme_data.set_data_name("mode_button_style");
+	for (const State &E : theme_cache.mode_button_style.get_search_order(p_state)) {
+		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+			style = theme_cache.mode_button_style.get_data(E);
+			break;
+		}
+	}
+	return style;
+}
+
+Ref<StyleBox> ColorPicker::_get_current_mode_button_style() const {
+	State cur_state = get_current_state_with_focus();
+	Ref<StyleBox> style;
+	style = _get_current_mode_button_style_with_state(cur_state);
+	return style;
+}
+
+
 void ColorPicker::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_pick_color", "color"), &ColorPicker::set_pick_color);
 	ClassDB::bind_method(D_METHOD("get_pick_color"), &ColorPicker::get_pick_color);
@@ -1793,9 +1835,7 @@ void ColorPicker::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, ColorPicker, color_hue);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, ColorPicker, color_okhsl_hue);
 
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_STYLEBOX, ColorPicker, mode_button_normal, "tab_unselected", "TabContainer");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_STYLEBOX, ColorPicker, mode_button_pressed, "tab_selected", "TabContainer");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_STYLEBOX, ColorPicker, mode_button_hover, "tab_selected", "TabContainer");
+	BIND_THEME_ITEM_EXT_MULTI(Theme::DATA_TYPE_STYLEBOX, ColorPicker, mode_button_style, tab, "TabContainer");
 }
 
 ColorPicker::ColorPicker() {
@@ -2071,13 +2111,14 @@ void ColorPickerButton::pressed() {
 void ColorPickerButton::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_DRAW: {
-			const Rect2 r = Rect2(theme_cache.normal_style->get_offset(), get_size() - theme_cache.normal_style->get_minimum_size());
+			Ref<StyleBox> normal_style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+			const Rect2 r = Rect2(normal_style->get_offset(), get_size() - normal_style->get_minimum_size());
 			draw_texture_rect(theme_cache.background_icon, r, true);
 			draw_rect(r, color);
 
 			if (color.r > 1 || color.g > 1 || color.b > 1) {
 				// Draw an indicator to denote that the color is "overbright" and can't be displayed accurately in the preview
-				draw_texture(theme_cache.overbright_indicator, theme_cache.normal_style->get_offset());
+				draw_texture(theme_cache.overbright_indicator, normal_style->get_offset());
 			}
 		} break;
 
@@ -2169,7 +2210,6 @@ void ColorPickerButton::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_pick_color", "get_pick_color");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "edit_alpha"), "set_edit_alpha", "is_editing_alpha");
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ColorPickerButton, normal_style, "normal");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, ColorPickerButton, background_icon, "bg");
 	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_ICON, ColorPickerButton, overbright_indicator, "overbright_indicator", "ColorPicker");
 }

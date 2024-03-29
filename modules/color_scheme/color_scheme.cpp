@@ -135,6 +135,10 @@ Color ColorScheme::get_color(ColorRole cur_color_role) {
 			return get_neutral_variant_palette_key_color();
 		case ColorRole::STATIC_TRANSPARENT:
 			return Color(0, 0, 0, 0);
+		case ColorRole::STATIC_ONE:
+			return Color(1, 1, 1, 1);
+		case ColorRole::STATIC_ONE_40:
+			return Color(1, 1, 1, 0.40);
 		case ColorRole::BACKGROUND:
 			return get_background();
 		case ColorRole::BACKGROUND_08:
@@ -267,6 +271,10 @@ Color ColorScheme::get_color(ColorRole cur_color_role) {
 			return Color(get_on_surface(), 0.16);
 		case ColorRole::ON_SURFACE_38:
 			return Color(get_on_surface(), 0.38);
+		case ColorRole::ON_SURFACE_60:
+			return Color(get_on_surface(), 0.60);
+		case ColorRole::ON_SURFACE_65:
+			return Color(get_on_surface(), 0.65);
 		case ColorRole::SURFACE_VARIANT:
 			return get_surface_variant();
 		case ColorRole::SURFACE_VARIANT_08:

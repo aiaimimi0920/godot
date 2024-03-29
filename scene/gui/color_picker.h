@@ -244,9 +244,7 @@ private:
 		Ref<Texture2D> color_okhsl_hue;
 
 		/* Mode buttons */
-		Ref<StyleBox> mode_button_normal;
-		Ref<StyleBox> mode_button_pressed;
-		Ref<StyleBox> mode_button_hover;
+		ThemeStyleboxData mode_button_style{"mode_button_style"};
 	} theme_cache;
 
 	void _copy_color_to_hsv();
@@ -301,6 +299,11 @@ protected:
 
 	void _notification(int);
 	static void _bind_methods();
+
+	bool _has_current_mode_button_style_with_state(State p_state) const;
+	bool _has_current_mode_button_style() const;
+	Ref<StyleBox> _get_current_mode_button_style_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_mode_button_style() const;	
 
 public:
 #ifdef TOOLS_ENABLED
@@ -388,9 +391,7 @@ class ColorPickerButton : public Button {
 	bool edit_alpha = true;
 
 	struct ThemeCache {
-		Ref<StyleBox> normal_style;
 		Ref<Texture2D> background_icon;
-
 		Ref<Texture2D> overbright_indicator;
 	} theme_cache;
 

@@ -114,7 +114,7 @@ bool PanelContainer::_has_current_default_stylebox_with_state(State p_state) con
 			return true;
 		}
 	}
-	return false;
+return false;
 }
 
 
