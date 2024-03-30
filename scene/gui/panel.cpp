@@ -35,39 +35,13 @@ void Panel::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_DRAW: {
 			RID ci = get_canvas_item();
-			Ref<StyleBox> style = _get_current_default_stylebox();
-			if(style.is_valid()){
-				style->draw(ci, Rect2(Point2(), get_size()));
-			}
+			theme_cache.panel_style->draw(ci, Rect2(Point2(), get_size()));
 		} break;
 	}
 }
-bool Panel::_has_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	for(const State &E : theme_cache.panel_style.get_search_order(cur_state)){
-		if(has_theme_stylebox(theme_cache.panel_style.get_state_data_name(E))){
-			return true;
-		}
-	}
-	return false;
-}
-
-Ref<StyleBox> Panel::_get_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
-	ThemeIntData cur_theme_data; 
-	cur_theme_data.set_data_name("panel");
-	for(const State &E : theme_cache.panel_style.get_search_order(cur_state)){
-		if(has_theme_stylebox(cur_theme_data.get_state_data_name(E))){
-			style = theme_cache.panel_style.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
 
 void Panel::_bind_methods() {
-	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, Panel, panel_style, panel);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, Panel, panel_style, "panel");
 }
 
 Panel::Panel() {

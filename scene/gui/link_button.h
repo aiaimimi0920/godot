@@ -58,7 +58,8 @@ private:
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
-		ThemeStyleboxData default_stylebox{ "default_stylebox" };
+		Ref<StyleBox> focus;
+
 		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
 
 		ThemeColorData font_color{ "font_color" };
@@ -66,9 +67,9 @@ private:
 		Ref<Font> font;
 		int font_size;
 
-		ThemeColorData font_outline_color{ "font_outline_color" };
-		ThemeColorRoleData font_outline_color_role{ "font_outline_color_role" };		
-		int font_outline_size;
+		Color font_outline_color;
+		ColorRole font_outline_color_role;		
+		int outline_size;
 
 		int underline_spacing = 0;
 	} theme_cache;
@@ -82,19 +83,10 @@ protected:
 	void _notification(int p_what);
 	static void _bind_methods();
 
-	bool _has_current_default_stylebox_with_state(State p_state) const;
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
-	bool _has_current_focus_default_stylebox() const;
-	Ref<StyleBox> _get_current_focus_default_stylebox() const;
 	bool _has_current_state_layer_stylebox() const;
 	Ref<StyleBox> _get_current_state_layer_stylebox() const;
 	bool _has_current_font_color() const;
 	Color _get_current_font_color() const;
-	bool _has_current_font_outline_color() const;
-	Color _get_current_font_outline_color() const;
-
 
 public:
 	void set_text(const String &p_text);

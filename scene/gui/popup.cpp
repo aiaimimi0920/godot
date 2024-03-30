@@ -226,22 +226,14 @@ Size2 PopupPanel::_get_contents_minimum_size() const {
 		ms.x = MAX(cms.x, ms.x);
 		ms.y = MAX(cms.y, ms.y);
 	}
-	Ref<StyleBox> panel_style = _get_current_default_stylebox();
-	if(panel_style.is_valid()){
-		ms += panel_style->get_minimum_size();
-	}
-	return ms;
+
+	return ms + theme_cache.panel_style->get_minimum_size();
+
 }
 
 void PopupPanel::_update_child_rects() {
-	Ref<StyleBox> panel_style = _get_current_default_stylebox();
-	Vector2 cpos(0,0);
-	Vector2 csize(0,0);
-	if(panel_style.is_valid()){
-		cpos= Vector2(panel_style->get_offset());
-		csize = Vector2(get_size() - panel_style->get_minimum_size());
-	}
-
+	Vector2 cpos(theme_cache.panel_style->get_offset());
+	Vector2 csize(get_size() - theme_cache.panel_style->get_minimum_size());
 
 	for (int i = 0; i < get_child_count(); i++) {
 		Control *c = Object::cast_to<Control>(get_child(i));
@@ -267,12 +259,7 @@ void PopupPanel::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_READY:
 		case NOTIFICATION_THEME_CHANGED: {
-			ThemeIntData cur_theme_data;
-			cur_theme_data.set_data_name("panel");
-			for (int i = 0; i < STATE_MAX; i++) {  
-				State cur_state = static_cast<State>(i);
-				panel->add_theme_style_override(cur_theme_data.get_state_data_name(cur_state), _get_current_default_stylebox_with_state(cur_state));
-			}
+			panel->add_theme_style_override("panel", theme_cache.panel_style);
 			_update_child_rects();
 		} break;
 
@@ -282,44 +269,8 @@ void PopupPanel::_notification(int p_what) {
 	}
 }
 
-
-bool PopupPanel::_has_current_default_stylebox_with_state(State p_state) const {
-	for (const State &E : theme_cache.panel_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.panel_style.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-
-bool PopupPanel::_has_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	return _has_current_default_stylebox_with_state(cur_state);
-}
-
-Ref<StyleBox> PopupPanel::_get_current_default_stylebox_with_state(State p_state) const {
-	Ref<StyleBox> style;
-	ThemeIntData cur_theme_data; 
-	cur_theme_data.set_data_name("panel");
-	for (const State &E : theme_cache.panel_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
-			style = theme_cache.panel_style.get_data(E);
-			break; 
-		}
-	}
-	return style;
-}
-
-Ref<StyleBox> PopupPanel::_get_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
-	style = _get_current_default_stylebox_with_state(cur_state);
-	return style;
-}
-
 void PopupPanel::_bind_methods() {
-	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupPanel, panel_style, panel);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, PopupPanel, panel_style, "panel");
 }
 
 PopupPanel::PopupPanel() {

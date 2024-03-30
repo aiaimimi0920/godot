@@ -469,10 +469,10 @@ void MenuBar::_draw_menu_item(int p_index) {
 		text_ofs += Point2(style->get_margin(SIDE_LEFT), style->get_margin(SIDE_TOP));
 	}
 
-	Color font_outline_color = _get_current_font_outline_color_with_state(cur_state);
-	int font_outline_size = theme_cache.font_outline_size;
-	if (font_outline_size > 0 && font_outline_color.a > 0) {
-		menu_cache[p_index].text_buf->draw_outline(ci, text_ofs, font_outline_size, font_outline_color);
+	Color font_outline_color = theme_cache.font_outline_color;
+	int outline_size = theme_cache.outline_size;
+	if (outline_size > 0 && font_outline_color.a > 0) {
+		menu_cache[p_index].text_buf->draw_outline(ci, text_ofs, outline_size, font_outline_color);
 	}
 	menu_cache[p_index].text_buf->draw(ci, text_ofs, color);
 }
@@ -744,43 +744,6 @@ Color MenuBar::_get_current_font_color() const {
 	return cur_font_color;
 }
 
-bool MenuBar::_has_current_font_outline_color() const {
-	State cur_state = get_current_state();
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color MenuBar::_get_current_font_outline_color_with_state(State p_state) const {
-	Color cur_font_outline_color;
-
-	for (const State &E : theme_cache.font_outline_color.get_search_order(p_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			cur_font_outline_color = theme_cache.font_outline_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_outline_color;
-}
-
-
-
-Color MenuBar::_get_current_font_outline_color() const {
-	State cur_state = get_current_state();
-	Color cur_font_outline_color;
-
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			cur_font_outline_color = theme_cache.font_outline_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_outline_color;
-}
-
 void MenuBar::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_switch_on_hover", "enable"), &MenuBar::set_switch_on_hover);
 	ClassDB::bind_method(D_METHOD("is_switch_on_hover"), &MenuBar::is_switch_on_hover);
@@ -833,9 +796,9 @@ void MenuBar::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, MenuBar, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, MenuBar, font_size);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_outline_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, MenuBar, font_outline_color);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, MenuBar, font_outline_size);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_outline_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, MenuBar, outline_size);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, MenuBar, h_separation);
 }

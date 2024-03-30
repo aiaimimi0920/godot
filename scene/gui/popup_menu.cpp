@@ -303,7 +303,7 @@ int PopupMenu::_get_item_height(int p_idx) const {
 
 	int separator_height = 0;
 	if (items[p_idx].separator) {
-		separator_height = MAX(_get_current_separator_style()->get_minimum_size().height, MAX(_get_current_labeled_separator_left()->get_minimum_size().height, _get_current_labeled_separator_right()->get_minimum_size().height));
+		separator_height = MAX(theme_cache.separator_style->get_minimum_size().height, MAX(theme_cache.labeled_separator_left->get_minimum_size().height, theme_cache.labeled_separator_right->get_minimum_size().height));
 	}
 
 	return MAX(separator_height, MAX(text_height, icon_height));
@@ -766,6 +766,7 @@ void PopupMenu::_draw_items() {
 	Point2 ofs;
 
 	// Loop through all items and draw each.
+	Ref<StyleBox> hover_style = _get_current_default_stylebox_with_state(State::HoverNoneLTR);
 	for (int i = 0; i < items.size(); i++) {
 		// For the first item only add half a separation. For all other items, add a whole separation to the offset.
 		ofs.y += i > 0 ? theme_cache.v_separation : (float)theme_cache.v_separation / 2;
@@ -777,7 +778,6 @@ void PopupMenu::_draw_items() {
 		float h = _get_item_height(i);
 
 		if (i == mouse_over) {
-			Ref<StyleBox> hover_style = _get_current_default_stylebox_with_state(State::HoverNoneLTR);
 			hover_style->draw(ci, Rect2(item_ofs + Point2(0, -theme_cache.v_separation / 2), Size2(display_width, h + theme_cache.v_separation)));
 		}
 
@@ -796,20 +796,17 @@ void PopupMenu::_draw_items() {
 				int content_left = content_center - content_size / 2;
 				int content_right = content_center + content_size / 2;
 				if (content_left > item_ofs.x) {
-					Ref<StyleBox> cur_style = _get_current_labeled_separator_left();
-					int sep_h = cur_style->get_minimum_size().height;
+					int sep_h = theme_cache.labeled_separator_left->get_minimum_size().height;
 					int sep_ofs = Math::floor((h - sep_h) / 2.0);
 					cur_style->draw(ci, Rect2(item_ofs + Point2(0, sep_ofs), Size2(MAX(0, content_left - item_ofs.x), sep_h)));
 				}
 				if (content_right < display_width) {
-					Ref<StyleBox> cur_style = _get_current_labeled_separator_right();
-					int sep_h = cur_style->get_minimum_size().height;
+					int sep_h = theme_cache.labeled_separator_right->get_minimum_size().height;
 					int sep_ofs = Math::floor((h - sep_h) / 2.0);
 					cur_style->draw(ci, Rect2(Point2(content_right, item_ofs.y + sep_ofs), Size2(MAX(0, display_width - content_right), sep_h)));
 				}
 			} else {
-				Ref<StyleBox> cur_style = _get_current_separator_style();
-				int sep_h = cur_style->get_minimum_size().height;
+				int sep_h = theme_cache.separator_style->get_minimum_size().height;
 				int sep_ofs = Math::floor((h - sep_h) / 2.0);
 				cur_style->draw(ci, Rect2(item_ofs + Point2(0, sep_ofs), Size2(display_width, sep_h)));
 			}
@@ -862,9 +859,6 @@ void PopupMenu::_draw_items() {
 
 		// Submenu arrow on right hand side.
 		Ref<StyleBox> panel_style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
-		Color font_separator_outline_color = _get_current_font_separator_outline_color();
-		Color font_separator_color = _get_current_font_separator_color();
-		Color font_outline_color = _get_current_font_outline_color();
 		if (items[i].submenu) {
 			if (rtl) {
 				
@@ -879,26 +873,26 @@ void PopupMenu::_draw_items() {
 			if (!text.is_empty()) {
 				Vector2 text_pos = Point2(separator_ofs, item_ofs.y + Math::floor((h - items[i].text_buf->get_size().y) / 2.0));
 
-				if (theme_cache.font_separator_outline_size > 0 && font_separator_outline_color.a > 0) {
-					items[i].text_buf->draw_outline(ci, text_pos, theme_cache.font_separator_outline_size, font_separator_outline_color);
+				if (theme_cache.font_separator_outline_size > 0 && theme_cache.font_separator_outline_color.a > 0) {
+					items[i].text_buf->draw_outline(ci, text_pos, theme_cache.font_separator_outline_size, theme_cache.font_separator_outline_color);
 				}
-				items[i].text_buf->draw(ci, text_pos, font_separator_color);
+				items[i].text_buf->draw(ci, text_pos, theme_cache.font_separator_color);
 			}
 		} else {
 			item_ofs.x += icon_ofs + check_ofs;
 
 			if (rtl) {
 				Vector2 text_pos = Size2(control->get_size().width - items[i].text_buf->get_size().width - item_ofs.x, item_ofs.y) + Point2(0, Math::floor((h - items[i].text_buf->get_size().y) / 2.0));
-				if (theme_cache.font_outline_size > 0 && font_outline_color.a > 0) {
-					items[i].text_buf->draw_outline(ci, text_pos, theme_cache.font_outline_size, font_outline_color);
+				if (theme_cache.font_outline_size > 0 && theme_cache.font_outline_color.a > 0) {
+					items[i].text_buf->draw_outline(ci, text_pos, theme_cache.font_outline_size, theme_cache.font_outline_color);
 				}
 				
 
 				items[i].text_buf->draw(ci, text_pos, items[i].disabled ? _get_current_font_color_with_state(State::DisabledNoneLTR) : (i == mouse_over ? _get_current_font_color_with_state(State::HoverNoneLTR) : _get_current_font_color_with_state(State::NormalNoneLTR)));
 			} else {
 				Vector2 text_pos = item_ofs + Point2(0, Math::floor((h - items[i].text_buf->get_size().y) / 2.0));
-				if (theme_cache.font_outline_size > 0 && font_outline_color.a > 0) {
-					items[i].text_buf->draw_outline(ci, text_pos, theme_cache.font_outline_size, font_outline_color);
+				if (theme_cache.font_outline_size > 0 && theme_cache.font_outline_color.a > 0) {
+					items[i].text_buf->draw_outline(ci, text_pos, theme_cache.font_outline_size, theme_cache.font_outline_color);
 				}
 				items[i].text_buf->draw(ci, text_pos, items[i].disabled ? _get_current_font_color_with_state(State::DisabledNoneLTR) : (i == mouse_over ? _get_current_font_color_with_state(State::HoverNoneLTR) : _get_current_font_color_with_state(State::NormalNoneLTR)));
 			}
@@ -912,10 +906,10 @@ void PopupMenu::_draw_items() {
 				item_ofs.x = display_width - panel_style->get_margin(SIDE_RIGHT) - items[i].accel_text_buf->get_size().x - theme_cache.item_end_padding;
 			}
 			Vector2 text_pos = item_ofs + Point2(0, Math::floor((h - items[i].text_buf->get_size().y) / 2.0));
-			if (theme_cache.font_outline_size > 0 && font_outline_color.a > 0) {
-				items[i].accel_text_buf->draw_outline(ci, text_pos, theme_cache.font_outline_size, font_outline_color);
+			if (theme_cache.font_outline_size > 0 && theme_cache.font_outline_color.a > 0) {
+				items[i].accel_text_buf->draw_outline(ci, text_pos, theme_cache.font_outline_size, theme_cache.font_outline_color);
 			}
-			items[i].accel_text_buf->draw(ci, text_pos, i == mouse_over ? _get_current_font_color_with_state(State::HoverNoneLTR) : _get_current_font_accelerator_color());
+			items[i].accel_text_buf->draw(ci, text_pos, i == mouse_over ? _get_current_font_color_with_state(State::HoverNoneLTR) : theme_cache.font_accelerator_color);
 		}
 
 		// Cache the item vertical offset from the first item and the height.
@@ -1035,12 +1029,7 @@ void PopupMenu::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_THEME_CHANGED: {
-			ThemeIntData cur_theme_data;
-			cur_theme_data.set_data_name("panel");
-			for (int i = 0; i < STATE_MAX; i++) {  
-				State cur_state = static_cast<State>(i);
-				scroll_container->add_theme_style_override(cur_theme_data.get_state_data_name(cur_state), _get_current_default_stylebox_with_state(cur_state));
-			}
+			scroll_container->add_theme_style_override("panel", theme_cache.panel_style);
 			[[fallthrough]];
 		}
 		case Control::NOTIFICATION_LAYOUT_DIRECTION_CHANGED:
@@ -2714,77 +2703,6 @@ Ref<StyleBox> PopupMenu::_get_current_state_layer_stylebox() const {
 }
 
 
-bool PopupMenu::_has_current_separator_style() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.separator_style.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.separator_style.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Ref<StyleBox> PopupMenu::_get_current_separator_style() const {
-	State cur_state = get_current_state_with_focus();
-	Ref<StyleBox> style;
-	ThemeIntData cur_theme_data; 
-	cur_theme_data.set_data_name("separator");
-	for (const State &E : theme_cache.separator_style.get_search_order(cur_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
-			style = theme_cache.separator_style.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-bool PopupMenu::_has_current_labeled_separator_left() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.labeled_separator_left.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.labeled_separator_left.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Ref<StyleBox> PopupMenu::_get_current_labeled_separator_left() const {
-	State cur_state = get_current_state_with_focus();
-	Ref<StyleBox> style;
-
-	for (const State &E : theme_cache.labeled_separator_left.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.labeled_separator_left.get_state_data_name(E))) {
-			style = theme_cache.labeled_separator_left.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-bool PopupMenu::_has_current_labeled_separator_right() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.labeled_separator_right.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.labeled_separator_right.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Ref<StyleBox> PopupMenu::_get_current_labeled_separator_right() const {
-	State cur_state = get_current_state_with_focus();
-	Ref<StyleBox> style;
-
-	for (const State &E : theme_cache.labeled_separator_right.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.labeled_separator_right.get_state_data_name(E))) {
-			style = theme_cache.labeled_separator_right.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-
 bool PopupMenu::_has_current_icon_with_state(State p_state) const {
 	for (const State &E : theme_cache.icon.get_search_order(p_state)) {
 		if (has_theme_icon(theme_cache.icon.get_state_data_name(E))) {
@@ -2917,101 +2835,6 @@ Color PopupMenu::_get_current_font_color() const {
 	return cur_font_color;
 }
 
-bool PopupMenu::_has_current_font_accelerator_color() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.font_accelerator_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_accelerator_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color PopupMenu::_get_current_font_accelerator_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_font_accelerator_color;
-
-	for (const State &E : theme_cache.font_accelerator_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_accelerator_color.get_state_data_name(E))) {
-			cur_font_accelerator_color = theme_cache.font_accelerator_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_accelerator_color;
-}
-
-
-bool PopupMenu::_has_current_font_outline_color() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color PopupMenu::_get_current_font_outline_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_font_outline_color;
-
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			cur_font_outline_color = theme_cache.font_outline_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_outline_color;
-}
-
-
-bool PopupMenu::_has_current_font_separator_color() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.font_separator_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_separator_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color PopupMenu::_get_current_font_separator_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_font_separator_color;
-
-	for (const State &E : theme_cache.font_separator_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_separator_color.get_state_data_name(E))) {
-			cur_font_separator_color = theme_cache.font_separator_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_separator_color;
-}
-
-
-bool PopupMenu::_has_current_font_separator_outline_color() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.font_separator_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_separator_outline_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color PopupMenu::_get_current_font_separator_outline_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_font_separator_outline_color;
-
-	for (const State &E : theme_cache.font_separator_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_separator_outline_color.get_state_data_name(E))) {
-			cur_font_separator_outline_color = theme_cache.font_separator_outline_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_separator_outline_color;
-}
-
 
 void PopupMenu::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("activate_item_by_event", "event", "for_global_only"), &PopupMenu::activate_item_by_event, DEFVAL(false));
@@ -3135,9 +2958,9 @@ void PopupMenu::_bind_methods() {
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupMenu, default_stylebox);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupMenu, state_layer_stylebox);
 
-	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupMenu, separator_style, separator);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupMenu, labeled_separator_left);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupMenu, labeled_separator_right);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, PopupMenu, separator_style, separator);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, PopupMenu, labeled_separator_left);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, PopupMenu, labeled_separator_right);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, PopupMenu, v_separation);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, PopupMenu, h_separation);
@@ -3155,21 +2978,21 @@ void PopupMenu::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, PopupMenu, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, PopupMenu, font_size);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_separator_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, PopupMenu, font_separator_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_separator_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, PopupMenu, font_separator_color);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, PopupMenu, font_separator);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, PopupMenu, font_separator_size);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_outline_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, PopupMenu, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_outline_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, PopupMenu, font_outline_color);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, PopupMenu, font_outline_size, "outline_size");
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_separator_outline_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, PopupMenu, font_separator_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_separator_outline_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, PopupMenu, font_separator_outline_color);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, PopupMenu, font_separator_outline_size, "separator_outline_size");
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_accelerator_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, PopupMenu, font_accelerator_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_accelerator_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, PopupMenu, font_accelerator_color);
 
 	Item defaults(true);
 

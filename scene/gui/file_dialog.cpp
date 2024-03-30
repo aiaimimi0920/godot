@@ -675,13 +675,12 @@ void FileDialog::update_file_list() {
 
 	dirs.sort_custom<NaturalNoCaseComparator>();
 	files.sort_custom<NaturalNoCaseComparator>();
-	Color folder_icon_color = _get_current_file_icon_color();
 	while (!dirs.is_empty()) {
 		String &dir_name = dirs.front()->get();
 		TreeItem *ti = tree->create_item(root);
 		ti->set_text(0, dir_name);
 		ti->set_icon(0, theme_cache.folder);
-		ti->set_icon_modulate(0, folder_icon_color);
+		ti->set_icon_modulate(0, theme_cache.folder_icon_color);
 
 		Dictionary d;
 		d["name"] = dir_name;
@@ -1290,40 +1289,6 @@ void FileDialog::_get_property_list(List<PropertyInfo> *p_list) const {
 }
 
 
-bool FileDialog::_has_current_folder_icon_color_with_state(State p_state) const {
-	for (const State &E : theme_cache.folder_icon_color.get_search_order(p_state)) {
-		if (has_theme_color(theme_cache.folder_icon_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool FileDialog::_has_current_folder_icon_color() const {
-	State cur_state = get_current_state_with_focus();
-	return _has_current_folder_icon_color_with_state(cur_state);
-}
-
-
-Color FileDialog::_get_current_folder_icon_color_with_state(State p_state) const {
-	Color cur_color;
-
-	for (const State &E : theme_cache.folder_icon_color.get_search_order(p_state)) {
-		if (has_theme_color(theme_cache.folder_icon_color.get_state_data_name(E))) {
-			cur_color = theme_cache.folder_icon_color.get_data(E);
-			break;
-		}
-	}
-	return cur_color;
-}
-
-Color FileDialog::_get_current_folder_icon_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_color;
-	cur_color = _get_current_folder_icon_color_with_state(cur_state);
-	return cur_color;
-}
-
 bool FileDialog::_has_current_file_icon_color_with_state(State p_state) const {
 	for (const State &E : theme_cache.file_icon_color.get_search_order(p_state)) {
 		if (has_theme_color(theme_cache.file_icon_color.get_state_data_name(E))) {
@@ -1480,8 +1445,8 @@ void FileDialog::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, file);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, create_folder);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, folder_icon_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, FileDialog, folder_icon_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, folder_icon_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, folder_icon_color);
 
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, file_icon_color_role);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, FileDialog, file_icon_color);

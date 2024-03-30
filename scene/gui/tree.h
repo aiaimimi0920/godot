@@ -524,7 +524,7 @@ private:
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
 
-		ThemeStyleboxData default_style{"default_style"};
+		ThemeStyleboxData default_stylebox{"default_stylebox"};
 
 		Ref<Font> font;
 		Ref<Font> tb_font;
@@ -696,10 +696,10 @@ protected:
 	void _notification(int p_what);
 	static void _bind_methods();
 
-	bool _has_current_default_style_with_state(State p_state) const;
-	bool _has_current_default_style() const;
-	Ref<StyleBox> _get_current_default_style_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_default_style() const;
+	bool _has_current_default_stylebox_with_state(State p_state) const;
+	bool _has_current_default_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_default_stylebox() const;
 
 	bool _has_current_selected_with_state(State p_state) const;
 	bool _has_current_selected() const;

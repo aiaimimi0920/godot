@@ -65,8 +65,8 @@ private:
 
 		int side_margin = 0;
 
-		ThemeStyleboxData panel_style{"panel_style"};
-		ThemeStyleboxData tabbar_style{"tabbar_style"};
+		Ref<StyleBox> panel_style;
+		Ref<StyleBox> tabbar_style;
 
 		Ref<Texture2D> menu_icon;
 		Ref<Texture2D> menu_hl_icon;
@@ -84,14 +84,14 @@ private:
 		Ref<Texture2D> decrement_hl_icon;
 		Ref<Texture2D> drop_mark_icon;
 
-		ThemeColorData drop_mark_color{"drop_mark_color"};
-		ThemeColorRoleData drop_mark_color_role{"drop_mark_color_role"};
+		Color drop_mark_color;
+		ColorRole drop_mark_color_role;
 
 		ThemeColorData font_color{"font_color"};
 		ThemeColorRoleData font_color_role{"font_color_role"};
 
-		ThemeColorData font_outline_color{"font_outline_color"};
-		ThemeColorRoleData font_outline_color_role{"font_outline_color_role"};
+		Color font_outline_color;
+		ColorRole font_outline_color_role;
 		
 		Ref<Font> tab_font;
 		int tab_font_size;
@@ -127,17 +127,6 @@ protected:
 	virtual void remove_child_notify(Node *p_child) override;
 	static void _bind_methods();
 
-	bool _has_current_panel_style_with_state(State p_state) const;
-	bool _has_current_panel_style() const;
-	Ref<StyleBox> _get_current_panel_style_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_panel_style() const;	
-
-	bool _has_current_tabbar_style_with_state(State p_state) const;
-	bool _has_current_tabbar_style() const;
-	Ref<StyleBox> _get_current_tabbar_style_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_tabbar_style() const;	
-
-
 	bool _has_current_tab_style_with_state(State p_state) const;
 	bool _has_current_tab_style() const;
 	Ref<StyleBox> _get_current_tab_style_with_state(State p_state) const;
@@ -146,16 +135,11 @@ protected:
 	bool _has_current_focus_tab_style() const;
 	Ref<StyleBox> _get_current_focus_tab_style() const;	
 
-	bool _has_current_drop_mark_color() const;
-	Color _get_current_drop_mark_color() const;
-
 	bool _has_current_font_color_with_state(State p_state) const;
 	bool _has_current_font_color() const;
 	Color _get_current_font_color_with_state(State p_state) const;
 	Color _get_current_font_color() const;
 
-	bool _has_current_font_outline_color() const;
-	Color _get_current_font_outline_color() const;
 
 public:
 	TabBar *get_tab_bar() const;

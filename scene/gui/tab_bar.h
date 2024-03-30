@@ -129,24 +129,23 @@ private:
 		Ref<Texture2D> decrement_hl_icon;
 		Ref<Texture2D> drop_mark_icon;
 
-		ThemeColorData drop_mark_color{"drop_mark_color"};
-		ThemeColorRoleData drop_mark_color_role{"drop_mark_color_role"};
+		Color drop_mark_color;
+		ColorRole drop_mark_color_role;
 
 
 		ThemeColorData font_color{"font_color"};
 		ThemeColorRoleData font_color_role{"font_color_role"};
 
-		ThemeColorData font_outline_color{"font_outline_color"};
-		ThemeColorRoleData font_outline_color_role{"font_outline_color_role"};
+		Color font_outline_color;
+		ColorRole font_outline_color_role;
 		
-
 		Ref<Font> font;
 		int font_size;
 		int outline_size = 0;
 
 		Ref<Texture2D> close_icon;
-		ThemeStyleboxData button_pressed_style{"button_pressed_style"};
-		ThemeStyleboxData button_hl_style{"button_hl_style"};
+		Ref<StyleBox> button_pressed_style;
+		Ref<StyleBox> button_hl_style;
 	} theme_cache;
 
 	int get_tab_width(int p_idx) const;
@@ -184,26 +183,11 @@ protected:
 	bool _has_current_focus_tab_style() const;
 	Ref<StyleBox> _get_current_focus_tab_style() const;	
 
-	bool _has_current_drop_mark_color() const;
-	Color _get_current_drop_mark_color() const;
 
 	bool _has_current_font_color_with_state(State p_state) const;
 	bool _has_current_font_color() const;
 	Color _get_current_font_color_with_state(State p_state) const;
 	Color _get_current_font_color() const;
-
-	bool _has_current_font_outline_color() const;
-	Color _get_current_font_outline_color() const;
-
-	bool _has_current_button_pressed_style_with_state(State p_state) const;
-	bool _has_current_button_pressed_style() const;
-	Ref<StyleBox> _get_current_button_pressed_style_with_state(State p_state) const;	
-	Ref<StyleBox> _get_current_button_pressed_style() const;	
-
-	bool _has_current_button_hl_style_with_state(State p_state) const;
-	bool _has_current_button_hl_style() const;
-	Ref<StyleBox> _get_current_button_hl_style_with_state(State p_state) const;	
-	Ref<StyleBox> _get_current_button_hl_style() const;	
 
 public:
 	Variant _handle_get_drag_data(const String &p_type, const Point2 &p_point);

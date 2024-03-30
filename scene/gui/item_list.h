@@ -145,8 +145,8 @@ private:
 
 		int font_outline_size = 0;
 
-		ThemeColorData font_outline_color{"font_outline_color"};
-		ThemeColorRoleData font_outline_color_role{"font_outline_color_role"};
+		Color font_outline_color;
+		ColorRole font_outline_color_role;
 
 		int line_separation = 0;
 		int icon_margin = 0;
@@ -155,8 +155,8 @@ private:
 
 		ThemeStyleboxData cursor_style{"cursor_style"};
 
-		ThemeColorData guide_color{"guide_color"};
-		ThemeColorRoleData guide_color_role{"guide_color_role"};
+		Color guide_color;
+		ColorRole guide_color_role;
 	} theme_cache;
 
 	void _scroll_changed(double);
@@ -195,11 +195,6 @@ protected:
 	Color _get_current_font_color_with_state(State p_state) const;
 	Color _get_current_font_color() const;
 
-	bool _has_current_font_outline_color() const;
-	Color _get_current_font_outline_color() const;
-
-	bool _has_current_guide_color() const;
-	Color _get_current_guide_color() const;
 
 public:
 	virtual void gui_input(const Ref<InputEvent> &p_event) override;

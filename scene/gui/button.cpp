@@ -208,29 +208,6 @@ Color Button::_get_current_font_color() const {
 	return cur_font_color;
 }
 
-bool Button::_has_current_font_outline_color() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color Button::_get_current_font_outline_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_font_outline_color;
-
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			cur_font_outline_color = theme_cache.font_outline_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_outline_color;
-}
-
 bool Button::_has_current_icon_color() const {
 	State cur_state = get_current_state_with_focus();
 	for (const State &E : theme_cache.icon_color.get_search_order(cur_state)) {
@@ -638,7 +615,7 @@ void Button::_notification(int p_what) {
 					text_ofs.y += custom_element_size.height - drawable_size_remained.height; // Offset by the icon's height.
 				}
 
-				Color font_outline_color = _get_current_font_outline_color();
+				Color font_outline_color = theme_cache.font_outline_color;
 				int font_outline_size = theme_cache.font_outline_size;
 
 				if (font_outline_size > 0 && font_outline_color.a > 0.0f) {
@@ -1108,8 +1085,9 @@ void Button::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, Button, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, Button, font_size);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, Button, font_outline_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, Button, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Button, font_outline_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Button, font_outline_color);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Button, font_outline_size);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, Button, text_icon_font);

@@ -206,7 +206,6 @@ private:
 		Ref<ColorScheme> default_color_scheme;
 
 		ThemeStyleboxData embedded_border{"embedded_border"};
-		ThemeStyleboxData embedded_unfocused_border{"embedded_unfocused_border"};
 
 		Ref<Font> title_font;
 		int title_font_size = 0;
@@ -278,11 +277,6 @@ protected:
 	bool _has_current_embedded_border() const;
 	Ref<StyleBox> _get_current_embedded_border_with_state(State p_state) const;
 	Ref<StyleBox> _get_current_embedded_border() const;
-
-	bool _has_current_embedded_unfocused_border_with_state(State p_state) const;
-	bool _has_current_embedded_unfocused_border() const;
-	Ref<StyleBox> _get_current_embedded_unfocused_border_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_embedded_unfocused_border() const;
 
 	bool _has_current_title_color_with_state(State p_state) const;
 	bool _has_current_title_color() const;

@@ -553,28 +553,27 @@ private:
 		float base_scale = 1.0;
 
 		/* Search */
-		ThemeColorData search_result_color{ "search_result_color" };
-		ThemeColorRoleData search_result_color_role{ "search_result_color_role" };
-		ThemeColorData search_result_border_color{ "search_result_border_color" };
-		ThemeColorRoleData search_result_border_color_role{ "search_result_border_color_role" };
+		Color search_result_color;
+		ColorRole search_result_color_role;
+		Color search_result_border_color;
+		ColorRole search_result_border_color_role;
 
 		/* Caret */
 		int caret_width = 0;
-		ThemeColorData caret_color{ "caret_color" };
-		ThemeColorRoleData caret_color_role{ "caret_color_role" };
-		ThemeColorData caret_background_color{ "caret_background_color" };
-		ThemeColorRoleData caret_background_color_role{ "caret_background_color_role" };
+		Color caret_color;
+		ColorRole caret_color_role;
+		Color caret_background_color;
+		ColorRole caret_background_color_role;
 
 		/* Selection */
-		ThemeColorData font_selected_color{ "font_selected_color" };
-		ThemeColorRoleData font_selected_color_role{ "font_selected_color_role" };
-
-		ThemeColorData selection_color{ "selection_color" };
-		ThemeColorRoleData selection_color_role{ "selection_color_role" };
+		Color font_selected_color;
+		ColorRole font_selected_color_role;
+		Color selection_color;
+		ColorRole selection_color_role;
 
 		/* Other visuals */
-		ThemeStyleboxData default_style{ "default_style" };
-		ThemeStyleboxData style_readonly{ "style_readonly" };
+		ThemeStyleboxData default_stylebox{ "default_stylebox" };
+		Ref<StyleBox> style_readonly;
 		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
 
 		Ref<Texture2D> tab_icon;
@@ -583,29 +582,31 @@ private:
 		Ref<Font> font;
 		int font_size = 16;
 
-		ThemeColorData font_color{ "font_color" };
-		ThemeColorRoleData font_color_role{ "font_color_role" };
 
-		ThemeColorData font_readonly_color{ "font_readonly_color" };
-		ThemeColorRoleData font_readonly_color_role{ "font_readonly_color_role" };
+		Color font_color;
+		ColorRole font_color_role;
 
-		ThemeColorData font_placeholder_color{ "font_placeholder_color" };
-		ThemeColorRoleData font_placeholder_color_role{ "font_placeholder_color_role" };
+		Color font_readonly_color;
+		ColorRole font_readonly_color_role;
 
-		ThemeColorData outline_color{ "outline_color" };
-		ThemeColorRoleData outline_color_role{ "outline_color_role" };
+		Color font_placeholder_color;
+		ColorRole font_placeholder_color_role;
+
+		Color font_outline_color;
+		ColorRole font_outline_color_role;
+
 		int outline_size = 0;
 
 		int line_spacing = 1;
 
-		ThemeColorData background_color{ "background_color" };
-		ThemeColorRoleData background_color_role{ "background_color_role" };
+		Color background_color;
+		ColorRole background_color_role;
 
-		ThemeColorData current_line_color{ "current_line_color" };
-		ThemeColorRoleData current_line_color_role{ "current_line_color_role" };
+		Color current_line_color;
+		ColorRole current_line_color_role;
 
-		ThemeColorData word_highlighted_color{ "word_highlighted_color" };
-		ThemeColorRoleData word_highlighted_color_role{ "word_highlighted_color_role" };
+		Color word_highlighted_color;
+		ColorRole word_highlighted_color_role;
 	} theme_cache;
 
 	bool window_has_focus = true;
@@ -707,53 +708,15 @@ protected:
 	GDVIRTUAL1(_paste, int)
 	GDVIRTUAL1(_paste_primary_clipboard, int)
 
-	bool _has_current_default_style_with_state(State p_state) const;
-	bool _has_current_default_style() const;
-	Ref<StyleBox> _get_current_default_style_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_default_style() const;
-	bool _has_current_focus_default_style() const;
-	Ref<StyleBox> _get_current_focus_default_style() const;
+	bool _has_current_default_stylebox_with_state(State p_state) const;
+	bool _has_current_default_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_default_stylebox() const;
+	bool _has_current_focus_default_stylebox() const;
+	Ref<StyleBox> _get_current_focus_default_stylebox() const;
+
 	bool _has_current_state_layer_stylebox() const;
 	Ref<StyleBox> _get_current_state_layer_stylebox() const;
-	bool _has_current_style_readonly() const;
-	Ref<StyleBox> _get_current_style_readonly() const;
-
-	bool _has_current_search_result_color() const;
-	Color _get_current_search_result_color() const;
-	bool _has_current_search_result_border_color() const;
-	Color _get_current_search_result_border_color() const;
-
-	bool _has_current_caret_color() const;
-	Color _get_current_caret_color() const;
-	bool _has_current_caret_background_color() const;
-	Color _get_current_caret_background_color() const;
-
-	bool _has_current_font_selected_color() const;
-	Color _get_current_font_selected_color() const;
-	bool _has_current_selection_color() const;
-	Color _get_current_selection_color() const;
-
-	bool _has_current_font_color() const;
-	Color _get_current_font_color() const;
-
-	bool _has_current_font_readonly_color() const;
-	Color _get_current_font_readonly_color() const;
-
-	bool _has_current_font_placeholder_color() const;
-	Color _get_current_font_placeholder_color() const;
-
-	bool _has_current_outline_color() const;
-	Color _get_current_outline_color() const;
-
-	bool _has_current_background_color() const;
-	Color _get_current_background_color() const;
-
-	bool _has_current_current_line_color() const;
-	Color _get_current_current_line_color() const;
-
-	bool _has_current_word_highlighted_color() const;
-	Color _get_current_word_highlighted_color() const;
-
 public:
 	/* General overrides. */
 	virtual void unhandled_key_input(const Ref<InputEvent> &p_event) override;

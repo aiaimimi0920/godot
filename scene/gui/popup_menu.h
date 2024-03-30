@@ -156,9 +156,9 @@ class PopupMenu : public Popup {
 		ThemeStyleboxData default_stylebox{ "default_stylebox" };
 		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
 
-		ThemeStyleboxData separator_style{ "separator_style" };
-		ThemeStyleboxData labeled_separator_left{ "labeled_separator_left" };
-		ThemeStyleboxData labeled_separator_right{ "labeled_separator_right" };
+		Ref<StyleBox> separator_style;
+		Ref<StyleBox> labeled_separator_left;
+		Ref<StyleBox> labeled_separator_right;
 
 		int v_separation = 0;
 		int h_separation = 0;
@@ -178,17 +178,17 @@ class PopupMenu : public Popup {
 
 		ThemeColorData font_color{ "font_color" };
 		ThemeColorRoleData font_color_role{ "font_color_role" };
-		ThemeColorData font_accelerator_color{ "font_accelerator_color" };
-		ThemeColorRoleData font_accelerator_color_role{ "font_accelerator_color_role" };
+		Color font_accelerator_color;
+		ColorRole font_accelerator_color_role;
 		int font_outline_size = 0;
-		ThemeColorData font_outline_color{ "font_outline_color" };
-		ThemeColorRoleData font_outline_color_role{ "font_outline_color_role" };
+		Color font_outline_color;
+		ColorRole font_outline_color_role;
 
-		ThemeColorData font_separator_color{ "font_separator_color" };
-		ThemeColorRoleData font_separator_color_role{ "font_separator_color_role" };
+		Color font_separator_color;
+		ColorRole font_separator_color_role;
 		int font_separator_outline_size = 0;
-		ThemeColorData font_separator_outline_color{ "font_separator_outline_color" };
-		ThemeColorRoleData font_separator_outline_color_role{ "font_separator_outline_color_role" };
+		Color font_separator_outline_color;
+		ColorRole font_separator_outline_color_role;
 	} theme_cache;
 
 	void _draw_items();
@@ -225,15 +225,6 @@ protected:
 	bool _has_current_state_layer_stylebox() const;
 	Ref<StyleBox> _get_current_state_layer_stylebox() const;
 
-	bool _has_current_separator_style() const;
-	Ref<StyleBox> _get_current_separator_style() const;
-
-	bool _has_current_labeled_separator_left() const;
-	Ref<StyleBox> _get_current_labeled_separator_left() const;
-
-	bool _has_current_labeled_separator_right() const;
-	Ref<StyleBox> _get_current_labeled_separator_right() const;
-
 	bool _has_current_icon_with_state(State p_state) const;
 	bool _has_current_icon() const;
 	Ref<Texture2D> _get_current_icon_with_state(State p_state) const;
@@ -253,17 +244,6 @@ protected:
 	Color _get_current_font_color_with_state(State p_state) const;
 	Color _get_current_font_color() const;
 
-	bool _has_current_font_accelerator_color() const;
-	Color _get_current_font_accelerator_color() const;
-
-	bool _has_current_font_outline_color() const;
-	Color _get_current_font_outline_color() const;
-
-	bool _has_current_font_separator_color() const;
-	Color _get_current_font_separator_color() const;
-
-	bool _has_current_font_separator_outline_color() const;
-	Color _get_current_font_separator_outline_color() const;
 
 #ifndef DISABLE_DEPRECATED
 	void _add_shortcut_bind_compat_36493(const Ref<Shortcut> &p_shortcut, int p_id = -1, bool p_global = false);

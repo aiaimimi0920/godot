@@ -2773,7 +2773,7 @@ Rect2 Tree::search_item_rect(TreeItem *p_from, TreeItem *p_item) {
 void Tree::_range_click_timeout() {
 	if (range_item_last && !range_drag_enabled && Input::get_singleton()->is_mouse_button_pressed(MouseButton::LEFT)) {
 
-		Ref<StyleBox> panel_style = _get_current_default_style_with_state(State::NormalNoneLTR);
+		Ref<StyleBox> panel_style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 		Point2 pos = get_local_mouse_position() - panel_style->get_offset();
 		if (show_column_titles) {
 			pos.y -= _get_title_button_height();
@@ -3415,7 +3415,7 @@ bool Tree::_scroll(bool p_horizontal, float p_pages) {
 Rect2 Tree::_get_scrollbar_layout_rect() const {
 	const Size2 control_size = get_size();
 	
-	const Ref<StyleBox> background = _get_current_default_style_with_state(State::NormalNoneLTR);
+	const Ref<StyleBox> background = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 
 	// This is the background stylebox's content rect.
 	const real_t width = control_size.x - background->get_margin(SIDE_LEFT) - background->get_margin(SIDE_RIGHT);
@@ -3433,7 +3433,7 @@ Rect2 Tree::_get_scrollbar_layout_rect() const {
 
 Rect2 Tree::_get_content_rect() const {
 	const Size2 control_size = get_size();
-	const Ref<StyleBox> background = _get_current_default_style_with_state(State::NormalNoneLTR);
+	const Ref<StyleBox> background = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 
 	// This is the background stylebox's content rect.
 	const real_t width = control_size.x - background->get_margin(SIDE_LEFT) - background->get_margin(SIDE_RIGHT);
@@ -3627,7 +3627,7 @@ void Tree::gui_input(const Ref<InputEvent> &p_event) {
 
 	Ref<InputEventMouseMotion> mm = p_event;
 	if (mm.is_valid()) {
-		Ref<StyleBox> bg =  _get_current_default_style_with_state(State::NormalNoneLTR);
+		Ref<StyleBox> bg =  _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 		bool rtl = is_layout_rtl();
 
 		Point2 pos = mm->get_position();
@@ -3752,7 +3752,7 @@ void Tree::gui_input(const Ref<InputEvent> &p_event) {
 	}
 
 	Ref<InputEventMouseButton> mb = p_event;
-	Ref<StyleBox> panel_style =  _get_current_default_style_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> panel_style =  _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 	if (mb.is_valid()) {
 		bool rtl = is_layout_rtl();
 
@@ -3857,7 +3857,7 @@ void Tree::gui_input(const Ref<InputEvent> &p_event) {
 		switch (mb->get_button_index()) {
 			case MouseButton::RIGHT:
 			case MouseButton::LEFT: {
-				Ref<StyleBox> panel_style =  _get_current_default_style_with_state(State::NormalNoneLTR);
+				Ref<StyleBox> panel_style =  _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 
 				Ref<StyleBox> bg = panel_style;
 
@@ -4130,7 +4130,7 @@ Size2 Tree::get_internal_min_size() const {
 void Tree::update_scrollbars() {
 	const Size2 control_size = get_size();
 		
-	const Ref<StyleBox> background = _get_current_default_style_with_state(State::NormalNoneLTR);
+	const Ref<StyleBox> background = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 
 	// This is the background stylebox's content rect.
 	const real_t width = control_size.x - background->get_margin(SIDE_LEFT) - background->get_margin(SIDE_RIGHT);
@@ -4297,7 +4297,7 @@ void Tree::_notification(int p_what) {
 			update_scrollbars();
 			RID ci = get_canvas_item();
 
-			Ref<StyleBox> bg = _get_current_default_style_with_state(State::NormalNoneLTR);
+			Ref<StyleBox> bg = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 			const Rect2 content_rect = _get_content_rect();
 
 			Point2 draw_ofs = content_rect.position;
@@ -4365,7 +4365,7 @@ void Tree::_notification(int p_what) {
 			// Otherwise, section heading backgrounds can appear to be in front of the focus outline when scrolling.
 			if (has_focus()) {
 				RenderingServer::get_singleton()->canvas_item_add_clip_ignore(ci, true);
-				_get_current_default_style_with_state(State::FocusNoneLTR)->draw(ci, Rect2(Point2(), get_size()));
+				_get_current_default_stylebox_with_state(State::FocusNoneLTR)->draw(ci, Rect2(Point2(), get_size()));
 				RenderingServer::get_singleton()->canvas_item_add_clip_ignore(ci, false);
 			}
 		} break;
@@ -4404,7 +4404,7 @@ Size2 Tree::get_minimum_size() const {
 	} else {
 		Vector2 min_size = get_internal_min_size();
 		
-		Ref<StyleBox> bg = _get_current_default_style_with_state(State::FocusNoneLTR);
+		Ref<StyleBox> bg = _get_current_default_stylebox_with_state(State::FocusNoneLTR);
 		if (bg.is_valid()) {
 			min_size.x += bg->get_margin(SIDE_LEFT) + bg->get_margin(SIDE_RIGHT);
 			min_size.y += bg->get_margin(SIDE_TOP) + bg->get_margin(SIDE_BOTTOM);
@@ -4730,7 +4730,7 @@ int Tree::get_column_minimum_width(int p_column) const {
 		// Use the custom minimum width.
 		int min_width = columns[p_column].custom_min_width;
 
-		Ref<StyleBox> panel_style =  _get_current_default_style_with_state(State::NormalNoneLTR);
+		Ref<StyleBox> panel_style =  _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 
 		// Check if the visible title of the column is wider.
 		if (show_column_titles) {
@@ -5279,7 +5279,7 @@ int Tree::get_column_at_position(const Point2 &p_pos) const {
 		if (is_layout_rtl()) {
 			pos.x = get_size().width - pos.x;
 		}
-		Ref<StyleBox> panel_style = _get_current_default_style_with_state(NormalNoneLTR);
+		Ref<StyleBox> panel_style = _get_current_default_stylebox_with_state(NormalNoneLTR);
 		pos -= panel_style->get_offset();
 		pos.y -= _get_title_button_height();
 		if (pos.y < 0) {
@@ -5310,7 +5310,7 @@ int Tree::get_drop_section_at_position(const Point2 &p_pos) const {
 		if (is_layout_rtl()) {
 			pos.x = get_size().width - pos.x;
 		}
-		Ref<StyleBox> panel_style = _get_current_default_style_with_state(NormalNoneLTR);
+		Ref<StyleBox> panel_style = _get_current_default_stylebox_with_state(NormalNoneLTR);
 
 		pos -= panel_style->get_offset();
 		pos.y -= _get_title_button_height();
@@ -5342,7 +5342,7 @@ TreeItem *Tree::get_item_at_position(const Point2 &p_pos) const {
 		if (is_layout_rtl()) {
 			pos.x = get_size().width - pos.x;
 		}
-		Ref<StyleBox> panel_style = _get_current_default_style_with_state(NormalNoneLTR);
+		Ref<StyleBox> panel_style = _get_current_default_stylebox_with_state(NormalNoneLTR);
 
 		pos -= panel_style->get_offset();
 		pos.y -= _get_title_button_height();
@@ -5371,7 +5371,7 @@ TreeItem *Tree::get_item_at_position(const Point2 &p_pos) const {
 int Tree::get_button_id_at_position(const Point2 &p_pos) const {
 	if (root) {
 		Point2 pos = p_pos;
-		Ref<StyleBox> panel_style = _get_current_default_style_with_state(NormalNoneLTR);
+		Ref<StyleBox> panel_style = _get_current_default_stylebox_with_state(NormalNoneLTR);
 
 		pos -= panel_style->get_offset();
 		pos.y -= _get_title_button_height();
@@ -5414,7 +5414,7 @@ int Tree::get_button_id_at_position(const Point2 &p_pos) const {
 String Tree::get_tooltip(const Point2 &p_pos) const {
 	if (root) {
 		Point2 pos = p_pos;
-		Ref<StyleBox> panel_style = _get_current_default_style_with_state(NormalNoneLTR);
+		Ref<StyleBox> panel_style = _get_current_default_stylebox_with_state(NormalNoneLTR);
 		pos -= panel_style->get_offset();
 		pos.y -= _get_title_button_height();
 		if (pos.y < 0) {
@@ -5531,36 +5531,36 @@ bool Tree::get_allow_search() const {
 
 
 
-bool Tree::_has_current_default_style_with_state(State p_state) const {
-	for (const State &E : theme_cache.default_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.default_style.get_state_data_name(E))) {
+bool Tree::_has_current_default_stylebox_with_state(State p_state) const {
+	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
 			return true;
 		}
 	}
 	return false;
 }
 
-bool Tree::_has_current_default_style() const {
+bool Tree::_has_current_default_stylebox() const {
 	State cur_state = get_current_state_with_focus();
-	return _has_current_default_style_with_state(cur_state);
+	return _has_current_default_stylebox_with_state(cur_state);
 }
 
 
-Ref<StyleBox> Tree::_get_current_default_style_with_state(State p_state) const {
+Ref<StyleBox> Tree::_get_current_default_stylebox_with_state(State p_state) const {
 	Ref<StyleBox> style;
-	for (const State &E : theme_cache.default_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.default_style.get_state_data_name(E))) {
-			style = theme_cache.default_style.get_data(E);
+	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
+			style = theme_cache.default_stylebox.get_data(E);
 			break;
 		}
 	}
 	return style;
 }
 
-Ref<StyleBox> Tree::_get_current_default_style() const {
+Ref<StyleBox> Tree::_get_current_default_stylebox() const {
 	State cur_state = get_current_state_with_focus();
 	Ref<StyleBox> style;
-	style = _get_current_default_style_with_state(cur_state);
+	style = _get_current_default_stylebox_with_state(cur_state);
 	return style;
 }
 
@@ -5912,7 +5912,7 @@ void Tree::_bind_methods() {
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Tree, default_color_scheme);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, Tree, default_style);
+	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, Tree, default_stylebox);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, Tree, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, Tree, font_size);

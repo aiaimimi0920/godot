@@ -190,16 +190,14 @@ void LinkButton::_notification(int p_what) {
 			}
 
 			if (has_focus()) {
-				Ref<StyleBox> style = _get_current_focus_default_stylebox();
-				if(style.is_valid()){
-					style->draw(ci, Rect2(Point2(), size));
-				}
+				Ref<StyleBox> style = theme_cache.focus;
+				style->draw(ci, Rect2(Point2(), size));
 			}
 
 			int width = text_buf->get_line_width();
 
-			Color font_outline_color = _get_current_font_outline_color();
-			int outline_size = theme_cache.font_outline_size;
+			Color font_outline_color = theme_cache.font_outline_color;
+			int outline_size = theme_cache.outline_size;
 			if (is_layout_rtl()) {
 				if (outline_size > 0 && font_outline_color.a > 0) {
 					text_buf->draw_outline(get_canvas_item(), Vector2(size.width - width, 0), outline_size, font_outline_color);
@@ -332,29 +330,6 @@ Color LinkButton::_get_current_font_color() const {
 }
 
 
-bool LinkButton::_has_current_font_outline_color() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color LinkButton::_get_current_font_outline_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_font_outline_color;
-
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			cur_font_outline_color = theme_cache.font_outline_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_outline_color;
-}
-
 void LinkButton::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_text", "text"), &LinkButton::set_text);
 	ClassDB::bind_method(D_METHOD("get_text"), &LinkButton::get_text);
@@ -386,7 +361,8 @@ void LinkButton::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "structured_text_bidi_override_options"), "set_structured_text_bidi_override_options", "get_structured_text_bidi_override_options");
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, LinkButton, default_color_scheme);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, LinkButton, default_stylebox);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, LinkButton, focus);
+
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, LinkButton, state_layer_stylebox);
 
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, LinkButton, font_color_role);
@@ -394,9 +370,9 @@ void LinkButton::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, LinkButton, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, LinkButton, font_size);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, LinkButton, font_outline_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, LinkButton, font_outline_color);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, LinkButton, font_outline_size);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LinkButton, font_outline_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LinkButton, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, LinkButton, outline_size);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, LinkButton, underline_spacing);
 }

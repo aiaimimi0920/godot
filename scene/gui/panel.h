@@ -37,15 +37,13 @@ class Panel : public Control {
 	GDCLASS(Panel, Control);
 
 	struct ThemeCache {
-		ThemeStyleboxData panel_style{"panel_style"};
+		Ref<StyleBox> panel_style;
 	} theme_cache;
 
 protected:
 	void _notification(int p_what);
 	static void _bind_methods();
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
-
+	
 public:
 	Panel();
 };

@@ -183,6 +183,23 @@ Ref<StyleBoxLine> make_line_stylebox(Color p_color, int p_thickness = 1, float p
 	return style;
 }
 
+Ref<StyleBoxLine> make_color_role_line_stylebox(ColorRole p_color_role, StyleBoxFlat::ElevationLevel p_level = StyleBoxFlat::ElevationLevel::Elevation_Level_0, const Ref<ColorScheme> &default_color_scheme = Ref<ColorScheme>(), int p_thickness = 1, float p_grow_begin = 1, float p_grow_end = 1, bool p_vertical = false) {
+	Ref<StyleBoxLine> style(memnew(StyleBoxLine));
+	if (default_color_scheme.is_valid()) {
+		style->set_default_color_scheme(default_color_scheme);
+	}
+	style->set_color_role(p_color_role);
+	style->set_dynamic_shadow(true);
+	style->set_elevation_level(p_level);
+	style->set_grow_begin(p_grow_begin);
+	style->set_grow_end(p_grow_end);
+	style->set_thickness(p_thickness);
+	style->set_vertical(p_vertical);
+	return style;
+}
+
+
+
 // Theme generation and population routines.
 
 Ref<EditorTheme> EditorThemeManager::_create_base_theme(const Ref<EditorTheme> &p_old_theme) {
@@ -802,14 +819,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 	// Panels.
 	{
 	// Panel.
-		// p_theme->set_stylebox("panel", "Panel", make_flat_stylebox(p_config.dark_color_1, 6, 4, 6, 4, p_config.corner_radius));
-
 		p_theme->set_stylebox("panel", "Panel", make_color_role_flat_stylebox(p_config.dark_color_1_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0,p_config.default_color_scheme,  6, 4, 6, 4, p_config.corner_radius));
-
-		// PanelContainer.
-		// ThemeIntData cur_theme_data;
-		// cur_theme_data.set_data_name("panel");
-		// p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PanelContainer", p_config.panel_container_style);
 
 		p_theme->set_stylebox("panel", "PanelContainer", p_config.panel_container_style);
 
@@ -819,12 +829,15 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			// is only relevant for default tooltips.
 
 			p_theme->set_color("font_color", "TooltipLabel", p_config.font_hover_color);
+			p_theme->set_color_role("font_color_role", "TooltipLabel", p_config.font_hover_color_role);
 			p_theme->set_color("font_shadow_color", "TooltipLabel", Color(0, 0, 0, 0));
+			p_theme->set_color_role("font_shadow_color_role", "TooltipLabel", ColorRole::STATIC_TRANSPARENT);
 
 			Ref<StyleBoxFlat> style_tooltip = p_config.popup_style->duplicate();
 			style_tooltip->set_shadow_size(0);
 			style_tooltip->set_content_margin_all(p_config.base_margin * EDSCALE * 0.5);
 			style_tooltip->set_bg_color(p_config.dark_color_3 * Color(0.8, 0.8, 0.8, 0.9));
+			style_tooltip->set_bg_color_role(p_config.dark_color_3_role);
 			style_tooltip->set_border_width_all(0);
 			p_theme->set_stylebox("panel", "TooltipPanel", style_tooltip);
 		}
@@ -836,67 +849,115 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 	// Buttons.
 	{
 		// Button.
+		ThemeIntData cur_theme_data;
+		cur_theme_data.set_data_name("default_stylebox");
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", p_config.button_style);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", p_config.button_style_hover);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", p_config.button_style_pressed);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", p_config.button_style_focus);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", p_config.button_style_disabled);
 
-		p_theme->set_stylebox("normal", "Button", p_config.button_style);
-		p_theme->set_stylebox("hover", "Button", p_config.button_style_hover);
-		p_theme->set_stylebox("pressed", "Button", p_config.button_style_pressed);
-		p_theme->set_stylebox("focus", "Button", p_config.button_style_focus);
-		p_theme->set_stylebox("disabled", "Button", p_config.button_style_disabled);
+		cur_theme_data.set_data_name("font_color_role");
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", p_config.font_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", p_config.font_hover_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "Button", p_config.font_hover_pressed_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", p_config.font_focus_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", p_config.font_pressed_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", p_config.font_disabled_color_role);
+		p_theme->set_color_role("font_outline_color_role", "Button", p_config.font_outline_color_role);
 
-		p_theme->set_color("font_color", "Button", p_config.font_color);
-		p_theme->set_color("font_hover_color", "Button", p_config.font_hover_color);
-		p_theme->set_color("font_hover_pressed_color", "Button", p_config.font_hover_pressed_color);
-		p_theme->set_color("font_focus_color", "Button", p_config.font_focus_color);
-		p_theme->set_color("font_pressed_color", "Button", p_config.font_pressed_color);
-		p_theme->set_color("font_disabled_color", "Button", p_config.font_disabled_color);
+		cur_theme_data.set_data_name("font_color");
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", p_config.font_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", p_config.font_hover_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "Button", p_config.font_hover_pressed_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", p_config.font_focus_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", p_config.font_pressed_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", p_config.font_disabled_color);
 		p_theme->set_color("font_outline_color", "Button", p_config.font_outline_color);
 
-		p_theme->set_color("icon_normal_color", "Button", p_config.icon_normal_color);
-		p_theme->set_color("icon_hover_color", "Button", p_config.icon_hover_color);
-		p_theme->set_color("icon_focus_color", "Button", p_config.icon_focus_color);
-		p_theme->set_color("icon_hover_pressed_color", "Button", p_config.icon_pressed_color);
-		p_theme->set_color("icon_pressed_color", "Button", p_config.icon_pressed_color);
-		p_theme->set_color("icon_disabled_color", "Button", p_config.icon_disabled_color);
+		cur_theme_data.set_data_name("icon_color_role");
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", p_config.icon_normal_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", p_config.icon_hover_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", p_config.icon_focus_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "Button", p_config.icon_pressed_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", p_config.icon_pressed_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", p_config.icon_disabled_color_role);
+
+		cur_theme_data.set_data_name("icon_color");
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", p_config.icon_normal_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", p_config.icon_hover_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", p_config.icon_focus_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "Button", p_config.icon_pressed_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", p_config.icon_pressed_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", p_config.icon_disabled_color);
 
 		p_theme->set_constant("h_separation", "Button", 4 * EDSCALE);
 		p_theme->set_constant("outline_size", "Button", 0);
 
 		// MenuButton.
+		cur_theme_data.set_data_name("default_stylebox");
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", p_config.panel_container_style);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", p_config.button_style_hover);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuButton", p_config.panel_container_style);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", p_config.panel_container_style);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", p_config.panel_container_style);
 
-		p_theme->set_stylebox("normal", "MenuButton", p_config.panel_container_style);
-		p_theme->set_stylebox("hover", "MenuButton", p_config.button_style_hover);
-		p_theme->set_stylebox("pressed", "MenuButton", p_config.panel_container_style);
-		p_theme->set_stylebox("focus", "MenuButton", p_config.panel_container_style);
-		p_theme->set_stylebox("disabled", "MenuButton", p_config.panel_container_style);
+		cur_theme_data.set_data_name("font_color_role");
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", p_config.font_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", p_config.font_hover_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "MenuButton", p_config.font_hover_pressed_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", p_config.font_focus_color_role);
 
-		p_theme->set_color("font_color", "MenuButton", p_config.font_color);
-		p_theme->set_color("font_hover_color", "MenuButton", p_config.font_hover_color);
-		p_theme->set_color("font_hover_pressed_color", "MenuButton", p_config.font_hover_pressed_color);
-		p_theme->set_color("font_focus_color", "MenuButton", p_config.font_focus_color);
+		p_theme->set_color_role("font_outline_color_role", "MenuButton", p_config.font_outline_color_role);
+
+		cur_theme_data.set_data_name("font_color");
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", p_config.font_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", p_config.font_hover_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "MenuButton", p_config.font_hover_pressed_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", p_config.font_focus_color);
+
 		p_theme->set_color("font_outline_color", "MenuButton", p_config.font_outline_color);
 
 		p_theme->set_constant("outline_size", "MenuButton", 0);
 
 		// MenuBar.
+		cur_theme_data.set_data_name("default_stylebox");
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuBar", p_config.button_style);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuBar", p_config.button_style_hover);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuBar", p_config.button_style_pressed);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuBar", p_config.button_style_disabled);
 
-		p_theme->set_stylebox("normal", "MenuBar", p_config.button_style);
-		p_theme->set_stylebox("hover", "MenuBar", p_config.button_style_hover);
-		p_theme->set_stylebox("pressed", "MenuBar", p_config.button_style_pressed);
-		p_theme->set_stylebox("disabled", "MenuBar", p_config.button_style_disabled);
+		cur_theme_data.set_data_name("font_color_role");
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuBar", p_config.font_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuBar", p_config.font_hover_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "MenuBar", p_config.font_hover_pressed_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuBar", p_config.font_focus_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuBar", p_config.font_pressed_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuBar", p_config.font_disabled_color_role);
+		p_theme->set_color_role("font_outline_color_role", "MenuBar", p_config.font_outline_color_role);
 
-		p_theme->set_color("font_color", "MenuBar", p_config.font_color);
-		p_theme->set_color("font_hover_color", "MenuBar", p_config.font_hover_color);
-		p_theme->set_color("font_hover_pressed_color", "MenuBar", p_config.font_hover_pressed_color);
-		p_theme->set_color("font_focus_color", "MenuBar", p_config.font_focus_color);
-		p_theme->set_color("font_pressed_color", "MenuBar", p_config.font_pressed_color);
-		p_theme->set_color("font_disabled_color", "MenuBar", p_config.font_disabled_color);
+		cur_theme_data.set_data_name("font_color");
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuBar", p_config.font_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuBar", p_config.font_hover_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "MenuBar", p_config.font_hover_pressed_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuBar", p_config.font_focus_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuBar", p_config.font_pressed_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuBar", p_config.font_disabled_color);
 		p_theme->set_color("font_outline_color", "MenuBar", p_config.font_outline_color);
 
-		p_theme->set_color("icon_normal_color", "MenuBar", p_config.icon_normal_color);
-		p_theme->set_color("icon_hover_color", "MenuBar", p_config.icon_hover_color);
-		p_theme->set_color("icon_focus_color", "MenuBar", p_config.icon_focus_color);
-		p_theme->set_color("icon_pressed_color", "MenuBar", p_config.icon_pressed_color);
-		p_theme->set_color("icon_disabled_color", "MenuBar", p_config.icon_disabled_color);
+		cur_theme_data.set_data_name("icon_color_role");
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuBar", p_config.icon_normal_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuBar", p_config.icon_hover_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuBar", p_config.icon_focus_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuBar", p_config.icon_pressed_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuBar", p_config.icon_disabled_color_role);
+
+		cur_theme_data.set_data_name("icon_color");
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuBar", p_config.icon_normal_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuBar", p_config.icon_hover_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuBar", p_config.icon_focus_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuBar", p_config.icon_pressed_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuBar", p_config.icon_disabled_color);
 
 		p_theme->set_constant("h_separation", "MenuBar", 4 * EDSCALE);
 		p_theme->set_constant("outline_size", "MenuBar", 0);
@@ -915,30 +976,48 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			option_button_pressed_style->set_content_margin(SIDE_RIGHT, 4 * EDSCALE);
 			option_button_disabled_style->set_content_margin(SIDE_RIGHT, 4 * EDSCALE);
 
-			p_theme->set_stylebox("focus", "OptionButton", option_button_focus_style);
-			p_theme->set_stylebox("normal", "OptionButton", p_config.button_style);
-			p_theme->set_stylebox("hover", "OptionButton", p_config.button_style_hover);
-			p_theme->set_stylebox("pressed", "OptionButton", p_config.button_style_pressed);
-			p_theme->set_stylebox("disabled", "OptionButton", p_config.button_style_disabled);
+			cur_theme_data.set_data_name("default_stylebox");
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuBar", option_button_focus_style);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuBar", p_config.button_style);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneRTL), "MenuBar", option_button_normal_style);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuBar", p_config.button_style_hover);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneRTL), "MenuBar", option_button_hover_style);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuBar", p_config.button_style_pressed);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneRTL), "MenuBar", option_button_pressed_style);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuBar", p_config.button_style_disabled);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneRTL), "MenuBar", option_button_disabled_style);
 
-			p_theme->set_stylebox("normal_mirrored", "OptionButton", option_button_normal_style);
-			p_theme->set_stylebox("hover_mirrored", "OptionButton", option_button_hover_style);
-			p_theme->set_stylebox("pressed_mirrored", "OptionButton", option_button_pressed_style);
-			p_theme->set_stylebox("disabled_mirrored", "OptionButton", option_button_disabled_style);
+			cur_theme_data.set_data_name("font_color_role");
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", p_config.font_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", p_config.font_hover_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "OptionButton", p_config.font_hover_pressed_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", p_config.font_focus_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", p_config.font_pressed_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", p_config.font_disabled_color_role);
+			p_theme->set_color_role("font_outline_color_role", "OptionButton", p_config.font_outline_color_role);
 
-			p_theme->set_color("font_color", "OptionButton", p_config.font_color);
-			p_theme->set_color("font_hover_color", "OptionButton", p_config.font_hover_color);
-			p_theme->set_color("font_hover_pressed_color", "OptionButton", p_config.font_hover_pressed_color);
-			p_theme->set_color("font_focus_color", "OptionButton", p_config.font_focus_color);
-			p_theme->set_color("font_pressed_color", "OptionButton", p_config.font_pressed_color);
-			p_theme->set_color("font_disabled_color", "OptionButton", p_config.font_disabled_color);
+			cur_theme_data.set_data_name("font_color");
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", p_config.font_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", p_config.font_hover_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "OptionButton", p_config.font_hover_pressed_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", p_config.font_focus_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", p_config.font_pressed_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", p_config.font_disabled_color);
 			p_theme->set_color("font_outline_color", "OptionButton", p_config.font_outline_color);
 
-			p_theme->set_color("icon_normal_color", "OptionButton", p_config.icon_normal_color);
-			p_theme->set_color("icon_hover_color", "OptionButton", p_config.icon_hover_color);
-			p_theme->set_color("icon_focus_color", "OptionButton", p_config.icon_focus_color);
-			p_theme->set_color("icon_pressed_color", "OptionButton", p_config.icon_pressed_color);
-			p_theme->set_color("icon_disabled_color", "OptionButton", p_config.icon_disabled_color);
+			cur_theme_data.set_data_name("icon_color_role");
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", p_config.icon_normal_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", p_config.icon_hover_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", p_config.icon_focus_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", p_config.icon_pressed_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", p_config.icon_disabled_color_role);
+
+			cur_theme_data.set_data_name("icon_color");
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", p_config.icon_normal_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", p_config.icon_hover_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", p_config.icon_focus_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", p_config.icon_pressed_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", p_config.icon_disabled_color);
 
 			p_theme->set_icon("arrow", "OptionButton", p_theme->get_icon(SNAME("GuiOptionArrow"), EditorStringName(EditorIcons)));
 			p_theme->set_constant("arrow_margin", "OptionButton", p_config.widget_margin.x - 2 * EDSCALE);
@@ -948,36 +1027,54 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		}
 
 		// CheckButton.
+		cur_theme_data.set_data_name("default_stylebox");
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", p_config.panel_container_style);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", p_config.panel_container_style);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", p_config.panel_container_style);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", p_config.panel_container_style);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckButton", p_config.panel_container_style);
 
-		p_theme->set_stylebox("normal", "CheckButton", p_config.panel_container_style);
-		p_theme->set_stylebox("pressed", "CheckButton", p_config.panel_container_style);
-		p_theme->set_stylebox("disabled", "CheckButton", p_config.panel_container_style);
-		p_theme->set_stylebox("hover", "CheckButton", p_config.panel_container_style);
-		p_theme->set_stylebox("hover_pressed", "CheckButton", p_config.panel_container_style);
+		cur_theme_data.set_data_name("checked_icon");
+		p_theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckButton", p_theme->get_icon(SNAME("GuiToggleOn"), EditorStringName(EditorIcons)));
+		p_theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedRTL), "CheckButton", p_theme->get_icon(SNAME("GuiToggleOnMirrored"), EditorStringName(EditorIcons)));
+		p_theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckButton",  p_theme->get_icon(SNAME("GuiToggleOnDisabled"), EditorStringName(EditorIcons)));
+		p_theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedRTL), "CheckButton",  p_theme->get_icon(SNAME("GuiToggleOnDisabledMirrored"), EditorStringName(EditorIcons)));
+		p_theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckButton", p_theme->get_icon(SNAME("GuiToggleOff"), EditorStringName(EditorIcons)));
+		p_theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedRTL), "CheckButton", p_theme->get_icon(SNAME("GuiToggleOffMirrored"), EditorStringName(EditorIcons)));
+		p_theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckButton", p_theme->get_icon(SNAME("GuiToggleOffDisabled"), EditorStringName(EditorIcons)));
+		p_theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedRTL), "CheckButton", p_theme->get_icon(SNAME("GuiToggleOffDisabledMirrored"), EditorStringName(EditorIcons)));
 
-		p_theme->set_icon("checked", "CheckButton", p_theme->get_icon(SNAME("GuiToggleOn"), EditorStringName(EditorIcons)));
-		p_theme->set_icon("checked_disabled", "CheckButton", p_theme->get_icon(SNAME("GuiToggleOnDisabled"), EditorStringName(EditorIcons)));
-		p_theme->set_icon("unchecked", "CheckButton", p_theme->get_icon(SNAME("GuiToggleOff"), EditorStringName(EditorIcons)));
-		p_theme->set_icon("unchecked_disabled", "CheckButton", p_theme->get_icon(SNAME("GuiToggleOffDisabled"), EditorStringName(EditorIcons)));
+		cur_theme_data.set_data_name("font_color_role");
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", p_config.font_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", p_config.font_hover_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckButton", p_config.font_hover_pressed_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", p_config.font_focus_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", p_config.font_pressed_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", p_config.font_disabled_color_role);
+		p_theme->set_color_role("font_outline_color_role", "CheckButton", p_config.font_outline_color_role);
 
-		p_theme->set_icon("checked_mirrored", "CheckButton", p_theme->get_icon(SNAME("GuiToggleOnMirrored"), EditorStringName(EditorIcons)));
-		p_theme->set_icon("checked_disabled_mirrored", "CheckButton", p_theme->get_icon(SNAME("GuiToggleOnDisabledMirrored"), EditorStringName(EditorIcons)));
-		p_theme->set_icon("unchecked_mirrored", "CheckButton", p_theme->get_icon(SNAME("GuiToggleOffMirrored"), EditorStringName(EditorIcons)));
-		p_theme->set_icon("unchecked_disabled_mirrored", "CheckButton", p_theme->get_icon(SNAME("GuiToggleOffDisabledMirrored"), EditorStringName(EditorIcons)));
-
-		p_theme->set_color("font_color", "CheckButton", p_config.font_color);
-		p_theme->set_color("font_hover_color", "CheckButton", p_config.font_hover_color);
-		p_theme->set_color("font_hover_pressed_color", "CheckButton", p_config.font_hover_pressed_color);
-		p_theme->set_color("font_focus_color", "CheckButton", p_config.font_focus_color);
-		p_theme->set_color("font_pressed_color", "CheckButton", p_config.font_pressed_color);
-		p_theme->set_color("font_disabled_color", "CheckButton", p_config.font_disabled_color);
+		cur_theme_data.set_data_name("font_color");
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", p_config.font_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", p_config.font_hover_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckButton", p_config.font_hover_pressed_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", p_config.font_focus_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", p_config.font_pressed_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", p_config.font_disabled_color);
 		p_theme->set_color("font_outline_color", "CheckButton", p_config.font_outline_color);
 
-		p_theme->set_color("icon_normal_color", "CheckButton", p_config.icon_normal_color);
-		p_theme->set_color("icon_hover_color", "CheckButton", p_config.icon_hover_color);
-		p_theme->set_color("icon_focus_color", "CheckButton", p_config.icon_focus_color);
-		p_theme->set_color("icon_pressed_color", "CheckButton", p_config.icon_pressed_color);
-		p_theme->set_color("icon_disabled_color", "CheckButton", p_config.icon_disabled_color);
+		cur_theme_data.set_data_name("icon_color_role");
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", p_config.icon_normal_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", p_config.icon_hover_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", p_config.icon_focus_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", p_config.icon_pressed_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", p_config.icon_disabled_color_role);
+
+		cur_theme_data.set_data_name("icon_color");
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", p_config.icon_normal_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", p_config.icon_hover_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", p_config.icon_focus_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", p_config.icon_pressed_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", p_config.icon_disabled_color);
 
 		p_theme->set_constant("h_separation", "CheckButton", 8 * EDSCALE);
 		p_theme->set_constant("check_v_offset", "CheckButton", 0);
@@ -988,33 +1085,57 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			Ref<StyleBoxFlat> checkbox_style = p_config.panel_container_style->duplicate();
 			checkbox_style->set_content_margin_all(p_config.base_margin * EDSCALE);
 
-			p_theme->set_stylebox("normal", "CheckBox", checkbox_style);
-			p_theme->set_stylebox("pressed", "CheckBox", checkbox_style);
-			p_theme->set_stylebox("disabled", "CheckBox", checkbox_style);
-			p_theme->set_stylebox("hover", "CheckBox", checkbox_style);
-			p_theme->set_stylebox("hover_pressed", "CheckBox", checkbox_style);
-			p_theme->set_icon("checked", "CheckBox", p_theme->get_icon(SNAME("GuiChecked"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("unchecked", "CheckBox", p_theme->get_icon(SNAME("GuiUnchecked"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("radio_checked", "CheckBox", p_theme->get_icon(SNAME("GuiRadioChecked"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("radio_unchecked", "CheckBox", p_theme->get_icon(SNAME("GuiRadioUnchecked"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("checked_disabled", "CheckBox", p_theme->get_icon(SNAME("GuiCheckedDisabled"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("unchecked_disabled", "CheckBox", p_theme->get_icon(SNAME("GuiUncheckedDisabled"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("radio_checked_disabled", "CheckBox", p_theme->get_icon(SNAME("GuiRadioCheckedDisabled"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("radio_unchecked_disabled", "CheckBox", p_theme->get_icon(SNAME("GuiRadioUncheckedDisabled"), EditorStringName(EditorIcons)));
+			cur_theme_data.set_data_name("default_stylebox");
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", checkbox_style);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", checkbox_style);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", checkbox_style);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", checkbox_style);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckBox", checkbox_style);
 
-			p_theme->set_color("font_color", "CheckBox", p_config.font_color);
-			p_theme->set_color("font_hover_color", "CheckBox", p_config.font_hover_color);
-			p_theme->set_color("font_hover_pressed_color", "CheckBox", p_config.font_hover_pressed_color);
-			p_theme->set_color("font_focus_color", "CheckBox", p_config.font_focus_color);
-			p_theme->set_color("font_pressed_color", "CheckBox", p_config.font_pressed_color);
-			p_theme->set_color("font_disabled_color", "CheckBox", p_config.font_disabled_color);
+
+			cur_theme_data.set_data_name("check_icon");
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckBox", p_theme->get_icon(SNAME("GuiChecked"), EditorStringName(EditorIcons)));
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckBox", p_theme->get_icon(SNAME("GuiUnchecked"), EditorStringName(EditorIcons)));
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckBox", p_theme->get_icon(SNAME("GuiCheckedDisabled"), EditorStringName(EditorIcons)));
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckBox", p_theme->get_icon(SNAME("GuiUncheckedDisabled"), EditorStringName(EditorIcons)));
+
+			cur_theme_data.set_data_name("radio_check_icon");
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckBox", p_theme->get_icon(SNAME("GuiRadioChecked"), EditorStringName(EditorIcons)));
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckBox", p_theme->get_icon(SNAME("GuiRadioUnchecked"), EditorStringName(EditorIcons)));
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckBox", p_theme->get_icon(SNAME("GuiRadioCheckedDisabled"), EditorStringName(EditorIcons)));
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckBox", p_theme->get_icon(SNAME("GuiRadioUncheckedDisabled"), EditorStringName(EditorIcons)));
+
+			cur_theme_data.set_data_name("font_color_role");
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", p_config.font_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", p_config.font_hover_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckBox", p_config.font_hover_pressed_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", p_config.font_focus_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", p_config.font_pressed_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", p_config.font_disabled_color_role);
+			p_theme->set_color_role("font_outline_color_role", "CheckBox", p_config.font_outline_color_role);
+
+			cur_theme_data.set_data_name("font_color");
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", p_config.font_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", p_config.font_hover_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckBox", p_config.font_hover_pressed_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", p_config.font_focus_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", p_config.font_pressed_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", p_config.font_disabled_color);
 			p_theme->set_color("font_outline_color", "CheckBox", p_config.font_outline_color);
 
-			p_theme->set_color("icon_normal_color", "CheckBox", p_config.icon_normal_color);
-			p_theme->set_color("icon_hover_color", "CheckBox", p_config.icon_hover_color);
-			p_theme->set_color("icon_focus_color", "CheckBox", p_config.icon_focus_color);
-			p_theme->set_color("icon_pressed_color", "CheckBox", p_config.icon_pressed_color);
-			p_theme->set_color("icon_disabled_color", "CheckBox", p_config.icon_disabled_color);
+			cur_theme_data.set_data_name("icon_color_role");
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", p_config.icon_normal_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", p_config.icon_hover_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", p_config.icon_focus_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", p_config.icon_pressed_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", p_config.icon_disabled_color_role);
+
+			cur_theme_data.set_data_name("icon_color");
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", p_config.icon_normal_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", p_config.icon_hover_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", p_config.icon_focus_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", p_config.icon_pressed_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", p_config.icon_disabled_color);
 
 			p_theme->set_constant("h_separation", "CheckBox", 8 * EDSCALE);
 			p_theme->set_constant("check_v_offset", "CheckBox", 0);
@@ -1024,21 +1145,34 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		// LinkButton.
 
 		p_theme->set_stylebox("focus", "LinkButton", p_config.base_empty_style);
-		p_theme->set_color("font_color", "LinkButton", p_config.font_color);
-		p_theme->set_color("font_hover_color", "LinkButton", p_config.font_hover_color);
-		p_theme->set_color("font_hover_pressed_color", "LinkButton", p_config.font_hover_pressed_color);
-		p_theme->set_color("font_focus_color", "LinkButton", p_config.font_focus_color);
-		p_theme->set_color("font_pressed_color", "LinkButton", p_config.font_pressed_color);
-		p_theme->set_color("font_disabled_color", "LinkButton", p_config.font_disabled_color);
+
+		cur_theme_data.set_data_name("font_color_role");
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LinkButton", p_config.font_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "LinkButton", p_config.font_hover_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "LinkButton", p_config.font_hover_pressed_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "LinkButton", p_config.font_focus_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "LinkButton", p_config.font_pressed_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "LinkButton", p_config.font_disabled_color_role);
+		p_theme->set_color_role("font_outline_color_role", "LinkButton", p_config.font_outline_color_role);
+
+		cur_theme_data.set_data_name("font_color");
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LinkButton", p_config.font_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "LinkButton", p_config.font_hover_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "LinkButton", p_config.font_hover_pressed_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "LinkButton", p_config.font_focus_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "LinkButton", p_config.font_pressed_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "LinkButton", p_config.font_disabled_color);
 		p_theme->set_color("font_outline_color", "LinkButton", p_config.font_outline_color);
 
 		p_theme->set_constant("outline_size", "LinkButton", 0);
 	}
 
+
 	// Tree & ItemList.
 	{
 		Ref<StyleBoxFlat> style_tree_focus = p_config.base_style->duplicate();
 		style_tree_focus->set_bg_color(p_config.highlight_color);
+		style_tree_focus->set_bg_color_role(p_config.highlight_color_role);
 		style_tree_focus->set_border_width_all(0);
 
 		Ref<StyleBoxFlat> style_tree_selected = style_tree_focus->duplicate();
@@ -1059,18 +1193,34 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_icon("updown", "Tree", p_theme->get_icon(SNAME("GuiTreeUpdown"), EditorStringName(EditorIcons)));
 			p_theme->set_icon("select_arrow", "Tree", p_theme->get_icon(SNAME("GuiDropdown"), EditorStringName(EditorIcons)));
 
-			p_theme->set_stylebox("panel", "Tree", p_config.tree_panel_style);
-			p_theme->set_stylebox("focus", "Tree", p_config.button_style_focus);
-			p_theme->set_stylebox("custom_button", "Tree", make_empty_stylebox());
-			p_theme->set_stylebox("custom_button_pressed", "Tree", make_empty_stylebox());
-			p_theme->set_stylebox("custom_button_hover", "Tree", p_config.button_style);
+			cur_theme_data.set_data_name("default_stylebox");
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Tree", p_config.tree_panel_style);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Tree", p_config.button_style_focus);
 
+			cur_theme_data.set_data_name("custom_button");
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Tree", make_empty_stylebox());
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Tree", make_empty_stylebox());
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Tree", p_config.button_style);
+
+			p_theme->set_color_role("custom_button_font_highlight_role", "Tree", p_config.font_hover_color_role);
 			p_theme->set_color("custom_button_font_highlight", "Tree", p_config.font_hover_color);
-			p_theme->set_color("font_color", "Tree", p_config.font_color);
-			p_theme->set_color("font_selected_color", "Tree", p_config.mono_color);
-			p_theme->set_color("font_disabled_color", "Tree", p_config.font_disabled_color);
+
+			cur_theme_data.set_data_name("font_color_role");
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Tree", p_config.font_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "Tree", p_config.mono_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Tree", p_config.font_disabled_color_role);
+			p_theme->set_color_role("font_outline_color_role", "Tree", p_config.font_outline_color_role);
+
+			cur_theme_data.set_data_name("font_color");
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Tree", p_config.font_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "Tree", p_config.mono_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Tree", p_config.font_disabled_color);
 			p_theme->set_color("font_outline_color", "Tree", p_config.font_outline_color);
+
+			p_theme->set_color_role("title_button_color_role", "Tree", p_config.font_color_role);
 			p_theme->set_color("title_button_color", "Tree", p_config.font_color);
+
+			p_theme->set_color_role("drop_position_color_role", "Tree", p_config.accent_color_role);
 			p_theme->set_color("drop_position_color", "Tree", p_config.accent_color);
 
 			p_theme->set_constant("v_separation", "Tree", p_config.separation_margin);
@@ -1093,13 +1243,17 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_constant("scrollbar_v_separation", "Tree", 1 * EDSCALE);
 
 			Color relationship_line_color = p_config.mono_color * Color(1, 1, 1, p_config.relationship_line_opacity);
+			ColorRole relationship_line_color_role = ColorRole::ON_SURFACE_65;
 
 			p_theme->set_constant("draw_guides", "Tree", p_config.relationship_line_opacity < 0.01);
+			p_theme->set_color_role("guide_color_role", "Tree", guide_color_role);
 			p_theme->set_color("guide_color", "Tree", guide_color);
 
 			int relationship_line_width = 1;
 			Color parent_line_color = p_config.mono_color * Color(1, 1, 1, CLAMP(p_config.relationship_line_opacity + 0.45, 0.0, 1.0));
+			ColorRole parent_line_color_role = ColorRole::ON_SURFACE_60;
 			Color children_line_color = p_config.mono_color * Color(1, 1, 1, CLAMP(p_config.relationship_line_opacity + 0.25, 0.0, 1.0));
+			ColorRole children_line_color_role = ColorRole::ON_SURFACE_38;
 
 			p_theme->set_constant("draw_relationship_lines", "Tree", p_config.relationship_line_opacity >= 0.01);
 			p_theme->set_constant("relationship_line_width", "Tree", relationship_line_width);
@@ -1107,36 +1261,51 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_constant("children_hl_line_width", "Tree", relationship_line_width);
 			p_theme->set_constant("parent_hl_line_margin", "Tree", relationship_line_width * 3);
 			p_theme->set_color("relationship_line_color", "Tree", relationship_line_color);
+			p_theme->set_color_role("relationship_line_color_role", "Tree", relationship_line_color_role);
 			p_theme->set_color("parent_hl_line_color", "Tree", parent_line_color);
+			p_theme->set_color_role("parent_hl_line_color_role", "Tree", parent_line_color_role);
 			p_theme->set_color("children_hl_line_color", "Tree", children_line_color);
+			p_theme->set_color_role("children_hl_line_color_role", "Tree", children_line_color_role);
 			p_theme->set_color("drop_position_color", "Tree", p_config.accent_color);
+			p_theme->set_color_role("drop_position_color_role", "Tree", p_config.accent_color_role);
 
 			Ref<StyleBoxFlat> style_tree_btn = p_config.base_style->duplicate();
 			style_tree_btn->set_bg_color(p_config.highlight_color);
+			style_tree_btn->set_bg_color_role(p_config.highlight_color_role);
 			style_tree_btn->set_border_width_all(0);
 			p_theme->set_stylebox("button_pressed", "Tree", style_tree_btn);
 
-			Ref<StyleBoxFlat> style_tree_hover = p_config.base_style->duplicate();
-			style_tree_hover->set_bg_color(p_config.highlight_color * Color(1, 1, 1, 0.4));
-			style_tree_hover->set_border_width_all(0);
-			p_theme->set_stylebox("hover", "Tree", style_tree_hover);
+			// Ref<StyleBoxFlat> style_tree_hover = p_config.base_style->duplicate();
+			// style_tree_hover->set_bg_color(p_config.highlight_color * Color(1, 1, 1, 0.4));
+			// style_tree_hover->set_bg_color_role(ColorRole::INVERSE_PRIMARY_12);
+			// style_tree_hover->set_border_width_all(0);
+			// p_theme->set_stylebox("hover", "Tree", style_tree_hover);
 
-			p_theme->set_stylebox("selected_focus", "Tree", style_tree_focus);
-			p_theme->set_stylebox("selected", "Tree", style_tree_selected);
+			cur_theme_data.set_data_name("selected");
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "Tree", style_tree_selected);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusCheckedLTR), "Tree", style_tree_focus);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Tree", style_tree_selected);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Tree",style_tree_focus);
 
 			Ref<StyleBoxFlat> style_tree_cursor = p_config.base_style->duplicate();
 			style_tree_cursor->set_draw_center(false);
 			style_tree_cursor->set_border_width_all(MAX(1, p_config.border_width));
 			style_tree_cursor->set_border_color(p_config.contrast_color_1);
+			style_tree_cursor->set_border_color_role(p_config.contrast_color_1_role);
 
 			Ref<StyleBoxFlat> style_tree_title = p_config.base_style->duplicate();
 			style_tree_title->set_bg_color(p_config.dark_color_3);
+			style_tree_title->set_bg_color_role(p_config.dark_color_3_role);
 			style_tree_title->set_border_width_all(0);
-			p_theme->set_stylebox("cursor", "Tree", style_tree_cursor);
-			p_theme->set_stylebox("cursor_unfocused", "Tree", style_tree_cursor);
-			p_theme->set_stylebox("title_button_normal", "Tree", style_tree_title);
-			p_theme->set_stylebox("title_button_hover", "Tree", style_tree_title);
-			p_theme->set_stylebox("title_button_pressed", "Tree", style_tree_title);
+
+			cur_theme_data.set_data_name("cursor");
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Tree", style_tree_cursor);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Tree", style_tree_cursor);
+
+			cur_theme_data.set_data_name("title_button");
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Tree", style_tree_title);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Tree", style_tree_title);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Tree", style_tree_title);
 		}
 
 		// ItemList.
@@ -1144,35 +1313,56 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			Ref<StyleBoxFlat> style_itemlist_bg = p_config.base_style->duplicate();
 			style_itemlist_bg->set_content_margin_all(p_config.separation_margin);
 			style_itemlist_bg->set_bg_color(p_config.dark_color_1);
+			style_itemlist_bg->set_bg_color_role(p_config.dark_color_1_role);
 
 			if (p_config.draw_extra_borders) {
 				style_itemlist_bg->set_border_width_all(Math::round(EDSCALE));
 				style_itemlist_bg->set_border_color(p_config.extra_border_color_2);
+				style_itemlist_bg->set_border_color_role(p_config.extra_border_color_2_role);
 			} else {
 				style_itemlist_bg->set_border_width_all(p_config.border_width);
 				style_itemlist_bg->set_border_color(p_config.dark_color_3);
+				style_itemlist_bg->set_border_color_role(p_config.dark_color_3_role);
 			}
 
 			Ref<StyleBoxFlat> style_itemlist_cursor = p_config.base_style->duplicate();
 			style_itemlist_cursor->set_draw_center(false);
 			style_itemlist_cursor->set_border_width_all(p_config.border_width);
 			style_itemlist_cursor->set_border_color(p_config.highlight_color);
+			style_itemlist_cursor->set_border_color_role(p_config.highlight_color_role);
 
 			Ref<StyleBoxFlat> style_itemlist_hover = style_tree_selected->duplicate();
 			style_itemlist_hover->set_bg_color(p_config.highlight_color * Color(1, 1, 1, 0.3));
+			style_itemlist_hover->set_bg_color_role(ColorRole::INVERSE_PRIMARY_16);
 			style_itemlist_hover->set_border_width_all(0);
 
-			p_theme->set_stylebox("panel", "ItemList", style_itemlist_bg);
-			p_theme->set_stylebox("focus", "ItemList", p_config.button_style_focus);
-			p_theme->set_stylebox("cursor", "ItemList", style_itemlist_cursor);
-			p_theme->set_stylebox("cursor_unfocused", "ItemList", style_itemlist_cursor);
-			p_theme->set_stylebox("selected_focus", "ItemList", style_tree_focus);
-			p_theme->set_stylebox("selected", "ItemList", style_tree_selected);
-			p_theme->set_stylebox("hovered", "ItemList", style_itemlist_hover);
-			p_theme->set_color("font_color", "ItemList", p_config.font_color);
-			p_theme->set_color("font_hovered_color", "ItemList", p_config.mono_color);
-			p_theme->set_color("font_selected_color", "ItemList", p_config.mono_color);
+			cur_theme_data.set_data_name("default_stylebox");
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ItemList", style_itemlist_bg);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ItemList", p_config.button_style_focus);
+
+			cur_theme_data.set_data_name("cursor_style");
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ItemList", style_itemlist_cursor);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ItemList", style_itemlist_cursor);
+
+			cur_theme_data.set_data_name("item_style");
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "ItemList", style_tree_selected);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusCheckedLTR), "ItemList", style_tree_focus);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ItemList", style_tree_selected);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ItemList",style_tree_focus);
+
+			cur_theme_data.set_data_name("font_color_role");
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ItemList", p_config.font_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "ItemList", p_config.mono_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "ItemList", p_config.mono_color_role);
+			p_theme->set_color_role("font_outline_color_role", "ItemList", p_config.font_outline_color_role);
+
+			cur_theme_data.set_data_name("font_color");
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ItemList", p_config.font_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "ItemList", p_config.mono_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "ItemList", p_config.mono_color);
 			p_theme->set_color("font_outline_color", "ItemList", p_config.font_outline_color);
+
+			p_theme->set_color_role("guide_color_role", "ItemList", ColorRole::TERTIARY);
 			p_theme->set_color("guide_color", "ItemList", Color(1, 1, 1, 0));
 			p_theme->set_constant("v_separation", "ItemList", p_config.forced_even_separation * EDSCALE);
 			p_theme->set_constant("h_separation", "ItemList", (p_config.increased_margin + 2) * EDSCALE);
@@ -1203,64 +1393,106 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		Ref<StyleBoxFlat> style_tab_selected = style_tab_base->duplicate();
 
 		style_tab_selected->set_bg_color(p_config.base_color);
+		style_tab_selected->set_bg_color_role(p_config.base_color_role);
 		// Add a highlight line at the top of the selected tab.
 		style_tab_selected->set_border_width(SIDE_TOP, Math::round(2 * EDSCALE));
 		// Make the highlight line prominent, but not too prominent as to not be distracting.
 		Color tab_highlight = p_config.dark_color_2.lerp(p_config.accent_color, 0.75);
+		ColorRole tab_highlight_role = ColorRole::SECONDARY;
 		style_tab_selected->set_border_color(tab_highlight);
+		style_tab_selected->set_border_color_role(tab_highlight_role);
 		style_tab_selected->set_corner_radius_all(0);
 
 		Ref<StyleBoxFlat> style_tab_hovered = style_tab_base->duplicate();
 
 		style_tab_hovered->set_bg_color(p_config.dark_color_1.lerp(p_config.base_color, 0.4));
+		style_tab_hovered->set_bg_color_role(ColorRole::PRIMARY);
 		// Hovered tab has a subtle highlight between normal and selected states.
 		style_tab_hovered->set_corner_radius_all(0);
 
 		Ref<StyleBoxFlat> style_tab_unselected = style_tab_base->duplicate();
 		style_tab_unselected->set_expand_margin(SIDE_BOTTOM, 0);
 		style_tab_unselected->set_bg_color(p_config.dark_color_1);
+		style_tab_unselected->set_bg_color_role(p_config.dark_color_1_role);
 		// Add some spacing between unselected tabs to make them easier to distinguish from each other
 		style_tab_unselected->set_border_color(Color(0, 0, 0, 0));
+		style_tab_unselected->set_border_color_role(ColorRole::STATIC_TRANSPARENT);
 
 		Ref<StyleBoxFlat> style_tab_disabled = style_tab_base->duplicate();
 		style_tab_disabled->set_expand_margin(SIDE_BOTTOM, 0);
 		style_tab_disabled->set_bg_color(p_config.disabled_bg_color);
+		style_tab_disabled->set_bg_color_role(p_config.disabled_bg_color_role);
 		style_tab_disabled->set_border_color(p_config.disabled_bg_color);
+		style_tab_disabled->set_border_color_role(p_config.disabled_bg_color_role);
 
 		Ref<StyleBoxFlat> style_tab_focus = p_config.button_style_focus->duplicate();
 
-		Ref<StyleBoxFlat> style_tabbar_background = make_flat_stylebox(p_config.dark_color_1, 0, 0, 0, 0, p_config.corner_radius * EDSCALE);
+		Ref<StyleBoxFlat> style_tabbar_background = make_color_role_flat_stylebox(p_config.dark_color_1_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0, p_config.corner_radius * EDSCALE);
 		style_tabbar_background->set_corner_radius(CORNER_BOTTOM_LEFT, 0);
 		style_tabbar_background->set_corner_radius(CORNER_BOTTOM_RIGHT, 0);
 		p_theme->set_stylebox("tabbar_background", "TabContainer", style_tabbar_background);
 		p_theme->set_stylebox("panel", "TabContainer", p_config.content_panel_style);
 
-		p_theme->set_stylebox("tab_selected", "TabContainer", style_tab_selected);
-		p_theme->set_stylebox("tab_hovered", "TabContainer", style_tab_hovered);
-		p_theme->set_stylebox("tab_unselected", "TabContainer", style_tab_unselected);
-		p_theme->set_stylebox("tab_disabled", "TabContainer", style_tab_disabled);
-		p_theme->set_stylebox("tab_focus", "TabContainer", style_tab_focus);
-		p_theme->set_stylebox("tab_selected", "TabBar", style_tab_selected);
-		p_theme->set_stylebox("tab_hovered", "TabBar", style_tab_hovered);
-		p_theme->set_stylebox("tab_unselected", "TabBar", style_tab_unselected);
-		p_theme->set_stylebox("tab_disabled", "TabBar", style_tab_disabled);
-		p_theme->set_stylebox("tab_focus", "TabBar", style_tab_focus);
+		cur_theme_data.set_data_name("tab_style");
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabContainer", style_tab_unselected);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "TabContainer", style_tab_selected);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "TabContainer", style_tab_unselected);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "TabContainer", style_tab_hovered);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "TabContainer", style_tab_disabled);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TabContainer", style_tab_focus);
+
+		cur_theme_data.set_data_name("tab_style");
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabBar", style_tab_unselected);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "TabBar", style_tab_selected);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "TabBar", style_tab_unselected);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "TabBar", style_tab_hovered);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "TabBar", style_tab_disabled);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TabBar", style_tab_focus);
+
 		p_theme->set_stylebox("button_pressed", "TabBar", p_config.panel_container_style);
 		p_theme->set_stylebox("button_highlight", "TabBar", p_config.panel_container_style);
 
-		p_theme->set_color("font_selected_color", "TabContainer", p_config.font_color);
-		p_theme->set_color("font_hovered_color", "TabContainer", p_config.font_color);
-		p_theme->set_color("font_unselected_color", "TabContainer", p_config.font_disabled_color);
+		cur_theme_data.set_data_name("font_color_role");
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabContainer", p_config.font_disabled_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "TabContainer", p_config.font_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "TabContainer", p_config.font_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "TabContainer", p_config.font_disabled_color_role);
+
+		p_theme->set_color_role("font_outline_color_role", "TabContainer", p_config.font_outline_color_role);
+
+		cur_theme_data.set_data_name("font_color");
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabContainer", p_config.font_disabled_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "TabContainer", p_config.font_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "TabContainer", p_config.font_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "TabContainer", p_config.font_disabled_color);
+
 		p_theme->set_color("font_outline_color", "TabContainer", p_config.font_outline_color);
-		p_theme->set_color("font_selected_color", "TabBar", p_config.font_color);
-		p_theme->set_color("font_hovered_color", "TabBar", p_config.font_color);
-		p_theme->set_color("font_unselected_color", "TabBar", p_config.font_disabled_color);
+
+
+		cur_theme_data.set_data_name("font_color_role");
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabBar", p_config.font_disabled_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "TabBar", p_config.font_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "TabBar", p_config.font_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "TabBar", p_config.font_disabled_color_role);
+
+		p_theme->set_color_role("font_outline_color_role", "TabBar", p_config.font_outline_color_role);
+
+		cur_theme_data.set_data_name("font_color");
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabBar", p_config.font_disabled_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "TabBar", p_config.font_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "TabBar", p_config.font_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "TabBar", p_config.font_disabled_color);
+
 		p_theme->set_color("font_outline_color", "TabBar", p_config.font_outline_color);
+
+		p_theme->set_color_role("drop_mark_color_role", "TabContainer", tab_highlight_role);
 		p_theme->set_color("drop_mark_color", "TabContainer", tab_highlight);
+		p_theme->set_color_role("drop_mark_color_role", "TabBar", tab_highlight_role);
 		p_theme->set_color("drop_mark_color", "TabBar", tab_highlight);
 
 		p_theme->set_icon("menu", "TabContainer", p_theme->get_icon(SNAME("GuiTabMenu"), EditorStringName(EditorIcons)));
 		p_theme->set_icon("menu_highlight", "TabContainer", p_theme->get_icon(SNAME("GuiTabMenuHl"), EditorStringName(EditorIcons)));
+
 		p_theme->set_icon("close", "TabBar", p_theme->get_icon(SNAME("GuiClose"), EditorStringName(EditorIcons)));
 		p_theme->set_icon("increment", "TabContainer", p_theme->get_icon(SNAME("GuiScrollArrowRight"), EditorStringName(EditorIcons)));
 		p_theme->set_icon("decrement", "TabContainer", p_theme->get_icon(SNAME("GuiScrollArrowLeft"), EditorStringName(EditorIcons)));
@@ -1280,8 +1512,8 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 	}
 
 	// Separators.
-	p_theme->set_stylebox("separator", "HSeparator", make_line_stylebox(p_config.separator_color, MAX(Math::round(EDSCALE), p_config.border_width)));
-	p_theme->set_stylebox("separator", "VSeparator", make_line_stylebox(p_config.separator_color, MAX(Math::round(EDSCALE), p_config.border_width), 0, 0, true));
+	p_theme->set_stylebox("separator", "HSeparator", make_color_role_line_stylebox(p_config.separator_color_role,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, MAX(Math::round(EDSCALE), p_config.border_width)));
+	p_theme->set_stylebox("separator", "VSeparator", make_color_role_line_stylebox(p_config.separator_color_role,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, MAX(Math::round(EDSCALE), p_config.border_width),0, 0, true));
 
 	// LineEdit & TextEdit.
 	{
@@ -1297,34 +1529,51 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		if (p_config.draw_extra_borders) {
 			text_editor_style->set_border_width_all(Math::round(EDSCALE));
 			text_editor_style->set_border_color(p_config.extra_border_color_1);
+			text_editor_style->set_border_color_role(p_config.extra_border_color_1_role);
 		} else {
 			// Add a bottom line to make LineEdits more visible, especially in sectioned inspectors
 			// such as the Project Settings.
 			text_editor_style->set_border_width(SIDE_BOTTOM, Math::round(2 * EDSCALE));
 			text_editor_style->set_border_color(p_config.dark_color_2);
+			text_editor_style->set_border_color_role(p_config.dark_color_2_role);
 		}
 
 		Ref<StyleBoxFlat> text_editor_disabled_style = text_editor_style->duplicate();
 		text_editor_disabled_style->set_border_color(p_config.disabled_border_color);
+		text_editor_disabled_style->set_border_color_role(p_config.disabled_border_color_role);
 		text_editor_disabled_style->set_bg_color(p_config.disabled_bg_color);
+		text_editor_disabled_style->set_bg_color_role(p_config.disabled_bg_color_role);
 
 		// LineEdit.
-
-		p_theme->set_stylebox("normal", "LineEdit", text_editor_style);
-		p_theme->set_stylebox("focus", "LineEdit", p_config.button_style_focus);
+		cur_theme_data.set_data_name("default_stylebox");
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", text_editor_style);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "LineEdit", p_config.button_style_focus);
 		p_theme->set_stylebox("read_only", "LineEdit", text_editor_disabled_style);
 
 		p_theme->set_icon("clear", "LineEdit", p_theme->get_icon(SNAME("GuiClose"), EditorStringName(EditorIcons)));
 
 		p_theme->set_color("font_color", "LineEdit", p_config.font_color);
+		p_theme->set_color_role("font_color_role", "LineEdit", p_config.font_color_role);
 		p_theme->set_color("font_selected_color", "LineEdit", p_config.mono_color);
+		p_theme->set_color_role("font_selected_color_role", "LineEdit", p_config.mono_color_role);
 		p_theme->set_color("font_uneditable_color", "LineEdit", p_config.font_readonly_color);
+		p_theme->set_color_role("font_uneditable_color_role", "LineEdit", p_config.font_readonly_color_role);
 		p_theme->set_color("font_placeholder_color", "LineEdit", p_config.font_placeholder_color);
+		p_theme->set_color_role("font_placeholder_color_role", "LineEdit", p_config.font_placeholder_color_role);
 		p_theme->set_color("font_outline_color", "LineEdit", p_config.font_outline_color);
+		p_theme->set_color_role("font_outline_color_role", "LineEdit", p_config.font_outline_color_role);
 		p_theme->set_color("caret_color", "LineEdit", p_config.font_color);
+		p_theme->set_color_role("caret_color_role", "LineEdit", p_config.font_color_role);
 		p_theme->set_color("selection_color", "LineEdit", p_config.selection_color);
-		p_theme->set_color("clear_button_color", "LineEdit", p_config.font_color);
-		p_theme->set_color("clear_button_color_pressed", "LineEdit", p_config.accent_color);
+		p_theme->set_color_role("selection_color_role", "LineEdit", p_config.selection_color_role);
+
+		cur_theme_data.set_data_name("clear_button_color");
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", p_config.font_color);
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "LineEdit", p_config.accent_color);
+
+		cur_theme_data.set_data_name("clear_button_color_role");
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", p_config.font_color_role);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "LineEdit", p_config.accent_color_role);
 
 		p_theme->set_constant("minimum_character_width", "LineEdit", 4);
 		p_theme->set_constant("outline_size", "LineEdit", 0);
@@ -1332,20 +1581,28 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 
 		// TextEdit.
 
-		p_theme->set_stylebox("normal", "TextEdit", text_editor_style);
-		p_theme->set_stylebox("focus", "TextEdit", p_config.button_style_focus);
+		cur_theme_data.set_data_name("default_stylebox");
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", text_editor_style);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TextEdit", p_config.button_style_focus);
 		p_theme->set_stylebox("read_only", "TextEdit", text_editor_disabled_style);
 
 		p_theme->set_icon("tab", "TextEdit", p_theme->get_icon(SNAME("GuiTab"), EditorStringName(EditorIcons)));
 		p_theme->set_icon("space", "TextEdit", p_theme->get_icon(SNAME("GuiSpace"), EditorStringName(EditorIcons)));
 
 		p_theme->set_color("font_color", "TextEdit", p_config.font_color);
+		p_theme->set_color_role("font_color_role", "TextEdit", p_config.font_color_role);
 		p_theme->set_color("font_readonly_color", "TextEdit", p_config.font_readonly_color);
+		p_theme->set_color_role("font_readonly_color_role", "TextEdit", p_config.font_readonly_color_role);
 		p_theme->set_color("font_placeholder_color", "TextEdit", p_config.font_placeholder_color);
+		p_theme->set_color_role("font_placeholder_color_role", "TextEdit", p_config.font_placeholder_color_role);
 		p_theme->set_color("font_outline_color", "TextEdit", p_config.font_outline_color);
+		p_theme->set_color_role("font_outline_color_role", "TextEdit", p_config.font_outline_color_role);
 		p_theme->set_color("caret_color", "TextEdit", p_config.font_color);
+		p_theme->set_color_role("caret_color_role", "TextEdit", p_config.font_color_role);
 		p_theme->set_color("selection_color", "TextEdit", p_config.selection_color);
-		p_theme->set_color("background_color", "TextEdit", Color(0, 0, 0, 0));
+		p_theme->set_color_role("selection_color_role", "TextEdit", p_config.selection_color_role);
+		p_theme->set_color("background_color", "TextEdit", ColorRole::STATIC_TRANSPARENT);
+		p_theme->set_color_role("background_color_role", "TextEdit", Color(0, 0, 0, 0));
 
 		p_theme->set_constant("line_spacing", "TextEdit", 4 * EDSCALE);
 		p_theme->set_constant("outline_size", "TextEdit", 0);
@@ -1393,10 +1650,13 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 	{
 		// Window.
 
-		p_theme->set_stylebox("embedded_border", "Window", p_config.window_style);
-		p_theme->set_stylebox("embedded_unfocused_border", "Window", p_config.window_style);
+		cur_theme_data.set_data_name("embedded_border");
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", p_config.window_style);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TextEdit", p_config.window_style);
 
 		p_theme->set_color("title_color", "Window", p_config.font_color);
+		p_theme->set_color_role("title_color_role", "Window", p_config.font_color_role);
+
 		p_theme->set_icon("close", "Window", p_theme->get_icon(SNAME("GuiClose"), EditorStringName(EditorIcons)));
 		p_theme->set_icon("close_pressed", "Window", p_theme->get_icon(SNAME("GuiClose"), EditorStringName(EditorIcons)));
 		p_theme->set_constant("close_h_offset", "Window", 22 * EDSCALE);
@@ -1421,7 +1681,15 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		// Use a different color for folder icons to make them easier to distinguish from files.
 		// On a light theme, the icon will be dark, so we need to lighten it before blending it with the accent color.
 		p_theme->set_color("folder_icon_color", "FileDialog", (p_config.dark_theme ? Color(1, 1, 1) : Color(4.25, 4.25, 4.25)).lerp(p_config.accent_color, 0.7));
-		p_theme->set_color("files_disabled", "FileDialog", p_config.font_disabled_color);
+		p_theme->set_color_role("folder_icon_color_role", "FileDialog", ColorRole::STATIC_ONE);
+
+		cur_theme_data.set_data_name("file_icon_color");
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", Color(1, 1, 1));
+		p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "FileDialog", p_config.font_disabled_color);
+
+		cur_theme_data.set_data_name("file_icon_color_role");
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", ColorRole::STATIC_ONE);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "FileDialog", p_config.font_disabled_color_role);
 
 		// PopupDialog.
 		p_theme->set_stylebox("panel", "PopupDialog", p_config.popup_style);
@@ -1437,18 +1705,22 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			style_popup_menu->set_border_width_all(EDSCALE);
 			if (p_config.draw_extra_borders) {
 				style_popup_menu->set_border_color(p_config.extra_border_color_2);
+				style_popup_menu->set_border_color_role(p_config.extra_border_color_2_role);
 			} else {
 				style_popup_menu->set_border_color(p_config.dark_color_2);
+				style_popup_menu->set_border_color_role(p_config.dark_color_2_role);
 			}
-			p_theme->set_stylebox("panel", "PopupMenu", style_popup_menu);
+			cur_theme_data.set_data_name("default_stylebox");
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", style_popup_menu);
 
 			Ref<StyleBoxFlat> style_menu_hover = p_config.button_style_hover->duplicate();
 			// Don't use rounded corners for hover highlights since the StyleBox touches the PopupMenu's edges.
 			style_menu_hover->set_corner_radius_all(0);
-			p_theme->set_stylebox("hover", "PopupMenu", style_menu_hover);
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", style_menu_hover);
 
 			Ref<StyleBoxLine> style_popup_separator(memnew(StyleBoxLine));
 			style_popup_separator->set_color(p_config.separator_color);
+			style_popup_separator->set_color_role(p_config.separator_color_role);
 			style_popup_separator->set_grow_begin(p_config.popup_margin - MAX(Math::round(EDSCALE), p_config.border_width));
 			style_popup_separator->set_grow_end(p_config.popup_margin - MAX(Math::round(EDSCALE), p_config.border_width));
 			style_popup_separator->set_thickness(MAX(Math::round(EDSCALE), p_config.border_width));
@@ -1456,34 +1728,55 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			Ref<StyleBoxLine> style_popup_labeled_separator_left(memnew(StyleBoxLine));
 			style_popup_labeled_separator_left->set_grow_begin(p_config.popup_margin - MAX(Math::round(EDSCALE), p_config.border_width));
 			style_popup_labeled_separator_left->set_color(p_config.separator_color);
+			style_popup_labeled_separator_left->set_color_role(p_config.separator_color_role);
 			style_popup_labeled_separator_left->set_thickness(MAX(Math::round(EDSCALE), p_config.border_width));
 
 			Ref<StyleBoxLine> style_popup_labeled_separator_right(memnew(StyleBoxLine));
 			style_popup_labeled_separator_right->set_grow_end(p_config.popup_margin - MAX(Math::round(EDSCALE), p_config.border_width));
 			style_popup_labeled_separator_right->set_color(p_config.separator_color);
+			style_popup_labeled_separator_right->set_color_role(p_config.separator_color_role);
 			style_popup_labeled_separator_right->set_thickness(MAX(Math::round(EDSCALE), p_config.border_width));
 
 			p_theme->set_stylebox("separator", "PopupMenu", style_popup_separator);
 			p_theme->set_stylebox("labeled_separator_left", "PopupMenu", style_popup_labeled_separator_left);
 			p_theme->set_stylebox("labeled_separator_right", "PopupMenu", style_popup_labeled_separator_right);
 
-			p_theme->set_color("font_color", "PopupMenu", p_config.font_color);
-			p_theme->set_color("font_hover_color", "PopupMenu", p_config.font_hover_color);
-			p_theme->set_color("font_accelerator_color", "PopupMenu", p_config.font_disabled_color);
-			p_theme->set_color("font_disabled_color", "PopupMenu", p_config.font_disabled_color);
-			p_theme->set_color("font_separator_color", "PopupMenu", p_config.font_disabled_color);
+
+			cur_theme_data.set_data_name("font_color_role");
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", p_config.font_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", p_config.font_hover_color_role);
+			p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", p_config.font_disabled_color_role);
+			p_theme->set_color_role("font_outline_color_role", "PopupMenu", p_config.font_outline_color_role);
+
+			cur_theme_data.set_data_name("font_color");
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", p_config.font_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", p_config.font_hover_color);
+			p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", p_config.font_disabled_color);
 			p_theme->set_color("font_outline_color", "PopupMenu", p_config.font_outline_color);
 
-			p_theme->set_icon("checked", "PopupMenu", p_theme->get_icon(SNAME("GuiChecked"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("unchecked", "PopupMenu", p_theme->get_icon(SNAME("GuiUnchecked"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("radio_checked", "PopupMenu", p_theme->get_icon(SNAME("GuiRadioChecked"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("radio_unchecked", "PopupMenu", p_theme->get_icon(SNAME("GuiRadioUnchecked"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("checked_disabled", "PopupMenu", p_theme->get_icon(SNAME("GuiCheckedDisabled"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("unchecked_disabled", "PopupMenu", p_theme->get_icon(SNAME("GuiUncheckedDisabled"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("radio_checked_disabled", "PopupMenu", p_theme->get_icon(SNAME("GuiRadioCheckedDisabled"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("radio_unchecked_disabled", "PopupMenu", p_theme->get_icon(SNAME("GuiRadioUncheckedDisabled"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("submenu", "PopupMenu", p_theme->get_icon(SNAME("ArrowRight"), EditorStringName(EditorIcons)));
-			p_theme->set_icon("submenu_mirrored", "PopupMenu", p_theme->get_icon(SNAME("ArrowLeft"), EditorStringName(EditorIcons)));
+			p_theme->set_color("font_accelerator_color", "PopupMenu", p_config.font_disabled_color);
+			p_theme->set_color_role("font_accelerator_color_role", "PopupMenu", p_config.font_disabled_color_role);
+			p_theme->set_color("font_separator_color", "PopupMenu", p_config.font_disabled_color);
+			p_theme->set_color_role("font_separator_color_role", "PopupMenu", p_config.font_disabled_color_role);
+
+
+			cur_theme_data.set_data_name("icon");
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "PopupMenu", p_theme->get_icon(SNAME("GuiChecked"), EditorStringName(EditorIcons)));
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "PopupMenu", p_theme->get_icon(SNAME("GuiUnchecked"), EditorStringName(EditorIcons)));
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "PopupMenu", p_theme->get_icon(SNAME("GuiCheckedDisabled"), EditorStringName(EditorIcons)));
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "PopupMenu", p_theme->get_icon(SNAME("GuiUncheckedDisabled"), EditorStringName(EditorIcons)));
+
+			cur_theme_data.set_data_name("radio_icon");
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "PopupMenu", p_theme->get_icon(SNAME("GuiRadioChecked"), EditorStringName(EditorIcons)));
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "PopupMenu", p_theme->get_icon(SNAME("GuiRadioUnchecked"), EditorStringName(EditorIcons)));
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "PopupMenu", p_theme->get_icon(SNAME("GuiRadioCheckedDisabled"), EditorStringName(EditorIcons)));
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "PopupMenu", p_theme->get_icon(SNAME("GuiRadioUncheckedDisabled"), EditorStringName(EditorIcons)));
+
+			cur_theme_data.set_data_name("submenu");
+
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", p_theme->get_icon(SNAME("ArrowRight"), EditorStringName(EditorIcons)));
+			p_theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneRTL), "PopupMenu", p_theme->get_icon(SNAME("ArrowLeft"), EditorStringName(EditorIcons)));
+
 			p_theme->set_icon("visibility_hidden", "PopupMenu", p_theme->get_icon(SNAME("GuiVisibilityHidden"), EditorStringName(EditorIcons)));
 			p_theme->set_icon("visibility_visible", "PopupMenu", p_theme->get_icon(SNAME("GuiVisibilityVisible"), EditorStringName(EditorIcons)));
 			p_theme->set_icon("visibility_xray", "PopupMenu", p_theme->get_icon(SNAME("GuiVisibilityXray"), EditorStringName(EditorIcons)));

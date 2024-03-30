@@ -71,8 +71,8 @@ private:
 		Ref<Font> font;
 		int font_size;
 
-		ThemeColorData font_outline_color{ "font_outline_color" };
-		ThemeColorRoleData font_outline_color_role{ "font_outline_color_role" };
+		Color font_outline_color;
+		ColorRole font_outline_color_role;
 		int font_outline_size;
 
 		Ref<Font> text_icon_font;
@@ -119,8 +119,6 @@ protected:
 	Ref<StyleBox> _get_current_state_layer_stylebox() const;
 	bool _has_current_font_color() const;
 	Color _get_current_font_color() const;
-	bool _has_current_font_outline_color() const;
-	Color _get_current_font_outline_color() const;
 	bool _has_current_icon_color() const;
 	Color _get_current_icon_color() const;
 	bool _has_current_text_icon_color() const;

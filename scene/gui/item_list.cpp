@@ -1094,7 +1094,7 @@ void ItemList::_notification(int p_what) {
 			}
 
 			// If not in thumbnails mode, draw visible separators.
-			Color guide_color = _get_current_guide_color();
+			Color guide_color = theme_cache.guide_color;
 			if (icon_mode != ICON_MODE_TOP) {
 				for (int i = first_visible_separator; i < separators.size(); i++) {
 					if (separators[i] > clip.position.y + clip.size.y) {
@@ -1134,7 +1134,7 @@ void ItemList::_notification(int p_what) {
 			Color font_hovered_color = _get_current_font_color_with_state(State::HoverNoneLTR);
 			Color font_selected_color = _get_current_font_color_with_state(State::NormalCheckedLTR);
 			Color font_normal_color = _get_current_font_color_with_state(State::NormalNoneLTR);
-			Color font_outline_color = _get_current_font_outline_color();
+			Color font_outline_color = theme_cache.font_outline_color;
 			for (int i = first_item_visible; i < items.size(); i++) {
 				Rect2 rcache = items[i].rect_cache;
 
@@ -1887,53 +1887,6 @@ Color ItemList::_get_current_font_color() const {
 }
 
 
-bool ItemList::_has_current_font_outline_color() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color ItemList::_get_current_font_outline_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_font_outline_color;
-
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			cur_font_outline_color = theme_cache.font_outline_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_outline_color;
-}
-
-bool ItemList::_has_current_guide_color() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.guide_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.guide_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color ItemList::_get_current_guide_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_font_shadow_color;
-
-	for (const State &E : theme_cache.guide_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.guide_color.get_state_data_name(E))) {
-			cur_font_shadow_color = theme_cache.guide_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_shadow_color;
-}
-
-
 
 void ItemList::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_item", "text", "icon", "selectable"), &ItemList::add_item, DEFVAL(Variant()), DEFVAL(true));
@@ -2093,8 +2046,8 @@ void ItemList::_bind_methods() {
 
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, ItemList, font_outline_size, "outline_size");
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, ItemList, font_outline_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, ItemList, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ItemList, font_outline_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, font_outline_color);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, ItemList, line_separation);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, ItemList, icon_margin);
@@ -2104,8 +2057,8 @@ void ItemList::_bind_methods() {
 	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, ItemList, cursor_style, cursor);
 
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, ItemList, guide_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, ItemList, guide_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ItemList, guide_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, guide_color);
 
 	Item defaults(true);
 

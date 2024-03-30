@@ -426,11 +426,11 @@ void Label::_notification(int p_what) {
 			Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
 			Ref<Font> font = (has_settings && settings->get_font().is_valid()) ? settings->get_font() : theme_cache.font;
 
-			Color font_color = has_settings ? settings->get_font_color() : _get_current_font_color();
-			Color font_shadow_color = has_settings ? settings->get_shadow_color() : _get_current_font_shadow_color();
+			Color font_color = has_settings ? settings->get_font_color() : theme_cache.font_color;
+			Color font_shadow_color = has_settings ? settings->get_shadow_color() : theme_cache.font_shadow_color;
 			Point2 shadow_ofs = has_settings ? settings->get_shadow_offset() : theme_cache.font_shadow_offset;
 			int line_spacing = has_settings ? settings->get_line_spacing() : theme_cache.line_spacing;
-			Color font_outline_color = has_settings ? settings->get_outline_color() : _get_current_font_outline_color();
+			Color font_outline_color = has_settings ? settings->get_outline_color() : theme_cache.font_outline_color;
 			int outline_size = has_settings ? settings->get_outline_size() : theme_cache.font_outline_size;
 			int shadow_outline_size = has_settings ? settings->get_shadow_size() : theme_cache.font_shadow_outline_size;
 
@@ -1308,74 +1308,6 @@ State Label::get_current_state_with_focus() const {
 	return cur_state;
 }
 
-bool Label::_has_current_font_color() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.font_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color Label::_get_current_font_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_font_color;
-
-	for (const State &E : theme_cache.font_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
-			cur_font_color = theme_cache.font_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_color;
-}
-
-bool Label::_has_current_font_outline_color() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color Label::_get_current_font_outline_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_font_outline_color;
-
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			cur_font_outline_color = theme_cache.font_outline_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_outline_color;
-}
-
-bool Label::_has_current_font_shadow_color() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.font_shadow_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_shadow_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color Label::_get_current_font_shadow_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_font_shadow_color;
-
-	for (const State &E : theme_cache.font_shadow_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_shadow_color.get_state_data_name(E))) {
-			cur_font_shadow_color = theme_cache.font_shadow_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_shadow_color;
-}
 
 void Label::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_horizontal_alignment", "alignment"), &Label::set_horizontal_alignment);
@@ -1455,20 +1387,21 @@ void Label::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Label, default_color_scheme);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, Label, default_stylebox);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, Label, font_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, Label, font_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Label, font_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_color);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, Label, font);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, Label, font_size);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Label, line_spacing);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, Label, font_shadow_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, Label, font_shadow_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Label, font_shadow_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_shadow_color);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, Label, font_shadow_offset.x, "shadow_offset_x");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, Label, font_shadow_offset.y, "shadow_offset_y");
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, Label, font_outline_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, Label, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Label, font_outline_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Label, font_outline_color);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, Label, font_outline_size, "outline_size");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, Label, font_shadow_outline_size, "shadow_outline_size");
 }

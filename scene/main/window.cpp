@@ -3142,72 +3142,6 @@ Ref<StyleBox> Window::_get_current_embedded_border() const {
 	return style;
 }
 
-bool Window::_has_current_embedded_unfocused_border_with_state(State p_state) const {
-	for (const State &E : theme_cache.embedded_unfocused_border.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.embedded_unfocused_border.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool Window::_has_current_embedded_unfocused_border() const {
-	State cur_state = get_current_state();
-	return _has_current_embedded_unfocused_border_with_state(cur_state);
-}
-
-Ref<StyleBox> Window::_get_current_embedded_unfocused_border_with_state(State p_state) const {
-	Ref<StyleBox> style;
-	for (const State &E : theme_cache.embedded_unfocused_border.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.embedded_unfocused_border.get_state_data_name(E))) {
-			style = theme_cache.embedded_unfocused_border.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-Ref<StyleBox> Window::_get_current_embedded_unfocused_border() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
-	style = _get_current_embedded_unfocused_border_with_state(cur_state);
-	return style;
-}
-
-
-
-
-bool Window::_has_current_title_color_with_state(State p_state) const {
-	for (const State &E : theme_cache.title_color.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.title_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool Window::_has_current_title_color() const {
-	State cur_state = get_current_state();
-	return _has_current_title_color_with_state(cur_state);
-}
-
-Color Window::_get_current_title_color_with_state(State p_state) const {
-	Color color;
-	for (const State &E : theme_cache.title_color.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.title_color.get_state_data_name(E))) {
-			color = theme_cache.title_color.get_data(E);
-			break;
-		}
-	}
-	return color;
-}
-
-Color Window::_get_current_title_color() const {
-	State cur_state = get_current_state();
-	Color color = _get_current_title_color_with_state(cur_state);
-	return color;
-}
-
 
 bool Window::_has_current_title_outline_modulate_with_state(State p_state) const {
 	for (const State &E : theme_cache.title_outline_modulate.get_search_order(p_state)) {
@@ -3573,13 +3507,12 @@ void Window::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Window, default_color_scheme);
 
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, Window, embedded_border);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, Window, embedded_unfocused_border);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, Window, title_font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, Window, title_font_size);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, Window, title_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, Window, title_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Window, title_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Window, title_color);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Window, title_height);
 
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, Window, title_outline_modulate_role);

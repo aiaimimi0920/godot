@@ -182,36 +182,36 @@ private:
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
-		ThemeStyleboxData default_style{ "default_style" };
-		ThemeStyleboxData read_only{ "read_only" };
+		ThemeStyleboxData default_stylebox{ "default_stylebox" };
+		Ref<StyleBox> read_only;
 		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
 
-		ThemeColorData font_color{ "font_color" };
-		ThemeColorRoleData font_color_role{ "font_color_role" };
+
 		Ref<Font> font;
 		int font_size;
 
-		ThemeColorData font_uneditable_color{ "font_uneditable_color" };
-		ThemeColorRoleData font_uneditable_color_role{ "font_uneditable_color_role" };
+		Color font_color;
+		ColorRole font_color_role;
+		Color font_uneditable_color;
+		ColorRole font_uneditable_color_role;
+		Color font_selected_color;
+		ColorRole font_selected_color_role;
+		Color font_outline_color;
+		ColorRole font_outline_color_role;
+		Color font_placeholder_color;
+		ColorRole font_placeholder_color_role;
+		Color caret_color;
+		ColorRole caret_color_role;
+		Color selection_color;
+		ColorRole selection_color_role;
 
-		ThemeColorData font_selected_color{ "font_selected_color" };
-		ThemeColorRoleData font_selected_color_role{ "font_selected_color_role" };
-
-		ThemeColorData font_outline_color{ "font_outline_color" };
-		ThemeColorRoleData font_outline_color_role{ "font_outline_color_role" };
 		int font_outline_size;
 
-		ThemeColorData font_placeholder_color{ "font_placeholder_color" };
-		ThemeColorRoleData font_placeholder_color_role{ "font_placeholder_color_role" };
 		
 		int caret_width = 0;
-		ThemeColorData caret_color{ "caret_color" };
-		ThemeColorRoleData caret_color_role{ "caret_color_role" };
 
 		int minimum_character_width = 0;
 
-		ThemeColorData selection_color{ "selection_color" };
-		ThemeColorRoleData selection_color_role{ "selection_color_role" };
 
 		Ref<Texture2D> clear_icon;
 
@@ -272,31 +272,14 @@ protected:
 	virtual void unhandled_key_input(const Ref<InputEvent> &p_event) override;
 	virtual void gui_input(const Ref<InputEvent> &p_event) override;
 
-	bool _has_current_default_style_with_state(State p_state) const;
-	bool _has_current_default_style() const;
-	Ref<StyleBox> _get_current_default_style_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_default_style() const;
-	bool _has_current_focus_default_style() const;
-	Ref<StyleBox> _get_current_focus_default_style() const;
+	bool _has_current_default_stylebox_with_state(State p_state) const;
+	bool _has_current_default_stylebox() const;
+	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
+	Ref<StyleBox> _get_current_default_stylebox() const;
+	bool _has_current_focus_default_stylebox() const;
+	Ref<StyleBox> _get_current_focus_default_stylebox() const;
 	bool _has_current_state_layer_stylebox() const;
 	Ref<StyleBox> _get_current_state_layer_stylebox() const;
-	bool _has_current_read_only() const;
-	Ref<StyleBox> _get_current_read_only() const;
-
-	bool _has_current_font_color() const;
-	Color _get_current_font_color() const;
-	bool _has_current_font_uneditable_color() const;
-	Color _get_current_font_uneditable_color() const;
-	bool _has_current_font_selected_color() const;
-	Color _get_current_font_selected_color() const;
-	bool _has_current_font_outline_color() const;
-	Color _get_current_font_outline_color() const;
-	bool _has_current_font_placeholder_color() const;
-	Color _get_current_font_placeholder_color() const;
-	bool _has_current_caret_color() const;
-	Color _get_current_caret_color() const;
-	bool _has_current_selection_color() const;
-	Color _get_current_selection_color() const;
 
 	bool _has_current_clear_button_color_with_state(State p_state) const;
 	bool _has_current_clear_button_color() const;

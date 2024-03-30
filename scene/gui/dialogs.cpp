@@ -78,15 +78,7 @@ void AcceptDialog::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_THEME_CHANGED: {
-
-			ThemeIntData cur_theme_data;
-			cur_theme_data.set_data_name("panel");
-			Ref<StyleBox> panel_style = _get_current_default_stylebox();
-			for (int i = 0; i < STATE_MAX; i++) {  
-				State cur_state = static_cast<State>(i);
-				// menu_panel->add_theme_style_override(cur_theme_data.get_state_data_name(cur_state), _get_current_default_stylebox_with_state(cur_state));
-				bg_panel->add_theme_style_override(cur_theme_data.get_state_data_name(cur_state), panel_style);
-			}
+			bg_panel->add_theme_style_override("panel", theme_cache.panel_style);
 
 			child_controls_changed();
 			if (is_visible()) {
@@ -213,9 +205,8 @@ void AcceptDialog::register_text_enter(Control *p_line_edit) {
 
 void AcceptDialog::_update_child_rects() {
 	Size2 dlg_size = get_size();
-	Ref<StyleBox> panel_style = _get_current_default_stylebox();
-	float h_margins = panel_style->get_margin(SIDE_LEFT) + panel_style->get_margin(SIDE_RIGHT);
-	float v_margins = panel_style->get_margin(SIDE_TOP) + panel_style->get_margin(SIDE_BOTTOM);
+	float h_margins = theme_cache.panel_style->get_margin(SIDE_LEFT) + theme_cache.panel_style->get_margin(SIDE_RIGHT);
+	float v_margins = theme_cache.panel_style->get_margin(SIDE_TOP) + theme_cache.panel_style->get_margin(SIDE_BOTTOM);
 
 	// Fill the entire size of the window with the background.
 	bg_panel->set_position(Point2());
@@ -224,12 +215,12 @@ void AcceptDialog::_update_child_rects() {
 	// Place the buttons from the bottom edge to their minimum required size.
 	Size2 buttons_minsize = buttons_hbox->get_combined_minimum_size();
 	Size2 buttons_size = Size2(dlg_size.x - h_margins, buttons_minsize.y);
-	Point2 buttons_position = Point2(panel_style->get_margin(SIDE_LEFT), dlg_size.y - panel_style->get_margin(SIDE_BOTTOM) - buttons_size.y);
+	Point2 buttons_position = Point2(theme_cache.panel_style->get_margin(SIDE_LEFT), dlg_size.y - theme_cache.panel_style->get_margin(SIDE_BOTTOM) - buttons_size.y);
 	buttons_hbox->set_position(buttons_position);
 	buttons_hbox->set_size(buttons_size);
 
 	// Place the content from the top to fill the rest of the space (minus the separation).
-	Point2 content_position = Point2(panel_style->get_margin(SIDE_LEFT), panel_style->get_margin(SIDE_TOP));
+	Point2 content_position = Point2(theme_cache.panel_style->get_margin(SIDE_LEFT), theme_cache.panel_style->get_margin(SIDE_TOP));
 	Size2 content_size = Size2(dlg_size.x - h_margins, dlg_size.y - v_margins - buttons_size.y - theme_cache.buttons_separation);
 
 	for (int i = 0; i < get_child_count(); i++) {
@@ -269,9 +260,8 @@ Size2 AcceptDialog::_get_contents_minimum_size() const {
 
 	// Then we take the background panel as it provides the offsets,
 	// which are always added to the minimum size.
-	Ref<StyleBox> panel_style = _get_current_default_stylebox();
-	if (panel_style.is_valid()) {
-		content_minsize += panel_style->get_minimum_size();
+	if (theme_cache.panel_style.is_valid()) {
+		content_minsize += theme_cache.panel_style->get_minimum_size();
 	}
 
 	// Then we add buttons. Horizontally we're interested in whichever
@@ -371,30 +361,6 @@ void AcceptDialog::remove_button(Control *p_button) {
 	}
 }
 
-bool AcceptDialog::_has_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	for(const State &E : theme_cache.panel_style.get_search_order(cur_state)){
-		if(has_theme_stylebox(theme_cache.panel_style.get_state_data_name(E))){
-			return true;
-		}
-	}
-	return false;
-}
-
-Ref<StyleBox> AcceptDialog::_get_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
-	ThemeIntData cur_theme_data; 
-	cur_theme_data.set_data_name("panel");
-	for(const State &E : theme_cache.panel_style.get_search_order(cur_state)){
-		if(has_theme_stylebox(cur_theme_data.get_state_data_name(E))){
-			style = theme_cache.panel_style.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
 void AcceptDialog::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_ok_button"), &AcceptDialog::get_ok_button);
 	ClassDB::bind_method(D_METHOD("get_label"), &AcceptDialog::get_label);
@@ -425,7 +391,7 @@ void AcceptDialog::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "dialog_close_on_escape"), "set_close_on_escape", "get_close_on_escape");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "dialog_autowrap"), "set_autowrap", "has_autowrap");
 
-	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, AcceptDialog, panel_style, panel);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, AcceptDialog, panel_style, "panel");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, AcceptDialog, buttons_separation);
 }
 

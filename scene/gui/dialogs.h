@@ -55,7 +55,7 @@ class AcceptDialog : public Window {
 	bool close_on_escape = true;
 
 	struct ThemeCache {
-		ThemeStyleboxData panel_style{"panel_style"};
+		Ref<StyleBox> panel_style;
 		int buttons_separation = 0;
 	} theme_cache;
 
@@ -82,9 +82,6 @@ protected:
 	void _text_submitted(const String &p_text);
 	void _ok_pressed();
 	void _cancel_pressed();
-
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
 
 public:
 	Label *get_label() { return message_label; }

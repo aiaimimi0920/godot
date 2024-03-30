@@ -132,10 +132,8 @@ static Ref<StyleBox> make_empty_stylebox(float p_margin_left = -1, float p_margi
 }
 
 void fill_default_theme_panel(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
-	ThemeIntData cur_theme_data;
+	theme->set_stylebox("panel", "Panel", make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0, 0, 0, 0));
 
-	cur_theme_data.set_data_name("panel");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Panel", make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0, 0, 0, 0));
 }
 
 void fill_default_theme_button_variations(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
@@ -193,29 +191,14 @@ void fill_default_theme_label(Ref<Theme> &theme, const Ref<Font> &default_font, 
 
 	theme->set_constant("line_spacing", "Label", Math::round(3 * scale));
 
-	cur_theme_data.set_data_name("font_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Label", ColorRole::ON_PRIMARY);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Label", ColorRole::INVERSE_PRIMARY);
+	theme->set_color("font_color_role", "Label", ColorRole::ON_PRIMARY);
+	theme->set_color("font_color", "Label", Color(1, 1, 1));
 
-	cur_theme_data.set_data_name("font_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Label", Color(1, 1, 1, 1));
-	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Label", Color(1, 1, 1, 1));
+	theme->set_color("font_shadow_color_role", "Label", ColorRole::STATIC_TRANSPARENT);
+	theme->set_color("font_shadow_color", "Label", Color(1, 1, 1));
 
-	cur_theme_data.set_data_name("font_shadow_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Label", ColorRole::STATIC_TRANSPARENT);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Label", ColorRole::STATIC_TRANSPARENT);
-
-	cur_theme_data.set_data_name("font_shadow_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Label", Color(1, 1, 1, 1));
-	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Label", Color(1, 1, 1, 1));
-
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Label", ColorRole::OUTLINE);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Label", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Label", Color(1, 1, 1, 1));
-	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Label", Color(1, 1, 1, 1));
+	theme->set_color("font_outline_color_role", "Label", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "Label", Color(1, 1, 1));
 
 	theme->set_constant("shadow_offset_x", "Label", Math::round(1 * scale));
 	theme->set_constant("shadow_offset_y", "Label", Math::round(1 * scale));
@@ -226,23 +209,14 @@ void fill_default_theme_label(Ref<Theme> &theme, const Ref<Font> &default_font, 
 	theme->set_font_size("font_size", "TooltipLabel", -1);
 	theme->set_font("font", "TooltipLabel", Ref<Font>());
 
-	cur_theme_data.set_data_name("font_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TooltipLabel", ColorRole::ON_PRIMARY);
+	theme->set_color("font_color_role", "TooltipLabel", ColorRole::ON_PRIMARY);
+	theme->set_color("font_color", "TooltipLabel", Color(1, 1, 1));
 
-	cur_theme_data.set_data_name("font_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TooltipLabel", Color(1, 1, 1, 1));
+	theme->set_color("font_shadow_color_role", "TooltipLabel", ColorRole::STATIC_TRANSPARENT);
+	theme->set_color("font_shadow_color", "TooltipLabel", Color(1, 1, 1));
 
-	cur_theme_data.set_data_name("font_shadow_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TooltipLabel", ColorRole::STATIC_TRANSPARENT);
-
-	cur_theme_data.set_data_name("font_shadow_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TooltipLabel", Color(1, 1, 1, 1));
-
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TooltipLabel", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TooltipLabel", Color(1, 1, 1, 1));
+	theme->set_color("font_outline_color_role", "TooltipLabel", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "TooltipLabel", Color(1, 1, 1));
 
 	theme->set_constant("shadow_offset_x", "TooltipLabel", 1);
 	theme->set_constant("shadow_offset_y", "TooltipLabel", 1);
@@ -293,10 +267,9 @@ void fill_default_theme_rich_text_label(Ref<Theme> &theme, const Ref<Font> &defa
 	cur_theme_data.set_data_name("font_shadow_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", Color(0, 0, 0, 0));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", ColorRole::OUTLINE);
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", Color(1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "RichTextLabel", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "RichTextLabel", Color(1, 1, 1, 1));
+
 
 	cur_theme_data.set_data_name("outline_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", ColorRole::OUTLINE);
@@ -415,14 +388,9 @@ void fill_default_theme_popup_menu(Ref<Theme> &theme, const Ref<Font> &default_f
 	separator_vertical->set_vertical(true);
 	separator_vertical->set_content_margin_individual(0, default_margin, 0, default_margin);
 
-	cur_theme_data.set_data_name("separator");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", separator_horizontal);
-
-	cur_theme_data.set_data_name("labeled_separator_left");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", separator_horizontal);
-
-	cur_theme_data.set_data_name("labeled_separator_right");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", separator_horizontal);
+	theme->set_stylebox("separator", "PopupMenu", separator_horizontal);
+	theme->set_stylebox("labeled_separator_left", "PopupMenu", separator_horizontal);
+	theme->set_stylebox("labeled_separator_right", "PopupMenu", separator_horizontal);
 
 	cur_theme_data.set_data_name("icon");
 	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "PopupMenu", icons["checked"]);
@@ -466,37 +434,17 @@ void fill_default_theme_popup_menu(Ref<Theme> &theme, const Ref<Font> &default_f
 	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", Color(1, 1, 1, 0.38));
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_accelerator_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY_FIXED);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY_FIXED_VARIANT);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY_FIXED);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY_FIXED_38);
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupMenu", ColorRole::ON_PRIMARY_FIXED);
+	theme->set_color_role("font_accelerator_color_role", "PopupMenu", ColorRole::ON_PRIMARY_FIXED);
+	theme->set_color("font_accelerator_color", "PopupMenu", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_accelerator_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
-	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
-	theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
-	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", Color(1, 1, 1, 0.38));
-	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "PopupMenu", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "PopupMenu", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", ColorRole::OUTLINE);
+	theme->set_color_role("font_separator_color_role", "PopupMenu", ColorRole::OUTLINE);
+	theme->set_color("font_separator_color", "PopupMenu", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
-
-	cur_theme_data.set_data_name("font_separator_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("font_separator_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
-
-	cur_theme_data.set_data_name("font_separator_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", ColorRole::OUTLINE_VARIANT);
-
-	cur_theme_data.set_data_name("font_separator_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+	theme->set_color_role("font_separator_outline_color_role", "PopupMenu", ColorRole::OUTLINE_VARIANT);
+	theme->set_color("font_separator_outline_color", "PopupMenu", Color(1, 1, 1, 1));
 }
 
 void fill_default_theme_checkbox(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
@@ -568,11 +516,8 @@ void fill_default_theme_checkbox(Ref<Theme> &theme, const Ref<Font> &default_fon
 	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", Color(1, 1, 1, 0.4));
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "CheckBox", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "CheckBox", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", ColorRole::ON_PRIMARY);
@@ -715,11 +660,10 @@ void fill_default_theme_check_button(Ref<Theme> &theme, const Ref<Font> &default
 	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", Color(1, 1, 1, 0.4));
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", ColorRole::OUTLINE);
 
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "CheckButton", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "CheckButton", Color(1, 1, 1, 1));
+
 
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", ColorRole::ON_PRIMARY);
@@ -884,11 +828,8 @@ void fill_default_theme_button(Ref<Theme> &theme, const Ref<Font> &default_font,
 	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", Color(1, 1, 1, 0.4));
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "Button", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "Button", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", ColorRole::ON_PRIMARY);
@@ -977,11 +918,8 @@ void fill_default_theme_menu_button(Ref<Theme> &theme, const Ref<Font> &default_
 	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", Color(1, 1, 1, 0.4));
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "MenuButton", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "MenuButton", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", ColorRole::ON_PRIMARY);
@@ -1008,10 +946,6 @@ void fill_default_theme_link_button(Ref<Theme> &theme, const Ref<Font> &default_
 
 	scale = p_scale;
 
-	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	const Ref<StyleBoxFlat> default_stylebox_hover = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_1, default_color_scheme);
-	const Ref<StyleBoxFlat> default_stylebox_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	const Ref<StyleBoxFlat> default_stylebox_disabled = make_color_role_flat_stylebox(ColorRole::PRIMARY_12, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
 
@@ -1019,12 +953,7 @@ void fill_default_theme_link_button(Ref<Theme> &theme, const Ref<Font> &default_
 	const Ref<StyleBoxFlat> state_layer_stylebox_pressed = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY_10, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 	Ref<StyleBoxFlat> state_layer_stylebox_focus = make_color_role_flat_stylebox(ColorRole::ON_PRIMARY_10, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 
-	cur_theme_data.set_data_name("default_stylebox");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LinkButton", default_stylebox_normal);
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "LinkButton", default_stylebox_hover);
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "LinkButton", default_stylebox_pressed);
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "LinkButton", default_stylebox_disabled);
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "LinkButton", default_stylebox_focus);
+	theme->set_stylebox("focus", "LinkButton", default_stylebox_focus);
 
 	cur_theme_data.set_data_name("state_layer_stylebox");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "LinkButton", state_layer_stylebox_hover);
@@ -1034,15 +963,12 @@ void fill_default_theme_link_button(Ref<Theme> &theme, const Ref<Font> &default_
 	theme->set_font("font", "LinkButton", default_font);
 
 	theme->set_font_size("font_size", "LinkButton", -1);
-	theme->set_constant("font_outline_size", "LinkButton", 0);
+	theme->set_constant("outline_size", "LinkButton", 0);
 
 	theme->set_constant("underline_spacing", "LinkButton", Math::round(2 * scale));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LinkButton", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LinkButton", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "LinkButton", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "LinkButton", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LinkButton", ColorRole::ON_PRIMARY);
@@ -1127,11 +1053,8 @@ void fill_default_theme_elevated_button(Ref<Theme> &theme, const Ref<Font> &defa
 	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ElevatedButton", Color(1, 1, 1, 0.4));
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ElevatedButton", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ElevatedButton", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ElevatedButton", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "ElevatedButton", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "ElevatedButton", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ElevatedButton", ColorRole::ON_SURFACE);
@@ -1223,11 +1146,10 @@ void fill_default_theme_color_picker(Ref<Theme> &theme, const Ref<Font> &default
 	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ColorPickerButton", Color(1, 1, 1, 0.4));
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ColorPickerButton", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ColorPickerButton", ColorRole::OUTLINE);
 
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ColorPickerButton", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "ColorPickerButton", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "ColorPickerButton", Color(1, 1, 1, 1));
+
 
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ColorPickerButton", ColorRole::ON_SURFACE);
@@ -1425,11 +1347,8 @@ void fill_default_theme_option_button(Ref<Theme> &theme, const Ref<Font> &defaul
 	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", Color(1, 1, 1, 0.4));
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "OptionButton", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "OptionButton", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", ColorRole::ON_PRIMARY);
@@ -1562,15 +1481,12 @@ void fill_default_theme_menu_bar(Ref<Theme> &theme, const Ref<Font> &default_fon
 	theme->set_font("font", "MenuBar", default_font);
 
 	theme->set_font_size("font_size", "MenuBar", -1);
-	theme->set_constant("font_outline_size", "MenuBar", 0);
+	theme->set_constant("outline_size", "MenuBar", 0);
 
 	theme->set_constant("h_separation", "MenuBar", Math::round(4 * scale));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuBar", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuBar", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "MenuBar", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "MenuBar", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuBar", ColorRole::ON_PRIMARY);
@@ -1598,24 +1514,13 @@ void fill_default_theme_popup_panel(Ref<Theme> &theme, const Ref<Font> &default_
 	scale = p_scale;
 
 	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	const Ref<StyleBoxFlat> default_stylebox_hover = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_1, default_color_scheme);
-	const Ref<StyleBoxFlat> default_stylebox_pressed = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	const Ref<StyleBoxFlat> default_stylebox_disabled = make_color_role_flat_stylebox(ColorRole::ON_SURFACE_12, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
-	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
-
-	cur_theme_data.set_data_name("panel");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupPanel", default_stylebox_normal);
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupPanel", default_stylebox_hover);
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "PopupPanel", default_stylebox_pressed);
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupPanel", default_stylebox_disabled);
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupPanel", default_stylebox_focus);
+	theme->set_stylebox("panel", "PopupPanel", make_flat_stylebox(default_stylebox_normal));
 
 	theme->set_type_variation("TooltipPanel", "PopupPanel");
 	const Ref<StyleBoxFlat> tooltip_default_stylebox_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 2 * default_margin, 0.5 * default_margin, 2 * default_margin, 0.5 * default_margin);
 
-	cur_theme_data.set_data_name("panel");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TooltipPanel", tooltip_default_stylebox_normal);
+	theme->set_stylebox("panel", "TooltipPanel",
+			tooltip_default_stylebox_normal);
 }
 
 // Dialogs
@@ -1624,8 +1529,7 @@ void fill_default_theme_dialogs(Ref<Theme> &theme, const Ref<Font> &default_font
 	// AcceptDialog is currently the base dialog, so this defines styles for all extending nodes.
 	theme->set_color_scheme("default_color_scheme", "AcceptDialog", default_color_scheme);
 	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(ColorRole::SECONDARY_CONTAINER, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, Math::round(8 * scale), Math::round(8 * scale), Math::round(8 * scale), Math::round(8 * scale));
-	cur_theme_data.set_data_name("panel");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "AcceptDialog", default_stylebox_normal);
+	theme->set_stylebox("panel", "AcceptDialog", default_stylebox_normal);
 
 	theme->set_constant("buttons_separation", "AcceptDialog", Math::round(10 * scale));
 
@@ -1639,15 +1543,9 @@ void fill_default_theme_dialogs(Ref<Theme> &theme, const Ref<Font> &default_font
 	theme->set_icon("folder", "FileDialog", icons["folder"]);
 	theme->set_icon("file", "FileDialog", icons["file"]);
 
-	theme->set_color("folder_icon_color", "FileDialog", Color(1, 1, 1));
-	theme->set_color("file_icon_color", "FileDialog", Color(1, 1, 1));
-	theme->set_color("file_disabled_color", "FileDialog", Color(1, 1, 1, 0.25));
 
-	cur_theme_data.set_data_name("folder_icon_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", ColorRole::ON_PRIMARY);
-
-	cur_theme_data.set_data_name("folder_icon_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", Color(1, 1, 1, 1));
+	theme->set_color_role("folder_icon_color_role", "FileDialog", ColorRole::ON_PRIMARY);
+	theme->set_color("folder_icon_color", "FileDialog", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("file_icon_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", ColorRole::ON_PRIMARY);
@@ -1700,8 +1598,7 @@ void fill_default_theme_containers(Ref<Theme> &theme, const Ref<Font> &default_f
 	theme->set_constant("h_separation", "VFlowContainer", Math::round(4 * scale));
 	theme->set_constant("v_separation", "VFlowContainer", Math::round(4 * scale));
 
-	cur_theme_data.set_data_name("panel");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PanelContainer", default_stylebox_normal);
+	theme->set_stylebox("panel", "PanelContainer", default_stylebox_normal);
 }
 
 // ProgressBar
@@ -1728,11 +1625,9 @@ void fill_default_theme_progress_bar(Ref<Theme> &theme, const Ref<Font> &default
 	cur_theme_data.set_data_name("font_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ProgressBar", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ProgressBar", ColorRole::OUTLINE);
+	theme->set_color_role("font_outline_color_role", "ProgressBar", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "ProgressBar", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ProgressBar", Color(1, 1, 1, 1));
 }
 
 // ItemList
@@ -1765,11 +1660,8 @@ void fill_default_theme_item_list(Ref<Theme> &theme, const Ref<Font> &default_fo
 
 	theme->set_constant("outline_size", "ItemList", 0);
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ItemList", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ItemList", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "ItemList", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "ItemList", Color(1, 1, 1, 1));
 
 	theme->set_constant("icon_margin", "ItemList", Math::round(4 * scale));
 	theme->set_constant("line_separation", "ItemList", Math::round(2 * scale));
@@ -1793,11 +1685,8 @@ void fill_default_theme_item_list(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ItemList", cursor_stylebox);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ItemList", cursor_stylebox_focus);
 
-	cur_theme_data.set_data_name("guide_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ItemList", ColorRole::PRIMARY_16);
-
-	cur_theme_data.set_data_name("guide_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ItemList", Color(0.7, 0.7, 0.7, 0.25));
+	theme->set_color_role("guide_color_role", "ItemList", ColorRole::PRIMARY_16);
+	theme->set_color("guide_color", "ItemList", Color(0.7, 0.7, 0.7, 0.25));
 }
 
 // TabContainer
@@ -1822,12 +1711,9 @@ void fill_default_theme_tab_container(Ref<Theme> &theme, const Ref<Font> &defaul
 	focus->set_expand_margin_all(Math::round(2 * scale));
 	Ref<StyleBoxFlat> style_tab_focus = focus->duplicate();
 
-	cur_theme_data.set_data_name("panel");
 	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0, 0, 0, 0);
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabContainer", default_stylebox_normal);
-
-	cur_theme_data.set_data_name("tabbar_background");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabContainer", make_empty_stylebox(0, 0, 0, 0));
+	theme->set_stylebox("panel", "TabContainer", default_stylebox_normal);
+	theme->set_stylebox("tabbar_background", "TabContainer", make_empty_stylebox(0, 0, 0, 0));
 
 	theme->set_constant("side_margin", "TabContainer", Math::round(8 * scale));
 
@@ -1859,11 +1745,10 @@ void fill_default_theme_tab_container(Ref<Theme> &theme, const Ref<Font> &defaul
 	theme->set_icon("decrement_highlight", "TabContainer", icons["scroll_button_left_hl"]);
 	theme->set_icon("drop_mark", "TabContainer", icons["tabs_drop_mark"]);
 
-	cur_theme_data.set_data_name("drop_mark_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabContainer", ColorRole::ON_PRIMARY);
 
-	cur_theme_data.set_data_name("drop_mark_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabContainer", Color(1, 1, 1, 1));
+	theme->set_color_role("drop_mark_color_role", "TabContainer", ColorRole::ON_PRIMARY);
+	theme->set_color("drop_mark_color", "TabContainer", Color(1, 1, 1, 1));
+
 
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "TabContainer", ColorRole::ON_PRIMARY);
@@ -1877,11 +1762,8 @@ void fill_default_theme_tab_container(Ref<Theme> &theme, const Ref<Font> &defaul
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "TabContainer", Color(1, 1, 1, 1));
 	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "TabContainer", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabContainer", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabContainer", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "TabContainer", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "TabContainer", Color(1, 1, 1, 1));
 
 	theme->set_font("font", "TabContainer", Ref<Font>());
 	theme->set_font_size("font_size", "TabContainer", -1);
@@ -1910,13 +1792,9 @@ void fill_default_theme_tab_bar(Ref<Theme> &theme, const Ref<Font> &default_font
 
 
 	const Ref<StyleBoxFlat> button_pressed_stylebox = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	const Ref<StyleBoxFlat> button_highlight_stylebox = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_1, default_color_scheme);
-	cur_theme_data.set_data_name("button_pressed");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabBar", button_pressed_stylebox);
-
-	cur_theme_data.set_data_name("button_highlight");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabBar", button_highlight_stylebox);
-
+	const Ref<StyleBoxFlat> button_highlight_stylebox = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	theme->set_stylebox("button_pressed", "TabBar", button_pressed_stylebox);
+	theme->set_stylebox("button_highlight", "TabBar", button_highlight_stylebox);
 
 	theme->set_icon("increment", "TabBar", icons["scroll_button_right"]);
 	theme->set_icon("increment_highlight", "TabBar", icons["scroll_button_right_hl"]);
@@ -1931,12 +1809,8 @@ void fill_default_theme_tab_bar(Ref<Theme> &theme, const Ref<Font> &default_font
 	theme->set_constant("icon_max_width", "TabBar", 0);
 	theme->set_constant("outline_size", "TabBar", 0);
 
-
-	cur_theme_data.set_data_name("drop_mark_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabBar", ColorRole::ON_PRIMARY);
-
-	cur_theme_data.set_data_name("drop_mark_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabBar", Color(1, 1, 1, 1));
+	theme->set_color_role("drop_mark_color_role", "TabBar", ColorRole::ON_PRIMARY);
+	theme->set_color("drop_mark_color", "TabBar", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "TabBar", ColorRole::ON_PRIMARY);
@@ -1950,11 +1824,9 @@ void fill_default_theme_tab_bar(Ref<Theme> &theme, const Ref<Font> &default_font
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "TabBar", Color(1, 1, 1, 1));
 	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "TabBar", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabBar", ColorRole::OUTLINE);
+	theme->set_color_role("font_outline_color_role", "TabBar", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "TabBar", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabBar", Color(1, 1, 1, 1));
 }
 
 
@@ -1963,7 +1835,7 @@ void fill_default_theme_tree(Ref<Theme> &theme, const Ref<Font> &default_font, c
 	ThemeIntData cur_theme_data;
 	theme->set_color_scheme("default_color_scheme", "Tree", default_color_scheme);
 
-	cur_theme_data.set_data_name("default_style");
+	cur_theme_data.set_data_name("default_stylebox");
 
 	const Ref<StyleBoxFlat> default_style_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme,4,4,4,5);
 	Ref<StyleBoxFlat> default_style_focus = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
@@ -2166,11 +2038,9 @@ void fill_default_theme_graph_edit(Ref<Theme> &theme, const Ref<Font> &default_f
 	cur_theme_data.set_data_name("font_shadow_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphNodeTitleLabel", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphNodeTitleLabel", ColorRole::OUTLINE);
 
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphNodeTitleLabel", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "GraphNodeTitleLabel", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "GraphNodeTitleLabel", Color(1, 1, 1, 1));
 
 	theme->set_constant("shadow_offset_x", "GraphNodeTitleLabel", Math::round(1 * scale));
 	theme->set_constant("shadow_offset_y", "GraphNodeTitleLabel", Math::round(1 * scale));
@@ -2266,19 +2136,15 @@ void fill_default_theme_window(Ref<Theme> &theme, const Ref<Font> &default_font,
 	sb_expand(embedded_unfocused_border_stylebox_normal, 8, 32, 8, 6);
 
 	cur_theme_data.set_data_name("embedded_border");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Window", embedded_border_stylebox_normal);
-
-	cur_theme_data.set_data_name("embedded_unfocused_border");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Window", embedded_unfocused_border_stylebox_normal);
+	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Window", embedded_border_stylebox_normal);
+
 
 	theme->set_font("title_font", "Window", Ref<Font>());
 	theme->set_font_size("title_font_size", "Window", -1);
 
-	cur_theme_data.set_data_name("title_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Window", ColorRole::ON_SECONDARY_CONTAINER);
-
-	cur_theme_data.set_data_name("title_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Window", Color(1, 1, 1, 1));
+	theme->set_color_role("title_color_role", "Window", ColorRole::ON_SECONDARY_CONTAINER);
+	theme->set_color("title_color", "Window", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("title_outline_modulate_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Window", ColorRole::OUTLINE);
@@ -2311,7 +2177,7 @@ void fill_default_theme_line_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
 
-	cur_theme_data.set_data_name("default_style");
+	cur_theme_data.set_data_name("default_stylebox");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", default_stylebox_normal);
 
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "LineEdit", default_stylebox_focus);
@@ -2319,36 +2185,23 @@ void fill_default_theme_line_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	Ref<StyleBoxFlat> read_only_stylebox = make_color_role_flat_stylebox(ColorRole::SURFACE_12, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	read_only_stylebox->set_border_width(SIDE_BOTTOM, 2);
 	read_only_stylebox->set_border_color_role(ColorRole::ON_PRIMARY_38);
-	cur_theme_data.set_data_name("read_only");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", read_only_stylebox);
+	theme->set_stylebox("read_only", "LineEdit", read_only_stylebox);
 
 	theme->set_font("font", "LineEdit", default_font);
 
 	theme->set_font_size("font_size", "LineEdit", -1);
 
-	cur_theme_data.set_data_name("font_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", ColorRole::ON_PRIMARY);
+	theme->set_color_role("font_color_role", "LineEdit", ColorRole::ON_PRIMARY);
+	theme->set_color("font_color", "LineEdit", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", Color(1, 1, 1, 1));
+	theme->set_color_role("font_uneditable_color_role", "LineEdit", ColorRole::ON_SURFACE_38);
+	theme->set_color("font_uneditable_color", "LineEdit", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_uneditable_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", ColorRole::ON_SURFACE_38);
+	theme->set_color_role("font_selected_color_role", "LineEdit", ColorRole::ON_PRIMARY_CONTAINER);
+	theme->set_color("font_selected_color", "LineEdit", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_uneditable_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", Color(1, 1, 1, 1));
-
-	cur_theme_data.set_data_name("font_selected_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", ColorRole::ON_PRIMARY_CONTAINER);
-
-	cur_theme_data.set_data_name("font_selected_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", Color(1, 1, 1, 1));
-
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "LineEdit", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "LineEdit", Color(1, 1, 1, 1));
 
 	theme->set_constant("outline_size", "LineEdit", 0);
 
@@ -2360,17 +2213,11 @@ void fill_default_theme_line_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 
 	theme->set_constant("caret_width", "LineEdit", 0);
 
-	cur_theme_data.set_data_name("caret_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", ColorRole::SECONDARY);
+	theme->set_color_role("caret_color_role", "LineEdit", ColorRole::SECONDARY);
+	theme->set_color("caret_color", "LineEdit", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("caret_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", Color(1, 1, 1, 1));
-
-	cur_theme_data.set_data_name("selection_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", ColorRole::PRIMARY_CONTAINER);
-
-	cur_theme_data.set_data_name("selection_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", Color(1, 1, 1, 1));
+	theme->set_color_role("selection_color_role", "LineEdit", ColorRole::PRIMARY_CONTAINER);
+	theme->set_color("selection_color", "LineEdit", Color(1, 1, 1, 1));
 
 	theme->set_icon("clear", "LineEdit", icons["line_edit_clear"]);
 
@@ -2399,7 +2246,7 @@ void fill_default_theme_text_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
 
-	cur_theme_data.set_data_name("style");
+	cur_theme_data.set_data_name("default_stylebox");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", default_stylebox_normal);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TextEdit", default_stylebox_focus);
 
@@ -2407,47 +2254,29 @@ void fill_default_theme_text_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	read_only_stylebox->set_border_width(SIDE_BOTTOM, 2);
 	read_only_stylebox->set_border_color_role(ColorRole::ON_PRIMARY_38);
 	cur_theme_data.set_data_name("read_only");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", read_only_stylebox);
+	theme->set_stylebox("read_only", "TextEdit", read_only_stylebox);
 
 	theme->set_constant("base_scale", "TextEdit", 1);
 
-	cur_theme_data.set_data_name("search_result_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", ColorRole::ON_SECONDARY);
+	theme->set_color_role("search_result_color_role", "TextEdit", ColorRole::ON_SECONDARY);
+	theme->set_color("search_result_color", "TextEdit", Color(0.3, 0.3, 0.3));
 
-	cur_theme_data.set_data_name("search_result_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", Color(0.3, 0.3, 0.3));
-
-	cur_theme_data.set_data_name("search_result_border_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", ColorRole::ON_SECONDARY_38);
-
-	cur_theme_data.set_data_name("search_result_border_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", Color(0.3, 0.3, 0.3, 0.4));
+	theme->set_color_role("search_result_border_color_role", "TextEdit", ColorRole::ON_SECONDARY_38);
+	theme->set_color("search_result_border_color", "TextEdit", Color(0.3, 0.3, 0.3, 0.4));
 
 	theme->set_constant("caret_width", "TextEdit", 1);
 
-	cur_theme_data.set_data_name("caret_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", ColorRole::SECONDARY);
+	theme->set_color_role("caret_color_role", "TextEdit", ColorRole::SECONDARY);
+	theme->set_color("caret_color", "TextEdit", Color(1, 1, 1));
 
-	cur_theme_data.set_data_name("caret_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", Color(1, 1, 1));
+	theme->set_color_role("caret_background_color_role", "TextEdit", ColorRole::SECONDARY_CONTAINER);
+	theme->set_color("caret_background_color", "TextEdit", Color(0, 0, 0));
 
-	cur_theme_data.set_data_name("caret_background_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", ColorRole::SECONDARY_CONTAINER);
+	theme->set_color_role("font_selected_color_role", "TextEdit", ColorRole::ON_PRIMARY_CONTAINER);
+	theme->set_color("font_selected_color", "TextEdit", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("caret_background_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", Color(0, 0, 0));
-
-	cur_theme_data.set_data_name("font_selected_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", ColorRole::ON_PRIMARY_CONTAINER);
-
-	cur_theme_data.set_data_name("font_selected_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", Color(1, 1, 1, 1));
-
-	cur_theme_data.set_data_name("selection_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", ColorRole::PRIMARY_CONTAINER);
-
-	cur_theme_data.set_data_name("selection_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", Color(1, 1, 1, 1));
+	theme->set_color_role("selection_color_role", "TextEdit", ColorRole::PRIMARY_CONTAINER);
+	theme->set_color("selection_color", "TextEdit", Color(1, 1, 1, 1));
 
 	theme->set_icon("tab", "TextEdit", icons["text_edit_tab"]);
 	theme->set_icon("space", "TextEdit", icons["text_edit_space"]);
@@ -2455,29 +2284,17 @@ void fill_default_theme_text_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_font("font", "TextEdit", Ref<Font>());
 	theme->set_font_size("font_size", "TextEdit", -1);
 
-	cur_theme_data.set_data_name("font_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", ColorRole::ON_PRIMARY);
+	theme->set_color_role("font_color_role", "TextEdit", ColorRole::ON_PRIMARY);
+	theme->set_color("font_color", "TextEdit", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", Color(1, 1, 1, 1));
+	theme->set_color_role("font_readonly_color_role", "TextEdit", ColorRole::ON_SURFACE_38);
+	theme->set_color("font_readonly_color", "TextEdit", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_readonly_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", ColorRole::ON_SURFACE_38);
+	theme->set_color_role("font_placeholder_color_role", "TextEdit", ColorRole::PRIMARY_38);
+	theme->set_color("font_placeholder_color", "TextEdit", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_readonly_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", Color(1, 1, 1, 1));
-
-	cur_theme_data.set_data_name("font_placeholder_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", ColorRole::PRIMARY_38);
-
-	cur_theme_data.set_data_name("font_placeholder_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", Color(1, 1, 1, 1));
-
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "TextEdit", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "TextEdit", Color(1, 1, 1, 1));
 
 	theme->set_constant("outline_size", "TextEdit", 0);
 
@@ -2571,10 +2388,8 @@ void fill_default_theme_code_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	cur_theme_data.set_data_name("font_placeholder_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::OUTLINE);
-	cur_theme_data.set_data_name("font_outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 1));
+	theme->set_color_role("font_outline_color_role", "CodeEdit", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "CodeEdit", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("selection_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::PRIMARY_CONTAINER);

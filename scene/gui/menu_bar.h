@@ -86,9 +86,10 @@ class MenuBar : public Control {
 		Ref<Font> font;
 		int font_size = 0;
 
-		ThemeColorData font_outline_color{ "font_outline_color" };
-		ThemeColorRoleData font_outline_color_role{ "font_outline_color_role" };
-		int font_outline_size = 0;
+		int outline_size = 0;
+		Color font_outline_color;
+		ColorRole font_outline_color_role;
+		
 
 		int h_separation = 0;
 	} theme_cache;
@@ -149,9 +150,6 @@ protected:
 	bool _has_current_font_color() const;
 	Color _get_current_font_color_with_state(State p_state) const;
 	Color _get_current_font_color() const;
-	bool _has_current_font_outline_color() const;
-	Color _get_current_font_outline_color_with_state(State p_state) const;
-	Color _get_current_font_outline_color() const;
 
 public:
 	virtual void gui_input(const Ref<InputEvent> &p_event) override;
