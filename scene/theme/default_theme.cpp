@@ -1973,16 +1973,13 @@ void fill_default_theme_graph_edit(Ref<Theme> &theme, const Ref<Font> &default_f
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "GraphNode", graphn_sb_titlebar);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "GraphNode", graphn_sb_titlebar_selected);
 
-	cur_theme_data.set_data_name("slot");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphNode", graphnode_slot);
+	theme->set_stylebox("slot", "GraphNode", graphnode_slot);
 
 	theme->set_icon("port", "GraphNode", icons["graph_port"]);
 	theme->set_icon("resizer", "GraphNode", icons["resizer_se"]);
 
-	cur_theme_data.set_data_name("resizer_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphNode", ColorRole::PRIMARY);
-	cur_theme_data.set_data_name("resizer_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphNode", Color(1, 1, 1));
+	theme->set_color_role("resizer_color_role", "GraphNode", ColorRole::PRIMARY);
+	theme->set_color("resizer_color", "GraphNode", Color(1, 1, 1));
 
 	theme->set_constant("separation", "GraphNode", Math::round(2 * scale));
 	theme->set_constant("port_h_offset", "GraphNode", 0);
@@ -1996,21 +1993,14 @@ void fill_default_theme_graph_edit(Ref<Theme> &theme, const Ref<Font> &default_f
 	theme->set_font("font", "GraphNodeTitleLabel", Ref<Font>());
 	theme->set_font_size("font_size", "GraphNodeTitleLabel", -1);
 
-	cur_theme_data.set_data_name("font_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphNodeTitleLabel", ColorRole::ON_PRIMARY);
+	theme->set_color_role("font_color_role", "GraphNodeTitleLabel", ColorRole::ON_PRIMARY);
+	theme->set_color("font_color", "GraphNodeTitleLabel", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphNodeTitleLabel", Color(1, 1, 1, 1));
+	theme->set_color("font_shadow_color_role", "GraphNodeTitleLabel", ColorRole::STATIC_TRANSPARENT);
+	theme->set_color("font_shadow_color", "GraphNodeTitleLabel", Color(1, 1, 1));
 
-	cur_theme_data.set_data_name("font_shadow_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphNodeTitleLabel", ColorRole::STATIC_TRANSPARENT);
-
-	cur_theme_data.set_data_name("font_shadow_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphNodeTitleLabel", Color(1, 1, 1, 1));
-
-
-	theme->set_color_role("font_outline_color_role", "GraphNodeTitleLabel", ColorRole::OUTLINE);
-	theme->set_color("font_outline_color", "GraphNodeTitleLabel", Color(1, 1, 1, 1));
+	theme->set_color("font_outline_color_role", "GraphNodeTitleLabel", ColorRole::OUTLINE);
+	theme->set_color("font_outline_color", "GraphNodeTitleLabel", Color(1, 1, 1));
 
 	theme->set_constant("shadow_offset_x", "GraphNodeTitleLabel", Math::round(1 * scale));
 	theme->set_constant("shadow_offset_y", "GraphNodeTitleLabel", Math::round(1 * scale));
@@ -2027,22 +2017,14 @@ void fill_default_theme_graph_edit(Ref<Theme> &theme, const Ref<Font> &default_f
 
 	Ref<StyleBoxFlat> style_node = make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0, 0, 0, 0, 2);
 
-	cur_theme_data.set_data_name("panel");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEditMinimap", panel_stylebox_normal);
-
-	cur_theme_data.set_data_name("camera");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEditMinimap", style_minimap_camera);
-
-	cur_theme_data.set_data_name("node");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEditMinimap", style_node);
+	theme->set_stylebox("panel", "GraphEditMinimap", panel_stylebox_normal);
+	theme->set_stylebox("camera", "GraphEditMinimap", style_minimap_camera);
+	theme->set_stylebox("node", "GraphEditMinimap", style_node);
 
 	theme->set_icon("resizer", "GraphEditMinimap", icons["resizer_nw"]);
 
-	cur_theme_data.set_data_name("resizer_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEditMinimap", ColorRole::ON_PRIMARY);
-
-	cur_theme_data.set_data_name("resizer_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEditMinimap", Color(1, 1, 1, 0.85));
+	theme->set_color_role("resizer_color_role", "GraphEditMinimap", ColorRole::ON_PRIMARY);
+	theme->set_color("resizer_color", "GraphEditMinimap", Color(1, 1, 1, 0.85));
 
 	theme->set_color_scheme("default_color_scheme", "GraphEdit", default_color_scheme);
 
@@ -2058,36 +2040,23 @@ void fill_default_theme_graph_edit(Ref<Theme> &theme, const Ref<Font> &default_f
 
 	const Ref<StyleBoxFlat> graph_toolbar_style = make_color_role_flat_stylebox(ColorRole::PRIMARY_CONTAINER, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 2, 4, 2);
 
-	cur_theme_data.set_data_name("panel");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEdit", graph_edit_panel_stylebox_normal);
+	theme->set_stylebox("panel", "GraphEdit", graph_edit_panel_stylebox_normal);
+	theme->set_stylebox("menu_panel", "GraphEdit", graph_toolbar_style);
 
-	cur_theme_data.set_data_name("menu_panel");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEdit", graph_toolbar_style);
+	theme->set_color_role("grid_minor_role", "GraphEdit", ColorRole::PRIMARY_08);
+	theme->set_color("grid_minor", "GraphEdit", Color(1, 1, 1, 0.05));
 
-	cur_theme_data.set_data_name("grid_minor_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEdit", ColorRole::PRIMARY_08);
-	cur_theme_data.set_data_name("grid_minor");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEdit", Color(1, 1, 1, 0.05));
+	theme->set_color_role("grid_major_role", "GraphEdit", ColorRole::PRIMARY_16);
+	theme->set_color("grid_major", "GraphEdit", Color(1, 1, 1, 0.2));
 
-	cur_theme_data.set_data_name("grid_major_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEdit", ColorRole::PRIMARY_16);
-	cur_theme_data.set_data_name("grid_major");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEdit", Color(1, 1, 1, 0.2));
+	theme->set_color_role("selection_fill_role", "GraphEdit", ColorRole::PRIMARY_38);
+	theme->set_color("selection_fill", "GraphEdit", Color(1, 1, 1, 0.3));
 
-	cur_theme_data.set_data_name("selection_fill_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEdit", ColorRole::PRIMARY_38);
-	cur_theme_data.set_data_name("selection_fill");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEdit", Color(1, 1, 1, 0.3));
+	theme->set_color_role("selection_stroke_role", "GraphEdit", ColorRole::PRIMARY);
+	theme->set_color("selection_stroke", "GraphEdit", Color(1, 1, 1, 0.8));
 
-	cur_theme_data.set_data_name("selection_stroke_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEdit", ColorRole::PRIMARY);
-	cur_theme_data.set_data_name("selection_stroke");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEdit", Color(1, 1, 1, 0.8));
-
-	cur_theme_data.set_data_name("activity_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEdit", ColorRole::PRIMARY);
-	cur_theme_data.set_data_name("activity");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "GraphEdit", Color(1, 1, 1));
+	theme->set_color_role("activity_role", "GraphEdit", ColorRole::PRIMARY);
+	theme->set_color("activity", "GraphEdit", Color(1, 1, 1));
 
 	// Visual Node Ports
 

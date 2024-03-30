@@ -80,14 +80,14 @@ class GraphEditMinimap : public Control {
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
 
-		ThemeStyleboxData panel{"panel"};
-		ThemeStyleboxData node_style{"node_style"};
-		ThemeStyleboxData camera_style{"camera_style"};
+		Ref<StyleBox> panel;
+		Ref<StyleBox> node_style;
+		Ref<StyleBox> camera_style;
 
 		Ref<Texture2D> resizer;
 
-		ThemeColorData resizer_color{"resizer_color"};
-		ThemeColorRoleData resizer_color_role{"resizer_color_role"};
+		Color resizer_color;
+		ColorRole resizer_color_role;
 	} theme_cache;
 
 	Vector2 _get_render_size();
@@ -283,33 +283,33 @@ private:
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
 		float base_scale = 1.0;
-		ThemeStyleboxData panel{"panel"};
+		Ref<StyleBox> panel;
 
-		ThemeColorData grid_major{"grid_major"};
-		ThemeColorRoleData grid_major_role{"grid_major_role"};
+		Color grid_major;
+		ColorRole grid_major_role;
 
-		ThemeColorData grid_minor{"grid_minor"};
-		ThemeColorRoleData grid_minor_role{"grid_minor_role"};
+		Color grid_minor;
+		ColorRole grid_minor_role;
 
-		ThemeColorData activity_color{"activity_color"};
-		ThemeColorRoleData activity_color_role{"activity_color_role"};
+		Color activity_color;
+		ColorRole activity_color_role;
 
-		ThemeColorData connection_hover_tint_color{"connection_hover_tint_color"};
-		ThemeColorRoleData connection_hover_tint_color_role{"connection_hover_tint_color_role"};
+		Color connection_hover_tint_color;
+		ColorRole connection_hover_tint_color_role;
 
-		ThemeColorData connection_valid_target_tint_color{"connection_valid_target_tint_color"};
-		ThemeColorRoleData connection_valid_target_tint_color_role{"connection_valid_target_tint_color_role"};
+		Color connection_valid_target_tint_color;
+		ColorRole connection_valid_target_tint_color_role;
 
-		ThemeColorData connection_rim_color{"connection_rim_color"};
-		ThemeColorRoleData connection_rim_color_role{"connection_rim_color_role"};
+		Color connection_rim_color;
+		ColorRole connection_rim_color_role;
 
-		ThemeColorData selection_fill{"selection_fill"};
-		ThemeColorRoleData selection_fill_role{"selection_fill_role"};
+		Color selection_fill;
+		ColorRole selection_fill_role;
 
-		ThemeColorData selection_stroke{"selection_stroke"};
-		ThemeColorRoleData selection_stroke_role{"selection_stroke_role"};
+		Color selection_stroke;
+		ColorRole selection_stroke_role;
 
-		ThemeStyleboxData menu_panel{"menu_panel"};
+		Ref<StyleBox> menu_panel;
 
 		Ref<Texture2D> zoom_in;
 		Ref<Texture2D> zoom_out;
@@ -509,36 +509,6 @@ public:
 	void set_warped_panning(bool p_warped);
 
 	void arrange_nodes();
-
-	bool _has_current_panel() const;
-	Ref<StyleBox> _get_current_panel() const;
-
-	bool _has_current_grid_major() const;
-	Color _get_current_grid_major() const;
-
-	bool _has_current_grid_minor() const;
-	Color _get_current_grid_minor() const;
-
-	bool _has_current_activity_color() const;
-	Color _get_current_activity_color() const;
-
-	bool _has_current_connection_hover_tint_color() const;
-	Color _get_current_connection_hover_tint_color() const;
-
-	bool _has_current_connection_valid_target_tint_color() const;
-	Color _get_current_connection_valid_target_tint_color() const;
-
-	bool _has_current_connection_rim_color() const;
-	Color _get_current_connection_rim_color() const;
-
-	bool _has_current_selection_fill() const;
-	Color _get_current_selection_fill() const;
-
-	bool _has_current_selection_stroke() const;
-	Color _get_current_selection_stroke() const;
-
-	bool _has_current_menu_panel() const;
-	Ref<StyleBox> _get_current_menu_panel() const;
 
 	GraphEdit();
 };

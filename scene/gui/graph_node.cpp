@@ -167,7 +167,7 @@ void GraphNode::_resort() {
 	Size2i titlebar_min_size = titlebar_hbox->get_combined_minimum_size();
 
 	// First pass, determine minimum size AND amount of stretchable elements.
-	Ref<StyleBox> sb_slot = _get_current_slot();
+	Ref<StyleBox> sb_slot = theme_cache.slot;
 	int separation = theme_cache.separation;
 
 	int children_count = 0;
@@ -322,7 +322,7 @@ void GraphNode::_notification(int p_what) {
 			Ref<StyleBox> sb_to_draw_panel = selected ? _get_current_panel_with_state(State::NormalCheckedLTR) :  _get_current_panel_with_state(State::NormalUncheckedLTR);;
 			Ref<StyleBox> sb_to_draw_titlebar = selected ? _get_current_titlebar_with_state(State::NormalCheckedLTR) :  _get_current_titlebar_with_state(State::NormalUncheckedLTR) ;
 
-			Ref<StyleBox> sb_slot = _get_current_slot();
+			Ref<StyleBox> sb_slot = theme_cache.slot;
 
 			int port_h_offset = theme_cache.port_h_offset;
 
@@ -378,7 +378,7 @@ void GraphNode::_notification(int p_what) {
 			}
 
 			if (resizable) {
-				draw_texture(theme_cache.resizer, get_size() - theme_cache.resizer->get_size(), _get_current_resizer_color());
+				draw_texture(theme_cache.resizer, get_size() - theme_cache.resizer->get_size(), theme_cache.resizer_color);
 			}
 		} break;
 	}
@@ -612,8 +612,7 @@ Size2 GraphNode::get_minimum_size() const {
 
 	Ref<StyleBox> sb_panel = _get_current_panel_with_state(State::NormalNoneLTR);
 	Ref<StyleBox> sb_titlebar = _get_current_titlebar_with_state(State::NormalNoneLTR);
-
-	Ref<StyleBox> sb_slot = _get_current_slot();
+	Ref<StyleBox> sb_slot = theme_cache.slot;
 
 	int separation = theme_cache.separation;
 	Size2 minsize = titlebar_hbox->get_minimum_size() + sb_titlebar->get_minimum_size();
@@ -890,55 +889,6 @@ Ref<StyleBox> GraphNode::_get_current_titlebar() const {
 	style = _get_current_titlebar_with_state(cur_state);
 	return style;
 }
-
-
-
-bool GraphNode::_has_current_slot() const {
-	State cur_state = get_current_focus_state();
-	for (const State &E : theme_cache.slot.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.slot.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Ref<StyleBox> GraphNode::_get_current_slot() const {
-	State cur_state = get_current_focus_state();
-	Ref<StyleBox> style;
-	for (const State &E : theme_cache.slot.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.slot.get_state_data_name(E))) {
-			style = theme_cache.slot.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-
-bool GraphNode::_has_current_resizer_color() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.resizer_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.resizer_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color GraphNode::_get_current_resizer_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_color;
-
-	for (const State &E : theme_cache.resizer_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.resizer_color.get_state_data_name(E))) {
-			cur_color = theme_cache.resizer_color.get_data(E);
-			break;
-		}
-	}
-	return cur_color;
-}
-
 
 void GraphNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_title", "title"), &GraphNode::set_title);

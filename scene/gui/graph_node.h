@@ -82,10 +82,8 @@ class GraphNode : public GraphElement {
 		Ref<ColorScheme> default_color_scheme;
 
 		ThemeStyleboxData panel{"panel"};
-		// ThemeStyleboxData panel_selected{"panel_selected"};
 		ThemeStyleboxData titlebar{"titlebar"};
-		// ThemeStyleboxData titlebar_selected{"titlebar_selected"};
-		ThemeStyleboxData slot{"slot"};
+		Ref<StyleBox> slot;
 
 		int separation = 0;
 		int port_h_offset = 0;
@@ -93,8 +91,8 @@ class GraphNode : public GraphElement {
 		Ref<Texture2D> port;
 		Ref<Texture2D> resizer;
 
-		ThemeColorData resizer_color{"resizer_color"};
-		ThemeColorRoleData resizer_color_role{"resizer_color_role"};
+		Color resizer_color;
+		ColorRole resizer_color_role;
 	} theme_cache;
 
 	bool port_pos_dirty = true;
@@ -123,12 +121,6 @@ protected:
 	bool _has_current_titlebar() const;
 	Ref<StyleBox> _get_current_titlebar_with_state(State p_state) const;
 	Ref<StyleBox> _get_current_titlebar() const;
-
-	bool _has_current_slot() const;
-	Ref<StyleBox> _get_current_slot() const;
-
-	bool _has_current_resizer_color() const;
-	Color _get_current_resizer_color() const;
 public:
 	void set_title(const String &p_title);
 	String get_title() const;
