@@ -1,4 +1,4 @@
-]/**************************************************************************/
+/**************************************************************************/
 /*  default_theme.cpp                                                     */
 /**************************************************************************/
 /*                         This file is part of:                          */
@@ -2188,7 +2188,7 @@ void fill_default_theme_text_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	Ref<StyleBoxFlat> read_only_stylebox = make_color_role_flat_stylebox(ColorRole::SURFACE_12, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	read_only_stylebox->set_border_width(SIDE_BOTTOM, 2);
 	read_only_stylebox->set_border_color_role(ColorRole::ON_PRIMARY_38);
-
+	cur_theme_data.set_data_name("read_only");
 	theme->set_stylebox("read_only", "TextEdit", read_only_stylebox);
 
 	theme->set_constant("base_scale", "TextEdit", 1);
