@@ -43,18 +43,18 @@ class ProgressBar : public Range {
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
 
-		ThemeStyleboxData background_style{"background_style"};
-		ThemeStyleboxData fill_style{"fill_style"};
+		Ref<StyleBox> background_style;
+		Ref<StyleBox> fill_style;
 
 		Ref<Font> font;
 		int font_size = 0;
 		int font_outline_size = 0;
 
-		ThemeColorData font_color{"font_color"};
-		ThemeColorRoleData font_color_role{"font_color_role"};
+		Color font_color;
+		ColorRole font_color_role;
 
-		ThemeColorData font_outline_color{"font_outline_color"};
-		ThemeColorRoleData font_outline_color_role{"font_outline_color_role"};
+		Color font_outline_color;
+		ColorRole font_outline_color_role;
 	} theme_cache;
 
 protected:
@@ -88,22 +88,6 @@ public:
 
 	Size2 get_minimum_size() const override;
 	ProgressBar();
-
-	bool _has_current_background_style_with_state(State p_state) const;
-	bool _has_current_background_style() const;
-	Ref<StyleBox> _get_current_background_style_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_background_style() const;
-
-	bool _has_current_fill_style_with_state(State p_state) const;
-	bool _has_current_fill_style() const;
-	Ref<StyleBox> _get_current_fill_style_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_fill_style() const;
-
-	bool _has_current_font_color() const;
-	Color _get_current_font_color() const;
-	bool _has_current_font_outline_color() const;
-	Color _get_current_font_outline_color() const;
-
 private:
 	float _inderminate_fill_progress = 0;
 

@@ -1794,12 +1794,14 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 
 		// HScrollBar.
 
+		cur_theme_data.set_data_name("scroll_style");
 		if (p_config.increase_scrollbar_touch_area) {
-			p_theme->set_stylebox("scroll", "HScrollBar", make_line_stylebox(p_config.separator_color, 50));
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "HScrollBar", make_color_role_line_stylebox(p_config.separator_color_role,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 50));
 		} else {
-			p_theme->set_stylebox("scroll", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, -5, 1, -5, 1));
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, -5, 1, -5, 1));
 		}
-		p_theme->set_stylebox("scroll_focus", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
+
 		p_theme->set_stylebox("grabber", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabber"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
 		p_theme->set_stylebox("grabber_highlight", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberHl"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
 		p_theme->set_stylebox("grabber_pressed", "HScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberPressed"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
@@ -1812,13 +1814,13 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		p_theme->set_icon("decrement_pressed", "HScrollBar", empty_icon);
 
 		// VScrollBar.
-
+		cur_theme_data.set_data_name("scroll_style");
 		if (p_config.increase_scrollbar_touch_area) {
-			p_theme->set_stylebox("scroll", "VScrollBar", make_line_stylebox(p_config.separator_color, 50, 1, 1, true));
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "VScrollBar", make_color_role_line_stylebox(p_config.separator_color_role,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 50, 1, 1, true));
 		} else {
-			p_theme->set_stylebox("scroll", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, -5, 1, -5));
+			p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, -5, 1, -5));
 		}
-		p_theme->set_stylebox("scroll_focus", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollBg"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
 		p_theme->set_stylebox("grabber", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabber"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
 		p_theme->set_stylebox("grabber_highlight", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberHl"), EditorStringName(EditorIcons)), 5, 5, 5, 5, 1, 1, 1, 1));
 		p_theme->set_stylebox("grabber_pressed", "VScrollBar", make_stylebox(p_theme->get_icon(SNAME("GuiScrollGrabberPressed"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 1, 1, 1, 1));
@@ -1834,18 +1836,18 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		// HSlider.
 		p_theme->set_icon("grabber_highlight", "HSlider", p_theme->get_icon(SNAME("GuiSliderGrabberHl"), EditorStringName(EditorIcons)));
 		p_theme->set_icon("grabber", "HSlider", p_theme->get_icon(SNAME("GuiSliderGrabber"), EditorStringName(EditorIcons)));
-		p_theme->set_stylebox("slider", "HSlider", make_flat_stylebox(p_config.dark_color_3, 0, p_config.base_margin / 2, 0, p_config.base_margin / 2, p_config.corner_radius));
-		p_theme->set_stylebox("grabber_area", "HSlider", make_flat_stylebox(p_config.contrast_color_1, 0, p_config.base_margin / 2, 0, p_config.base_margin / 2, p_config.corner_radius));
-		p_theme->set_stylebox("grabber_area_highlight", "HSlider", make_flat_stylebox(p_config.contrast_color_1, 0, p_config.base_margin / 2, 0, p_config.base_margin / 2));
+		p_theme->set_stylebox("slider", "HSlider", make_color_role_flat_stylebox(p_config.dark_color_3_role,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, p_config.base_margin / 2, 0, p_config.base_margin / 2, p_config.corner_radius));
+		p_theme->set_stylebox("grabber_area", "HSlider", make_color_role_flat_stylebox(p_config.contrast_color_1_role,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, p_config.base_margin / 2, 0, p_config.base_margin / 2, p_config.corner_radius));
+		p_theme->set_stylebox("grabber_area_highlight", "HSlider", make_color_role_flat_stylebox(p_config.contrast_color_1_role,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, p_config.base_margin / 2, 0, p_config.base_margin / 2));
 		p_theme->set_constant("center_grabber", "HSlider", 0);
 		p_theme->set_constant("grabber_offset", "HSlider", 0);
 
 		// VSlider.
 		p_theme->set_icon("grabber", "VSlider", p_theme->get_icon(SNAME("GuiSliderGrabber"), EditorStringName(EditorIcons)));
 		p_theme->set_icon("grabber_highlight", "VSlider", p_theme->get_icon(SNAME("GuiSliderGrabberHl"), EditorStringName(EditorIcons)));
-		p_theme->set_stylebox("slider", "VSlider", make_flat_stylebox(p_config.dark_color_3, p_config.base_margin / 2, 0, p_config.base_margin / 2, 0, p_config.corner_radius));
-		p_theme->set_stylebox("grabber_area", "VSlider", make_flat_stylebox(p_config.contrast_color_1, p_config.base_margin / 2, 0, p_config.base_margin / 2, 0, p_config.corner_radius));
-		p_theme->set_stylebox("grabber_area_highlight", "VSlider", make_flat_stylebox(p_config.contrast_color_1, p_config.base_margin / 2, 0, p_config.base_margin / 2, 0));
+		p_theme->set_stylebox("slider", "VSlider", make_color_role_flat_stylebox(p_config.dark_color_3_role,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, p_config.base_margin / 2, 0, p_config.base_margin / 2, 0, p_config.corner_radius));
+		p_theme->set_stylebox("grabber_area", "VSlider", make_color_role_flat_stylebox(p_config.contrast_color_1_role,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, p_config.base_margin / 2, 0, p_config.base_margin / 2, 0, p_config.corner_radius));
+		p_theme->set_stylebox("grabber_area_highlight", "VSlider", make_color_role_flat_stylebox(p_config.contrast_color_1_role,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, p_config.base_margin / 2, 0, p_config.base_margin / 2, 0));
 		p_theme->set_constant("center_grabber", "VSlider", 0);
 		p_theme->set_constant("grabber_offset", "VSlider", 0);
 	}
@@ -1853,14 +1855,18 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 	// Labels.
 	{
 		// RichTextLabel.
-
-		p_theme->set_stylebox("normal", "RichTextLabel", p_config.tree_panel_style);
-		p_theme->set_stylebox("focus", "RichTextLabel", make_empty_stylebox());
+		cur_theme_data.set_data_name("default_stylebox");
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", p_config.tree_panel_style);
+		p_theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "RichTextLabel", make_empty_stylebox());
 
 		p_theme->set_color("default_color", "RichTextLabel", p_config.font_color);
+		p_theme->set_color_role("default_color_role", "RichTextLabel", p_config.font_color_role);
 		p_theme->set_color("font_shadow_color", "RichTextLabel", Color(0, 0, 0, 0));
+		p_theme->set_color_role("font_shadow_color_role", "RichTextLabel", ColorRole::STATIC_TRANSPARENT);
 		p_theme->set_color("font_outline_color", "RichTextLabel", p_config.font_outline_color);
+		p_theme->set_color_role("font_outline_color_role", "RichTextLabel", p_config.font_outline_color_role);
 		p_theme->set_color("selection_color", "RichTextLabel", p_config.selection_color);
+		p_theme->set_color_role("selection_color_role", "RichTextLabel", p_config.selection_color_role);
 
 		p_theme->set_constant("shadow_offset_x", "RichTextLabel", 1 * EDSCALE);
 		p_theme->set_constant("shadow_offset_y", "RichTextLabel", 1 * EDSCALE);
@@ -1868,12 +1874,14 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		p_theme->set_constant("outline_size", "RichTextLabel", 0);
 
 		// Label.
-
 		p_theme->set_stylebox("normal", "Label", p_config.base_empty_style);
 
 		p_theme->set_color("font_color", "Label", p_config.font_color);
+		p_theme->set_color_role("font_color_role", "Label", p_config.font_color_role);
 		p_theme->set_color("font_shadow_color", "Label", Color(0, 0, 0, 0));
+		p_theme->set_color_role("font_shadow_color_role", "Label", ColorRole::STATIC_TRANSPARENT);
 		p_theme->set_color("font_outline_color", "Label", p_config.font_outline_color);
+		p_theme->set_color_role("font_outline_color_role", "Label", p_config.font_outline_color_role);
 
 		p_theme->set_constant("shadow_offset_x", "Label", 1 * EDSCALE);
 		p_theme->set_constant("shadow_offset_y", "Label", 1 * EDSCALE);
@@ -1890,7 +1898,9 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 	p_theme->set_stylebox("background", "ProgressBar", make_stylebox(p_theme->get_icon(SNAME("GuiProgressBar"), EditorStringName(EditorIcons)), 4, 4, 4, 4, 0, 0, 0, 0));
 	p_theme->set_stylebox("fill", "ProgressBar", make_stylebox(p_theme->get_icon(SNAME("GuiProgressFill"), EditorStringName(EditorIcons)), 6, 6, 6, 6, 2, 1, 2, 1));
 	p_theme->set_color("font_color", "ProgressBar", p_config.font_color);
+	p_theme->set_color_role("font_color_role", "ProgressBar", p_config.font_color_role);
 	p_theme->set_color("font_outline_color", "ProgressBar", p_config.font_outline_color);
+	p_theme->set_color_role("font_outline_color_role", "ProgressBar", p_config.font_outline_color_role);
 	p_theme->set_constant("outline_size", "ProgressBar", 0);
 
 	// GraphEdit and related nodes.

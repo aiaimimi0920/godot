@@ -72,7 +72,7 @@ private:
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
-		ThemeStyleboxData default_stylebox{"default_stylebox"};
+		Ref<StyleBox> normal_style;
 
 		Color font_color;
 		ColorRole font_color_role;
@@ -176,12 +176,6 @@ public:
 	Rect2 get_character_bounds(int p_pos) const;
 
 	State get_current_state_with_focus() const;
-
-	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
-	bool _has_current_focus_default_stylebox() const;
-	Ref<StyleBox> _get_current_focus_default_stylebox() const;
 
 	Label(const String &p_text = String());
 	~Label();

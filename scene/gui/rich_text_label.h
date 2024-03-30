@@ -612,32 +612,35 @@ private:
 
 		ThemeStyleboxData default_stylebox{"default_stylebox"};
 
-		ThemeStyleboxData progress_bg_style{"progress_bg_style"};
-		ThemeStyleboxData progress_fg_style{"progress_fg_style"};
+		Ref<StyleBox> progress_bg_style;
+		Ref<StyleBox> progress_fg_style;
 
 		int line_separation;
 
 		Ref<Font> normal_font;
 		int normal_font_size;
 
-		ThemeColorData default_color{"default_color"};
-		ThemeColorRoleData default_color_role{"default_color_role"};
-		ThemeColorData font_selected_color{"font_selected_color"};
-		ThemeColorRoleData font_selected_color_role{"font_selected_color_role"};
-		ThemeColorData selection_color{"selection_color"};
-		ThemeColorRoleData selection_color_role{"selection_color_role"};
-		ThemeColorData font_outline_color{"font_outline_color"};
-		ThemeColorRoleData font_outline_color_role{"font_outline_color_role"};
-		ThemeColorData font_shadow_color{"font_shadow_color"};
-		ThemeColorRoleData font_shadow_color_role{"font_shadow_color_role"};
+		Color default_color;
+		ColorRole default_color_role;
+		Color font_selected_color;
+		ColorRole font_selected_color_role;
+
+		Color selection_color;
+		ColorRole selection_color_role;
+
+		Color font_outline_color;
+		ColorRole font_outline_color_role;
+
+		Color font_shadow_color;
+		ColorRole font_shadow_color_role;
 
 		int shadow_outline_size;
 		int shadow_offset_x;
 		int shadow_offset_y;
 		int outline_size;
 
-		ThemeColorData outline_color{"outline_color"};
-		ThemeColorRoleData outline_color_role{"outline_color_role"};
+		Color outline_color;
+		ColorRole outline_color_role;
 
 		Ref<Font> bold_font;
 		int bold_font_size;
@@ -653,13 +656,15 @@ private:
 
 		int table_h_separation;
 		int table_v_separation;
-		ThemeColorData table_odd_row_bg{"table_odd_row_bg"};
-		ThemeColorRoleData table_odd_row_bg_role{"table_odd_row_bg_role"};
 
-		ThemeColorData table_even_row_bg{"table_even_row_bg"};
-		ThemeColorRoleData table_even_row_bg_role{"table_even_row_bg_role"};
-		ThemeColorData table_border{"table_border"};
-		ThemeColorRoleData table_border_role{"table_border_role"};
+		Color table_odd_row_bg;
+		ColorRole table_odd_row_bg_role;
+
+		Color table_even_row_bg;
+		ColorRole table_even_row_bg_role;
+
+		Color table_border;
+		ColorRole table_border_role;
 
 		float base_scale = 1.0;
 	} theme_cache;
@@ -847,38 +852,6 @@ public:
 
 	bool _has_current_focus_default_stylebox() const;
 	Ref<StyleBox> _get_current_focus_default_stylebox() const;
-
-	bool _has_current_progress_bg_style() const;
-	Ref<StyleBox> _get_current_progress_bg_style() const;
-
-	bool _has_current_progress_fg_style() const;
-	Ref<StyleBox> _get_current_progress_fg_style() const;
-
-	bool _has_current_default_color() const;
-	Color _get_current_default_color() const;
-	bool _has_current_font_selected_color() const;
-	Color _get_current_font_selected_color() const;
-
-	bool _has_current_selection_color() const;
-	Color _get_current_selection_color() const;
-
-	bool _has_current_font_outline_color() const;
-	Color _get_current_font_outline_color() const;
-
-	bool _has_current_font_shadow_color() const;
-	Color _get_current_font_shadow_color() const;
-
-	bool _has_current_outline_color() const;
-	Color _get_current_outline_color() const;
-
-	bool _has_current_table_odd_row_bg() const;
-	Color _get_current_table_odd_row_bg() const;
-
-	bool _has_current_table_even_row_bg() const;
-	Color _get_current_table_even_row_bg() const;
-
-	bool _has_current_table_border() const;
-	Color _get_current_table_border() const;
 
 	RichTextLabel(const String &p_text = String());
 	~RichTextLabel();

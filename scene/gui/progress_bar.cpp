@@ -34,21 +34,20 @@
 #include "scene/theme/theme_db.h"
 
 Size2 ProgressBar::get_minimum_size() const {
-	Ref<StyleBox> background_style = _get_current_background_style_with_state(State::NormalNoneLTR);
-	Ref<StyleBox> fill_style = _get_current_fill_style_with_state(State::NormalNoneLTR);
-	Size2 minimum_size = background_style->get_minimum_size();
-	minimum_size.height = MAX(minimum_size.height, fill_style->get_minimum_size().height);
-	minimum_size.width = MAX(minimum_size.width, fill_style->get_minimum_size().width);
+	Size2 minimum_size = theme_cache.background_style->get_minimum_size();
+	minimum_size.height = MAX(minimum_size.height, theme_cache.fill_style->get_minimum_size().height);
+	minimum_size.width = MAX(minimum_size.width, theme_cache.fill_style->get_minimum_size().width);
 	if (show_percentage) {
 		String txt = "100%";
 		TextLine tl = TextLine(txt, theme_cache.font, theme_cache.font_size);
-		minimum_size.height = MAX(minimum_size.height, background_style->get_minimum_size().height + tl.get_size().y);
+		minimum_size.height = MAX(minimum_size.height, theme_cache.background_style->get_minimum_size().height + tl.get_size().y);
 	} else { // this is needed, else the progressbar will collapse
 		minimum_size.width = MAX(minimum_size.width, 1);
 		minimum_size.height = MAX(minimum_size.height, 1);
 	}
 	return minimum_size;
 }
+
 
 void ProgressBar::_notification(int p_what) {
 	switch (p_what) {
@@ -59,9 +58,7 @@ void ProgressBar::_notification(int p_what) {
 			}
 		} break;
 		case NOTIFICATION_DRAW: {
-			Ref<StyleBox> background_style = _get_current_background_style_with_state(State::NormalNoneLTR);
-			Ref<StyleBox> fill_style = _get_current_fill_style_with_state(State::NormalNoneLTR);
-			draw_style_box(background_style, Rect2(Point2(), get_size()));
+			draw_style_box(theme_cache.background_style, Rect2(Point2(), get_size()));
 
 			if (indeterminate) {
 				Size2 size = get_size();
@@ -83,21 +80,21 @@ void ProgressBar::_notification(int p_what) {
 						}
 
 						real_t x = right_to_left ? size.width - _inderminate_fill_progress : _inderminate_fill_progress - fill_size;
-						draw_style_box(fill_style, Rect2(x, 0, fill_size, size.height).intersection(Rect2(Point2(), size)));
+						draw_style_box(theme_cache.fill_style, Rect2(x, 0, fill_size, size.height).intersection(Rect2(Point2(), size)));
 					} break;
 					case FILL_TOP_TO_BOTTOM: {
 						if (_inderminate_fill_progress > size.height + fill_size) {
 							_inderminate_fill_progress = 0;
 						}
 
-						draw_style_box(fill_style, Rect2(0, _inderminate_fill_progress - fill_size, size.width, fill_size).intersection(Rect2(Point2(), size)));
+						draw_style_box(theme_cache.fill_style, Rect2(0, _inderminate_fill_progress - fill_size, size.width, fill_size).intersection(Rect2(Point2(), size)));
 					} break;
 					case FILL_BOTTOM_TO_TOP: {
 						if (_inderminate_fill_progress > size.height + fill_size) {
 							_inderminate_fill_progress = -fill_size;
 						}
 
-						draw_style_box(fill_style, Rect2(0, size.height - _inderminate_fill_progress, size.width, fill_size).intersection(Rect2(Point2(), size)));
+						draw_style_box(theme_cache.fill_style, Rect2(0, size.height - _inderminate_fill_progress, size.width, fill_size).intersection(Rect2(Point2(), size)));
 					} break;
 					case FILL_MODE_MAX:
 						break;
@@ -111,7 +108,7 @@ void ProgressBar::_notification(int p_what) {
 			switch (mode) {
 				case FILL_BEGIN_TO_END:
 				case FILL_END_TO_BEGIN: {
-					int mp = fill_style->get_minimum_size().width;
+					int mp = theme_cache.fill_style->get_minimum_size().width;
 					int p = round(r * (get_size().width - mp));
 					// We want FILL_BEGIN_TO_END to map to right to left when UI layout is RTL,
 					// and left to right otherwise. And likewise for FILL_END_TO_BEGIN.
@@ -119,30 +116,29 @@ void ProgressBar::_notification(int p_what) {
 					if (p > 0) {
 						if (right_to_left) {
 							int p_remaining = round((1.0 - r) * (get_size().width - mp));
-							draw_style_box(fill_style, Rect2(Point2(p_remaining, 0), Size2(p + fill_style->get_minimum_size().width, get_size().height)));
+							draw_style_box(theme_cache.fill_style, Rect2(Point2(p_remaining, 0), Size2(p + theme_cache.fill_style->get_minimum_size().width, get_size().height)));
 						} else {
-							draw_style_box(fill_style, Rect2(Point2(0, 0), Size2(p + fill_style->get_minimum_size().width, get_size().height)));
+							draw_style_box(theme_cache.fill_style, Rect2(Point2(0, 0), Size2(p + theme_cache.fill_style->get_minimum_size().width, get_size().height)));
 						}
 					}
 				} break;
 				case FILL_TOP_TO_BOTTOM:
 				case FILL_BOTTOM_TO_TOP: {
-					int mp = fill_style->get_minimum_size().height;
+					int mp = theme_cache.fill_style->get_minimum_size().height;
 					int p = round(r * (get_size().height - mp));
 
 					if (p > 0) {
 						if (mode == FILL_TOP_TO_BOTTOM) {
-							draw_style_box(fill_style, Rect2(Point2(0, 0), Size2(get_size().width, p + fill_style->get_minimum_size().height)));
+							draw_style_box(theme_cache.fill_style, Rect2(Point2(0, 0), Size2(get_size().width, p + theme_cache.fill_style->get_minimum_size().height)));
 						} else {
 							int p_remaining = round((1.0 - r) * (get_size().height - mp));
-							draw_style_box(fill_style, Rect2(Point2(0, p_remaining), Size2(get_size().width, p + fill_style->get_minimum_size().height)));
+							draw_style_box(theme_cache.fill_style, Rect2(Point2(0, p_remaining), Size2(get_size().width, p + theme_cache.fill_style->get_minimum_size().height)));
 						}
 					}
 				} break;
 				case FILL_MODE_MAX:
 					break;
 			}
-
 			if (show_percentage) {
 				double ratio = 0;
 
@@ -173,12 +169,11 @@ void ProgressBar::_notification(int p_what) {
 				TextLine tl = TextLine(txt, theme_cache.font, theme_cache.font_size);
 				Vector2 text_pos = (Point2(get_size().width - tl.get_size().x, get_size().height - tl.get_size().y) / 2).round();
 
-				Color font_outline_color = _get_current_font_outline_color();
-				if (theme_cache.font_outline_size > 0 && font_outline_color.a > 0) {
-					tl.draw_outline(get_canvas_item(), text_pos, theme_cache.font_outline_size, font_outline_color);
+				if (theme_cache.font_outline_size > 0 && theme_cache.font_outline_color.a > 0) {
+					tl.draw_outline(get_canvas_item(), text_pos, theme_cache.font_outline_size, theme_cache.font_outline_color);
 				}
-				Color font_color = _get_current_font_color();
-				tl.draw(get_canvas_item(), text_pos, font_color);
+
+				tl.draw(get_canvas_item(), text_pos, theme_cache.font_color);
 			}
 		} break;
 	}
@@ -253,124 +248,6 @@ bool ProgressBar::is_editor_preview_indeterminate_enabled() const {
 	return editor_preview_indeterminate;
 }
 
-bool ProgressBar::_has_current_background_style_with_state(State p_state) const {
-	ThemeIntData cur_theme_data;
-	cur_theme_data.set_data_name("background");
-	for (const State &E : theme_cache.background_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool ProgressBar::_has_current_background_style() const {
-	State cur_state = get_current_state();
-	return _has_current_background_style_with_state(cur_state);
-}
-
-Ref<StyleBox> ProgressBar::_get_current_background_style_with_state(State p_state) const {
-	Ref<StyleBox> style;
-	ThemeIntData cur_theme_data;
-	cur_theme_data.set_data_name("background");
-	for (const State &E : theme_cache.background_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
-			style = theme_cache.background_style.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-Ref<StyleBox> ProgressBar::_get_current_background_style() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
-	style = _get_current_background_style_with_state(cur_state);
-	return style;
-}
-
-bool ProgressBar::_has_current_fill_style_with_state(State p_state) const {
-	ThemeIntData cur_theme_data;
-	cur_theme_data.set_data_name("fill");
-	for (const State &E : theme_cache.fill_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool ProgressBar::_has_current_fill_style() const {
-	State cur_state = get_current_state();
-	return _has_current_fill_style_with_state(cur_state);
-}
-
-Ref<StyleBox> ProgressBar::_get_current_fill_style_with_state(State p_state) const {
-	Ref<StyleBox> style;
-	ThemeIntData cur_theme_data;
-	cur_theme_data.set_data_name("fill");
-	for (const State &E : theme_cache.fill_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
-			style = theme_cache.fill_style.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-Ref<StyleBox> ProgressBar::_get_current_fill_style() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
-	style = _get_current_fill_style_with_state(cur_state);
-	return style;
-}
-
-bool ProgressBar::_has_current_font_color() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.font_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color ProgressBar::_get_current_font_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_font_color;
-
-	for (const State &E : theme_cache.font_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
-			cur_font_color = theme_cache.font_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_color;
-}
-
-bool ProgressBar::_has_current_font_outline_color() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color ProgressBar::_get_current_font_outline_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_font_outline_color;
-
-	for (const State &E : theme_cache.font_outline_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_outline_color.get_state_data_name(E))) {
-			cur_font_outline_color = theme_cache.font_outline_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_outline_color;
-}
-
 void ProgressBar::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_fill_mode", "mode"), &ProgressBar::set_fill_mode);
 	ClassDB::bind_method(D_METHOD("get_fill_mode"), &ProgressBar::get_fill_mode);
@@ -394,17 +271,17 @@ void ProgressBar::_bind_methods() {
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ProgressBar, default_color_scheme);
 
-	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, ProgressBar, background_style, background);
-	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, ProgressBar, fill_style, fill);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ProgressBar, background_style, background);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ProgressBar, fill_style, fill);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, ProgressBar, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, ProgressBar, font_size);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, ProgressBar, font_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, ProgressBar, font_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ProgressBar, font_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ProgressBar, font_color);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, ProgressBar, font_outline_size, "outline_size");
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, ProgressBar, font_outline_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, ProgressBar, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ProgressBar, font_outline_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ProgressBar, font_outline_color);
 }
 
 ProgressBar::ProgressBar() {

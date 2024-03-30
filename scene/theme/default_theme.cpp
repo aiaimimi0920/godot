@@ -169,13 +169,7 @@ void fill_default_theme_label(Ref<Theme> &theme, const Ref<Font> &default_font, 
 
 	scale = p_scale;
 
-	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(ColorRole::SURFACE_CONTAINER_LOW, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
-	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
-
-	cur_theme_data.set_data_name("default_stylebox");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Label", make_empty_stylebox(0, 0, 0, 0));
-
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Label", default_stylebox_focus);
+	theme->set_stylebox("normal", "Label", memnew(StyleBoxEmpty));
 
 	theme->set_font("font", "Label", default_font);
 
@@ -247,34 +241,23 @@ void fill_default_theme_rich_text_label(Ref<Theme> &theme, const Ref<Font> &defa
 	theme->set_font_size("bold_italics_font_size", "RichTextLabel", -1);
 	theme->set_font_size("mono_font_size", "RichTextLabel", -1);
 
-	cur_theme_data.set_data_name("default_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", ColorRole::ON_PRIMARY);
-	cur_theme_data.set_data_name("default_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", Color(1, 1, 1, 1));
+	theme->set_color_role("default_color_role", "RichTextLabel", ColorRole::ON_PRIMARY);
+	theme->set_color("default_color", "RichTextLabel", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_selected_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", ColorRole::ON_PRIMARY);
-	cur_theme_data.set_data_name("font_selected_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", Color(0, 0, 0, 0));
+	theme->set_color_role("font_selected_color_role", "RichTextLabel", ColorRole::ON_PRIMARY);
+	theme->set_color("font_selected_color", "RichTextLabel", Color(0, 0, 0, 0));
 
-	cur_theme_data.set_data_name("selection_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", ColorRole::ON_PRIMARY);
-	cur_theme_data.set_data_name("selection_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", Color(0.1, 0.1, 1, 0.8));
+	theme->set_color_role("selection_color_role", "RichTextLabel", ColorRole::ON_PRIMARY);
+	theme->set_color("selection_color", "RichTextLabel", Color(0.1, 0.1, 1, 0.8));
 
-	cur_theme_data.set_data_name("font_shadow_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", ColorRole::SHADOW);
-	cur_theme_data.set_data_name("font_shadow_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", Color(0, 0, 0, 0));
+	theme->set_color_role("font_shadow_color_role", "RichTextLabel", ColorRole::SHADOW);
+	theme->set_color("font_shadow_color", "RichTextLabel", Color(0, 0, 0, 0));
 
 	theme->set_color_role("font_outline_color_role", "RichTextLabel", ColorRole::OUTLINE);
 	theme->set_color("font_outline_color", "RichTextLabel", Color(1, 1, 1, 1));
 
-
-	cur_theme_data.set_data_name("outline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", ColorRole::OUTLINE);
-	cur_theme_data.set_data_name("outline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", Color(1, 1, 1));
+	theme->set_color_role("outline_color_role", "RichTextLabel", ColorRole::OUTLINE);
+	theme->set_color("outline_color", "RichTextLabel", Color(1, 1, 1));
 
 	theme->set_constant("shadow_offset_x", "RichTextLabel", Math::round(1 * scale));
 	theme->set_constant("shadow_offset_y", "RichTextLabel", Math::round(1 * scale));
@@ -286,20 +269,14 @@ void fill_default_theme_rich_text_label(Ref<Theme> &theme, const Ref<Font> &defa
 
 	theme->set_constant("outline_size", "RichTextLabel", 0);
 
-	cur_theme_data.set_data_name("table_odd_row_bg_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", ColorRole::STATIC_TRANSPARENT);
-	cur_theme_data.set_data_name("table_odd_row_bg");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", Color(0, 0, 0, 0));
+	theme->set_color_role("table_odd_row_bg_role", "RichTextLabel", ColorRole::STATIC_TRANSPARENT);
+	theme->set_color("table_odd_row_bg", "RichTextLabel", Color(0, 0, 0, 0));
 
-	cur_theme_data.set_data_name("table_even_row_bg_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", ColorRole::STATIC_TRANSPARENT);
-	cur_theme_data.set_data_name("table_even_row_bg");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", Color(0, 0, 0, 0));
+	theme->set_color_role("table_even_row_bg_role", "RichTextLabel", ColorRole::STATIC_TRANSPARENT);
+	theme->set_color("table_even_row_bg", "RichTextLabel", Color(0, 0, 0, 0));
 
-	cur_theme_data.set_data_name("table_border_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", ColorRole::STATIC_TRANSPARENT);
-	cur_theme_data.set_data_name("table_border");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", Color(0, 0, 0, 0));
+	theme->set_color_role("table_border_role", "RichTextLabel", ColorRole::STATIC_TRANSPARENT);
+	theme->set_color("table_border", "RichTextLabel", Color(0, 0, 0, 0));
 
 	theme->set_constant("text_highlight_h_padding", "RichTextLabel", Math::round(3 * scale));
 	theme->set_constant("text_highlight_v_padding", "RichTextLabel", Math::round(3 * scale));
@@ -1608,26 +1585,19 @@ void fill_default_theme_progress_bar(Ref<Theme> &theme, const Ref<Font> &default
 	const Ref<StyleBoxFlat> background_stylebox_normal = make_color_role_flat_stylebox(ColorRole::SURFACE, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 2, 2, 2, 2, 6);
 	const Ref<StyleBoxFlat> fill_stylebox_normal = make_color_role_flat_stylebox(ColorRole::ON_SURFACE, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 2, 2, 2, 2, 6);
 
-	cur_theme_data.set_data_name("background");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ProgressBar", background_stylebox_normal);
-
-	cur_theme_data.set_data_name("fill");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ProgressBar", fill_stylebox_normal);
+	theme->set_stylebox("background", "ProgressBar", background_stylebox_normal);
+	theme->set_stylebox("fill", "ProgressBar", fill_stylebox_normal);
 
 	theme->set_font("font", "ProgressBar", Ref<Font>());
 	theme->set_font_size("font_size", "ProgressBar", -1);
 
 	theme->set_constant("outline_size", "ProgressBar", 0);
 
-	cur_theme_data.set_data_name("font_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ProgressBar", ColorRole::ON_PRIMARY);
-
-	cur_theme_data.set_data_name("font_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ProgressBar", Color(1, 1, 1, 1));
+	theme->set_color_role("font_color_role", "ProgressBar", ColorRole::ON_PRIMARY);
+	theme->set_color("font_color", "ProgressBar", Color(1, 1, 1, 1));
 
 	theme->set_color_role("font_outline_color_role", "ProgressBar", ColorRole::OUTLINE);
 	theme->set_color("font_outline_color", "ProgressBar", Color(1, 1, 1, 1));
-
 }
 
 // ItemList
