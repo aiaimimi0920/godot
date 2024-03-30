@@ -225,64 +225,6 @@ void LinkButton::_notification(int p_what) {
 	}
 }
 
-bool LinkButton::_has_current_default_stylebox_with_state(State p_state) const {
-	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-
-bool LinkButton::_has_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	return _has_current_default_stylebox_with_state(cur_state);
-}
-
-Ref<StyleBox> LinkButton::_get_current_default_stylebox_with_state(State p_state) const {
-	Ref<StyleBox> style;
-	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
-			style = theme_cache.default_stylebox.get_data(E);
-			break; 
-		}
-	}
-	return style;
-}
-
-Ref<StyleBox> LinkButton::_get_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
-	style = _get_current_default_stylebox_with_state(cur_state);
-	return style;
-}
-
-
-bool LinkButton::_has_current_focus_default_stylebox() const {
-	State cur_state = get_current_focus_state();
-	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Ref<StyleBox> LinkButton::_get_current_focus_default_stylebox() const {
-	State cur_state = get_current_focus_state();
-	Ref<StyleBox> style;
-
-	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
-			style = theme_cache.default_stylebox.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-
 bool LinkButton::_has_current_state_layer_stylebox() const {
 	State cur_state = get_current_state_with_focus();
 	for (const State &E : theme_cache.state_layer_stylebox.get_search_order(cur_state)) {

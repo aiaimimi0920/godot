@@ -203,13 +203,13 @@ void GraphEditMinimap::_adjust_graph_scroll(const Vector2 &p_offset) {
 void GraphEditMinimap::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphEditMinimap, default_color_scheme);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, panel);
-	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, node_style, node);
-	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, camera_style, camera);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, panel);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, node_style, "node");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, camera_style, "camera");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, GraphEditMinimap, resizer);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, GraphEditMinimap, resizer_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, GraphEditMinimap, resizer_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEditMinimap, resizer_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEditMinimap, resizer_color);
 }
 
 GraphEditMinimap::GraphEditMinimap(GraphEdit *p_edit) {
@@ -2345,8 +2345,8 @@ void GraphEdit::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, grid_minor_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, grid_minor);
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, activity_color_role, activity_role);
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, GraphEdit, activity_color, activity);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, activity_color_role, "activity_role");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, GraphEdit, activity_color, "activity");
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, connection_hover_tint_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, connection_hover_tint_color);

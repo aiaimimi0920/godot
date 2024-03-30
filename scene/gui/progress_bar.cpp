@@ -271,8 +271,8 @@ void ProgressBar::_bind_methods() {
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ProgressBar, default_color_scheme);
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ProgressBar, background_style, background);
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ProgressBar, fill_style, fill);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ProgressBar, background_style, "background");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ProgressBar, fill_style, "fill");
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, ProgressBar, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, ProgressBar, font_size);

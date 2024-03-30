@@ -70,7 +70,7 @@ private:
 	bool follow_focus = false;
 
 	struct ThemeCache {
-		ThemeStyleboxData panel_style{"panel_style"};
+		Ref<StyleBox> panel_style;
 	} theme_cache;
 
 	void _cancel_drag();
@@ -87,11 +87,6 @@ protected:
 	bool _updating_scrollbars = false;
 	void _update_scrollbar_position();
 	void _scroll_moved(float);
-	
-	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
-
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
 
 public:
 	virtual void gui_input(const Ref<InputEvent> &p_gui_input) override;

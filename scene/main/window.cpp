@@ -3143,39 +3143,6 @@ Ref<StyleBox> Window::_get_current_embedded_border() const {
 }
 
 
-bool Window::_has_current_title_outline_modulate_with_state(State p_state) const {
-	for (const State &E : theme_cache.title_outline_modulate.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.title_outline_modulate.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool Window::_has_current_title_outline_modulate() const {
-	State cur_state = get_current_state();
-	return _has_current_title_outline_modulate_with_state(cur_state);
-}
-
-Color Window::_get_current_title_outline_modulate_with_state(State p_state) const {
-	Color color;
-	for (const State &E : theme_cache.title_outline_modulate.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.title_outline_modulate.get_state_data_name(E))) {
-			color = theme_cache.title_outline_modulate.get_data(E);
-			break;
-		}
-	}
-	return color;
-}
-
-Color Window::_get_current_title_outline_modulate() const {
-	State cur_state = get_current_state();
-	Color color = _get_current_title_outline_modulate_with_state(cur_state);
-	return color;
-}
-
-
-
 bool Window::_has_current_close_with_state(State p_state) const {
 	for (const State &E : theme_cache.close.get_search_order(p_state)) {
 		if (has_theme_stylebox(theme_cache.close.get_state_data_name(E))) {
@@ -3515,8 +3482,8 @@ void Window::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Window, title_color);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Window, title_height);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, Window, title_outline_modulate_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, Window, title_outline_modulate);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Window, title_outline_modulate_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Window, title_outline_modulate);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Window, title_outline_size);
 

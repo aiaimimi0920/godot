@@ -210,13 +210,13 @@ private:
 		Ref<Font> title_font;
 		int title_font_size = 0;
 
-		ThemeColorData title_color{"title_color"};
-		ThemeColorRoleData title_color_role{"title_color_role"};
+		Color title_color;
+		ColorRole title_color_role;
 
 		int title_height = 0;
 
-		ThemeColorData title_outline_modulate{"title_outline_modulate"};
-		ThemeColorRoleData title_outline_modulate_role{"title_outline_modulate_role"};
+		Color title_outline_modulate;
+		ColorRole title_outline_modulate_role;
 
 		int title_outline_size = 0;
 
@@ -277,16 +277,6 @@ protected:
 	bool _has_current_embedded_border() const;
 	Ref<StyleBox> _get_current_embedded_border_with_state(State p_state) const;
 	Ref<StyleBox> _get_current_embedded_border() const;
-
-	bool _has_current_title_color_with_state(State p_state) const;
-	bool _has_current_title_color() const;
-	Color _get_current_title_color_with_state(State p_state) const;
-	Color _get_current_title_color() const;
-	bool _has_current_title_outline_modulate_with_state(State p_state) const;
-	bool _has_current_title_outline_modulate() const;
-	Color _get_current_title_outline_modulate_with_state(State p_state) const;
-	Color _get_current_title_outline_modulate() const;
-
 
 	bool _has_current_close_with_state(State p_state) const;
 	bool _has_current_close() const;

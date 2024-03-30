@@ -948,7 +948,7 @@ void GraphNode::_bind_methods() {
 
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, GraphNode, panel);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, GraphNode, titlebar);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, GraphNode, slot);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphNode, slot);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, GraphNode, separation);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, GraphNode, port_h_offset);
@@ -956,8 +956,8 @@ void GraphNode::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, GraphNode, port);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, GraphNode, resizer);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, GraphNode, resizer_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, GraphNode, resizer_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphNode, resizer_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphNode, resizer_color);
 }
 
 GraphNode::GraphNode() {

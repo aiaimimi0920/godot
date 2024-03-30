@@ -1,4 +1,4 @@
-/**************************************************************************/
+]/**************************************************************************/
 /*  default_theme.cpp                                                     */
 /**************************************************************************/
 /*                         This file is part of:                          */
@@ -185,13 +185,13 @@ void fill_default_theme_label(Ref<Theme> &theme, const Ref<Font> &default_font, 
 
 	theme->set_constant("line_spacing", "Label", Math::round(3 * scale));
 
-	theme->set_color("font_color_role", "Label", ColorRole::ON_PRIMARY);
+	theme->set_color_role("font_color_role", "Label", ColorRole::ON_PRIMARY);
 	theme->set_color("font_color", "Label", Color(1, 1, 1));
 
-	theme->set_color("font_shadow_color_role", "Label", ColorRole::STATIC_TRANSPARENT);
+	theme->set_color_role("font_shadow_color_role", "Label", ColorRole::STATIC_TRANSPARENT);
 	theme->set_color("font_shadow_color", "Label", Color(1, 1, 1));
 
-	theme->set_color("font_outline_color_role", "Label", ColorRole::OUTLINE);
+	theme->set_color_role("font_outline_color_role", "Label", ColorRole::OUTLINE);
 	theme->set_color("font_outline_color", "Label", Color(1, 1, 1));
 
 	theme->set_constant("shadow_offset_x", "Label", Math::round(1 * scale));
@@ -203,13 +203,13 @@ void fill_default_theme_label(Ref<Theme> &theme, const Ref<Font> &default_font, 
 	theme->set_font_size("font_size", "TooltipLabel", -1);
 	theme->set_font("font", "TooltipLabel", Ref<Font>());
 
-	theme->set_color("font_color_role", "TooltipLabel", ColorRole::ON_PRIMARY);
+	theme->set_color_role("font_color_role", "TooltipLabel", ColorRole::ON_PRIMARY);
 	theme->set_color("font_color", "TooltipLabel", Color(1, 1, 1));
 
-	theme->set_color("font_shadow_color_role", "TooltipLabel", ColorRole::STATIC_TRANSPARENT);
+	theme->set_color_role("font_shadow_color_role", "TooltipLabel", ColorRole::STATIC_TRANSPARENT);
 	theme->set_color("font_shadow_color", "TooltipLabel", Color(1, 1, 1));
 
-	theme->set_color("font_outline_color_role", "TooltipLabel", ColorRole::OUTLINE);
+	theme->set_color_role("font_outline_color_role", "TooltipLabel", ColorRole::OUTLINE);
 	theme->set_color("font_outline_color", "TooltipLabel", Color(1, 1, 1));
 
 	theme->set_constant("shadow_offset_x", "TooltipLabel", 1);
@@ -1351,8 +1351,7 @@ void fill_default_theme_scroll_container(Ref<Theme> &theme, const Ref<Font> &def
 	Ref<StyleBoxEmpty> empty;
 	empty.instantiate();
 
-	cur_theme_data.set_data_name("panel");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ScrollContainer", empty);
+	theme->set_stylebox("panel", "ScrollContainer", empty);
 }
 
 void fill_default_theme_separators(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
@@ -1491,7 +1490,7 @@ void fill_default_theme_popup_panel(Ref<Theme> &theme, const Ref<Font> &default_
 	scale = p_scale;
 
 	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	theme->set_stylebox("panel", "PopupPanel", make_flat_stylebox(default_stylebox_normal));
+	theme->set_stylebox("panel", "PopupPanel", default_stylebox_normal);
 
 	theme->set_type_variation("TooltipPanel", "PopupPanel");
 	const Ref<StyleBoxFlat> tooltip_default_stylebox_normal = make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 2 * default_margin, 0.5 * default_margin, 2 * default_margin, 0.5 * default_margin);
@@ -1996,10 +1995,10 @@ void fill_default_theme_graph_edit(Ref<Theme> &theme, const Ref<Font> &default_f
 	theme->set_color_role("font_color_role", "GraphNodeTitleLabel", ColorRole::ON_PRIMARY);
 	theme->set_color("font_color", "GraphNodeTitleLabel", Color(1, 1, 1, 1));
 
-	theme->set_color("font_shadow_color_role", "GraphNodeTitleLabel", ColorRole::STATIC_TRANSPARENT);
+	theme->set_color_role("font_shadow_color_role", "GraphNodeTitleLabel", ColorRole::STATIC_TRANSPARENT);
 	theme->set_color("font_shadow_color", "GraphNodeTitleLabel", Color(1, 1, 1));
 
-	theme->set_color("font_outline_color_role", "GraphNodeTitleLabel", ColorRole::OUTLINE);
+	theme->set_color_role("font_outline_color_role", "GraphNodeTitleLabel", ColorRole::OUTLINE);
 	theme->set_color("font_outline_color", "GraphNodeTitleLabel", Color(1, 1, 1));
 
 	theme->set_constant("shadow_offset_x", "GraphNodeTitleLabel", Math::round(1 * scale));
@@ -2085,11 +2084,8 @@ void fill_default_theme_window(Ref<Theme> &theme, const Ref<Font> &default_font,
 	theme->set_color_role("title_color_role", "Window", ColorRole::ON_SECONDARY_CONTAINER);
 	theme->set_color("title_color", "Window", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("title_outline_modulate_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Window", ColorRole::OUTLINE);
-
-	cur_theme_data.set_data_name("title_outline_modulate");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Window", Color(1, 1, 1, 1));
+	theme->set_color_role("title_outline_modulate_role", "Window", ColorRole::OUTLINE);
+	theme->set_color("title_outline_modulate", "Window", Color(1, 1, 1, 1));
 
 	theme->set_constant("title_outline_size", "Window", 0);
 	theme->set_constant("title_height", "Window", 36 * scale);
@@ -2192,7 +2188,7 @@ void fill_default_theme_text_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	Ref<StyleBoxFlat> read_only_stylebox = make_color_role_flat_stylebox(ColorRole::SURFACE_12, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	read_only_stylebox->set_border_width(SIDE_BOTTOM, 2);
 	read_only_stylebox->set_border_color_role(ColorRole::ON_PRIMARY_38);
-	cur_theme_data.set_data_name("read_only");
+
 	theme->set_stylebox("read_only", "TextEdit", read_only_stylebox);
 
 	theme->set_constant("base_scale", "TextEdit", 1);
@@ -2261,8 +2257,7 @@ void fill_default_theme_code_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	Ref<StyleBoxFlat> read_only_stylebox = make_color_role_flat_stylebox(ColorRole::SURFACE_12, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	read_only_stylebox->set_border_width(SIDE_BOTTOM, 2);
 	read_only_stylebox->set_border_color_role(ColorRole::ON_PRIMARY_38);
-	cur_theme_data.set_data_name("read_only");
-	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", read_only_stylebox);
+	theme->set_stylebox("read_only", "CodeEdit", read_only_stylebox);
 
 	theme->set_stylebox("completion", "CodeEdit", make_color_role_flat_stylebox(ColorRole::PRIMARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0, 0, 0, 0));
 
@@ -2280,25 +2275,17 @@ void fill_default_theme_code_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_font("font", "CodeEdit", Ref<Font>());
 	theme->set_font_size("font_size", "CodeEdit", -1);
 
-	cur_theme_data.set_data_name("background_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::STATIC_TRANSPARENT);
-	cur_theme_data.set_data_name("background_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0, 0, 0, 0));
+	theme->set_color_role("background_color_role", "CodeEdit", ColorRole::STATIC_TRANSPARENT);
+	theme->set_color("background_color", "CodeEdit", Color(0, 0, 0, 0));
 
-	cur_theme_data.set_data_name("completion_background_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::TERTIARY_CONTAINER);
-	cur_theme_data.set_data_name("completion_background_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.17, 0.16, 0.2));
+	theme->set_color_role("completion_background_color_role", "CodeEdit", ColorRole::TERTIARY_CONTAINER);
+	theme->set_color("completion_background_color", "CodeEdit", Color(0.17, 0.16, 0.2));
 
-	cur_theme_data.set_data_name("completion_selected_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_SECONDARY_CONTAINER);
-	cur_theme_data.set_data_name("completion_selected_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.26, 0.26, 0.27));
+	theme->set_color_role("completion_selected_color_role", "CodeEdit", ColorRole::ON_SECONDARY_CONTAINER);
+	theme->set_color("completion_selected_color", "CodeEdit", Color(0.26, 0.26, 0.27));
 
-	cur_theme_data.set_data_name("completion_existing_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_SECONDARY_CONTAINER_12);
-	cur_theme_data.set_data_name("completion_existing_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.87, 0.87, 0.87, 0.13));
+	theme->set_color_role("completion_existing_color_role", "CodeEdit", ColorRole::ON_SECONDARY_CONTAINER_12);
+	theme->set_color("completion_existing_color", "CodeEdit", Color(0.87, 0.87, 0.87, 0.13));
 
 	cur_theme_data.set_data_name("completion_scroll_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::INVERSE_PRIMARY_16);
@@ -2307,104 +2294,65 @@ void fill_default_theme_code_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 0.29));
 	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CodeEdit", Color(1, 1, 1, 0.4));
 
-	cur_theme_data.set_data_name("font_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_PRIMARY);
-	cur_theme_data.set_data_name("font_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 1));
+	theme->set_color_role("font_color_role", "CodeEdit", ColorRole::ON_PRIMARY);
+	theme->set_color("font_color", "CodeEdit", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_selected_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_PRIMARY_CONTAINER);
-	cur_theme_data.set_data_name("font_selected_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 1));
+	theme->set_color_role("font_selected_color_role", "CodeEdit", ColorRole::ON_PRIMARY_CONTAINER);
+	theme->set_color("font_selected_color", "CodeEdit", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_readonly_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_SURFACE_38);
-	cur_theme_data.set_data_name("font_readonly_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 1));
+	theme->set_color_role("font_readonly_color_role", "CodeEdit", ColorRole::ON_SURFACE_38);
+	theme->set_color("font_readonly_color", "CodeEdit", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("font_placeholder_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::PRIMARY_38);
-	cur_theme_data.set_data_name("font_placeholder_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 1));
+	theme->set_color_role("font_placeholder_color_role", "CodeEdit", ColorRole::PRIMARY_38);
+	theme->set_color("font_placeholder_color", "CodeEdit", Color(1, 1, 1, 1));
 
 	theme->set_color_role("font_outline_color_role", "CodeEdit", ColorRole::OUTLINE);
 	theme->set_color("font_outline_color", "CodeEdit", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("selection_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::PRIMARY_CONTAINER);
-	cur_theme_data.set_data_name("selection_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 1));
+	theme->set_color_role("selection_color_role", "CodeEdit", ColorRole::PRIMARY_CONTAINER);
+	theme->set_color("selection_color", "CodeEdit", Color(1, 1, 1, 1));
 
-	cur_theme_data.set_data_name("bookmark_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_TERTIARY_CONTAINER);
-	cur_theme_data.set_data_name("bookmark_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.5, 0.64, 1, 0.8));
+	theme->set_color_role("bookmark_color_role", "CodeEdit", ColorRole::ON_TERTIARY_CONTAINER);
+	theme->set_color("bookmark_color", "CodeEdit", Color(0.5, 0.64, 1, 0.8));
 
-	cur_theme_data.set_data_name("breakpoint_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ERROR);
-	cur_theme_data.set_data_name("breakpoint_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.9, 0.29, 0.3));
+	theme->set_color_role("breakpoint_color_role", "CodeEdit", ColorRole::ERROR);
+	theme->set_color("breakpoint_color", "CodeEdit", Color(0.9, 0.29, 0.3));
 
-	cur_theme_data.set_data_name("executing_line_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::TERTIARY_CONTAINER);
-	cur_theme_data.set_data_name("executing_line_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.98, 0.89, 0.27));
+	theme->set_color_role("executing_line_color_role", "CodeEdit", ColorRole::TERTIARY_CONTAINER);
+	theme->set_color("executing_line_color", "CodeEdit", Color(0.98, 0.89, 0.27));
 
-	cur_theme_data.set_data_name("current_line_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::TERTIARY_38);
-	cur_theme_data.set_data_name("current_line_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.25, 0.25, 0.26, 0.8));
+	theme->set_color_role("current_line_color_role", "CodeEdit", ColorRole::TERTIARY_38);
+	theme->set_color("current_line_color", "CodeEdit", Color(0.25, 0.25, 0.26, 0.8));
 
-	cur_theme_data.set_data_name("code_folding_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::TERTIARY_38);
-	cur_theme_data.set_data_name("code_folding_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.8, 0.8, 0.8, 0.8));
+	theme->set_color_role("code_folding_color_role", "CodeEdit", ColorRole::TERTIARY_38);
+	theme->set_color("code_folding_color", "CodeEdit", Color(0.8, 0.8, 0.8, 0.8));
 
-	cur_theme_data.set_data_name("folded_code_region_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::TERTIARY_16);
-	cur_theme_data.set_data_name("folded_code_region_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.68, 0.46, 0.77, 0.2));
+	theme->set_color_role("folded_code_region_color_role", "CodeEdit", ColorRole::TERTIARY_16);
+	theme->set_color("folded_code_region_color", "CodeEdit", Color(0.68, 0.46, 0.77, 0.2));
 
-	cur_theme_data.set_data_name("caret_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::SECONDARY);
-	cur_theme_data.set_data_name("caret_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1));
+	theme->set_color_role("caret_color_role", "CodeEdit", ColorRole::SECONDARY);
+	theme->set_color("caret_color", "CodeEdit", Color(1, 1, 1));
 
-	cur_theme_data.set_data_name("caret_background_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::SECONDARY_CONTAINER);
-	cur_theme_data.set_data_name("caret_background_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0, 0, 0));
+	theme->set_color_role("caret_background_color_role", "CodeEdit", ColorRole::SECONDARY_CONTAINER);
+	theme->set_color("caret_background_color", "CodeEdit", Color(0, 0, 0));
 
-	cur_theme_data.set_data_name("brace_mismatch_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::SECONDARY_CONTAINER);
-	cur_theme_data.set_data_name("brace_mismatch_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 0.2, 0.2));
+	theme->set_color_role("brace_mismatch_color_role", "CodeEdit", ColorRole::SECONDARY_CONTAINER);
+	theme->set_color("brace_mismatch_color", "CodeEdit", Color(1, 0.2, 0.2));
 
-	cur_theme_data.set_data_name("line_number_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::PRIMARY_38);
-	cur_theme_data.set_data_name("line_number_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.67, 0.67, 0.67, 0.4));
+	theme->set_color_role("line_number_color_role", "CodeEdit", ColorRole::PRIMARY_38);
+	theme->set_color("line_number_color", "CodeEdit", Color(0.67, 0.67, 0.67, 0.4));
 
-	cur_theme_data.set_data_name("word_highlighted_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::PRIMARY_16);
-	cur_theme_data.set_data_name("word_highlighted_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.8, 0.9, 0.9, 0.15));
+	theme->set_color_role("word_highlighted_color_role", "CodeEdit", ColorRole::PRIMARY_16);
+	theme->set_color("word_highlighted_color", "CodeEdit", Color(0.8, 0.9, 0.9, 0.15));
 
-	cur_theme_data.set_data_name("line_length_guideline_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_PRIMARY_10);
-	cur_theme_data.set_data_name("line_length_guideline_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.3, 0.5, 0.8, 0.1));
+	theme->set_color_role("line_length_guideline_color_role", "CodeEdit", ColorRole::ON_PRIMARY_10);
+	theme->set_color("line_length_guideline_color", "CodeEdit", Color(0.3, 0.5, 0.8, 0.1));
 
-	cur_theme_data.set_data_name("search_result_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_SECONDARY);
-	cur_theme_data.set_data_name("search_result_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.3, 0.3, 0.3));
+	theme->set_color_role("search_result_color_role", "CodeEdit", ColorRole::ON_SECONDARY);
+	theme->set_color("search_result_color", "CodeEdit", Color(0.3, 0.3, 0.3));
 
-	cur_theme_data.set_data_name("search_result_border_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", ColorRole::ON_SECONDARY_38);
-
-	cur_theme_data.set_data_name("search_result_border_color");
-	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(0.3, 0.3, 0.3, 0.4));
+	theme->set_color_role("search_result_border_color_role", "CodeEdit", ColorRole::ON_SECONDARY_38);
+	theme->set_color("search_result_border_color", "CodeEdit", Color(0.3, 0.3, 0.3, 0.4));
 
 	theme->set_constant("completion_lines", "CodeEdit", 7);
 	theme->set_constant("completion_max_width", "CodeEdit", 50);

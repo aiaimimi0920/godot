@@ -798,17 +798,17 @@ void PopupMenu::_draw_items() {
 				if (content_left > item_ofs.x) {
 					int sep_h = theme_cache.labeled_separator_left->get_minimum_size().height;
 					int sep_ofs = Math::floor((h - sep_h) / 2.0);
-					cur_style->draw(ci, Rect2(item_ofs + Point2(0, sep_ofs), Size2(MAX(0, content_left - item_ofs.x), sep_h)));
+					theme_cache.labeled_separator_left->draw(ci, Rect2(item_ofs + Point2(0, sep_ofs), Size2(MAX(0, content_left - item_ofs.x), sep_h)));
 				}
 				if (content_right < display_width) {
 					int sep_h = theme_cache.labeled_separator_right->get_minimum_size().height;
 					int sep_ofs = Math::floor((h - sep_h) / 2.0);
-					cur_style->draw(ci, Rect2(Point2(content_right, item_ofs.y + sep_ofs), Size2(MAX(0, display_width - content_right), sep_h)));
+					theme_cache.labeled_separator_right->draw(ci, Rect2(Point2(content_right, item_ofs.y + sep_ofs), Size2(MAX(0, display_width - content_right), sep_h)));
 				}
 			} else {
 				int sep_h = theme_cache.separator_style->get_minimum_size().height;
 				int sep_ofs = Math::floor((h - sep_h) / 2.0);
-				cur_style->draw(ci, Rect2(item_ofs + Point2(0, sep_ofs), Size2(display_width, sep_h)));
+				theme_cache.separator_style->draw(ci, Rect2(item_ofs + Point2(0, sep_ofs), Size2(display_width, sep_h)));
 			}
 		}
 
@@ -1029,7 +1029,8 @@ void PopupMenu::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_THEME_CHANGED: {
-			scroll_container->add_theme_style_override("panel", theme_cache.panel_style);
+			
+			scroll_container->add_theme_style_override("panel", _get_current_default_stylebox_with_state(State::NormalNoneLTR));
 			[[fallthrough]];
 		}
 		case Control::NOTIFICATION_LAYOUT_DIRECTION_CHANGED:
@@ -2958,7 +2959,7 @@ void PopupMenu::_bind_methods() {
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupMenu, default_stylebox);
 	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, PopupMenu, state_layer_stylebox);
 
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, PopupMenu, separator_style, separator);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, PopupMenu, separator_style, "separator");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, PopupMenu, labeled_separator_left);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, PopupMenu, labeled_separator_right);
 

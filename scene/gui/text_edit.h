@@ -592,8 +592,8 @@ private:
 		Color font_placeholder_color;
 		ColorRole font_placeholder_color_role;
 
-		Color font_outline_color;
-		ColorRole font_outline_color_role;
+		Color outline_color;
+		ColorRole outline_color_role;
 
 		int outline_size = 0;
 
