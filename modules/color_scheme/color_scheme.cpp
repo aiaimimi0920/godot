@@ -27,8 +27,8 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
-
 #include "color_scheme.h"
+#include "color_role.h"
 
 void ColorScheme::_update_color_scheme() {
 	if (dirty == false) {
@@ -121,619 +121,124 @@ float ColorScheme::get_contrast_level() const {
 	return contrast_level;
 }
 
-Color ColorScheme::get_color(ColorRole cur_color_role) {
+Color ColorScheme::get_color(ColorRoleEnum& cur_color_role) {
 	switch (cur_color_role) {
-		case ColorRole::PRIMARY_PALETTE_KEY:
-			return get_primary_palette_key_color();
-		case ColorRole::SECONDARY_PALETTE_KEY:
-			return get_secondary_palette_key_color();
-		case ColorRole::TERTIARY_PALETTE_KEY:
-			return get_tertiary_palette_key_color();
-		case ColorRole::NEUTRAL_PALETTE_KEY:
-			return get_neutral_palette_key_color();
-		case ColorRole::NEUTRAL_VARIANT_PALETTE_KEY:
-			return get_neutral_variant_palette_key_color();
-		case ColorRole::STATIC_TRANSPARENT:
-			return Color(0, 0, 0, 0);
-		case ColorRole::STATIC_ONE:
+		case ColorRoleEnum::STATIC_COLOR:
 			return Color(1, 1, 1, 1);
-		case ColorRole::STATIC_ONE_40:
-			return Color(1, 1, 1, 0.40);
-		case ColorRole::BACKGROUND:
+		case ColorRoleEnum::NO_LERP:
+			return Color(1, 1, 1, 1);
+		case ColorRoleEnum::PRIMARY_PALETTE_KEY:
+			return get_primary_palette_key_color();
+		case ColorRoleEnum::SECONDARY_PALETTE_KEY:
+			return get_secondary_palette_key_color();
+		case ColorRoleEnum::TERTIARY_PALETTE_KEY:
+			return get_tertiary_palette_key_color();
+		case ColorRoleEnum::NEUTRAL_PALETTE_KEY:
+			return get_neutral_palette_key_color();
+		case ColorRoleEnum::NEUTRAL_VARIANT_PALETTE_KEY:
+			return get_neutral_variant_palette_key_color();
+		case ColorRoleEnum::STATIC_TRANSPARENT:
+			return Color(0, 0, 0, 0);
+		case ColorRoleEnum::STATIC_ONE:
+			return Color(1, 1, 1, 1);
+		case ColorRoleEnum::BACKGROUND:
 			return get_background();
-		case ColorRole::BACKGROUND_08:
-			return Color(get_on_background(), 0.08);
-		case ColorRole::BACKGROUND_10:
-			return Color(get_on_background(), 0.10);
-		case ColorRole::BACKGROUND_12:
-			return Color(get_on_background(), 0.12);
-		case ColorRole::BACKGROUND_16:
-			return Color(get_on_background(), 0.16);
-		case ColorRole::BACKGROUND_38:
-			return Color(get_on_background(), 0.38);
-		case ColorRole::ON_BACKGROUND:
+		case ColorRoleEnum::ON_BACKGROUND:
 			return get_on_background();
-		case ColorRole::ON_BACKGROUND_08:
-			return Color(get_on_background(), 0.08);
-		case ColorRole::ON_BACKGROUND_10:
-			return Color(get_on_background(), 0.10);
-		case ColorRole::ON_BACKGROUND_12:
-			return Color(get_on_background(), 0.12);
-		case ColorRole::ON_BACKGROUND_16:
-			return Color(get_on_background(), 0.16);
-		case ColorRole::ON_BACKGROUND_38:
-			return Color(get_on_background(), 0.38);
-		case ColorRole::SURFACE:
+		case ColorRoleEnum::SURFACE:
 			return get_surface();
-		case ColorRole::SURFACE_08:
-			return Color(get_surface(), 0.08);
-		case ColorRole::SURFACE_10:
-			return Color(get_surface(), 0.10);
-		case ColorRole::SURFACE_12:
-			return Color(get_surface(), 0.12);
-		case ColorRole::SURFACE_16:
-			return Color(get_surface(), 0.16);
-		case ColorRole::SURFACE_38:
-			return Color(get_surface(), 0.38);
-		case ColorRole::SURFACE_DIM:
+		case ColorRoleEnum::SURFACE_DIM:
 			return get_surface_dim();
-		case ColorRole::SURFACE_DIM_08:
-			return Color(get_surface_dim(), 0.08);
-		case ColorRole::SURFACE_DIM_10:
-			return Color(get_surface_dim(), 0.10);
-		case ColorRole::SURFACE_DIM_12:
-			return Color(get_surface_dim(), 0.12);
-		case ColorRole::SURFACE_DIM_16:
-			return Color(get_surface_dim(), 0.16);
-		case ColorRole::SURFACE_DIM_38:
-			return Color(get_surface_dim(), 0.38);
-		case ColorRole::SURFACE_BRIGHT:
+		case ColorRoleEnum::SURFACE_BRIGHT:
 			return get_surface_bright();
-		case ColorRole::SURFACE_BRIGHT_08:
-			return Color(get_surface_bright(), 0.08);
-		case ColorRole::SURFACE_BRIGHT_10:
-			return Color(get_surface_bright(), 0.10);
-		case ColorRole::SURFACE_BRIGHT_12:
-			return Color(get_surface_bright(), 0.12);
-		case ColorRole::SURFACE_BRIGHT_16:
-			return Color(get_surface_bright(), 0.16);
-		case ColorRole::SURFACE_BRIGHT_38:
-			return Color(get_surface_bright(), 0.38);
-		case ColorRole::SURFACE_CONTAINER_LOWEST:
+		case ColorRoleEnum::SURFACE_CONTAINER_LOWEST:
 			return get_surface_container_lowest();
-		case ColorRole::SURFACE_CONTAINER_LOWEST_08:
-			return Color(get_surface_container_lowest(), 0.08);
-		case ColorRole::SURFACE_CONTAINER_LOWEST_10:
-			return Color(get_surface_container_lowest(), 0.10);
-		case ColorRole::SURFACE_CONTAINER_LOWEST_12:
-			return Color(get_surface_container_lowest(), 0.12);
-		case ColorRole::SURFACE_CONTAINER_LOWEST_16:
-			return Color(get_surface_container_lowest(), 0.16);
-		case ColorRole::SURFACE_CONTAINER_LOWEST_38:
-			return Color(get_surface_container_lowest(), 0.38);
-		case ColorRole::SURFACE_CONTAINER_LOW:
+		case ColorRoleEnum::SURFACE_CONTAINER_LOW:
 			return get_surface_container_low();
-		case ColorRole::SURFACE_CONTAINER_LOW_08:
-			return Color(get_surface_container_low(), 0.08);
-		case ColorRole::SURFACE_CONTAINER_LOW_10:
-			return Color(get_surface_container_low(), 0.10);
-		case ColorRole::SURFACE_CONTAINER_LOW_12:
-			return Color(get_surface_container_low(), 0.12);
-		case ColorRole::SURFACE_CONTAINER_LOW_16:
-			return Color(get_surface_container_low(), 0.16);
-		case ColorRole::SURFACE_CONTAINER_LOW_38:
-			return Color(get_surface_container_low(), 0.38);
-		case ColorRole::SURFACE_CONTAINER:
+		case ColorRoleEnum::SURFACE_CONTAINER:
 			return get_surface_container();
-		case ColorRole::SURFACE_CONTAINER_08:
-			return Color(get_surface_container(), 0.08);
-		case ColorRole::SURFACE_CONTAINER_10:
-			return Color(get_surface_container(), 0.10);
-		case ColorRole::SURFACE_CONTAINER_12:
-			return Color(get_surface_container(), 0.12);
-		case ColorRole::SURFACE_CONTAINER_16:
-			return Color(get_surface_container(), 0.16);
-		case ColorRole::SURFACE_CONTAINER_38:
-			return Color(get_surface_container(), 0.38);
-		case ColorRole::SURFACE_CONTAINER_HIGH:
+		case ColorRoleEnum::SURFACE_CONTAINER_HIGH:
 			return get_surface_container_high();
-		case ColorRole::SURFACE_CONTAINER_HIGH_08:
-			return Color(get_surface_container_high(), 0.08);
-		case ColorRole::SURFACE_CONTAINER_HIGH_10:
-			return Color(get_surface_container_high(), 0.10);
-		case ColorRole::SURFACE_CONTAINER_HIGH_12:
-			return Color(get_surface_container_high(), 0.12);
-		case ColorRole::SURFACE_CONTAINER_HIGH_16:
-			return Color(get_surface_container_high(), 0.16);
-		case ColorRole::SURFACE_CONTAINER_HIGH_38:
-			return Color(get_surface_container_high(), 0.38);
-		case ColorRole::SURFACE_CONTAINER_HIGHEST:
+		case ColorRoleEnum::SURFACE_CONTAINER_HIGHEST:
 			return get_surface_container_highest();
-		case ColorRole::SURFACE_CONTAINER_HIGHEST_08:
-			return Color(get_surface_container_highest(), 0.08);
-		case ColorRole::SURFACE_CONTAINER_HIGHEST_10:
-			return Color(get_surface_container_highest(), 0.10);
-		case ColorRole::SURFACE_CONTAINER_HIGHEST_12:
-			return Color(get_surface_container_highest(), 0.12);
-		case ColorRole::SURFACE_CONTAINER_HIGHEST_16:
-			return Color(get_surface_container_highest(), 0.16);
-		case ColorRole::SURFACE_CONTAINER_HIGHEST_38:
-			return Color(get_surface_container_highest(), 0.38);
-		case ColorRole::ON_SURFACE:
+		case ColorRoleEnum::ON_SURFACE:
 			return get_on_surface();
-		case ColorRole::ON_SURFACE_08:
-			return Color(get_on_surface(), 0.08);
-		case ColorRole::ON_SURFACE_10:
-			return Color(get_on_surface(), 0.10);
-		case ColorRole::ON_SURFACE_12:
-			return Color(get_on_surface(), 0.12);
-		case ColorRole::ON_SURFACE_16:
-			return Color(get_on_surface(), 0.16);
-		case ColorRole::ON_SURFACE_38:
-			return Color(get_on_surface(), 0.38);
-		case ColorRole::ON_SURFACE_60:
-			return Color(get_on_surface(), 0.60);
-		case ColorRole::ON_SURFACE_65:
-			return Color(get_on_surface(), 0.65);
-		case ColorRole::SURFACE_VARIANT:
+		case ColorRoleEnum::SURFACE_VARIANT:
 			return get_surface_variant();
-		case ColorRole::SURFACE_VARIANT_08:
-			return Color(get_surface_variant(), 0.08);
-		case ColorRole::SURFACE_VARIANT_10:
-			return Color(get_surface_variant(), 0.10);
-		case ColorRole::SURFACE_VARIANT_12:
-			return Color(get_surface_variant(), 0.12);
-		case ColorRole::SURFACE_VARIANT_16:
-			return Color(get_surface_variant(), 0.16);
-		case ColorRole::SURFACE_VARIANT_38:
-			return Color(get_surface_variant(), 0.38);
-		case ColorRole::ON_SURFACE_VARIANT:
+		case ColorRoleEnum::ON_SURFACE_VARIANT:
 			return get_on_surface_variant();
-		case ColorRole::ON_SURFACE_VARIANT_08:
-			return Color(get_on_surface_variant(), 0.08);
-		case ColorRole::ON_SURFACE_VARIANT_10:
-			return Color(get_on_surface_variant(), 0.10);
-		case ColorRole::ON_SURFACE_VARIANT_12:
-			return Color(get_on_surface_variant(), 0.12);
-		case ColorRole::ON_SURFACE_VARIANT_16:
-			return Color(get_on_surface_variant(), 0.16);
-		case ColorRole::ON_SURFACE_VARIANT_38:
-			return Color(get_on_surface_variant(), 0.38);
-		case ColorRole::INVERSE_SURFACE:
+		case ColorRoleEnum::INVERSE_SURFACE:
 			return get_inverse_surface();
-		case ColorRole::INVERSE_SURFACE_08:
-			return Color(get_inverse_surface(), 0.08);
-		case ColorRole::INVERSE_SURFACE_10:
-			return Color(get_inverse_surface(), 0.10);
-		case ColorRole::INVERSE_SURFACE_12:
-			return Color(get_inverse_surface(), 0.12);
-		case ColorRole::INVERSE_SURFACE_16:
-			return Color(get_inverse_surface(), 0.16);
-		case ColorRole::INVERSE_SURFACE_38:
-			return Color(get_inverse_surface(), 0.38);
-		case ColorRole::INVERSE_ON_SURFACE:
+		case ColorRoleEnum::INVERSE_ON_SURFACE:
 			return get_inverse_on_surface();
-		case ColorRole::INVERSE_ON_SURFACE_08:
-			return Color(get_inverse_on_surface(), 0.08);
-		case ColorRole::INVERSE_ON_SURFACE_10:
-			return Color(get_inverse_on_surface(), 0.10);
-		case ColorRole::INVERSE_ON_SURFACE_12:
-			return Color(get_inverse_on_surface(), 0.12);
-		case ColorRole::INVERSE_ON_SURFACE_16:
-			return Color(get_inverse_on_surface(), 0.16);
-		case ColorRole::INVERSE_ON_SURFACE_38:
-			return Color(get_inverse_on_surface(), 0.38);
-		case ColorRole::OUTLINE:
+		case ColorRoleEnum::OUTLINE:
 			return get_outline();
-		case ColorRole::OUTLINE_08:
-			return Color(get_outline(), 0.08);
-		case ColorRole::OUTLINE_10:
-			return Color(get_outline(), 0.10);
-		case ColorRole::OUTLINE_12:
-			return Color(get_outline(), 0.12);
-		case ColorRole::OUTLINE_16:
-			return Color(get_outline(), 0.16);
-		case ColorRole::OUTLINE_38:
-			return Color(get_outline(), 0.38);
-		case ColorRole::OUTLINE_VARIANT:
+		case ColorRoleEnum::OUTLINE_VARIANT:
 			return get_outline_variant();
-		case ColorRole::OUTLINE_VARIANT_08:
-			return Color(get_outline_variant(), 0.08);
-		case ColorRole::OUTLINE_VARIANT_10:
-			return Color(get_outline_variant(), 0.10);
-		case ColorRole::OUTLINE_VARIANT_12:
-			return Color(get_outline_variant(), 0.12);
-		case ColorRole::OUTLINE_VARIANT_16:
-			return Color(get_outline_variant(), 0.16);
-		case ColorRole::OUTLINE_VARIANT_38:
-			return Color(get_outline_variant(), 0.38);
-		case ColorRole::SHADOW:
+		case ColorRoleEnum::SHADOW:
 			return get_shadow();
-		case ColorRole::SHADOW_08:
-			return Color(get_shadow(), 0.08);
-		case ColorRole::SHADOW_10:
-			return Color(get_shadow(), 0.10);
-		case ColorRole::SHADOW_12:
-			return Color(get_shadow(), 0.12);
-		case ColorRole::SHADOW_16:
-			return Color(get_shadow(), 0.16);
-		case ColorRole::SHADOW_38:
-			return Color(get_shadow(), 0.38);
-		case ColorRole::SCRIM:
+		case ColorRoleEnum::SCRIM:
 			return get_scrim();
-		case ColorRole::SCRIM_08:
-			return Color(get_scrim(), 0.08);
-		case ColorRole::SCRIM_10:
-			return Color(get_scrim(), 0.10);
-		case ColorRole::SCRIM_12:
-			return Color(get_scrim(), 0.12);
-		case ColorRole::SCRIM_16:
-			return Color(get_scrim(), 0.16);
-		case ColorRole::SCRIM_38:
-			return Color(get_scrim(), 0.38);
-		case ColorRole::SURFACE_TINT:
+		case ColorRoleEnum::SURFACE_TINT:
 			return get_surface_tint();
-		case ColorRole::SURFACE_TINT_08:
-			return Color(get_surface_tint(), 0.08);
-		case ColorRole::SURFACE_TINT_10:
-			return Color(get_surface_tint(), 0.10);
-		case ColorRole::SURFACE_TINT_12:
-			return Color(get_surface_tint(), 0.12);
-		case ColorRole::SURFACE_TINT_16:
-			return Color(get_surface_tint(), 0.16);
-		case ColorRole::SURFACE_TINT_38:
-			return Color(get_surface_tint(), 0.38);
-		case ColorRole::PRIMARY:
+		case ColorRoleEnum::PRIMARY:
 			return get_primary();
-		case ColorRole::PRIMARY_08:
-			return Color(get_primary(), 0.08);
-		case ColorRole::PRIMARY_10:
-			return Color(get_primary(), 0.10);
-		case ColorRole::PRIMARY_12:
-			return Color(get_primary(), 0.12);
-		case ColorRole::PRIMARY_16:
-			return Color(get_primary(), 0.16);
-		case ColorRole::PRIMARY_38:
-			return Color(get_primary(), 0.38);
-		case ColorRole::ON_PRIMARY:
+		case ColorRoleEnum::ON_PRIMARY:
 			return get_on_primary();
-		case ColorRole::ON_PRIMARY_08:
-			return Color(get_on_primary(), 0.08);
-		case ColorRole::ON_PRIMARY_10:
-			return Color(get_on_primary(), 0.10);
-		case ColorRole::ON_PRIMARY_12:
-			return Color(get_on_primary(), 0.12);
-		case ColorRole::ON_PRIMARY_16:
-			return Color(get_on_primary(), 0.16);
-		case ColorRole::ON_PRIMARY_38:
-			return Color(get_on_primary(), 0.38);
-		case ColorRole::PRIMARY_CONTAINER:
+		case ColorRoleEnum::PRIMARY_CONTAINER:
 			return get_primary_container();
-		case ColorRole::PRIMARY_CONTAINER_08:
-			return Color(get_primary_container(), 0.08);
-		case ColorRole::PRIMARY_CONTAINER_10:
-			return Color(get_primary_container(), 0.10);
-		case ColorRole::PRIMARY_CONTAINER_12:
-			return Color(get_primary_container(), 0.12);
-		case ColorRole::PRIMARY_CONTAINER_16:
-			return Color(get_primary_container(), 0.16);
-		case ColorRole::PRIMARY_CONTAINER_38:
-			return Color(get_primary_container(), 0.38);
-		case ColorRole::ON_PRIMARY_CONTAINER:
+		case ColorRoleEnum::ON_PRIMARY_CONTAINER:
 			return get_on_primary_container();
-		case ColorRole::ON_PRIMARY_CONTAINER_08:
-			return Color(get_on_primary_container(), 0.08);
-		case ColorRole::ON_PRIMARY_CONTAINER_10:
-			return Color(get_on_primary_container(), 0.10);
-		case ColorRole::ON_PRIMARY_CONTAINER_12:
-			return Color(get_on_primary_container(), 0.12);
-		case ColorRole::ON_PRIMARY_CONTAINER_16:
-			return Color(get_on_primary_container(), 0.16);
-		case ColorRole::ON_PRIMARY_CONTAINER_38:
-			return Color(get_on_primary_container(), 0.38);
-		case ColorRole::INVERSE_PRIMARY:
+		case ColorRoleEnum::INVERSE_PRIMARY:
 			return get_inverse_primary();
-		case ColorRole::INVERSE_PRIMARY_08:
-			return Color(get_inverse_primary(), 0.08);
-		case ColorRole::INVERSE_PRIMARY_10:
-			return Color(get_inverse_primary(), 0.10);
-		case ColorRole::INVERSE_PRIMARY_12:
-			return Color(get_inverse_primary(), 0.12);
-		case ColorRole::INVERSE_PRIMARY_16:
-			return Color(get_inverse_primary(), 0.16);
-		case ColorRole::INVERSE_PRIMARY_38:
-			return Color(get_inverse_primary(), 0.38);
-		case ColorRole::INVERSE_PRIMARY_60:
-			return Color(get_inverse_primary(), 0.60);
-		case ColorRole::SECONDARY:
+		case ColorRoleEnum::SECONDARY:
 			return get_secondary();
-		case ColorRole::SECONDARY_08:
-			return Color(get_secondary(), 0.08);
-		case ColorRole::SECONDARY_10:
-			return Color(get_secondary(), 0.10);
-		case ColorRole::SECONDARY_12:
-			return Color(get_secondary(), 0.12);
-		case ColorRole::SECONDARY_16:
-			return Color(get_secondary(), 0.16);
-		case ColorRole::SECONDARY_38:
-			return Color(get_secondary(), 0.38);
-		case ColorRole::ON_SECONDARY:
+		case ColorRoleEnum::ON_SECONDARY:
 			return get_on_secondary();
-		case ColorRole::ON_SECONDARY_08:
-			return Color(get_on_secondary(), 0.08);
-		case ColorRole::ON_SECONDARY_10:
-			return Color(get_on_secondary(), 0.10);
-		case ColorRole::ON_SECONDARY_12:
-			return Color(get_on_secondary(), 0.12);
-		case ColorRole::ON_SECONDARY_16:
-			return Color(get_on_secondary(), 0.16);
-		case ColorRole::ON_SECONDARY_38:
-			return Color(get_on_secondary(), 0.38);
-		case ColorRole::SECONDARY_CONTAINER:
+		case ColorRoleEnum::SECONDARY_CONTAINER:
 			return get_secondary_container();
-		case ColorRole::SECONDARY_CONTAINER_08:
-			return Color(get_secondary_container(), 0.08);
-		case ColorRole::SECONDARY_CONTAINER_10:
-			return Color(get_secondary_container(), 0.10);
-		case ColorRole::SECONDARY_CONTAINER_12:
-			return Color(get_secondary_container(), 0.12);
-		case ColorRole::SECONDARY_CONTAINER_16:
-			return Color(get_secondary_container(), 0.16);
-		case ColorRole::SECONDARY_CONTAINER_38:
-			return Color(get_secondary_container(), 0.38);
-		case ColorRole::ON_SECONDARY_CONTAINER:
+		case ColorRoleEnum::ON_SECONDARY_CONTAINER:
 			return get_on_secondary_container();
-		case ColorRole::ON_SECONDARY_CONTAINER_08:
-			return Color(get_on_secondary_container(), 0.08);
-		case ColorRole::ON_SECONDARY_CONTAINER_10:
-			return Color(get_on_secondary_container(), 0.10);
-		case ColorRole::ON_SECONDARY_CONTAINER_12:
-			return Color(get_on_secondary_container(), 0.12);
-		case ColorRole::ON_SECONDARY_CONTAINER_16:
-			return Color(get_on_secondary_container(), 0.16);
-		case ColorRole::ON_SECONDARY_CONTAINER_38:
-			return Color(get_on_secondary_container(), 0.38);
-		case ColorRole::TERTIARY:
+		case ColorRoleEnum::TERTIARY:
 			return get_tertiary();
-		case ColorRole::TERTIARY_08:
-			return Color(get_tertiary(), 0.08);
-		case ColorRole::TERTIARY_10:
-			return Color(get_tertiary(), 0.10);
-		case ColorRole::TERTIARY_12:
-			return Color(get_tertiary(), 0.12);
-		case ColorRole::TERTIARY_16:
-			return Color(get_tertiary(), 0.16);
-		case ColorRole::TERTIARY_38:
-			return Color(get_tertiary(), 0.38);
-		case ColorRole::ON_TERTIARY:
+		case ColorRoleEnum::ON_TERTIARY:
 			return get_on_tertiary();
-		case ColorRole::ON_TERTIARY_08:
-			return Color(get_on_tertiary(), 0.08);
-		case ColorRole::ON_TERTIARY_10:
-			return Color(get_on_tertiary(), 0.10);
-		case ColorRole::ON_TERTIARY_12:
-			return Color(get_on_tertiary(), 0.12);
-		case ColorRole::ON_TERTIARY_16:
-			return Color(get_on_tertiary(), 0.16);
-		case ColorRole::ON_TERTIARY_38:
-			return Color(get_on_tertiary(), 0.38);
-		case ColorRole::TERTIARY_CONTAINER:
+		case ColorRoleEnum::TERTIARY_CONTAINER:
 			return get_tertiary_container();
-		case ColorRole::TERTIARY_CONTAINER_08:
-			return Color(get_tertiary_container(), 0.08);
-		case ColorRole::TERTIARY_CONTAINER_10:
-			return Color(get_tertiary_container(), 0.10);
-		case ColorRole::TERTIARY_CONTAINER_12:
-			return Color(get_tertiary_container(), 0.12);
-		case ColorRole::TERTIARY_CONTAINER_16:
-			return Color(get_tertiary_container(), 0.16);
-		case ColorRole::TERTIARY_CONTAINER_38:
-			return Color(get_tertiary_container(), 0.38);
-		case ColorRole::ON_TERTIARY_CONTAINER:
+		case ColorRoleEnum::ON_TERTIARY_CONTAINER:
 			return get_on_tertiary_container();
-		case ColorRole::ON_TERTIARY_CONTAINER_08:
-			return Color(get_on_tertiary_container(), 0.08);
-		case ColorRole::ON_TERTIARY_CONTAINER_10:
-			return Color(get_on_tertiary_container(), 0.10);
-		case ColorRole::ON_TERTIARY_CONTAINER_12:
-			return Color(get_on_tertiary_container(), 0.12);
-		case ColorRole::ON_TERTIARY_CONTAINER_16:
-			return Color(get_on_tertiary_container(), 0.16);
-		case ColorRole::ON_TERTIARY_CONTAINER_38:
-			return Color(get_on_tertiary_container(), 0.38);
-		case ColorRole::ERROR:
+		case ColorRoleEnum::ERROR:
 			return get_error();
-		case ColorRole::ERROR_08:
-			return Color(get_error(), 0.08);
-		case ColorRole::ERROR_10:
-			return Color(get_error(), 0.10);
-		case ColorRole::ERROR_12:
-			return Color(get_error(), 0.12);
-		case ColorRole::ERROR_16:
-			return Color(get_error(), 0.16);
-		case ColorRole::ERROR_38:
-			return Color(get_error(), 0.38);
-		case ColorRole::ON_ERROR:
+		case ColorRoleEnum::ON_ERROR:
 			return get_on_error();
-		case ColorRole::ON_ERROR_08:
-			return Color(get_on_error(), 0.08);
-		case ColorRole::ON_ERROR_10:
-			return Color(get_on_error(), 0.10);
-		case ColorRole::ON_ERROR_12:
-			return Color(get_on_error(), 0.12);
-		case ColorRole::ON_ERROR_16:
-			return Color(get_on_error(), 0.16);
-		case ColorRole::ON_ERROR_38:
-			return Color(get_on_error(), 0.38);
-		case ColorRole::ERROR_CONTAINER:
+		case ColorRoleEnum::ERROR_CONTAINER:
 			return get_error_container();
-		case ColorRole::ERROR_CONTAINER_08:
-			return Color(get_error_container(), 0.08);
-		case ColorRole::ERROR_CONTAINER_10:
-			return Color(get_error_container(), 0.10);
-		case ColorRole::ERROR_CONTAINER_12:
-			return Color(get_error_container(), 0.12);
-		case ColorRole::ERROR_CONTAINER_16:
-			return Color(get_error_container(), 0.16);
-		case ColorRole::ERROR_CONTAINER_38:
-			return Color(get_error_container(), 0.38);
-		case ColorRole::ON_ERROR_CONTAINER:
+		case ColorRoleEnum::ON_ERROR_CONTAINER:
 			return get_on_error_container();
-		case ColorRole::ON_ERROR_CONTAINER_08:
-			return Color(get_on_error_container(), 0.08);
-		case ColorRole::ON_ERROR_CONTAINER_10:
-			return Color(get_on_error_container(), 0.10);
-		case ColorRole::ON_ERROR_CONTAINER_12:
-			return Color(get_on_error_container(), 0.12);
-		case ColorRole::ON_ERROR_CONTAINER_16:
-			return Color(get_on_error_container(), 0.16);
-		case ColorRole::ON_ERROR_CONTAINER_38:
-			return Color(get_on_error_container(), 0.38);
-		case ColorRole::PRIMARY_FIXED:
+		case ColorRoleEnum::PRIMARY_FIXED:
 			return get_primary_fixed();
-		case ColorRole::PRIMARY_FIXED_08:
-			return Color(get_primary_fixed(), 0.08);
-		case ColorRole::PRIMARY_FIXED_10:
-			return Color(get_primary_fixed(), 0.10);
-		case ColorRole::PRIMARY_FIXED_12:
-			return Color(get_primary_fixed(), 0.12);
-		case ColorRole::PRIMARY_FIXED_16:
-			return Color(get_primary_fixed(), 0.16);
-		case ColorRole::PRIMARY_FIXED_38:
-			return Color(get_primary_fixed(), 0.38);
-		case ColorRole::PRIMARY_FIXED_DIM:
+		case ColorRoleEnum::PRIMARY_FIXED_DIM:
 			return get_primary_fixed_dim();
-		case ColorRole::PRIMARY_FIXED_DIM_08:
-			return Color(get_primary_fixed_dim(), 0.08);
-		case ColorRole::PRIMARY_FIXED_DIM_10:
-			return Color(get_primary_fixed_dim(), 0.10);
-		case ColorRole::PRIMARY_FIXED_DIM_12:
-			return Color(get_primary_fixed_dim(), 0.12);
-		case ColorRole::PRIMARY_FIXED_DIM_16:
-			return Color(get_primary_fixed_dim(), 0.16);
-		case ColorRole::PRIMARY_FIXED_DIM_38:
-			return Color(get_primary_fixed_dim(), 0.38);
-		case ColorRole::ON_PRIMARY_FIXED:
+		case ColorRoleEnum::ON_PRIMARY_FIXED:
 			return get_on_primary_fixed();
-		case ColorRole::ON_PRIMARY_FIXED_08:
-			return Color(get_on_primary_fixed(), 0.08);
-		case ColorRole::ON_PRIMARY_FIXED_10:
-			return Color(get_on_primary_fixed(), 0.10);
-		case ColorRole::ON_PRIMARY_FIXED_12:
-			return Color(get_on_primary_fixed(), 0.12);
-		case ColorRole::ON_PRIMARY_FIXED_16:
-			return Color(get_on_primary_fixed(), 0.16);
-		case ColorRole::ON_PRIMARY_FIXED_38:
-			return Color(get_on_primary_fixed(), 0.38);
-		case ColorRole::ON_PRIMARY_FIXED_VARIANT:
+		case ColorRoleEnum::ON_PRIMARY_FIXED_VARIANT:
 			return get_on_primary_fixed_variant();
-		case ColorRole::ON_PRIMARY_FIXED_VARIANT_08:
-			return Color(get_on_primary_fixed_variant(), 0.08);
-		case ColorRole::ON_PRIMARY_FIXED_VARIANT_10:
-			return Color(get_on_primary_fixed_variant(), 0.10);
-		case ColorRole::ON_PRIMARY_FIXED_VARIANT_12:
-			return Color(get_on_primary_fixed_variant(), 0.12);
-		case ColorRole::ON_PRIMARY_FIXED_VARIANT_16:
-			return Color(get_on_primary_fixed_variant(), 0.16);
-		case ColorRole::ON_PRIMARY_FIXED_VARIANT_38:
-			return Color(get_on_primary_fixed_variant(), 0.38);
-		case ColorRole::SECONDARY_FIXED:
+		case ColorRoleEnum::SECONDARY_FIXED:
 			return get_secondary_fixed();
-		case ColorRole::SECONDARY_FIXED_08:
-			return Color(get_secondary_fixed(), 0.08);
-		case ColorRole::SECONDARY_FIXED_10:
-			return Color(get_secondary_fixed(), 0.10);
-		case ColorRole::SECONDARY_FIXED_12:
-			return Color(get_secondary_fixed(), 0.12);
-		case ColorRole::SECONDARY_FIXED_16:
-			return Color(get_secondary_fixed(), 0.16);
-		case ColorRole::SECONDARY_FIXED_38:
-			return Color(get_secondary_fixed(), 0.38);
-		case ColorRole::SECONDARY_FIXED_DIM:
+		case ColorRoleEnum::SECONDARY_FIXED_DIM:
 			return get_secondary_fixed_dim();
-		case ColorRole::SECONDARY_FIXED_DIM_08:
-			return Color(get_secondary_fixed_dim(), 0.08);
-		case ColorRole::SECONDARY_FIXED_DIM_10:
-			return Color(get_secondary_fixed_dim(), 0.10);
-		case ColorRole::SECONDARY_FIXED_DIM_12:
-			return Color(get_secondary_fixed_dim(), 0.12);
-		case ColorRole::SECONDARY_FIXED_DIM_16:
-			return Color(get_secondary_fixed_dim(), 0.16);
-		case ColorRole::SECONDARY_FIXED_DIM_38:
-			return Color(get_secondary_fixed_dim(), 0.38);
-		case ColorRole::ON_SECONDARY_FIXED:
+		case ColorRoleEnum::ON_SECONDARY_FIXED:
 			return get_on_secondary_fixed();
-		case ColorRole::ON_SECONDARY_FIXED_08:
-			return Color(get_on_secondary_fixed(), 0.08);
-		case ColorRole::ON_SECONDARY_FIXED_10:
-			return Color(get_on_secondary_fixed(), 0.10);
-		case ColorRole::ON_SECONDARY_FIXED_12:
-			return Color(get_on_secondary_fixed(), 0.12);
-		case ColorRole::ON_SECONDARY_FIXED_16:
-			return Color(get_on_secondary_fixed(), 0.16);
-		case ColorRole::ON_SECONDARY_FIXED_38:
-			return Color(get_on_secondary_fixed(), 0.38);
-		case ColorRole::ON_SECONDARY_FIXED_VARIANT:
+		case ColorRoleEnum::ON_SECONDARY_FIXED_VARIANT:
 			return get_on_secondary_fixed_variant();
-		case ColorRole::ON_SECONDARY_FIXED_VARIANT_08:
-			return Color(get_on_secondary_fixed_variant(), 0.08);
-		case ColorRole::ON_SECONDARY_FIXED_VARIANT_10:
-			return Color(get_on_secondary_fixed_variant(), 0.10);
-		case ColorRole::ON_SECONDARY_FIXED_VARIANT_12:
-			return Color(get_on_secondary_fixed_variant(), 0.12);
-		case ColorRole::ON_SECONDARY_FIXED_VARIANT_16:
-			return Color(get_on_secondary_fixed_variant(), 0.16);
-		case ColorRole::ON_SECONDARY_FIXED_VARIANT_38:
-			return Color(get_on_secondary_fixed_variant(), 0.38);
-		case ColorRole::TERTIARY_FIXED:
+		case ColorRoleEnum::TERTIARY_FIXED:
 			return get_tertiary_fixed();
-		case ColorRole::TERTIARY_FIXED_08:
-			return Color(get_tertiary_fixed(), 0.08);
-		case ColorRole::TERTIARY_FIXED_10:
-			return Color(get_tertiary_fixed(), 0.10);
-		case ColorRole::TERTIARY_FIXED_12:
-			return Color(get_tertiary_fixed(), 0.12);
-		case ColorRole::TERTIARY_FIXED_16:
-			return Color(get_tertiary_fixed(), 0.16);
-		case ColorRole::TERTIARY_FIXED_38:
-			return Color(get_tertiary_fixed(), 0.38);
-		case ColorRole::TERTIARY_FIXED_DIM:
+		case ColorRoleEnum::TERTIARY_FIXED_DIM:
 			return get_tertiary_fixed_dim();
-		case ColorRole::TERTIARY_FIXED_DIM_08:
-			return Color(get_tertiary_fixed_dim(), 0.08);
-		case ColorRole::TERTIARY_FIXED_DIM_10:
-			return Color(get_tertiary_fixed_dim(), 0.10);
-		case ColorRole::TERTIARY_FIXED_DIM_12:
-			return Color(get_tertiary_fixed_dim(), 0.12);
-		case ColorRole::TERTIARY_FIXED_DIM_16:
-			return Color(get_tertiary_fixed_dim(), 0.16);
-		case ColorRole::TERTIARY_FIXED_DIM_38:
-			return Color(get_tertiary_fixed_dim(), 0.38);
-		case ColorRole::ON_TERTIARY_FIXED:
+		case ColorRoleEnum::ON_TERTIARY_FIXED:
 			return get_on_tertiary_fixed();
-		case ColorRole::ON_TERTIARY_FIXED_08:
-			return Color(get_on_tertiary_fixed(), 0.08);
-		case ColorRole::ON_TERTIARY_FIXED_10:
-			return Color(get_on_tertiary_fixed(), 0.10);
-		case ColorRole::ON_TERTIARY_FIXED_12:
-			return Color(get_on_tertiary_fixed(), 0.12);
-		case ColorRole::ON_TERTIARY_FIXED_16:
-			return Color(get_on_tertiary_fixed(), 0.16);
-		case ColorRole::ON_TERTIARY_FIXED_38:
-			return Color(get_on_tertiary_fixed(), 0.38);
-		case ColorRole::ON_TERTIARY_FIXED_VARIANT:
+		case ColorRoleEnum::ON_TERTIARY_FIXED_VARIANT:
 			return get_on_tertiary_fixed_variant();
-		case ColorRole::ON_TERTIARY_FIXED_VARIANT_08:
-			return Color(get_on_tertiary_fixed_variant(), 0.08);
-		case ColorRole::ON_TERTIARY_FIXED_VARIANT_10:
-			return Color(get_on_tertiary_fixed_variant(), 0.10);
-		case ColorRole::ON_TERTIARY_FIXED_VARIANT_12:
-			return Color(get_on_tertiary_fixed_variant(), 0.12);
-		case ColorRole::ON_TERTIARY_FIXED_VARIANT_16:
-			return Color(get_on_tertiary_fixed_variant(), 0.16);
-		case ColorRole::ON_TERTIARY_FIXED_VARIANT_38:
-			return Color(get_on_tertiary_fixed_variant(), 0.38);
-
 		default:
 			return get_source_color_argb();
 	}

@@ -1848,6 +1848,10 @@ Error VariantWriter::write(const Variant &p_variant, StoreStringFunc p_store_str
 			Color c = p_variant;
 			p_store_string_func(p_store_string_ud, "Color(" + rtos_fix(c.r) + ", " + rtos_fix(c.g) + ", " + rtos_fix(c.b) + ", " + rtos_fix(c.a) + ")");
 		} break;
+		case Variant::COLOR_ROLE: {
+			ColorRole c = p_variant;
+			p_store_string_func(p_store_string_ud, "ColorRole");
+		} break;
 		case Variant::STRING_NAME: {
 			String str = p_variant;
 			str = "&\"" + str.c_escape() + "\"";

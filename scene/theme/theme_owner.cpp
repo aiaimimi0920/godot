@@ -267,7 +267,7 @@ Variant ThemeOwner::get_theme_item_in_types(Theme::DataType p_data_type, const S
 					const StringName targe_color_role_name = String(p_name) + String("_role");
 					if (owner_theme.is_valid() && owner_theme->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
 						ColorRole cur_color_role = owner_theme->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
-						if (cur_color_role == ColorRole::STATIC_COLOR) {
+						if (cur_color_role.color_role_enum == ColorRoleEnum::STATIC_COLOR) {
 							return owner_theme->get_theme_item(p_data_type, p_name, E);
 						} else {
 							return false;
@@ -283,7 +283,7 @@ Variant ThemeOwner::get_theme_item_in_types(Theme::DataType p_data_type, const S
 					const StringName targe_color_role_name = String(p_name) + String("_role");
 					if (owner_theme.is_valid() && owner_theme->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
 						ColorRole cur_color_role = owner_theme->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
-						if (cur_color_role != ColorRole::STATIC_COLOR) {
+						if (cur_color_role.color_role_enum != ColorRoleEnum::STATIC_COLOR) {
 							return false;
 						} else {
 							get_static_color = true;
@@ -306,7 +306,7 @@ Variant ThemeOwner::get_theme_item_in_types(Theme::DataType p_data_type, const S
 						const StringName targe_color_role_name = String(p_name) + String("_role");
 						if (theme.is_valid() && theme->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
 							ColorRole cur_color_role = theme->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
-							if (cur_color_role == ColorRole::STATIC_COLOR) {
+							if (cur_color_role.color_role_enum == ColorRoleEnum::STATIC_COLOR) {
 								return theme->get_theme_item(p_data_type, p_name, E);
 							} else {
 								return false;
@@ -322,7 +322,7 @@ Variant ThemeOwner::get_theme_item_in_types(Theme::DataType p_data_type, const S
 						const StringName targe_color_role_name = String(p_name) + String("_role");
 						if (theme.is_valid() && theme->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
 							ColorRole cur_color_role = theme->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
-							if (cur_color_role != ColorRole::STATIC_COLOR) {
+							if (cur_color_role.color_role_enum != ColorRoleEnum::STATIC_COLOR) {
 								return false;
 							} else {
 								get_static_color = true;
@@ -340,7 +340,7 @@ Variant ThemeOwner::get_theme_item_in_types(Theme::DataType p_data_type, const S
 			const StringName targe_color_role_name = String(p_name) + String("_role");
 			if (global_context->get_fallback_theme().is_valid() && global_context->get_fallback_theme()->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
 				ColorRole cur_color_role = global_context->get_fallback_theme()->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
-				if (cur_color_role == ColorRole::STATIC_COLOR) {
+				if (cur_color_role.color_role_enum == ColorRoleEnum::STATIC_COLOR) {
 					return global_context->get_fallback_theme()->get_theme_item(p_data_type, p_name, E);
 				} else {
 					return false;

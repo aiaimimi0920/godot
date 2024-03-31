@@ -108,6 +108,7 @@ public:
 
 		// misc types
 		COLOR,
+		COLOR_ROLE,
 		STRING_NAME,
 		NODE_PATH,
 		RID,
@@ -279,6 +280,7 @@ private:
 
 			// misc types
 			false, //COLOR,
+			false, //COLOR_ROLE,
 			true, //STRING_NAME,
 			true, //NODE_PATH,
 			false, //RID,
@@ -467,6 +469,7 @@ public:
 	Variant(const Transform3D &p_transform);
 	Variant(const Projection &p_projection);
 	Variant(const Color &p_color);
+	Variant(const ColorRole &p_color_role);
 	Variant(const NodePath &p_node_path);
 	Variant(const ::RID &p_rid);
 	Variant(const Object *p_object);

@@ -37,7 +37,7 @@ class ColorRect : public Control {
 	GDCLASS(ColorRect, Control);
 
 	Color color = Color(1, 1, 1);
-	ColorRole color_role = ColorRole::STATIC_COLOR;
+	ColorRole color_role = ColorRole(ColorRoleEnum::STATIC_COLOR);
 	Ref<ColorScheme> color_scheme;
 
 	struct ThemeCache {

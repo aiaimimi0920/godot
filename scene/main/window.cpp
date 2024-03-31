@@ -2268,7 +2268,7 @@ Color Window::get_theme_color(const StringName &p_name, const StringName &p_them
 	if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == theme_type_variation) {
 		const StringName targe_color_role_name = String(p_name) + String("_role");
 		const ColorRole *color_role = theme_color_role_override.getptr(targe_color_role_name);
-		if (color_role && *color_role != ColorRole::STATIC_COLOR) {
+		if (color_role && *color_role->color_role_enum != ColorRoleEnum::STATIC_COLOR) {
 			const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
 			const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
 			Color color = color_scheme->get_color(*color_role);

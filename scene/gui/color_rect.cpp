@@ -68,7 +68,7 @@ ColorRole ColorRect::get_color_role() const {
 }
 
 void ColorRect::_update_color() {
-	if(color_role!=ColorRole::STATIC_COLOR){
+	if(color_role.color_role_enum!=ColorRoleEnum::STATIC_COLOR){
 		if (color_scheme.is_valid()) {
 			const Color target_color = color_scheme->get_color(color_role);
 			if (target_color != color) {

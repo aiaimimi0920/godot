@@ -161,8 +161,8 @@ static Ref<StyleBoxFlat> make_color_role_flat_stylebox(ColorRole p_color_role, S
 	style->set_dynamic_shadow(true);
 	style->set_elevation_level(p_level);
 
-	style->set_shadow_color_role(ColorRole::SHADOW);
-	style->set_border_color_role(ColorRole::OUTLINE);
+	style->set_shadow_color_role(ColorRole(ColorRoleEnum::SHADOW));
+	style->set_border_color_role(ColorRole(ColorRoleEnum::OUTLINE));
 
 	style->set_corner_detail(Math::ceil(0.8 * p_corner_width * EDSCALE));
 	style->set_corner_radius_all(p_corner_width * EDSCALE);
@@ -453,8 +453,8 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 	// Colors.
 	{
 		// Base colors.
-		p_config.base_color_role = ColorRole::PRIMARY;
-		p_config.accent_color_role = ColorRole::INVERSE_PRIMARY;
+		p_config.base_color_role = ColorRole(ColorRoleEnum::PRIMARY);
+		p_config.accent_color_role = ColorRole(ColorRoleEnum::INVERSE_PRIMARY);
 
 		p_theme->set_color("base_color", EditorStringName(Editor), p_config.base_color);
 		p_theme->set_color_role("base_color_role", EditorStringName(Editor), p_config.base_color_role);
@@ -463,34 +463,34 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 
 		// White (dark theme) or black (light theme), will be used to generate the rest of the colors
 		p_config.mono_color = p_config.dark_theme ? Color(1, 1, 1) : Color(0, 0, 0);
-		p_config.mono_color_role = ColorRole::ON_SURFACE;
+		p_config.mono_color_role = ColorRole(ColorRoleEnum::ON_SURFACE);
 
 		// Ensure base colors are in the 0..1 luminance range to avoid 8-bit integer overflow or text rendering issues.
 		// Some places in the editor use 8-bit integer colors.
 		p_config.dark_color_1 = p_config.base_color.lerp(Color(0, 0, 0, 1), p_config.contrast).clamp();
-		p_config.dark_color_1_role = ColorRole::SECONDARY;
+		p_config.dark_color_1_role = ColorRole(ColorRoleEnum::SECONDARY);
 		p_config.dark_color_2 = p_config.base_color.lerp(Color(0, 0, 0, 1), p_config.contrast * 1.5).clamp();
-		p_config.dark_color_2_role = ColorRole::TERTIARY;
+		p_config.dark_color_2_role = ColorRole(ColorRoleEnum::TERTIARY);
 		p_config.dark_color_3 = p_config.base_color.lerp(Color(0, 0, 0, 1), p_config.contrast * 2).clamp();
-		p_config.dark_color_3_role = ColorRole::TERTIARY;
+		p_config.dark_color_3_role = ColorRole(ColorRoleEnum::TERTIARY);
 
 		p_config.contrast_color_1 = p_config.base_color.lerp(p_config.mono_color, MAX(p_config.contrast, p_config.default_contrast));
-		p_config.contrast_color_1_role = ColorRole::SECONDARY_CONTAINER;
+		p_config.contrast_color_1_role = ColorRole(ColorRoleEnum::SECONDARY_CONTAINER);
 		p_config.contrast_color_2 = p_config.base_color.lerp(p_config.mono_color, MAX(p_config.contrast * 1.5, p_config.default_contrast * 1.5));
-		p_config.contrast_color_2_role = ColorRole::TERTIARY_CONTAINER;
+		p_config.contrast_color_2_role = ColorRole(ColorRoleEnum::TERTIARY_CONTAINER);
 
 		p_config.highlight_color = Color(p_config.accent_color.r, p_config.accent_color.g, p_config.accent_color.b, 0.275);
-		p_config.highlight_color_role = ColorRole::INVERSE_PRIMARY_38;
+		p_config.highlight_color_role = ColorRole(ColorRoleEnum::INVERSE_PRIMARY_38);
 		
 		p_config.highlight_disabled_color = p_config.highlight_color.lerp(p_config.dark_theme ? Color(0, 0, 0) : Color(1, 1, 1), 0.5);
-		p_config.highlight_disabled_color_role = ColorRole::INVERSE_PRIMARY_16;
+		p_config.highlight_disabled_color_role = ColorRole(ColorRoleEnum::INVERSE_PRIMARY_16);
 
 		p_config.success_color = Color(0.45, 0.95, 0.5);
-		p_config.success_color_role = ColorRole::SECONDARY;
+		p_config.success_color_role = ColorRole(ColorRoleEnum::SECONDARY);
 		p_config.warning_color = Color(1, 0.87, 0.4);
-		p_config.warning_color_role = ColorRole::TERTIARY;
+		p_config.warning_color_role = ColorRole(ColorRoleEnum::TERTIARY);
 		p_config.error_color = Color(1, 0.47, 0.42);
-		p_config.error_color_role = ColorRole::ERROR;
+		p_config.error_color_role = ColorRole(ColorRoleEnum::ERROR);
 
 		if (!p_config.dark_theme) {
 			// Darken some colors to be readable on a light background.
@@ -524,9 +524,9 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 
 		// Only used when the Draw Extra Borders editor setting is enabled.
 		p_config.extra_border_color_1 = Color(0.5, 0.5, 0.5);
-		p_config.extra_border_color_1_role = ColorRole::OUTLINE;
+		p_config.extra_border_color_1_role = ColorRole(ColorRoleEnum::OUTLINE);
 		p_config.extra_border_color_2 = p_config.dark_theme ? Color(0.3, 0.3, 0.3) : Color(0.7, 0.7, 0.7);
-		p_config.extra_border_color_2_role = ColorRole::OUTLINE_VARIANT;
+		p_config.extra_border_color_2_role = ColorRole(ColorRoleEnum::OUTLINE_VARIANT);
 
 		p_theme->set_color("extra_border_color_1", EditorStringName(Editor), p_config.extra_border_color_1);
 		p_theme->set_color_role("extra_border_color_1_role", EditorStringName(Editor), p_config.extra_border_color_1_role);
@@ -535,28 +535,28 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 
 		// Font colors.
 		p_config.font_color = p_config.mono_color.lerp(p_config.base_color, 0.25);
-		p_config.font_color_role = ColorRole::TERTIARY;
+		p_config.font_color_role = ColorRole(ColorRoleEnum::TERTIARY);
 		p_config.font_focus_color = p_config.mono_color.lerp(p_config.base_color, 0.125);
-		p_config.font_focus_color_role = ColorRole::PRIMARY;
+		p_config.font_focus_color_role = ColorRole(ColorRoleEnum::PRIMARY);
 		p_config.font_hover_color = p_config.mono_color.lerp(p_config.base_color, 0.125);
-		p_config.font_hover_color_role = ColorRole::PRIMARY;
+		p_config.font_hover_color_role = ColorRole(ColorRoleEnum::PRIMARY);
 		p_config.font_pressed_color = p_config.accent_color;
 		p_config.font_pressed_color_role = p_config.accent_color_role;
 		
 		p_config.font_hover_pressed_color = p_config.font_hover_color.lerp(p_config.accent_color, 0.74);
-		p_config.font_hover_pressed_color_role = ColorRole::SECONDARY;
+		p_config.font_hover_pressed_color_role = ColorRole(ColorRoleEnum::SECONDARY);
 
 		p_config.font_disabled_color = Color(p_config.mono_color.r, p_config.mono_color.g, p_config.mono_color.b, 0.35);
-		p_config.font_disabled_color_role = ColorRole::ON_SURFACE_38;
+		p_config.font_disabled_color_role = ColorRole(ColorRoleEnum::ON_SURFACE_38);
 
 		p_config.font_readonly_color = Color(p_config.mono_color.r, p_config.mono_color.g, p_config.mono_color.b, 0.65);
-		p_config.font_disabled_color_role = ColorRole::ON_SURFACE_65;
+		p_config.font_disabled_color_role = ColorRole(ColorRoleEnum::ON_SURFACE_65);
 
 		p_config.font_placeholder_color = Color(p_config.mono_color.r, p_config.mono_color.g, p_config.mono_color.b, 0.6);
-		p_config.font_placeholder_color_role = ColorRole::ON_SURFACE_60;
+		p_config.font_placeholder_color_role = ColorRole(ColorRoleEnum::ON_SURFACE_60);
 
 		p_config.font_outline_color = Color(0, 0, 0, 0);
-		p_config.font_outline_color_role = ColorRole::STATIC_TRANSPARENT;
+		p_config.font_outline_color_role = ColorRole(ColorRoleEnum::STATIC_TRANSPARENT);
 
 		p_theme->set_color("font_color", EditorStringName(Editor), p_config.font_color);
 		p_theme->set_color_role("font_color_role", EditorStringName(Editor), p_config.font_color_role);
@@ -580,7 +580,7 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 		// Icon colors.
 
 		p_config.icon_normal_color = Color(1, 1, 1);
-		p_config.icon_normal_color_role = ColorRole::STATIC_ONE;
+		p_config.icon_normal_color_role = ColorRole(ColorRoleEnum::STATIC_ONE);
 		p_config.icon_focus_color = p_config.icon_normal_color * (p_config.dark_theme ? 1.15 : 1.45);
 		p_config.icon_focus_color.a = 1.0;
 		p_config.icon_focus_color_role = p_config.icon_normal_color_role;
@@ -592,7 +592,7 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 		p_config.icon_pressed_color.a = 1.0;
 		p_config.icon_pressed_color_role = p_config.accent_color_role;
 		p_config.icon_disabled_color = Color(p_config.icon_normal_color, 0.4);
-		p_config.icon_disabled_color_role = ColorRole::STATIC_ONE_40;
+		p_config.icon_disabled_color_role = ColorRole(ColorRoleEnum::STATIC_ONE_40);
 
 		p_theme->set_color("icon_normal_color", EditorStringName(Editor), p_config.icon_normal_color);
 		p_theme->set_color_role("icon_normal_color_role", EditorStringName(Editor), p_config.icon_normal_color_role);
@@ -608,15 +608,15 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 		// Additional GUI colors.
 
 		p_config.shadow_color = Color(0, 0, 0, p_config.dark_theme ? 0.3 : 0.1);
-		p_config.shadow_color_role = ColorRole::SHADOW;
+		p_config.shadow_color_role = ColorRole(ColorRoleEnum::SHADOW);
 		p_config.selection_color = p_config.accent_color * Color(1, 1, 1, 0.4);
-		p_config.selection_color_role = ColorRole::INVERSE_PRIMARY_38;
+		p_config.selection_color_role = ColorRole(ColorRoleEnum::INVERSE_PRIMARY_38);
 		p_config.disabled_border_color = p_config.mono_color.inverted().lerp(p_config.base_color, 0.7);
-		p_config.disabled_border_color_role = ColorRole::SECONDARY;
+		p_config.disabled_border_color_role = ColorRole(ColorRoleEnum::SECONDARY);
 		p_config.disabled_bg_color = p_config.mono_color.inverted().lerp(p_config.base_color, 0.9);
-		p_config.disabled_bg_color_role = ColorRole::SECONDARY_CONTAINER;
+		p_config.disabled_bg_color_role = ColorRole(ColorRoleEnum::SECONDARY_CONTAINER);
 		p_config.separator_color = Color(p_config.mono_color.r, p_config.mono_color.g, p_config.mono_color.b, 0.1);
-		p_config.separator_color_role = ColorRole::ON_SURFACE_10;
+		p_config.separator_color_role = ColorRole(ColorRoleEnum::ON_SURFACE_10);
 
 		p_theme->set_color("selection_color", EditorStringName(Editor), p_config.selection_color);
 		p_theme->set_color_role("selection_color_role", EditorStringName(Editor), p_config.selection_color_role);
@@ -630,28 +630,28 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 		// Additional editor colors.
 
 		p_theme->set_color("box_selection_fill_color", EditorStringName(Editor), p_config.accent_color * Color(1, 1, 1, 0.3));
-		p_theme->set_color_role("box_selection_stroke_color", EditorStringName(Editor), ColorRole::INVERSE_PRIMARY_60);
+		p_theme->set_color_role("box_selection_stroke_color", EditorStringName(Editor), ColorRole(ColorRoleEnum::INVERSE_PRIMARY_60));
 
 		p_theme->set_color("axis_x_color", EditorStringName(Editor), Color(0.96, 0.20, 0.32));
-		p_theme->set_color_role("axis_x_color_role", EditorStringName(Editor), ColorRole::PRIMARY);
+		p_theme->set_color_role("axis_x_color_role", EditorStringName(Editor), ColorRole(ColorRoleEnum::PRIMARY));
 		p_theme->set_color("axis_y_color", EditorStringName(Editor), Color(0.53, 0.84, 0.01));
-		p_theme->set_color_role("axis_y_color_role", EditorStringName(Editor), ColorRole::SECONDARY);
+		p_theme->set_color_role("axis_y_color_role", EditorStringName(Editor), ColorRole(ColorRoleEnum::SECONDARY));
 		p_theme->set_color("axis_z_color", EditorStringName(Editor), Color(0.16, 0.55, 0.96));
-		p_theme->set_color_role("axis_z_color_role", EditorStringName(Editor), ColorRole::TERTIARY);
+		p_theme->set_color_role("axis_z_color_role", EditorStringName(Editor), ColorRole(ColorRoleEnum::TERTIARY));
 		p_theme->set_color("axis_w_color", EditorStringName(Editor), Color(0.55, 0.55, 0.55));
-		p_theme->set_color_role("axis_w_color_role", EditorStringName(Editor), ColorRole::TERTIARY_CONTAINER);
+		p_theme->set_color_role("axis_w_color_role", EditorStringName(Editor), ColorRole(ColorRoleEnum::TERTIARY_CONTAINER));
 
 		const float prop_color_saturation = p_config.accent_color.get_s() * 0.75;
 		const float prop_color_value = p_config.accent_color.get_v();
 
 		p_theme->set_color("property_color_x", EditorStringName(Editor), Color().from_hsv(0.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value));
-		p_theme->set_color_role("property_color_x_role", EditorStringName(Editor), ColorRole::PRIMARY);
+		p_theme->set_color_role("property_color_x_role", EditorStringName(Editor), ColorRole(ColorRoleEnum::PRIMARY));
 		p_theme->set_color("property_color_y", EditorStringName(Editor), Color().from_hsv(1.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value));
-		p_theme->set_color_role("property_color_y_role", EditorStringName(Editor), ColorRole::SECONDARY);
+		p_theme->set_color_role("property_color_y_role", EditorStringName(Editor), ColorRole(ColorRoleEnum::SECONDARY));
 		p_theme->set_color("property_color_z", EditorStringName(Editor), Color().from_hsv(2.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value));
-		p_theme->set_color_role("property_color_z_role", EditorStringName(Editor), ColorRole::TERTIARY);
+		p_theme->set_color_role("property_color_z_role", EditorStringName(Editor), ColorRole(ColorRoleEnum::TERTIARY));
 		p_theme->set_color("property_color_w", EditorStringName(Editor), Color().from_hsv(1.5 / 3.0 + 0.05, prop_color_saturation, prop_color_value));
-		p_theme->set_color_role("property_color_w_role", EditorStringName(Editor), ColorRole::TERTIARY_CONTAINER);
+		p_theme->set_color_role("property_color_w_role", EditorStringName(Editor), ColorRole(ColorRoleEnum::TERTIARY_CONTAINER));
 		// Special colors for rendering methods.
 
 		p_theme->set_color("forward_plus_color", EditorStringName(Editor), Color::hex(0x5d8c3fff));
@@ -663,7 +663,7 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 		} else {
 			p_theme->set_color("highend_color", EditorStringName(Editor), Color::hex(0xad1128ff));
 		}
-		p_theme->set_color_role("highend_color_role", EditorStringName(Editor), ColorRole::ERROR);
+		p_theme->set_color_role("highend_color_role", EditorStringName(Editor), ColorRole(ColorRoleEnum::ERROR));
 	}
 
 	// Constants.
@@ -739,13 +739,13 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 
 			p_config.button_style_hover = p_config.button_style->duplicate();
 			p_config.button_style_hover->set_bg_color(p_config.mono_color * Color(1, 1, 1, 0.11));
-			p_config.button_style_hover->set_bg_color_role(ColorRole::ON_SURFACE_12);
+			p_config.button_style_hover->set_bg_color_role(ColorRole(ColorRoleEnum::ON_SURFACE_12));
 			if (p_config.draw_extra_borders) {
 				p_config.button_style_hover->set_border_color(p_config.extra_border_color_1);
 				p_config.button_style_hover->set_border_color_role(p_config.extra_border_color_1_role);
 			} else {
 				p_config.button_style_hover->set_border_color(p_config.mono_color * Color(1, 1, 1, 0.05));
-				p_config.button_style_hover->set_border_color_role(ColorRole::ON_SURFACE_08);
+				p_config.button_style_hover->set_border_color_role(ColorRole(ColorRoleEnum::ON_SURFACE_08));
 			}
 		}
 
@@ -830,7 +830,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_color("font_color", "TooltipLabel", p_config.font_hover_color);
 			p_theme->set_color_role("font_color_role", "TooltipLabel", p_config.font_hover_color_role);
 			p_theme->set_color("font_shadow_color", "TooltipLabel", Color(0, 0, 0, 0));
-			p_theme->set_color_role("font_shadow_color_role", "TooltipLabel", ColorRole::STATIC_TRANSPARENT);
+			p_theme->set_color_role("font_shadow_color_role", "TooltipLabel", ColorRole(ColorRoleEnum::STATIC_TRANSPARENT));
 
 			Ref<StyleBoxFlat> style_tooltip = p_config.popup_style->duplicate();
 			style_tooltip->set_shadow_size(0);
@@ -1243,7 +1243,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_constant("scrollbar_v_separation", "Tree", 1 * EDSCALE);
 
 			Color relationship_line_color = p_config.mono_color * Color(1, 1, 1, p_config.relationship_line_opacity);
-			ColorRole relationship_line_color_role = ColorRole::ON_SURFACE_65;
+			ColorRole relationship_line_color_role = ColorRole(ColorRoleEnum::ON_SURFACE_65);
 
 			p_theme->set_constant("draw_guides", "Tree", p_config.relationship_line_opacity < 0.01);
 			p_theme->set_color_role("guide_color_role", "Tree", guide_color_role);
@@ -1251,9 +1251,9 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 
 			int relationship_line_width = 1;
 			Color parent_line_color = p_config.mono_color * Color(1, 1, 1, CLAMP(p_config.relationship_line_opacity + 0.45, 0.0, 1.0));
-			ColorRole parent_line_color_role = ColorRole::ON_SURFACE_60;
+			ColorRole parent_line_color_role = ColorRole(ColorRoleEnum::ON_SURFACE_60);
 			Color children_line_color = p_config.mono_color * Color(1, 1, 1, CLAMP(p_config.relationship_line_opacity + 0.25, 0.0, 1.0));
-			ColorRole children_line_color_role = ColorRole::ON_SURFACE_38;
+			ColorRole children_line_color_role = ColorRole(ColorRoleEnum::ON_SURFACE_38);
 
 			p_theme->set_constant("draw_relationship_lines", "Tree", p_config.relationship_line_opacity >= 0.01);
 			p_theme->set_constant("relationship_line_width", "Tree", relationship_line_width);
@@ -1277,7 +1277,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 
 			// Ref<StyleBoxFlat> style_tree_hover = p_config.base_style->duplicate();
 			// style_tree_hover->set_bg_color(p_config.highlight_color * Color(1, 1, 1, 0.4));
-			// style_tree_hover->set_bg_color_role(ColorRole::INVERSE_PRIMARY_12);
+			// style_tree_hover->set_bg_color_role(ColorRole(ColorRoleEnum::INVERSE_PRIMARY_12));
 			// style_tree_hover->set_border_width_all(0);
 			// p_theme->set_stylebox("hover", "Tree", style_tree_hover);
 
@@ -1333,7 +1333,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 
 			Ref<StyleBoxFlat> style_itemlist_hover = style_tree_selected->duplicate();
 			style_itemlist_hover->set_bg_color(p_config.highlight_color * Color(1, 1, 1, 0.3));
-			style_itemlist_hover->set_bg_color_role(ColorRole::INVERSE_PRIMARY_16);
+			style_itemlist_hover->set_bg_color_role(ColorRole(ColorRoleEnum::INVERSE_PRIMARY_16));
 			style_itemlist_hover->set_border_width_all(0);
 
 			cur_theme_data.set_data_name("default_stylebox");
@@ -1362,7 +1362,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "ItemList", p_config.mono_color);
 			p_theme->set_color("font_outline_color", "ItemList", p_config.font_outline_color);
 
-			p_theme->set_color_role("guide_color_role", "ItemList", ColorRole::TERTIARY);
+			p_theme->set_color_role("guide_color_role", "ItemList", ColorRole(ColorRoleEnum::TERTIARY));
 			p_theme->set_color("guide_color", "ItemList", Color(1, 1, 1, 0));
 			p_theme->set_constant("v_separation", "ItemList", p_config.forced_even_separation * EDSCALE);
 			p_theme->set_constant("h_separation", "ItemList", (p_config.increased_margin + 2) * EDSCALE);
@@ -1398,7 +1398,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		style_tab_selected->set_border_width(SIDE_TOP, Math::round(2 * EDSCALE));
 		// Make the highlight line prominent, but not too prominent as to not be distracting.
 		Color tab_highlight = p_config.dark_color_2.lerp(p_config.accent_color, 0.75);
-		ColorRole tab_highlight_role = ColorRole::SECONDARY;
+		ColorRole tab_highlight_role = ColorRole(ColorRoleEnum::SECONDARY);
 		style_tab_selected->set_border_color(tab_highlight);
 		style_tab_selected->set_border_color_role(tab_highlight_role);
 		style_tab_selected->set_corner_radius_all(0);
@@ -1406,7 +1406,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		Ref<StyleBoxFlat> style_tab_hovered = style_tab_base->duplicate();
 
 		style_tab_hovered->set_bg_color(p_config.dark_color_1.lerp(p_config.base_color, 0.4));
-		style_tab_hovered->set_bg_color_role(ColorRole::PRIMARY);
+		style_tab_hovered->set_bg_color_role(ColorRole(ColorRoleEnum::PRIMARY));
 		// Hovered tab has a subtle highlight between normal and selected states.
 		style_tab_hovered->set_corner_radius_all(0);
 
@@ -1416,7 +1416,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		style_tab_unselected->set_bg_color_role(p_config.dark_color_1_role);
 		// Add some spacing between unselected tabs to make them easier to distinguish from each other
 		style_tab_unselected->set_border_color(Color(0, 0, 0, 0));
-		style_tab_unselected->set_border_color_role(ColorRole::STATIC_TRANSPARENT);
+		style_tab_unselected->set_border_color_role(ColorRole(ColorRoleEnum::STATIC_TRANSPARENT));
 
 		Ref<StyleBoxFlat> style_tab_disabled = style_tab_base->duplicate();
 		style_tab_disabled->set_expand_margin(SIDE_BOTTOM, 0);
@@ -1602,7 +1602,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		p_theme->set_color("selection_color", "TextEdit", p_config.selection_color);
 		p_theme->set_color_role("selection_color_role", "TextEdit", p_config.selection_color_role);
 		p_theme->set_color("background_color", "TextEdit", Color(0, 0, 0, 0));
-		p_theme->set_color_role("background_color_role", "TextEdit", ColorRole::STATIC_TRANSPARENT);
+		p_theme->set_color_role("background_color_role", "TextEdit", ColorRole(ColorRoleEnum::STATIC_TRANSPARENT));
 
 		p_theme->set_constant("line_spacing", "TextEdit", 4 * EDSCALE);
 		p_theme->set_constant("outline_size", "TextEdit", 0);
@@ -1681,14 +1681,14 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		// Use a different color for folder icons to make them easier to distinguish from files.
 		// On a light theme, the icon will be dark, so we need to lighten it before blending it with the accent color.
 		p_theme->set_color("folder_icon_color", "FileDialog", (p_config.dark_theme ? Color(1, 1, 1) : Color(4.25, 4.25, 4.25)).lerp(p_config.accent_color, 0.7));
-		p_theme->set_color_role("folder_icon_color_role", "FileDialog", ColorRole::STATIC_ONE);
+		p_theme->set_color_role("folder_icon_color_role", "FileDialog", ColorRole(ColorRoleEnum::STATIC_ONE));
 
 		cur_theme_data.set_data_name("file_icon_color");
 		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", Color(1, 1, 1));
 		p_theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "FileDialog", p_config.font_disabled_color);
 
 		cur_theme_data.set_data_name("file_icon_color_role");
-		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", ColorRole::STATIC_ONE);
+		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", ColorRole(ColorRoleEnum::STATIC_ONE));
 		p_theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "FileDialog", p_config.font_disabled_color_role);
 
 		// PopupDialog.
@@ -1862,7 +1862,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		p_theme->set_color("default_color", "RichTextLabel", p_config.font_color);
 		p_theme->set_color_role("default_color_role", "RichTextLabel", p_config.font_color_role);
 		p_theme->set_color("font_shadow_color", "RichTextLabel", Color(0, 0, 0, 0));
-		p_theme->set_color_role("font_shadow_color_role", "RichTextLabel", ColorRole::STATIC_TRANSPARENT);
+		p_theme->set_color_role("font_shadow_color_role", "RichTextLabel", ColorRole(ColorRoleEnum::STATIC_TRANSPARENT));
 		p_theme->set_color("font_outline_color", "RichTextLabel", p_config.font_outline_color);
 		p_theme->set_color_role("font_outline_color_role", "RichTextLabel", p_config.font_outline_color_role);
 		p_theme->set_color("selection_color", "RichTextLabel", p_config.selection_color);
@@ -1879,7 +1879,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		p_theme->set_color("font_color", "Label", p_config.font_color);
 		p_theme->set_color_role("font_color_role", "Label", p_config.font_color_role);
 		p_theme->set_color("font_shadow_color", "Label", Color(0, 0, 0, 0));
-		p_theme->set_color_role("font_shadow_color_role", "Label", ColorRole::STATIC_TRANSPARENT);
+		p_theme->set_color_role("font_shadow_color_role", "Label", ColorRole(ColorRoleEnum::STATIC_TRANSPARENT));
 		p_theme->set_color("font_outline_color", "Label", p_config.font_outline_color);
 		p_theme->set_color_role("font_outline_color_role", "Label", p_config.font_outline_color_role);
 
@@ -1908,25 +1908,25 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		// GraphEdit.
 
 		p_theme->set_stylebox("panel", "GraphEdit", p_config.tree_panel_style);
-		p_theme->set_stylebox("menu_panel", "GraphEdit", make_color_role_flat_stylebox(ColorRole::SECONDARY_38,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 4, 2, 4, 2, 3));
+		p_theme->set_stylebox("menu_panel", "GraphEdit", make_color_role_flat_stylebox(ColorRole(ColorRoleEnum::SECONDARY_38),StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 4, 2, 4, 2, 3));
 
 		float grid_base_brightness = p_config.dark_theme ? 1.0 : 0.0;
 		GraphEdit::GridPattern grid_pattern = (GraphEdit::GridPattern) int(EDITOR_GET("editors/visual_editors/grid_pattern"));
 		switch (grid_pattern) {
 			case GraphEdit::GRID_PATTERN_LINES:
 				p_theme->set_color("grid_major", "GraphEdit", Color(grid_base_brightness, grid_base_brightness, grid_base_brightness, 0.10));
-				p_theme->set_color_role("grid_major_role", "GraphEdit", ColorRole::ON_SURFACE_10);
+				p_theme->set_color_role("grid_major_role", "GraphEdit", ColorRole(ColorRoleEnum::ON_SURFACE_10));
 
 				p_theme->set_color("grid_minor", "GraphEdit", Color(grid_base_brightness, grid_base_brightness, grid_base_brightness, 0.05));
-				p_theme->set_color_role("grid_minor_role", "GraphEdit", ColorRole::ON_SURFACE_08);
+				p_theme->set_color_role("grid_minor_role", "GraphEdit", ColorRole(ColorRoleEnum::ON_SURFACE_08));
 
 				break;
 			case GraphEdit::GRID_PATTERN_DOTS:
 				p_theme->set_color("grid_major", "GraphEdit", Color(grid_base_brightness, grid_base_brightness, grid_base_brightness, 0.07));
-				p_theme->set_color_role("grid_major_role", "GraphEdit", ColorRole::ON_SURFACE_08);
+				p_theme->set_color_role("grid_major_role", "GraphEdit", ColorRole(ColorRoleEnum::ON_SURFACE_08));
 
 				p_theme->set_color("grid_minor", "GraphEdit", Color(grid_base_brightness, grid_base_brightness, grid_base_brightness, 0.07));
-				p_theme->set_color_role("grid_minor_role", "GraphEdit", ColorRole::ON_SURFACE_08);
+				p_theme->set_color_role("grid_minor_role", "GraphEdit", ColorRole(ColorRoleEnum::ON_SURFACE_08));
 				break;
 			default:
 				WARN_PRINT("Unknown grid pattern.");
@@ -1940,13 +1940,13 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		p_theme->set_color_role("selection_stroke_role", "GraphEdit", p_theme->get_color_role(SNAME("box_selection_stroke_color_role"), EditorStringName(Editor)));
 
 		p_theme->set_color("activity", "GraphEdit", p_config.dark_theme ? Color(1, 1, 1) : Color(0, 0, 0));
-		p_theme->set_color_role("activity_role", "GraphEdit", ColorRole::ON_SURFACE);
+		p_theme->set_color_role("activity_role", "GraphEdit", ColorRole(ColorRoleEnum::ON_SURFACE));
 
 		p_theme->set_color("connection_hover_tint_color", "GraphEdit", p_config.dark_theme ? Color(0, 0, 0, 0.3) : Color(1, 1, 1, 0.3));
-		p_theme->set_color_role("connection_hover_tint_color_role", "GraphEdit", ColorRole::SURFACE_38);
+		p_theme->set_color_role("connection_hover_tint_color_role", "GraphEdit", ColorRole(ColorRoleEnum::SURFACE_38));
 
 		p_theme->set_color("connection_valid_target_tint_color", "GraphEdit", p_config.dark_theme ? Color(1, 1, 1, 0.4) : Color(0, 0, 0, 0.4));
-		p_theme->set_color_role("connection_valid_target_tint_color_role", "GraphEdit", ColorRole::ON_SURFACE_38);
+		p_theme->set_color_role("connection_valid_target_tint_color_role", "GraphEdit", ColorRole(ColorRoleEnum::ON_SURFACE_38));
 
 		p_theme->set_color("connection_rim_color", "GraphEdit", p_config.tree_panel_style->get_bg_color());
 		p_theme->set_color_role("connection_rim_color_role", "GraphEdit", p_config.tree_panel_style->get_bg_color_role());
@@ -1971,15 +1971,15 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			Ref<StyleBoxFlat> style_minimap_node;
 			if (p_config.dark_theme) {
 
-				style_minimap_camera = make_color_role_flat_stylebox(ColorRole::ON_SURFACE_16,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0);
+				style_minimap_camera = make_color_role_flat_stylebox(ColorRole(ColorRoleEnum::ON_SURFACE_16),StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0);
 				style_minimap_camera->set_border_color(Color(0.65, 0.65, 0.65, 0.45));
-				style_minimap_camera->set_border_color_role(ColorRole::ON_SURFACE_60);
-				style_minimap_node = make_color_role_flat_stylebox(ColorRole::ON_SURFACE,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0);
+				style_minimap_camera->set_border_color_role(ColorRole(ColorRoleEnum::ON_SURFACE_60));
+				style_minimap_node = make_color_role_flat_stylebox(ColorRole(ColorRoleEnum::ON_SURFACE),StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0);
 			} else {
-				style_minimap_camera = make_color_role_flat_stylebox(ColorRole::SURFACE_16,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0);
+				style_minimap_camera = make_color_role_flat_stylebox(ColorRole(ColorRoleEnum::SURFACE_16),StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0);
 				style_minimap_camera->set_border_color(Color(0.38, 0.38, 0.38, 0.45));
-				style_minimap_camera->set_border_color_role(ColorRole::SURFACE_38);
-				style_minimap_node = make_color_role_flat_stylebox(ColorRole::ON_SURFACE,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0);
+				style_minimap_camera->set_border_color_role(ColorRole(ColorRoleEnum::SURFACE_38));
+				style_minimap_node = make_color_role_flat_stylebox(ColorRole(ColorRoleEnum::ON_SURFACE),StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0);
 			}
 			style_minimap_camera->set_border_width_all(1);
 			style_minimap_node->set_anti_aliased(false);
@@ -1987,7 +1987,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_stylebox("node", "GraphEditMinimap", style_minimap_node);
 
 			const Color minimap_resizer_color = p_config.dark_theme ? Color(1, 1, 1, 0.65) : Color(0, 0, 0, 0.65);
-			const ColorRole minimap_resizer_color_role = ColorRole::ON_SURFACE_65;
+			const ColorRole minimap_resizer_color_role = ColorRole(ColorRoleEnum::ON_SURFACE_65);
 			p_theme->set_icon("resizer", "GraphEditMinimap", p_theme->get_icon(SNAME("GuiResizerTopLeft"), EditorStringName(EditorIcons)));
 			p_theme->set_color("resizer_color", "GraphEditMinimap", minimap_resizer_color);
 			p_theme->set_color_role("resizer_color_role", "GraphEditMinimap", minimap_resizer_color_role);
@@ -2004,7 +2004,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			const Color gn_bg_color = p_config.dark_theme ? p_config.dark_color_3 : p_config.dark_color_1.lerp(p_config.mono_color, 0.09);
 			const ColorRole gn_bg_color_role = p_config.dark_color_2_role;
 			const Color gn_selected_border_color = p_config.dark_theme ? Color(1, 1, 1) : Color(0, 0, 0);
-			const ColorRole gn_selected_border_color_role = ColorRole::ON_SURFACE;
+			const ColorRole gn_selected_border_color_role = ColorRole(ColorRoleEnum::ON_SURFACE);
 			const Color gn_frame_bg = gn_bg_color.lerp(p_config.tree_panel_style->get_bg_color(), 0.3);
 			const ColorRole gn_frame_bg_role = p_config.dark_color_1_role;
 
@@ -2052,7 +2052,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			gn_titlebar_selected_style->set_expand_margin(SIDE_TOP, 2 * EDSCALE);
 
 			Color gn_decoration_color = p_config.dark_color_1.inverted();
-			ColorRole gn_decoration_color_role = ColorRole::ON_SECONDARY;
+			ColorRole gn_decoration_color_role = ColorRole(ColorRoleEnum::ON_SECONDARY);
 
 			// GraphElement.
 			cur_theme_data.set_data_name("panel");
@@ -2100,9 +2100,9 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_type_variation("GraphNodeTitleLabel", "Label");
 			p_theme->set_stylebox("normal", "GraphNodeTitleLabel", make_empty_stylebox(0, 0, 0, 0));
 			p_theme->set_color("font_color", "GraphNodeTitleLabel", p_config.dark_theme ? p_config.font_color : Color(1, 1, 1)); // Also use a bright font color for light themes.
-			p_theme->set_color_role("font_color_role", "GraphNodeTitleLabel", ColorRole::ON_SURFACE); // Also use a bright font color for light themes.
+			p_theme->set_color_role("font_color_role", "GraphNodeTitleLabel", ColorRole(ColorRoleEnum::ON_SURFACE)); // Also use a bright font color for light themes.
 			p_theme->set_color("font_shadow_color", "GraphNodeTitleLabel", Color(0, 0, 0, 0.35));
-			p_theme->set_color_role("font_shadow_color", "GraphNodeTitleLabel", ColorRole::SURFACE_38);
+			p_theme->set_color_role("font_shadow_color", "GraphNodeTitleLabel", ColorRole(ColorRoleEnum::SURFACE_38));
 			p_theme->set_constant("shadow_outline_size", "GraphNodeTitleLabel", 4);
 			p_theme->set_constant("shadow_offset_x", "GraphNodeTitleLabel", 0);
 			p_theme->set_constant("shadow_offset_y", "GraphNodeTitleLabel", 1);
@@ -2136,7 +2136,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		p_theme->set_icon("bg", "ColorPickerButton", p_theme->get_icon(SNAME("GuiMiniCheckerboard"), EditorStringName(EditorIcons)));
 
 		// ColorPresetButton.
-		p_theme->set_stylebox("preset_fg", "ColorPresetButton", make_color_role_flat_stylebox(ColorRole::ON_SURFACE,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 2, 2, 2, 2, 2));
+		p_theme->set_stylebox("preset_fg", "ColorPresetButton", make_color_role_flat_stylebox(ColorRole(ColorRoleEnum::ON_SURFACE),StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 2, 2, 2, 2, 2));
 		p_theme->set_icon("preset_bg", "ColorPresetButton", p_theme->get_icon(SNAME("GuiMiniCheckerboard"), EditorStringName(EditorIcons)));
 		p_theme->set_icon("overbright_indicator", "ColorPresetButton", p_theme->get_icon(SNAME("OverbrightIndicator"), EditorStringName(EditorIcons)));
 	}
@@ -2196,7 +2196,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		// Use a less opaque color to be less distracting for the 2D and 3D editor viewports.
 		Ref<StyleBoxFlat> style_widget_focus_viewport = p_config.button_style_focus->duplicate();
 		style_widget_focus_viewport->set_border_color(p_config.accent_color * Color(1, 1, 1, 0.5));
-		style_widget_focus_viewport->set_border_color_role(ColorRole::INVERSE_PRIMARY_60);
+		style_widget_focus_viewport->set_border_color_role(ColorRole(ColorRoleEnum::INVERSE_PRIMARY_60));
 		p_theme->set_stylebox("FocusViewport", EditorStringName(EditorStyles), style_widget_focus_viewport);
 
 		// This stylebox is used in 3d and 2d viewports (no borders).
@@ -2205,7 +2205,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_stylebox("Content", EditorStringName(EditorStyles), style_content_panel_vp);
 
 		// 2D/CanvasItem editor
-		Ref<StyleBoxFlat> style_canvas_editor_info = make_color_role_flat_stylebox(ColorRole::SURFACE_16, StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme);
+		Ref<StyleBoxFlat> style_canvas_editor_info = make_color_role_flat_stylebox(ColorRole(ColorRoleEnum::SURFACE_16), StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme);
 		style_canvas_editor_info->set_expand_margin_all(4 * EDSCALE);
 		p_theme->set_stylebox("CanvasItemInfoOverlay", EditorStringName(EditorStyles), style_canvas_editor_info);
 
@@ -2222,7 +2222,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		// even though it may not be immediately obvious at first.
 		Ref<StyleBoxFlat> toolbar_stylebox = memnew(StyleBoxFlat);
 		toolbar_stylebox->set_bg_color(p_config.accent_color * Color(1, 1, 1, 0.1));
-		toolbar_stylebox->set_bg_color_role(ColorRole::INVERSE_PRIMARY_10);
+		toolbar_stylebox->set_bg_color_role(ColorRole(ColorRoleEnum::INVERSE_PRIMARY_10));
 		toolbar_stylebox->set_anti_aliased(false);
 		// Add an underline to the StyleBox, but prevent its minimum vertical size from changing.
 		toolbar_stylebox->set_border_color(p_config.accent_color);
@@ -2245,7 +2245,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		// Main menu.
 		Ref<StyleBoxFlat> menu_transparent_style = p_config.button_style->duplicate();
 		menu_transparent_style->set_bg_color(Color(1, 1, 1, 0));
-		menu_transparent_style->set_bg_color_role(ColorRole::STATIC_TRANSPARENT);
+		menu_transparent_style->set_bg_color_role(ColorRole(ColorRoleEnum::STATIC_TRANSPARENT));
 		menu_transparent_style->set_border_width_all(0);
 		Ref<StyleBoxFlat> main_screen_button_transparent = menu_transparent_style->duplicate();
 		for (int i = 0; i < 4; i++) {
@@ -2281,7 +2281,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_stylebox("LaunchPadNormal", EditorStringName(EditorStyles), style_launch_pad);
 		Ref<StyleBoxFlat> style_launch_pad_movie = style_launch_pad->duplicate();
 		style_launch_pad_movie->set_bg_color(p_config.accent_color * Color(1, 1, 1, 0.1));
-		style_launch_pad_movie->set_bg_color_role(ColorRole::INVERSE_PRIMARY_10);
+		style_launch_pad_movie->set_bg_color_role(ColorRole(ColorRoleEnum::INVERSE_PRIMARY_10));
 		style_launch_pad_movie->set_border_color(p_config.accent_color);
 		style_launch_pad_movie->set_border_color_role(p_config.accent_color_role);
 		style_launch_pad_movie->set_border_width_all(Math::round(2 * EDSCALE));
@@ -2540,7 +2540,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		}
 
 		p_theme->set_color("sub_inspector_property_color", EditorStringName(Editor), p_config.dark_theme ? Color(1, 1, 1, 1) : Color(0, 0, 0, 1));
-		p_theme->set_color_role("sub_inspector_property_color", EditorStringName(Editor), ColorRole::ON_SURFACE);
+		p_theme->set_color_role("sub_inspector_property_color", EditorStringName(Editor), ColorRole(ColorRoleEnum::ON_SURFACE));
 
 		// EditorProperty.
 
@@ -2578,7 +2578,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 
 		Ref<StyleBoxFlat> style_property_group_note = p_config.base_style->duplicate();
 		Color property_group_note_color = p_config.accent_color;
-		ColorRole property_group_note_color_role = ColorRole::INVERSE_PRIMARY_10;
+		ColorRole property_group_note_color_role = ColorRole(ColorRoleEnum::INVERSE_PRIMARY_10);
 		property_group_note_color.a = 0.1;
 		style_property_group_note->set_bg_color(property_group_note_color);
 		style_property_group_note->set_bg_color_role(property_group_note_color_role);
@@ -2592,7 +2592,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_color_role("font_color_role", "EditorInspectorSection", inspector_section_color_role);
 
 		Color inspector_indent_color = p_config.accent_color;
-		ColorRole inspector_indent_color_role = ColorRole::INVERSE_PRIMARY_16;
+		ColorRole inspector_indent_color_role = ColorRole(ColorRoleEnum::INVERSE_PRIMARY_16);
 		inspector_indent_color.a = 0.2;
 
 		Ref<StyleBoxFlat> inspector_indent_style = make_color_role_flat_stylebox(inspector_indent_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 2.0 * EDSCALE, 0, 2.0 * EDSCALE, 0);
@@ -2651,13 +2651,13 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_color("text_color", "EditorHelp", p_config.font_color);
 		p_theme->set_color_role("text_color_role", "EditorHelp", p_config.font_color_role);
 		p_theme->set_color("comment_color", "EditorHelp", p_config.font_color * Color(1, 1, 1, 0.6));
-		p_theme->set_color_role("comment_color_role", "EditorHelp", ColorRole::TERTIARY_38);
+		p_theme->set_color_role("comment_color_role", "EditorHelp", ColorRole(ColorRoleEnum::TERTIARY_38));
 		p_theme->set_color("symbol_color", "EditorHelp", p_config.font_color * Color(1, 1, 1, 0.6));
-		p_theme->set_color_role("symbol_color_role", "EditorHelp", ColorRole::TERTIARY_38);
+		p_theme->set_color_role("symbol_color_role", "EditorHelp", ColorRole(ColorRoleEnum::TERTIARY_38));
 		p_theme->set_color("value_color", "EditorHelp", p_config.font_color * Color(1, 1, 1, 0.6));
-		p_theme->set_color_role("value_color_role", "EditorHelp", ColorRole::TERTIARY_38);
+		p_theme->set_color_role("value_color_role", "EditorHelp", ColorRole(ColorRoleEnum::TERTIARY_38));
 		p_theme->set_color("qualifier_color", "EditorHelp", p_config.font_color * Color(1, 1, 1, 0.8));
-		p_theme->set_color_role("qualifier_color_role", "EditorHelp", ColorRole::TERTIARY_38);
+		p_theme->set_color_role("qualifier_color_role", "EditorHelp", ColorRole(ColorRoleEnum::TERTIARY_38));
 		p_theme->set_color("type_color", "EditorHelp", p_config.accent_color.lerp(p_config.font_color, 0.5));
 		p_theme->set_color_role("type_color_role", "EditorHelp", p_config.accent_color_role);
 		p_theme->set_color("override_color", "EditorHelp", p_config.warning_color);
@@ -2687,7 +2687,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 	p_theme->set_stylebox("bg", "AssetLib", p_config.base_empty_style);
 	p_theme->set_stylebox("panel", "AssetLib", p_config.content_panel_style);
 	p_theme->set_color("status_color", "AssetLib", Color(0.5, 0.5, 0.5)); // FIXME: Use a defined color instead.
-	p_theme->set_color_role("status_color_role", "AssetLib", ColorRole::SECONDARY); // FIXME: Use a defined color instead.
+	p_theme->set_color_role("status_color_role", "AssetLib", ColorRole(ColorRoleEnum::SECONDARY)); // FIXME: Use a defined color instead.
 	p_theme->set_icon("dismiss", "AssetLib", p_theme->get_icon(SNAME("Close"), EditorStringName(EditorIcons)));
 
 	// Debugger.
@@ -2722,7 +2722,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 			p_theme->set_color("preview_picker_overlay_color", "ThemeEditor", Color(0.1, 0.1, 0.1, 0.25));
 
 			Color theme_preview_picker_bg_color = p_config.accent_color;
-			ColorRole theme_preview_picker_bg_color_role = ColorRole::INVERSE_PRIMARY_16;
+			ColorRole theme_preview_picker_bg_color_role = ColorRole(ColorRoleEnum::INVERSE_PRIMARY_16);
 			theme_preview_picker_bg_color.a = 0.2;
 
 			Ref<StyleBoxFlat> theme_preview_picker_sb = make_color_role_flat_stylebox(theme_preview_picker_bg_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0);
@@ -2761,7 +2761,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 			const ColorRole sm_bg_color_role = p_config.dark_color_2_role;
 
 
-			Ref<StyleBoxFlat> sm_node_style = make_color_role_flat_stylebox(ColorRole::TERTIARY, StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, sm_margin_side, 24 * EDSCALE, sm_margin_side, sm_margin_bottom, p_config.corner_radius);
+			Ref<StyleBoxFlat> sm_node_style = make_color_role_flat_stylebox(ColorRole(ColorRoleEnum::TERTIARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, sm_margin_side, 24 * EDSCALE, sm_margin_side, sm_margin_bottom, p_config.corner_radius);
 			sm_node_style->set_border_width_all(p_config.border_width);
 			sm_node_style->set_border_color(sm_bg_color);
 			sm_node_style->set_border_color_role(sm_bg_color_role);
@@ -2779,7 +2779,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 			sm_node_playing_style->set_border_color(p_config.warning_color);
 			sm_node_playing_style->set_border_color_role(p_config.warning_color_role);
 			sm_node_playing_style->set_shadow_color(p_config.warning_color * Color(1, 1, 1, 0.2));
-			sm_node_playing_style->set_shadow_color_role(ColorRole::TERTIARY_16);
+			sm_node_playing_style->set_shadow_color_role(ColorRole(ColorRoleEnum::TERTIARY_16));
 
 			p_theme->set_stylebox("node_frame", "GraphStateMachine", sm_node_style);
 			p_theme->set_stylebox("node_frame_selected", "GraphStateMachine", sm_node_selected_style);
@@ -2807,15 +2807,15 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 			p_theme->set_color("transition_disabled_color", "GraphStateMachine", p_config.font_color * Color(1, 1, 1, 0.2));
 			p_theme->set_color_role("transition_disabled_color_role", "GraphStateMachine", p_config.font_color_role);
 			p_theme->set_color("transition_icon_color", "GraphStateMachine", Color(1, 1, 1));
-			p_theme->set_color_role("transition_icon_color_role", "GraphStateMachine", ColorRole::STATIC_ONE);
+			p_theme->set_color_role("transition_icon_color_role", "GraphStateMachine", ColorRole(ColorRoleEnum::STATIC_ONE));
 			p_theme->set_color("transition_icon_disabled_color", "GraphStateMachine", Color(1, 1, 1, 0.2));
-			p_theme->set_color_role("transition_icon_disabled_color_role", "GraphStateMachine", ColorRole::STATIC_ONE_40);
+			p_theme->set_color_role("transition_icon_disabled_color_role", "GraphStateMachine", ColorRole(ColorRoleEnum::STATIC_ONE_40));
 			p_theme->set_color("highlight_color", "GraphStateMachine", p_config.accent_color);
 			p_theme->set_color_role("highlight_color_role", "GraphStateMachine", p_config.accent_color_role);
 			p_theme->set_color("highlight_disabled_color", "GraphStateMachine", p_config.accent_color * Color(1, 1, 1, 0.6));
-			p_theme->set_color_role("highlight_disabled_color_role", "GraphStateMachine", ColorRole::INVERSE_PRIMARY_60);
+			p_theme->set_color_role("highlight_disabled_color_role", "GraphStateMachine", ColorRole(ColorRoleEnum::INVERSE_PRIMARY_60));
 			p_theme->set_color("guideline_color", "GraphStateMachine", p_config.font_color * Color(1, 1, 1, 0.3));
-			p_theme->set_color_role("guideline_color_role", "GraphStateMachine", ColorRole::STATIC_ONE_40);
+			p_theme->set_color_role("guideline_color_role", "GraphStateMachine", ColorRole(ColorRoleEnum::STATIC_ONE_40));
 
 			p_theme->set_color("playback_color", "GraphStateMachine", p_config.font_color);
 			p_theme->set_color_role("playback_color_role", "GraphStateMachine", p_config.font_color_role);
