@@ -243,6 +243,20 @@ struct _EVCSort {
 	bool operator<(const _EVCSort &p_vcs) const { return order < p_vcs.order; }
 };
 
+Ref<ColorRole> make_color_role(ColorRoleEnum p_color_role_enum, Color &p_color_scale = Color(1, 1, 1, 1), bool p_inverted = false, float p_darkened_amount = 0.0, float p_lightened_amount = 0.0, float p_lerp_weight = 0.0, Ref<ColorRole> &p_lerp_color_role = Ref<ColorRole>(), Color &p_lerp_color = Color(1, 1, 1, 1), bool p_clamp = false) {
+	Ref<ColorRole> color_role(memnew(ColorRole));
+	color_role->set_color_role_enum(p_color_role_enum);
+	color_role->set_color_scale(p_color_scale);
+	color_role->set_inverted(p_inverted);
+	color_role->set_darkened_amount(p_darkened_amount);
+	color_role->set_lightened_amount(p_lightened_amount);
+	color_role->set_lerp_weight(p_lerp_weight);
+	color_role->set_lerp_color_role(p_lerp_color_role);
+	color_role->set_lerp_color(p_lerp_color);
+	color_role->set_clamp(p_clamp);
+	return color_role;
+}
+
 void EditorSettings::_get_property_list(List<PropertyInfo> *p_list) const {
 	_THREAD_SAFE_METHOD_
 
@@ -495,7 +509,9 @@ void EditorSettings::_load_defaults(Ref<ConfigFile> p_extra_config) {
 	EDITOR_SETTING(Variant::INT, PROPERTY_HINT_ENUM, "interface/theme/icon_and_font_color", 0, "Auto,Dark,Light")
 	EDITOR_SETTING(Variant::COLOR, PROPERTY_HINT_NONE, "interface/theme/default_colose_scheme_color", Color("#6750A4"), "")
 	EDITOR_SETTING(Variant::COLOR, PROPERTY_HINT_NONE, "interface/theme/base_color", Color(0.2, 0.23, 0.31), "")
+	EDITOR_SETTING(Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "interface/theme/base_color_role", make_color_role(ColorRoleEnum::SECONDARY), "ColorRole")
 	EDITOR_SETTING(Variant::COLOR, PROPERTY_HINT_NONE, "interface/theme/accent_color", Color(0.41, 0.61, 0.91), "")
+	EDITOR_SETTING(Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "interface/theme/accent_color_role", make_color_role(ColorRoleEnum::PRIMARY), "ColorRole")
 	EDITOR_SETTING(Variant::BOOL, PROPERTY_HINT_NONE, "interface/theme/use_system_accent_color", false, "")
 	EDITOR_SETTING(Variant::FLOAT, PROPERTY_HINT_RANGE, "interface/theme/contrast", 0.3, "-1,1,0.01")
 	EDITOR_SETTING(Variant::BOOL, PROPERTY_HINT_NONE, "interface/theme/draw_extra_borders", false, "")

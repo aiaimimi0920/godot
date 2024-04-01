@@ -28,7 +28,6 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-
 #ifndef COLOR_ROLE_H
 #define COLOR_ROLE_H
 
@@ -38,7 +37,6 @@
 class ColorScheme;
 
 static const String color_role_enum_hint = "Static Color, No Lerp, Primary Palette Key, Secondary Palette Key, Tertiary Palette Key, Neutral Palette Key, Neutral Variant Palette Key, Static Transparent, Static One, Background, On Background, Surface, Surface Dim, Surface Bright, Surface Container Lowest, Surface Container Low, Surface Container, Surface Container High, Surface Container Highest, On Surface, Surface Variant, On Surface Variant, Inverse Surface, Inverse On Surface, Outline, Outline Variant, Shadow, Scrim, Surface Tint, Primary, On Primary, Primary Container, On Primary Container, Inverse Primary, Secondary, On Secondary, Secondary Container, On Secondary Container, Tertiary, On Tertiary, Tertiary Container, On Tertiary Container, Error, On Error, Error Container, On Error Container, Primary Fixed, Primary Fixed Dim, On Primary Fixed, On Primary Fixed Variant, Secondary Fixed, Secondary Fixed Dim, On Secondary Fixed, On Secondary Fixed Variant, Tertiary Fixed, Tertiary Fixed Dim, On Tertiary Fixed, On Tertiary Fixed Variant";
-
 
 enum ColorRoleEnum {
 	STATIC_COLOR,
@@ -117,6 +115,8 @@ public:
 	Ref<ColorRole> lerp_color_role;
 	Color lerp_color = Color(1, 1, 1, 1);
 
+	bool clamp = false;
+
 	void _update_color();
 	bool dirty;
 
@@ -124,10 +124,9 @@ protected:
 	static void _bind_methods();
 
 public:
-
 	ColorRole();
 
-	ColorRole(ColorRoleEnum p_color_role_enum, Color &p_color_scale = Color(1, 1, 1, 1), bool p_inverted = false, float p_darkened_amount = 0.0, float p_lightened_amount = 0.0, float p_lerp_weight = 0.0, Ref<ColorRole> p_lerp_color_role = nullptr, Color &p_lerp_color = Color(1, 1, 1, 1));
+	ColorRole(ColorRoleEnum p_color_role_enum, Color &p_color_scale = Color(1, 1, 1, 1), bool p_inverted = false, float p_darkened_amount = 0.0, float p_lightened_amount = 0.0, float p_lerp_weight = 0.0, Ref<ColorRole> p_lerp_color_role = nullptr, Color &p_lerp_color = Color(1, 1, 1, 1), bool p_clamp = false);
 
 	Color get_color(const Ref<ColorScheme> &p_color_scheme);
 	~ColorRole();
@@ -155,6 +154,9 @@ public:
 
 	void set_lerp_color(const Color &p_lerp_color);
 	Color get_lerp_color() const;
+
+	void set_clamp(bool p_clamp);
+	bool get_clamp() const;
 };
 
 VARIANT_ENUM_CAST(ColorRoleEnum)

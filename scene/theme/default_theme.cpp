@@ -70,7 +70,7 @@ static Ref<StyleBoxFlat> make_flat_stylebox(Color p_color, float p_margin_left =
 	return style;
 }
 
-static Ref<ColorRole> make_color_role(ColorRoleEnum p_color_role_enum, Color &p_color_scale = Color(1, 1, 1, 1), bool p_inverted = false, float p_darkened_amount = 0.0, float p_lightened_amount = 0.0, float p_lerp_weight = 0.0, Ref<ColorRole> p_lerp_color_role = Ref<ColorRole>(), Color &p_lerp_color = Color(1, 1, 1, 1)) {
+static Ref<ColorRole> make_color_role(ColorRoleEnum p_color_role_enum, Color &p_color_scale = Color(1, 1, 1, 1), bool p_inverted = false, float p_darkened_amount = 0.0, float p_lightened_amount = 0.0, float p_lerp_weight = 0.0, Ref<ColorRole> p_lerp_color_role = Ref<ColorRole>(), Color &p_lerp_color = Color(1, 1, 1, 1), bool p_clamp = false) {
 	Ref<ColorRole> color_role(memnew(ColorRole));
 	color_role->set_color_role_enum(p_color_role_enum);
 	color_role->set_color_scale(p_color_scale);
@@ -80,6 +80,7 @@ static Ref<ColorRole> make_color_role(ColorRoleEnum p_color_role_enum, Color &p_
 	color_role->set_lerp_weight(p_lerp_weight);
 	color_role->set_lerp_color_role(p_lerp_color_role);
 	color_role->set_lerp_color(p_lerp_color);
+	color_role->set_clamp(p_clamp);
 	return color_role;
 }
 

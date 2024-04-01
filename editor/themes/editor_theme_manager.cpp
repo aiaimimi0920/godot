@@ -150,18 +150,19 @@ Ref<StyleBoxFlat> make_flat_stylebox(Color p_color, float p_margin_left = -1, fl
 	return style;
 }
 
-Ref<ColorRole> make_color_role(ColorRoleEnum p_color_role_enum, Color &p_color_scale = Color(1, 1, 1, 1), bool p_inverted = false, float p_darkened_amount = 0.0, float p_lightened_amount = 0.0, float p_lerp_weight = 0.0, Ref<ColorRole> &p_lerp_color_role = Ref<ColorRole>(), Color &p_lerp_color = Color(1, 1, 1, 1)) {
-	Ref<ColorRole> color_role(memnew(ColorRole));
-	color_role->set_color_role_enum(p_color_role_enum);
-	color_role->set_color_scale(p_color_scale);
-	color_role->set_inverted(p_inverted);
-	color_role->set_darkened_amount(p_darkened_amount);
-	color_role->set_lightened_amount(p_lightened_amount);
-	color_role->set_lerp_weight(p_lerp_weight);
-	color_role->set_lerp_color_role(p_lerp_color_role);
-	color_role->set_lerp_color(p_lerp_color);
-	return color_role;
-}
+ static Ref<ColorRole> make_color_role(ColorRoleEnum p_color_role_enum, Color &p_color_scale = Color(1, 1, 1, 1), bool p_inverted = false, float p_darkened_amount = 0.0, float p_lightened_amount = 0.0, float p_lerp_weight = 0.0, Ref<ColorRole> &p_lerp_color_role = Ref<ColorRole>(), Color &p_lerp_color = Color(1, 1, 1, 1), bool p_clamp = false) {
+ 	Ref<ColorRole> color_role(memnew(ColorRole));
+ 	color_role->set_color_role_enum(p_color_role_enum);
+ 	color_role->set_color_scale(p_color_scale);
+ 	color_role->set_inverted(p_inverted);
+ 	color_role->set_darkened_amount(p_darkened_amount);
+ 	color_role->set_lightened_amount(p_lightened_amount);
+ 	color_role->set_lerp_weight(p_lerp_weight);
+ 	color_role->set_lerp_color_role(p_lerp_color_role);
+ 	color_role->set_lerp_color(p_lerp_color);
+ 	color_role->set_clamp(p_clamp);
+ 	return color_role;
+ }
 
 
 static Ref<StyleBoxFlat> make_color_role_flat_stylebox(Ref<ColorRole>& p_color_role, StyleBoxFlat::ElevationLevel p_level = StyleBoxFlat::ElevationLevel::Elevation_Level_0, const Ref<ColorScheme> &default_color_scheme = Ref<ColorScheme>(), float p_margin_left = -1, float p_margin_top = -1, float p_margin_right = -1, float p_margin_bottom = -1, int p_corner_width = 0) {
@@ -464,9 +465,6 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 	// Colors.
 	{
 		// Base colors.
-		p_config.base_color_role = make_color_role(ColorRoleEnum::PRIMARY);
-		p_config.accent_color_role = make_color_role(ColorRoleEnum::INVERSE_PRIMARY);
-
 		p_theme->set_color("base_color", EditorStringName(Editor), p_config.base_color);
 		p_theme->set_color_role("base_color_role", EditorStringName(Editor), p_config.base_color_role);
 		p_theme->set_color("accent_color", EditorStringName(Editor), p_config.accent_color);
@@ -479,29 +477,47 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 		// Ensure base colors are in the 0..1 luminance range to avoid 8-bit integer overflow or text rendering issues.
 		// Some places in the editor use 8-bit integer colors.
 		p_config.dark_color_1 = p_config.base_color.lerp(Color(0, 0, 0, 1), p_config.contrast).clamp();
-		p_config.dark_color_1_role = make_color_role(ColorRoleEnum::SECONDARY);
+		p_config.dark_color_1_role = p_config.base_color_role->duplicate();
+		p_config.dark_color_1_role->set_lerp_color(Color(0, 0, 0, 1));
+		p_config.dark_color_1_role->set_lerp_weight(p_config.contrast);
+		p_config.dark_color_1_role->set_clamp(true);
+
 		p_config.dark_color_2 = p_config.base_color.lerp(Color(0, 0, 0, 1), p_config.contrast * 1.5).clamp();
-		p_config.dark_color_2_role = make_color_role(ColorRoleEnum::TERTIARY);
+		p_config.dark_color_2_role = p_config.base_color_role->duplicate();
+		p_config.dark_color_2_role->set_lerp_color(Color(0, 0, 0, 1));
+		p_config.dark_color_2_role->set_lerp_weight(p_config.contrast*1.5);
+		p_config.dark_color_2_role->set_clamp(true);
+
 		p_config.dark_color_3 = p_config.base_color.lerp(Color(0, 0, 0, 1), p_config.contrast * 2).clamp();
-		p_config.dark_color_3_role = make_color_role(ColorRoleEnum::TERTIARY);
+		p_config.dark_color_3_role = p_config.base_color_role->duplicate();
+		p_config.dark_color_3_role->set_lerp_color(Color(0, 0, 0, 1));
+		p_config.dark_color_3_role->set_lerp_weight(p_config.contrast*2);
+		p_config.dark_color_3_role->set_clamp(true);
 
 		p_config.contrast_color_1 = p_config.base_color.lerp(p_config.mono_color, MAX(p_config.contrast, p_config.default_contrast));
-		p_config.contrast_color_1_role = make_color_role(ColorRoleEnum::SECONDARY_CONTAINER);
+		p_config.contrast_color_1_role = p_config.base_color_role->duplicate();
+		p_config.contrast_color_1_role->set_lerp_color_role(p_config.mono_color_role);
+		p_config.contrast_color_1_role->set_lerp_weight(MAX(p_config.contrast, p_config.default_contrast));
+		
 		p_config.contrast_color_2 = p_config.base_color.lerp(p_config.mono_color, MAX(p_config.contrast * 1.5, p_config.default_contrast * 1.5));
-		p_config.contrast_color_2_role = make_color_role(ColorRoleEnum::TERTIARY_CONTAINER);
+		p_config.contrast_color_2_role = p_config.base_color_role->duplicate();
+		p_config.contrast_color_2_role->set_lerp_color_role(p_config.mono_color_role);
+		p_config.contrast_color_2_role->set_lerp_weight(MAX(p_config.contrast*1.5, p_config.default_contrast*1.5));
 
 		p_config.highlight_color = Color(p_config.accent_color.r, p_config.accent_color.g, p_config.accent_color.b, 0.275);
-		p_config.highlight_color_role = make_color_role(p_config.accent_color_role->get_color_role_enum(), Color(1,1,1,0.275));
-		
+		p_config.highlight_color_role = p_config.accent_color_role->duplicate();
+		p_config.highlight_color_role->set_color_scale(Color(1,1,1,0.275));
+
 		p_config.highlight_disabled_color = p_config.highlight_color.lerp(p_config.dark_theme ? Color(0, 0, 0) : Color(1, 1, 1), 0.5);
-		// TODO:
-		// p_config.highlight_disabled_color_role = make_color_role(p_config.highlight_color_role->get_color_role_enum(), p_config.highlight_color_role->get_color_scale(), p_config.highlight_color_role->get_inverted(), p_config.highlight_color_role->get_darkened_amount(),p_config.highlight_color_role->get_lightened_amount(), 0.5, make_color_role(ColorRoleEnum::SURFACE));
-		p_config.highlight_disabled_color_role = make_color_role(ColorRoleEnum::SECONDARY);
+		p_config.highlight_disabled_color_role = p_config.highlight_color_role->duplicate();
+		Ref<ColorRole> surface_color_role = make_color_role(ColorRoleEnum::SURFACE);
+		p_config.highlight_disabled_color_role->set_lerp_color_role(surface_color_role);
+		p_config.highlight_disabled_color_role->set_lerp_weight(0.5);
 
 		p_config.success_color = Color(0.45, 0.95, 0.5);
-		p_config.success_color_role = make_color_role(ColorRoleEnum::SECONDARY);
+		p_config.success_color_role = make_color_role(ColorRoleEnum::STATIC_COLOR);
 		p_config.warning_color = Color(1, 0.87, 0.4);
-		p_config.warning_color_role = make_color_role(ColorRoleEnum::TERTIARY);
+		p_config.warning_color_role = make_color_role(ColorRoleEnum::STATIC_COLOR);
 		p_config.error_color = Color(1, 0.47, 0.42);
 		p_config.error_color_role = make_color_role(ColorRoleEnum::ERROR);
 
@@ -548,25 +564,41 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 
 		// Font colors.
 		p_config.font_color = p_config.mono_color.lerp(p_config.base_color, 0.25);
-		p_config.font_color_role = make_color_role(ColorRoleEnum::TERTIARY);
+		p_config.font_color_role = p_config.mono_color_role->duplicate();
+		p_config.font_color_role->set_lerp_color_role(p_config.base_color_role);
+		p_config.font_color_role->set_lerp_weight(0.25);
+
 		p_config.font_focus_color = p_config.mono_color.lerp(p_config.base_color, 0.125);
-		p_config.font_focus_color_role = make_color_role(ColorRoleEnum::PRIMARY);
+		p_config.font_focus_color_role = p_config.mono_color_role->duplicate();
+		p_config.font_focus_color_role->set_lerp_color_role(p_config.base_color_role);
+		p_config.font_focus_color_role->set_lerp_weight(0.125);
+
 		p_config.font_hover_color = p_config.mono_color.lerp(p_config.base_color, 0.125);
-		p_config.font_hover_color_role = make_color_role(ColorRoleEnum::PRIMARY);
+		p_config.font_hover_color_role = p_config.mono_color_role->duplicate();
+		p_config.font_hover_color_role->set_lerp_color_role(p_config.base_color_role);
+		p_config.font_hover_color_role->set_lerp_weight(0.125);
+
 		p_config.font_pressed_color = p_config.accent_color;
 		p_config.font_pressed_color_role = p_config.accent_color_role;
 		
 		p_config.font_hover_pressed_color = p_config.font_hover_color.lerp(p_config.accent_color, 0.74);
-		p_config.font_hover_pressed_color_role = make_color_role(ColorRoleEnum::SECONDARY);
+		p_config.font_hover_pressed_color_role = p_config.font_hover_color_role->duplicate();
+		p_config.font_hover_pressed_color_role->set_lerp_color_role(p_config.accent_color_role);
+		p_config.font_hover_pressed_color_role->set_lerp_weight(0.74);
+
 
 		p_config.font_disabled_color = Color(p_config.mono_color.r, p_config.mono_color.g, p_config.mono_color.b, 0.35);
-		p_config.font_disabled_color_role = make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.35));
+		p_config.font_disabled_color_role = p_config.mono_color_role->duplicate();
+		p_config.font_disabled_color_role->set_color_scale(Color(1,1,1,0.35));
+
 
 		p_config.font_readonly_color = Color(p_config.mono_color.r, p_config.mono_color.g, p_config.mono_color.b, 0.65);
-		p_config.font_disabled_color_role = make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.65));
+		p_config.font_readonly_color_role = p_config.mono_color_role->duplicate();
+		p_config.font_readonly_color_role->set_color_scale(Color(1,1,1,0.65));
 
 		p_config.font_placeholder_color = Color(p_config.mono_color.r, p_config.mono_color.g, p_config.mono_color.b, 0.6);
-		p_config.font_placeholder_color_role = make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.6));
+		p_config.font_placeholder_color_role = p_config.mono_color_role->duplicate();
+		p_config.font_placeholder_color_role->set_color_scale(Color(1,1,1,0.6));
 
 		p_config.font_outline_color = Color(0, 0, 0, 0);
 		p_config.font_outline_color_role = make_color_role(ColorRoleEnum::STATIC_TRANSPARENT);
@@ -594,18 +626,34 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 
 		p_config.icon_normal_color = Color(1, 1, 1);
 		p_config.icon_normal_color_role = make_color_role(ColorRoleEnum::STATIC_ONE);
+
 		p_config.icon_focus_color = p_config.icon_normal_color * (p_config.dark_theme ? 1.15 : 1.45);
 		p_config.icon_focus_color.a = 1.0;
-		p_config.icon_focus_color_role = p_config.icon_normal_color_role;
+
+		p_config.icon_focus_color_role = p_config.icon_normal_color_role->duplicate();
+		if(p_config.default_color_scheme->is_dark()){
+			p_config.icon_focus_color_role->set_color_scale(Color(1.15,1.15,1.15,1));
+		}else{
+			p_config.icon_focus_color_role->set_color_scale(Color(1.45,1.45,1.45,1));
+		}
+	
 		p_config.icon_hover_color = p_config.icon_focus_color;
-		p_config.icon_hover_color_role = p_config.icon_focus_color_role;
+		p_config.icon_hover_color_role = p_config.icon_focus_color_role->duplicate();
 		// Make the pressed icon color overbright because icons are not completely white on a dark theme.
 		// On a light theme, icons are dark, so we need to modulate them with an even brighter color.
 		p_config.icon_pressed_color = p_config.accent_color * (p_config.dark_theme ? 1.15 : 3.5);
 		p_config.icon_pressed_color.a = 1.0;
-		p_config.icon_pressed_color_role = p_config.accent_color_role;
+
+		p_config.icon_pressed_color_role = p_config.accent_color_role->duplicate();
+		if(p_config.default_color_scheme->is_dark()){
+			p_config.icon_pressed_color_role->set_color_scale(Color(1.15,1.15,1.15,1));
+		}else{
+			p_config.icon_pressed_color_role->set_color_scale(Color(3.5,3.5,3.5,1));
+		}
+
 		p_config.icon_disabled_color = Color(p_config.icon_normal_color, 0.4);
-		p_config.icon_disabled_color_role = make_color_role(ColorRoleEnum::STATIC_ONE, Color(1, 1, 1, 0.4));
+		p_config.icon_disabled_color_role = p_config.icon_normal_color_role->duplicate();
+		p_config.icon_disabled_color_role->set_color_scale(Color(1,1,1,0.4));
 
 		p_theme->set_color("icon_normal_color", EditorStringName(Editor), p_config.icon_normal_color);
 		p_theme->set_color_role("icon_normal_color_role", EditorStringName(Editor), p_config.icon_normal_color_role);
@@ -623,13 +671,25 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 		p_config.shadow_color = Color(0, 0, 0, p_config.dark_theme ? 0.3 : 0.1);
 		p_config.shadow_color_role = make_color_role(ColorRoleEnum::SHADOW);
 		p_config.selection_color = p_config.accent_color * Color(1, 1, 1, 0.4);
-		p_config.selection_color_role = make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(1, 1, 1, 0.4));
+		p_config.selection_color_role = p_config.accent_color_role->duplicate();
+		p_config.selection_color_role->set_color_scale(Color(1,1,1,0.4));
+
 		p_config.disabled_border_color = p_config.mono_color.inverted().lerp(p_config.base_color, 0.7);
-		p_config.disabled_border_color_role = make_color_role(ColorRoleEnum::SECONDARY);
+		p_config.disabled_border_color_role = p_config.mono_color_role->duplicate();
+		p_config.disabled_border_color_role->set_inverted(true);
+		p_config.disabled_border_color_role->set_lerp_color_role(p_config.base_color_role);
+		p_config.disabled_border_color_role->set_lerp_weight(0.7);
+
 		p_config.disabled_bg_color = p_config.mono_color.inverted().lerp(p_config.base_color, 0.9);
-		p_config.disabled_bg_color_role = make_color_role(ColorRoleEnum::SECONDARY_CONTAINER);
+		p_config.disabled_bg_color_role = p_config.mono_color_role->duplicate();
+		p_config.disabled_bg_color_role->set_inverted(true);
+		p_config.disabled_bg_color_role->set_lerp_color_role(p_config.base_color_role);
+		p_config.disabled_bg_color_role->set_lerp_weight(0.9);
+
+
 		p_config.separator_color = Color(p_config.mono_color.r, p_config.mono_color.g, p_config.mono_color.b, 0.1);
-		p_config.separator_color_role = make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.1));
+		p_config.separator_color_role = p_config.mono_color_role->duplicate();
+		p_config.separator_color_role->set_color_scale(Color(1,1,1,0.1));
 
 		p_theme->set_color("selection_color", EditorStringName(Editor), p_config.selection_color);
 		p_theme->set_color_role("selection_color_role", EditorStringName(Editor), p_config.selection_color_role);
@@ -643,29 +703,35 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 		// Additional editor colors.
 
 		p_theme->set_color("box_selection_fill_color", EditorStringName(Editor), p_config.accent_color * Color(1, 1, 1, 0.3));
-		
-		p_theme->set_color_role("box_selection_stroke_color", EditorStringName(Editor), make_color_role(p_config.accent_color_role->get_color_role_enum(), Color(1, 1, 1, 0.3)));
+		Ref<ColorRole> box_selection_fill_color_role = p_config.accent_color_role->duplicate();
+		box_selection_fill_color_role->set_color_scale(Color(1,1,1,0.3));
+		p_theme->set_color_role("box_selection_fill_color_role", EditorStringName(Editor), box_selection_fill_color_role);
+
+		p_theme->set_color("box_selection_stroke_color", EditorStringName(Editor), p_config.accent_color * Color(1, 1, 1, 0.8));
+		Ref<ColorRole> box_selection_stroke_color_role = p_config.accent_color_role->duplicate();
+		box_selection_stroke_color_role->set_color_scale(Color(1,1,1,0.8));
+		p_theme->set_color_role("box_selection_stroke_color_role", EditorStringName(Editor), box_selection_stroke_color_role);
 
 		p_theme->set_color("axis_x_color", EditorStringName(Editor), Color(0.96, 0.20, 0.32));
-		p_theme->set_color_role("axis_x_color_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::PRIMARY));
+		p_theme->set_color_role("axis_x_color_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::STATIC_COLOR));
 		p_theme->set_color("axis_y_color", EditorStringName(Editor), Color(0.53, 0.84, 0.01));
-		p_theme->set_color_role("axis_y_color_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::SECONDARY));
+		p_theme->set_color_role("axis_y_color_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::STATIC_COLOR));
 		p_theme->set_color("axis_z_color", EditorStringName(Editor), Color(0.16, 0.55, 0.96));
-		p_theme->set_color_role("axis_z_color_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::TERTIARY));
+		p_theme->set_color_role("axis_z_color_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::STATIC_COLOR));
 		p_theme->set_color("axis_w_color", EditorStringName(Editor), Color(0.55, 0.55, 0.55));
-		p_theme->set_color_role("axis_w_color_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::TERTIARY_CONTAINER));
+		p_theme->set_color_role("axis_w_color_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::STATIC_COLOR));
 
 		const float prop_color_saturation = p_config.accent_color.get_s() * 0.75;
 		const float prop_color_value = p_config.accent_color.get_v();
 
 		p_theme->set_color("property_color_x", EditorStringName(Editor), Color().from_hsv(0.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value));
-		p_theme->set_color_role("property_color_x_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::PRIMARY));
+		p_theme->set_color_role("property_color_x_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::STATIC_COLOR));
 		p_theme->set_color("property_color_y", EditorStringName(Editor), Color().from_hsv(1.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value));
-		p_theme->set_color_role("property_color_y_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::SECONDARY));
+		p_theme->set_color_role("property_color_y_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::STATIC_COLOR));
 		p_theme->set_color("property_color_z", EditorStringName(Editor), Color().from_hsv(2.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value));
-		p_theme->set_color_role("property_color_z_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::TERTIARY));
+		p_theme->set_color_role("property_color_z_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::STATIC_COLOR));
 		p_theme->set_color("property_color_w", EditorStringName(Editor), Color().from_hsv(1.5 / 3.0 + 0.05, prop_color_saturation, prop_color_value));
-		p_theme->set_color_role("property_color_w_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::TERTIARY_CONTAINER));
+		p_theme->set_color_role("property_color_w_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::STATIC_COLOR));
 		// Special colors for rendering methods.
 
 		p_theme->set_color("forward_plus_color", EditorStringName(Editor), Color::hex(0x5d8c3fff));
@@ -677,7 +743,7 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 		} else {
 			p_theme->set_color("highend_color", EditorStringName(Editor), Color::hex(0xad1128ff));
 		}
-		p_theme->set_color_role("highend_color_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::ERROR));
+		p_theme->set_color_role("highend_color_role", EditorStringName(Editor), make_color_role(ColorRoleEnum::STATIC_COLOR));
 	}
 
 	// Constants.
@@ -749,17 +815,24 @@ void EditorThemeManager::_create_shared_styles(const Ref<EditorTheme> &p_theme, 
 
 			p_config.button_style_pressed = p_config.button_style->duplicate();
 			p_config.button_style_pressed->set_bg_color(p_config.dark_color_1.darkened(0.125));
-			p_config.button_style_pressed->set_bg_color_role(p_config.dark_color_1_role);
+			Ref<ColorRole> button_style_pressed_color_role = p_config.dark_color_1_role->duplicate();
+			button_style_pressed_color_role->set_darkened_amount(0.125);
+			p_config.button_style_pressed->set_bg_color_role(button_style_pressed_color_role);
 
 			p_config.button_style_hover = p_config.button_style->duplicate();
 			p_config.button_style_hover->set_bg_color(p_config.mono_color * Color(1, 1, 1, 0.11));
-			p_config.button_style_hover->set_bg_color_role(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.11)));
+			Ref<ColorRole> button_style_hover_color_role = p_config.mono_color_role->duplicate();
+			button_style_hover_color_role->set_color_scale(Color(1, 1, 1, 0.11));
+			p_config.button_style_hover->set_bg_color_role(button_style_hover_color_role);
+
 			if (p_config.draw_extra_borders) {
 				p_config.button_style_hover->set_border_color(p_config.extra_border_color_1);
 				p_config.button_style_hover->set_border_color_role(p_config.extra_border_color_1_role);
 			} else {
 				p_config.button_style_hover->set_border_color(p_config.mono_color * Color(1, 1, 1, 0.05));
-				p_config.button_style_hover->set_border_color_role(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.5)));
+				Ref<ColorRole> button_style_hover_border_color_role = p_config.mono_color_role->duplicate();
+				button_style_hover_border_color_role->set_color_scale(Color(1, 1, 1, 0.05));
+				p_config.button_style_hover->set_border_color_role(button_style_hover_border_color_role);
 			}
 		}
 
@@ -850,7 +923,10 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			style_tooltip->set_shadow_size(0);
 			style_tooltip->set_content_margin_all(p_config.base_margin * EDSCALE * 0.5);
 			style_tooltip->set_bg_color(p_config.dark_color_3 * Color(0.8, 0.8, 0.8, 0.9));
-			style_tooltip->set_bg_color_role(p_config.dark_color_3_role);
+
+			Ref<ColorRole> style_tooltip_dark_color_3_role = p_config.dark_color_3_role->duplicate();
+			style_tooltip_dark_color_3_role->set_color_scale(Color(0.8, 0.8, 0.8, 0.9));
+			style_tooltip->set_bg_color_role(style_tooltip_dark_color_3_role);
 			style_tooltip->set_border_width_all(0);
 			p_theme->set_stylebox("panel", "TooltipPanel", style_tooltip);
 		}
@@ -1191,8 +1267,9 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		Ref<StyleBoxFlat> style_tree_selected = style_tree_focus->duplicate();
 
 		const Color guide_color = p_config.mono_color * Color(1, 1, 1, 0.05);
-		const Ref<ColorRole> guide_color_role = p_config.mono_color_role;
 
+		Ref<ColorRole> guide_color_role = p_config.mono_color_role->duplicate();
+		guide_color_role->set_color_scale(Color(1, 1, 1, 0.05));
 		// Tree.
 		{
 			p_theme->set_icon("checked", "Tree", p_theme->get_icon(SNAME("GuiChecked"), EditorStringName(EditorIcons)));
@@ -1257,7 +1334,8 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			p_theme->set_constant("scrollbar_v_separation", "Tree", 1 * EDSCALE);
 
 			Color relationship_line_color = p_config.mono_color * Color(1, 1, 1, p_config.relationship_line_opacity);
-			Ref<ColorRole> relationship_line_color_role = make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, p_config.relationship_line_opacity));
+			Ref<ColorRole> relationship_line_color_role = p_config.mono_color_role->duplicate();
+			relationship_line_color_role->set_color_scale(Color(1, 1, 1, p_config.relationship_line_opacity));
 			
 			p_theme->set_constant("draw_guides", "Tree", p_config.relationship_line_opacity < 0.01);
 			p_theme->set_color_role("guide_color_role", "Tree", guide_color_role);
@@ -1265,11 +1343,13 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 
 			int relationship_line_width = 1;
 			Color parent_line_color = p_config.mono_color * Color(1, 1, 1, CLAMP(p_config.relationship_line_opacity + 0.45, 0.0, 1.0));
-			Ref<ColorRole> parent_line_color_role = make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, CLAMP(p_config.relationship_line_opacity + 0.45, 0.0, 1.0)));
-			
+			Ref<ColorRole> parent_line_color_role = p_config.mono_color_role->duplicate();
+			parent_line_color_role->set_color_scale(Color(1, 1, 1, CLAMP(p_config.relationship_line_opacity + 0.45, 0.0, 1.0)));
+
 			Color children_line_color = p_config.mono_color * Color(1, 1, 1, CLAMP(p_config.relationship_line_opacity + 0.25, 0.0, 1.0));
-			Ref<ColorRole> children_line_color_role = make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, CLAMP(p_config.relationship_line_opacity + 0.25, 0.0, 1.0)));
-		
+			Ref<ColorRole> children_line_color_role = p_config.mono_color_role->duplicate();
+			children_line_color_role->set_color_scale(Color(1, 1, 1, CLAMP(p_config.relationship_line_opacity + 0.25, 0.0, 1.0)));
+
 			p_theme->set_constant("draw_relationship_lines", "Tree", p_config.relationship_line_opacity >= 0.01);
 			p_theme->set_constant("relationship_line_width", "Tree", relationship_line_width);
 			p_theme->set_constant("parent_hl_line_width", "Tree", relationship_line_width * 2);
@@ -1348,7 +1428,9 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 
 			Ref<StyleBoxFlat> style_itemlist_hover = style_tree_selected->duplicate();
 			style_itemlist_hover->set_bg_color(p_config.highlight_color * Color(1, 1, 1, 0.3));
-			style_itemlist_hover->set_bg_color_role(make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(1, 1, 1, 0.3)));
+			Ref<ColorRole> style_itemlist_hover_highlight_color_role = p_config.highlight_color_role->duplicate();
+			style_itemlist_hover_highlight_color_role->set_color_scale(style_itemlist_hover_highlight_color_role->get_color_scale()*Color(1, 1, 1, 0.3));
+			style_itemlist_hover->set_bg_color_role(style_itemlist_hover_highlight_color_role);
 			style_itemlist_hover->set_border_width_all(0);
 
 			cur_theme_data.set_data_name("default_stylebox");
@@ -1413,7 +1495,9 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		style_tab_selected->set_border_width(SIDE_TOP, Math::round(2 * EDSCALE));
 		// Make the highlight line prominent, but not too prominent as to not be distracting.
 		Color tab_highlight = p_config.dark_color_2.lerp(p_config.accent_color, 0.75);
-		Ref<ColorRole> tab_highlight_role = make_color_role(ColorRoleEnum::SECONDARY);
+		Ref<ColorRole> tab_highlight_role = p_config.dark_color_2_role->duplicate();
+		tab_highlight_role->set_lerp_color_role(p_config.accent_color_role);
+		tab_highlight_role->set_lerp_weight(0.75);
 		style_tab_selected->set_border_color(tab_highlight);
 		style_tab_selected->set_border_color_role(tab_highlight_role);
 		style_tab_selected->set_corner_radius_all(0);
@@ -1421,7 +1505,10 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		Ref<StyleBoxFlat> style_tab_hovered = style_tab_base->duplicate();
 
 		style_tab_hovered->set_bg_color(p_config.dark_color_1.lerp(p_config.base_color, 0.4));
-		style_tab_hovered->set_bg_color_role(make_color_role(ColorRoleEnum::PRIMARY));
+		Ref<ColorRole> style_tab_hovered_role = p_config.dark_color_1_role->duplicate();
+		style_tab_hovered_role->set_lerp_color_role(p_config.base_color_role);
+		style_tab_hovered_role->set_lerp_weight(0.4);
+		style_tab_hovered->set_bg_color_role(style_tab_hovered_role);
 		// Hovered tab has a subtle highlight between normal and selected states.
 		style_tab_hovered->set_corner_radius_all(0);
 
@@ -1696,7 +1783,7 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		// Use a different color for folder icons to make them easier to distinguish from files.
 		// On a light theme, the icon will be dark, so we need to lighten it before blending it with the accent color.
 		p_theme->set_color("folder_icon_color", "FileDialog", (p_config.dark_theme ? Color(1, 1, 1) : Color(4.25, 4.25, 4.25)).lerp(p_config.accent_color, 0.7));
-		p_theme->set_color_role("folder_icon_color_role", "FileDialog", make_color_role(ColorRoleEnum::STATIC_ONE));
+		p_theme->set_color_role("folder_icon_color_role", "FileDialog", make_color_role(ColorRoleEnum::STATIC_COLOR));
 
 		cur_theme_data.set_data_name("file_icon_color");
 		p_theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", Color(1, 1, 1));
@@ -1923,7 +2010,9 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 		// GraphEdit.
 
 		p_theme->set_stylebox("panel", "GraphEdit", p_config.tree_panel_style);
-		p_theme->set_stylebox("menu_panel", "GraphEdit", make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SECONDARY, Color(1,1,1,0.5)),StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 4, 2, 4, 2, 3));
+		Ref<ColorRole> graph_edit_menu_panel = p_config.dark_color_1_role->duplicate();
+		graph_edit_menu_panel->set_color_scale(graph_edit_menu_panel->get_color_scale()*Color(1,1,1,0.6));
+		p_theme->set_stylebox("menu_panel", "GraphEdit", make_color_role_flat_stylebox(graph_edit_menu_panel,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 4, 2, 4, 2, 3));
 
 		float grid_base_brightness = p_config.dark_theme ? 1.0 : 0.0;
 		GraphEdit::GridPattern grid_pattern = (GraphEdit::GridPattern) int(EDITOR_GET("editors/visual_editors/grid_pattern"));
@@ -1931,8 +2020,6 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			case GraphEdit::GRID_PATTERN_LINES:
 				p_theme->set_color("grid_major", "GraphEdit", Color(grid_base_brightness, grid_base_brightness, grid_base_brightness, 0.10));
 				p_theme->set_color_role("grid_major_role", "GraphEdit", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.1)));
-
-				
 
 				p_theme->set_color("grid_minor", "GraphEdit", Color(grid_base_brightness, grid_base_brightness, grid_base_brightness, 0.05));
 				p_theme->set_color_role("grid_minor_role", "GraphEdit", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.05)));
@@ -1987,16 +2074,13 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			Ref<StyleBoxFlat> style_minimap_camera;
 			Ref<StyleBoxFlat> style_minimap_node;
 			if (p_config.dark_theme) {
-
-				style_minimap_camera = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(0, 0, 0, 0.16)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0);
+				style_minimap_camera = make_flat_stylebox(Color(0.65, 0.65, 0.65, 0.2), 0, 0, 0, 0);
 				style_minimap_camera->set_border_color(Color(0.65, 0.65, 0.65, 0.45));
-				style_minimap_camera->set_border_color_role(make_color_role(ColorRoleEnum::ON_SURFACE, Color(0, 0, 0, 0.6)));
-				style_minimap_node = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE),StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0);
+				style_minimap_node = make_flat_stylebox(Color(1, 1, 1), 0, 0, 0, 0);
 			} else {
-				style_minimap_camera = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE, Color(0, 0, 0, 0.16)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0);
+				style_minimap_camera = make_flat_stylebox(Color(0.38, 0.38, 0.38, 0.2), 0, 0, 0, 0);
 				style_minimap_camera->set_border_color(Color(0.38, 0.38, 0.38, 0.45));
-				style_minimap_camera->set_border_color_role(make_color_role(ColorRoleEnum::SURFACE, Color(0, 0, 0, 0.38)));
-				style_minimap_node = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE),StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0);
+				style_minimap_node = make_flat_stylebox(Color(0, 0, 0), 0, 0, 0, 0);
 			}
 			style_minimap_camera->set_border_width_all(1);
 			style_minimap_node->set_anti_aliased(false);
@@ -2019,12 +2103,17 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			const int gn_corner_radius = 3;
 
 			const Color gn_bg_color = p_config.dark_theme ? p_config.dark_color_3 : p_config.dark_color_1.lerp(p_config.mono_color, 0.09);
-			Ref<ColorRole> gn_bg_color_role = p_config.dark_color_2_role;
+			Ref<ColorRole> gn_bg_color_role_light = p_config.dark_color_1_role->duplicate();
+			gn_bg_color_role_light->set_lerp_color_role(p_config.mono_color_role);
+			gn_bg_color_role_light->set_lerp_weight(0.09);
+			Ref<ColorRole> gn_bg_color_role = p_config.dark_theme ? p_config.dark_color_3_role : gn_bg_color_role_light;
+
 			const Color gn_selected_border_color = p_config.dark_theme ? Color(1, 1, 1) : Color(0, 0, 0);
 			const Ref<ColorRole> gn_selected_border_color_role = make_color_role(ColorRoleEnum::ON_SURFACE);
 			const Color gn_frame_bg = gn_bg_color.lerp(p_config.tree_panel_style->get_bg_color(), 0.3);
-			Ref<ColorRole> gn_frame_bg_role = p_config.dark_color_1_role;
-
+			Ref<ColorRole> gn_frame_bg_role = p_config.tree_panel_style->get_bg_color_role()->duplicate();
+			gn_frame_bg_role->set_lerp_color_role(gn_bg_color_role);
+			gn_frame_bg_role->set_lerp_weight(0.7);
 			const bool high_contrast_borders = p_config.draw_extra_borders && p_config.dark_theme;
 
 			Ref<StyleBoxFlat> gn_panel_style = make_color_role_flat_stylebox(gn_frame_bg_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, gn_margin_side, gn_margin_top, gn_margin_side, gn_margin_bottom, p_config.corner_radius);
@@ -2032,13 +2121,22 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			gn_panel_style->set_border_width(SIDE_LEFT, 2 * EDSCALE);
 			gn_panel_style->set_border_width(SIDE_RIGHT, 2 * EDSCALE);
 			gn_panel_style->set_border_color(high_contrast_borders ? gn_bg_color.lightened(0.2) : gn_bg_color.darkened(0.3));
-			gn_panel_style->set_border_color_role(gn_bg_color_role);
+			Ref<ColorRole> gn_bg_color_role_light_1 = gn_bg_color_role->duplicate();
+			gn_bg_color_role_light_1->set_lightened_amount(0.2);
+			Ref<ColorRole> gn_bg_color_role_dark_1 = gn_bg_color_role->duplicate();
+			gn_bg_color_role_dark_1->set_darkened_amount(0.3);
+			gn_panel_style->set_border_color_role(high_contrast_borders ? gn_bg_color_role_light_1 : gn_bg_color_role_dark_1);
 			gn_panel_style->set_corner_radius_individual(0, 0, gn_corner_radius * EDSCALE, gn_corner_radius * EDSCALE);
 			gn_panel_style->set_anti_aliased(true);
 
 			Ref<StyleBoxFlat> gn_panel_selected_style = gn_panel_style->duplicate();
+
 			gn_panel_selected_style->set_bg_color(p_config.dark_theme ? gn_bg_color.lightened(0.15) : gn_bg_color.darkened(0.15));
-			gn_panel_selected_style->set_bg_color_role(gn_bg_color_role);
+			Ref<ColorRole> gn_bg_color_role_light_2 = gn_bg_color_role->duplicate();
+			gn_bg_color_role_light_2->set_lightened_amount(0.15);
+			Ref<ColorRole> gn_bg_color_role_dark_2 = gn_bg_color_role->duplicate();
+			gn_bg_color_role_dark_2->set_darkened_amount(0.15);
+			gn_panel_style->set_border_color_role(high_contrast_borders ? gn_bg_color_role_light_2 : gn_bg_color_role_dark_2);			
 			gn_panel_selected_style->set_border_width(SIDE_TOP, 0);
 			gn_panel_selected_style->set_border_width(SIDE_BOTTOM, 2 * EDSCALE);
 			gn_panel_selected_style->set_border_width(SIDE_LEFT, 2 * EDSCALE);
@@ -2050,12 +2148,18 @@ void EditorThemeManager::_populate_standard_styles(const Ref<EditorTheme> &p_the
 			const int gn_titlebar_margin_side = 12;
 			const int gn_titlebar_margin_bottom = 8;
 
-			Ref<StyleBoxFlat> gn_titlebar_style = make_color_role_flat_stylebox(gn_bg_color_role,StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, gn_titlebar_margin_side, gn_titlebar_margin_top, gn_titlebar_margin_side, gn_titlebar_margin_bottom, p_config.corner_radius);
+			Ref<StyleBoxFlat> gn_titlebar_style = make_color_role_flat_stylebox(gn_bg_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, gn_titlebar_margin_side, gn_titlebar_margin_top, gn_titlebar_margin_side, gn_titlebar_margin_bottom, p_config.corner_radius);
 			gn_titlebar_style->set_border_width(SIDE_TOP, 2 * EDSCALE);
 			gn_titlebar_style->set_border_width(SIDE_LEFT, 2 * EDSCALE);
 			gn_titlebar_style->set_border_width(SIDE_RIGHT, 2 * EDSCALE);
+
 			gn_titlebar_style->set_border_color(high_contrast_borders ? gn_bg_color.lightened(0.2) : gn_bg_color.darkened(0.3));
-			gn_titlebar_style->set_border_color_role(gn_bg_color_role);
+			Ref<ColorRole> gn_bg_color_role_light_3 = gn_bg_color_role->duplicate();
+			gn_bg_color_role_light_3->set_lightened_amount(0.2);
+			Ref<ColorRole> gn_bg_color_role_dark_3 = gn_bg_color_role->duplicate();
+			gn_bg_color_role_dark_3->set_darkened_amount(0.3);
+			gn_titlebar_style->set_border_color_role(high_contrast_borders ? gn_bg_color_role_light_3 : gn_bg_color_role_dark_3);			
+
 			gn_titlebar_style->set_expand_margin(SIDE_TOP, 2 * EDSCALE);
 			gn_titlebar_style->set_corner_radius_individual(gn_corner_radius * EDSCALE, gn_corner_radius * EDSCALE, 0, 0);
 			gn_titlebar_style->set_anti_aliased(true);
@@ -2173,7 +2277,13 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 			cur_theme_data.set_data_name("default_stylebox");
 			Ref<StyleBoxFlat> tag = p_config.button_style->duplicate();
 			tag->set_bg_color(p_config.dark_theme ? tag->get_bg_color().lightened(0.2) : tag->get_bg_color().darkened(0.2));
-			tag->set_bg_color_role(tag->get_bg_color_role());
+
+			Ref<ColorRole> tag_color_role_light_1 = tag->get_bg_color_role()->duplicate();
+			tag_color_role_light_1->set_lightened_amount(0.2);
+			Ref<ColorRole> tag_color_role_dark_1 = tag->get_bg_color_role()->duplicate();
+			tag_color_role_dark_1->set_darkened_amount(0.2);
+			tag->set_bg_color_role(p_config.dark_theme ? tag_color_role_light_1 : tag_color_role_dark_1);		
+
 			tag->set_corner_radius(CORNER_TOP_LEFT, 0);
 			tag->set_corner_radius(CORNER_BOTTOM_LEFT, 0);
 			tag->set_corner_radius(CORNER_TOP_RIGHT, 4);
@@ -2213,7 +2323,9 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		// Use a less opaque color to be less distracting for the 2D and 3D editor viewports.
 		Ref<StyleBoxFlat> style_widget_focus_viewport = p_config.button_style_focus->duplicate();
 		style_widget_focus_viewport->set_border_color(p_config.accent_color * Color(1, 1, 1, 0.5));
-		style_widget_focus_viewport->set_border_color_role(make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(1, 1, 1, 0.5)));
+		Ref<ColorRole> style_widget_focus_viewport_color_role = p_config.accent_color_role->duplicate();
+		style_widget_focus_viewport_color_role->set_color_scale(style_widget_focus_viewport_color_role->get_color_scale() * Color(1, 1, 1, 0.5));
+		style_widget_focus_viewport->set_border_color_role(style_widget_focus_viewport_color_role);
 		p_theme->set_stylebox("FocusViewport", EditorStringName(EditorStyles), style_widget_focus_viewport);
 
 		// This stylebox is used in 3d and 2d viewports (no borders).
@@ -2222,14 +2334,16 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_stylebox("Content", EditorStringName(EditorStyles), style_content_panel_vp);
 
 		// 2D/CanvasItem editor
-		Ref<StyleBoxFlat> style_canvas_editor_info = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE, Color(1, 1, 1, 0.16)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme);
+		Ref<StyleBoxFlat> style_canvas_editor_info = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE, Color(1, 1, 1, 0.2)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme);
 		style_canvas_editor_info->set_expand_margin_all(4 * EDSCALE);
 		p_theme->set_stylebox("CanvasItemInfoOverlay", EditorStringName(EditorStyles), style_canvas_editor_info);
 
 		// 3D/Spatial editor.
 		Ref<StyleBoxFlat> style_info_3d_viewport = p_config.base_style->duplicate();
 		style_info_3d_viewport->set_bg_color(style_info_3d_viewport->get_bg_color() * Color(1, 1, 1, 0.5));
-		style_info_3d_viewport->set_bg_color_role(style_info_3d_viewport->get_bg_color_role());
+		Ref<ColorRole> style_info_3d_viewport_color_role = style_info_3d_viewport->get_bg_color_role()->duplicate();
+		style_info_3d_viewport_color_role->set_color_scale(style_info_3d_viewport_color_role->get_color_scale() * Color(1, 1, 1, 0.5));
+		style_info_3d_viewport->set_bg_color_role(style_info_3d_viewport_color_role);
 		style_info_3d_viewport->set_border_width_all(0);
 		p_theme->set_stylebox("Information3dViewport", EditorStringName(EditorStyles), style_info_3d_viewport);
 
@@ -2239,7 +2353,9 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		// even though it may not be immediately obvious at first.
 		Ref<StyleBoxFlat> toolbar_stylebox = memnew(StyleBoxFlat);
 		toolbar_stylebox->set_bg_color(p_config.accent_color * Color(1, 1, 1, 0.1));
-		toolbar_stylebox->set_bg_color_role(make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(0, 0, 0, 0.1)));
+		Ref<ColorRole> toolbar_stylebox_color_role = p_config.accent_color_role->duplicate();
+		toolbar_stylebox_color_role->set_color_scale(toolbar_stylebox_color_role->get_color_scale() * Color(1, 1, 1, 0.1));
+		toolbar_stylebox->set_bg_color_role(toolbar_stylebox_color_role);
 		toolbar_stylebox->set_anti_aliased(false);
 		// Add an underline to the StyleBox, but prevent its minimum vertical size from changing.
 		toolbar_stylebox->set_border_color(p_config.accent_color);
@@ -2298,7 +2414,10 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_stylebox("LaunchPadNormal", EditorStringName(EditorStyles), style_launch_pad);
 		Ref<StyleBoxFlat> style_launch_pad_movie = style_launch_pad->duplicate();
 		style_launch_pad_movie->set_bg_color(p_config.accent_color * Color(1, 1, 1, 0.1));
-		style_launch_pad_movie->set_bg_color_role(make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(0, 0, 0, 0.1)));
+		Ref<ColorRole> style_launch_pad_movie_color_role = p_config.accent_color_role->duplicate();
+		style_launch_pad_movie_color_role->set_color_scale(style_launch_pad_movie_color_role->get_color_scale() * Color(1, 1, 1, 0.1));
+		style_launch_pad_movie->set_bg_color_role(style_launch_pad_movie_color_role);
+
 		style_launch_pad_movie->set_border_color(p_config.accent_color);
 		style_launch_pad_movie->set_border_color_role(p_config.accent_color_role);
 		style_launch_pad_movie->set_border_width_all(Math::round(2 * EDSCALE));
@@ -2343,9 +2462,18 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 				style_flat_button_pressed->set_content_margin((Side)i, p_config.button_style->get_margin((Side)i) + p_config.button_style->get_border_width((Side)i));
 			}
 			Color flat_pressed_color = p_config.dark_color_1.lightened(0.24).lerp(p_config.accent_color, 0.2) * Color(0.8, 0.8, 0.8, 0.85);
-			Ref<ColorRole> flat_pressed_color_role = p_config.dark_color_1_role;
+			Ref<ColorRole> flat_pressed_color_role = p_config.dark_color_1_role->duplicate();
+			flat_pressed_color_role->set_lightened_amount(0.24);
+			flat_pressed_color_role->set_lerp_weight(0.2);
+			flat_pressed_color_role->set_lerp_color_role(p_config.accent_color_role);
+			//TODO: FIX IT
+			flat_pressed_color_role->set_color_scale(Color(0.8, 0.8, 0.8, 0.85));
+
 			if (p_config.dark_theme) {
 				flat_pressed_color = p_config.dark_color_1.lerp(p_config.accent_color, 0.12) * Color(0.6, 0.6, 0.6, 0.85);
+
+				flat_pressed_color_role->set_lightened_amount(0.12);
+				flat_pressed_color_role->set_color_scale(Color(0.6, 0.6, 0.6, 0.85));
 			}
 			style_flat_button_pressed->set_bg_color(flat_pressed_color);
 			style_flat_button_pressed->set_bg_color_role(flat_pressed_color_role);
@@ -2385,15 +2513,26 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 
 			Ref<StyleBoxFlat> panel_button_style = p_config.button_style->duplicate();
 			panel_button_style->set_bg_color(p_config.base_color.lerp(p_config.mono_color, 0.08));
-			panel_button_style->set_bg_color_role(p_config.base_color_role);
+			Ref<ColorRole> panel_button_style_color_role = p_config.base_color_role->duplicate();
+			panel_button_style_color_role->set_lerp_weight(0.08);
+			panel_button_style_color_role->set_lerp_color_role(p_config.mono_color_role);
+			panel_button_style->set_bg_color_role(panel_button_style_color_role);
 
 			Ref<StyleBoxFlat> panel_button_style_hover = p_config.button_style_hover->duplicate();
 			panel_button_style_hover->set_bg_color(p_config.base_color.lerp(p_config.mono_color, 0.16));
-			panel_button_style_hover->set_bg_color_role(p_config.base_color_role);
+			Ref<ColorRole> panel_button_style_hover_color_role = p_config.base_color_role->duplicate();
+			panel_button_style_hover_color_role->set_lerp_weight(0.16);
+			panel_button_style_hover_color_role->set_lerp_color_role(p_config.mono_color_role);
+			panel_button_style_hover->set_bg_color_role(panel_button_style_hover_color_role);
+
 
 			Ref<StyleBoxFlat> panel_button_style_pressed = p_config.button_style_pressed->duplicate();
 			panel_button_style_pressed->set_bg_color(p_config.base_color.lerp(p_config.mono_color, 0.20));
-			panel_button_style_pressed->set_bg_color_role(p_config.base_color_role);
+			Ref<ColorRole> panel_button_style_pressed_color_role = p_config.base_color_role->duplicate();
+			panel_button_style_pressed_color_role->set_lerp_weight(0.2);
+			panel_button_style_pressed_color_role->set_lerp_color_role(p_config.mono_color_role);
+			panel_button_style_pressed->set_bg_color_role(panel_button_style_pressed_color_role);
+
 
 			Ref<StyleBoxFlat> panel_button_style_disabled = p_config.button_style_disabled->duplicate();
 			panel_button_style_disabled->set_bg_color(p_config.disabled_bg_color);
@@ -2416,7 +2555,9 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		{
 			Ref<StyleBoxFlat> style_complex_window = p_config.window_style->duplicate();
 			style_complex_window->set_bg_color(p_config.dark_color_2);
+			style_complex_window->set_bg_color_role(p_config.dark_color_2_role);
 			style_complex_window->set_border_color(p_config.dark_color_2);
+			style_complex_window->set_border_color_role(p_config.dark_color_2_role);
 			p_theme->set_stylebox("panel", "EditorSettingsDialog", style_complex_window);
 			p_theme->set_stylebox("panel", "ProjectSettingsEditor", style_complex_window);
 			p_theme->set_stylebox("panel", "EditorAbout", style_complex_window);
@@ -2433,7 +2574,10 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 
 			Color color_inspector_action = p_config.dark_color_1.lerp(p_config.mono_color, 0.12);
 			color_inspector_action.a = 0.5;
-			Ref<ColorRole> color_inspector_action_role = p_config.dark_color_1_role;
+			Ref<ColorRole> color_inspector_action_role = p_config.dark_color_1_role->duplicate();
+			color_inspector_action_role->set_lerp_color_role(p_config.mono_color_role);
+			color_inspector_action_role->set_lerp_weight(0.12);
+			color_inspector_action_role->set_color_scale(Color(color_inspector_action_role->get_color_scale(),0.5));
 			Ref<StyleBoxFlat> style_inspector_action = p_config.button_style->duplicate();
 			style_inspector_action->set_bg_color(color_inspector_action);
 			style_inspector_action->set_bg_color_role(color_inspector_action_role);
@@ -2460,9 +2604,13 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		// Buttons in material previews.
 		{
 			const Color dim_light_color = p_config.icon_normal_color.darkened(0.24);
-			const Ref<ColorRole> dim_light_color_role = p_config.icon_normal_color_role;
+			Ref<ColorRole> dim_light_color_role = p_config.icon_normal_color_role->duplicate();
+			dim_light_color_role->set_darkened_amount(0.24);
+
 			const Color dim_light_highlighted_color = p_config.icon_normal_color.darkened(0.18);
-			const Ref<ColorRole> dim_light_highlighted_color_role = p_config.icon_normal_color_role;
+			Ref<ColorRole> dim_light_highlighted_color_role = p_config.icon_normal_color_role->duplicate();
+			dim_light_highlighted_color_role->set_darkened_amount(0.18);
+
 			Ref<StyleBox> sb_empty_borderless = make_empty_stylebox();
 			
 
@@ -2528,7 +2676,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		// Sub-inspectors.
 		for (int i = 0; i < 16; i++) {
 			Color si_base_color = p_config.accent_color;
-			Ref<ColorRole> si_base_color_role = p_config.accent_color_role;
+			Ref<ColorRole> si_base_color_role = p_config.accent_color_role->duplicate();
 
 			float hue_rotate = (i * 2 % 16) / 16.0;
 			si_base_color.set_hsv(Math::fmod(float(si_base_color.get_h() + hue_rotate), float(1.0)), si_base_color.get_s(), si_base_color.get_v());
@@ -2536,8 +2684,13 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 
 			// Sub-inspector background.
 			Ref<StyleBoxFlat> sub_inspector_bg = p_config.base_style->duplicate();
+
+			Ref<ColorRole> sub_inspector_bg_bg_color_role = p_config.dark_color_1_role->duplicate();
+			sub_inspector_bg_bg_color_role->set_lerp_color_role(si_base_color_role);
+			sub_inspector_bg_bg_color_role->set_lerp_weight(0.08);
 			sub_inspector_bg->set_bg_color(p_config.dark_color_1.lerp(si_base_color, 0.08));
-			sub_inspector_bg->set_bg_color_role(p_config.dark_color_1_role);
+			sub_inspector_bg->set_bg_color_role(sub_inspector_bg_bg_color_role);
+
 			sub_inspector_bg->set_border_width_all(2 * EDSCALE);
 			sub_inspector_bg->set_border_color(si_base_color * Color(0.7, 0.7, 0.7, 0.8));
 			sub_inspector_bg->set_border_color_role(si_base_color_role);
@@ -2578,11 +2731,19 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_constant("v_separation", "EditorProperty", p_config.increased_margin * EDSCALE);
 
 		const Color property_color = p_config.font_color.lerp(Color(0.5, 0.5, 0.5), 0.5);
-		const Ref<ColorRole> property_color_role = p_config.font_color_role;
+		Ref<ColorRole> property_color_role = p_config.font_color_role->duplicate();
+		property_color_role->set_lerp_color(Color(0.5, 0.5, 0.5));
+		property_color_role->set_lerp_weight(0.5);
+
 		const Color readonly_color = property_color.lerp(p_config.dark_theme ? Color(0, 0, 0) : Color(1, 1, 1), 0.25);
-		const Ref<ColorRole> readonly_color_role = property_color_role;
+		Ref<ColorRole> readonly_color_role = p_config.font_color_role->duplicate();
+		readonly_color_role->set_lerp_color_role(make_color_role(ColorRoleEnum::SURFACE));
+		readonly_color_role->set_lerp_weight(0.25);
+
 		const Color readonly_warning_color = p_config.error_color.lerp(p_config.dark_theme ? Color(0, 0, 0) : Color(1, 1, 1), 0.25);
-		const Ref<ColorRole> readonly_warning_color_role = p_config.error_color_role;
+		Ref<ColorRole> readonly_warning_color_role = p_config.error_color_role->duplicate();
+		readonly_warning_color_role->set_lerp_color_role(make_color_role(ColorRoleEnum::SURFACE));
+		readonly_warning_color_role->set_lerp_weight(0.25);
 
 		p_theme->set_color("property_color", "EditorProperty", property_color);
 		p_theme->set_color_role("property_color_role", "EditorProperty", property_color_role);
@@ -2595,8 +2756,9 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 
 		Ref<StyleBoxFlat> style_property_group_note = p_config.base_style->duplicate();
 		Color property_group_note_color = p_config.accent_color;
-		Ref<ColorRole> property_group_note_color_role = make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(0, 0, 0, 0.1));
 		property_group_note_color.a = 0.1;
+		Ref<ColorRole> property_group_note_color_role = p_config.accent_color_role->duplicate();
+		property_group_note_color_role->set_color_scale(Color(property_group_note_color_role->get_color_scale(),0.1));
 		style_property_group_note->set_bg_color(property_group_note_color);
 		style_property_group_note->set_bg_color_role(property_group_note_color_role);
 		p_theme->set_stylebox("bg_group_note", "EditorProperty", style_property_group_note);
@@ -2609,19 +2771,29 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_color_role("font_color_role", "EditorInspectorSection", inspector_section_color_role);
 
 		Color inspector_indent_color = p_config.accent_color;
-		Ref<ColorRole> inspector_indent_color_role = make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(0, 0, 0, 0.16));
 		inspector_indent_color.a = 0.2;
+		Ref<ColorRole> inspector_indent_color_role = p_config.accent_color_role->duplicate();
+		inspector_indent_color_role->set_color_scale(Color(inspector_indent_color_role->get_color_scale(),0.2));
 
 		Ref<StyleBoxFlat> inspector_indent_style = make_color_role_flat_stylebox(inspector_indent_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 2.0 * EDSCALE, 0, 2.0 * EDSCALE, 0);
 		p_theme->set_stylebox("indent_box", "EditorInspectorSection", inspector_indent_style);
 		p_theme->set_constant("indent_size", "EditorInspectorSection", 6.0 * EDSCALE);
 
 		Color prop_category_color = p_config.dark_color_1.lerp(p_config.mono_color, 0.12);
-		Ref<ColorRole> prop_category_color_role = p_config.dark_color_1_role;
+		Ref<ColorRole> prop_category_color_role = p_config.dark_color_1_role->duplicate();
+		prop_category_color_role->set_lerp_color_role(p_config.mono_color_role);
+		prop_category_color_role->set_lerp_weight(0.12);
+
 		Color prop_section_color = p_config.dark_color_1.lerp(p_config.mono_color, 0.09);
 		Ref<ColorRole> prop_section_color_role = p_config.dark_color_1_role;
+		prop_section_color_role->set_lerp_color_role(p_config.mono_color_role);
+		prop_section_color_role->set_lerp_weight(0.09);
+
 		Color prop_subsection_color = p_config.dark_color_1.lerp(p_config.mono_color, 0.06);
 		Ref<ColorRole> prop_subsection_color_role = p_config.dark_color_1_role;
+		prop_subsection_color_role->set_lerp_color_role(p_config.mono_color_role);
+		prop_subsection_color_role->set_lerp_weight(0.06);
+
 
 		p_theme->set_color("prop_category", EditorStringName(Editor), prop_category_color);
 		p_theme->set_color_role("prop_category_role", EditorStringName(Editor), prop_category_color_role);
@@ -2661,6 +2833,11 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 
 		const Color kbd_color = p_config.font_color.lerp(Color(0.5, 0.5, 0.5), 0.5);
 
+		Ref<ColorRole> kbd_color_role = p_config.font_color_role->duplicate();
+		kbd_color_role->set_lerp_color(Color(0.5, 0.5, 0.5));
+		kbd_color_role->set_lerp_weight(0.5);
+
+
 		p_theme->set_color("title_color", "EditorHelp", p_config.accent_color);
 		p_theme->set_color_role("title_color_role", "EditorHelp", p_config.accent_color_role);
 		p_theme->set_color("headline_color", "EditorHelp", p_config.mono_color);
@@ -2668,25 +2845,54 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_color("text_color", "EditorHelp", p_config.font_color);
 		p_theme->set_color_role("text_color_role", "EditorHelp", p_config.font_color_role);
 		p_theme->set_color("comment_color", "EditorHelp", p_config.font_color * Color(1, 1, 1, 0.6));
-		p_theme->set_color_role("comment_color_role", "EditorHelp", make_color_role(ColorRoleEnum::TERTIARY, Color(0, 0, 0, 0.6)));
+		Ref<ColorRole> comment_color_role = p_config.font_color_role->duplicate();
+		comment_color_role->set_color_scale(comment_color_role->get_color_scale()*Color(1,1,1,0.6));
+		p_theme->set_color_role("comment_color_role", "EditorHelp", comment_color_role);
+
 		p_theme->set_color("symbol_color", "EditorHelp", p_config.font_color * Color(1, 1, 1, 0.6));
-		p_theme->set_color_role("symbol_color_role", "EditorHelp", make_color_role(ColorRoleEnum::TERTIARY, Color(0, 0, 0, 0.6)));
+		Ref<ColorRole> symbol_color_role = p_config.font_color_role->duplicate();
+		symbol_color_role->set_color_scale(symbol_color_role->get_color_scale()*Color(1,1,1,0.6));
+		p_theme->set_color_role("symbol_color_role", "EditorHelp", symbol_color_role);	
+
 		p_theme->set_color("value_color", "EditorHelp", p_config.font_color * Color(1, 1, 1, 0.6));
-		p_theme->set_color_role("value_color_role", "EditorHelp", make_color_role(ColorRoleEnum::TERTIARY, Color(0, 0, 0, 0.6)));
+		Ref<ColorRole> value_color_role = p_config.font_color_role->duplicate();
+		value_color_role->set_color_scale(value_color_role->get_color_scale()*Color(1,1,1,0.6));
+		p_theme->set_color_role("value_color_role", "EditorHelp", value_color_role);	
+
 		p_theme->set_color("qualifier_color", "EditorHelp", p_config.font_color * Color(1, 1, 1, 0.8));
-		p_theme->set_color_role("qualifier_color_role", "EditorHelp", make_color_role(ColorRoleEnum::TERTIARY, Color(0, 0, 0, 0.8)));
+		Ref<ColorRole> qualifier_color_role = p_config.font_color_role->duplicate();
+		qualifier_color_role->set_color_scale(qualifier_color_role->get_color_scale()*Color(1,1,1,0.8));
+		p_theme->set_color_role("qualifier_color_role", "EditorHelp", qualifier_color_role);	
+
 		p_theme->set_color("type_color", "EditorHelp", p_config.accent_color.lerp(p_config.font_color, 0.5));
-		p_theme->set_color_role("type_color_role", "EditorHelp", p_config.accent_color_role);
+		Ref<ColorRole> type_color_role = p_config.accent_color_role->duplicate();
+		type_color_role->set_lerp_color_role(p_config.font_color_role);
+		type_color_role->set_lerp_weight(0.5);
+		p_theme->set_color_role("type_color_role", "EditorHelp", type_color_role);
+		
 		p_theme->set_color("override_color", "EditorHelp", p_config.warning_color);
 		p_theme->set_color_role("override_color_role", "EditorHelp", p_config.warning_color_role);
 		p_theme->set_color("selection_color", "EditorHelp", p_config.selection_color);
 		p_theme->set_color_role("selection_color_role", "EditorHelp", p_config.selection_color_role);
+
 		p_theme->set_color("link_color", "EditorHelp", p_config.accent_color.lerp(p_config.mono_color, 0.8));
-		p_theme->set_color_role("link_color_role", "EditorHelp", p_config.accent_color_role);
+		Ref<ColorRole> link_color_role = p_config.accent_color_role->duplicate();
+		link_color_role->set_lerp_color_role(p_config.mono_color_role);
+		link_color_role->set_lerp_weight(0.8);
+		p_theme->set_color_role("link_color_role", "EditorHelp", link_color_role);
+
 		p_theme->set_color("code_color", "EditorHelp", p_config.accent_color.lerp(p_config.mono_color, 0.6));
-		p_theme->set_color_role("code_color_role", "EditorHelp", p_config.accent_color_role);
+		Ref<ColorRole> code_color_role = p_config.accent_color_role->duplicate();
+		code_color_role->set_lerp_color_role(p_config.mono_color_role);
+		code_color_role->set_lerp_weight(0.6);
+		p_theme->set_color_role("code_color_role", "EditorHelp", code_color_role);
+
 		p_theme->set_color("kbd_color", "EditorHelp", p_config.accent_color.lerp(kbd_color, 0.6));
-		p_theme->set_color_role("kbd_color_role", "EditorHelp", p_config.accent_color_role);
+		Ref<ColorRole> kbd_color_role2 = p_config.accent_color_role->duplicate();
+		kbd_color_role2->set_lerp_color_role(kbd_color_role);
+		kbd_color_role2->set_lerp_weight(0.6);
+		p_theme->set_color_role("kbd_color_role", "EditorHelp", kbd_color_role2);
+
 		p_theme->set_color("code_bg_color", "EditorHelp", p_config.dark_color_3);
 		p_theme->set_color_role("code_bg_color_role", "EditorHelp", p_config.dark_color_3_role);
 		p_theme->set_color("kbd_bg_color", "EditorHelp", p_config.dark_color_1);
@@ -2704,7 +2910,7 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 	p_theme->set_stylebox("bg", "AssetLib", p_config.base_empty_style);
 	p_theme->set_stylebox("panel", "AssetLib", p_config.content_panel_style);
 	p_theme->set_color("status_color", "AssetLib", Color(0.5, 0.5, 0.5)); // FIXME: Use a defined color instead.
-	p_theme->set_color_role("status_color_role", "AssetLib", make_color_role(ColorRoleEnum::SECONDARY)); // FIXME: Use a defined color instead.
+	p_theme->set_color_role("status_color_role", "AssetLib", make_color_role(ColorRoleEnum::STATIC_COLOR)); // FIXME: Use a defined color instead.
 	p_theme->set_icon("dismiss", "AssetLib", p_theme->get_icon(SNAME("Close"), EditorStringName(EditorIcons)));
 
 	// Debugger.
@@ -2739,8 +2945,9 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 			p_theme->set_color("preview_picker_overlay_color", "ThemeEditor", Color(0.1, 0.1, 0.1, 0.25));
 
 			Color theme_preview_picker_bg_color = p_config.accent_color;
-			Ref<ColorRole> theme_preview_picker_bg_color_role = make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(1, 1, 1, 0.25));
 			theme_preview_picker_bg_color.a = 0.2;
+			Ref<ColorRole> theme_preview_picker_bg_color_role = p_config.accent_color_role->duplicate();
+			theme_preview_picker_bg_color_role->set_color_scale(Color(theme_preview_picker_bg_color_role->get_color_scale(),0.2));
 
 			Ref<StyleBoxFlat> theme_preview_picker_sb = make_color_role_flat_stylebox(theme_preview_picker_bg_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, 0, 0, 0, 0);
 			theme_preview_picker_sb->set_border_color(p_config.accent_color);
@@ -2771,23 +2978,38 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 			p_theme->set_stylebox("panel", "GraphStateMachine", p_config.tree_panel_style);
 			p_theme->set_stylebox("error_panel", "GraphStateMachine", p_config.tree_panel_style);
 			p_theme->set_color("error_color", "GraphStateMachine", p_config.error_color);
+			p_theme->set_color_role("error_color_role", "GraphStateMachine", p_config.error_color_role);
 
 			const int sm_margin_side = 10 * EDSCALE;
 			const int sm_margin_bottom = 2;
+
+			
 			const Color sm_bg_color = p_config.dark_theme ? p_config.dark_color_3 : p_config.dark_color_1.lerp(p_config.mono_color, 0.09);
-			Ref<ColorRole> sm_bg_color_role = p_config.dark_color_2_role;
 
+			Ref<ColorRole> dark_sm_bg_color_role = p_config.dark_color_3_role->duplicate();
+			Ref<ColorRole> light_sm_bg_color_role = p_config.dark_color_1_role->duplicate();
+			light_sm_bg_color_role->set_lerp_color_role(p_config.mono_color_role);
+			light_sm_bg_color_role->set_lerp_weight(0.09);
 
-			Ref<StyleBoxFlat> sm_node_style = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::TERTIARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, sm_margin_side, 24 * EDSCALE, sm_margin_side, sm_margin_bottom, p_config.corner_radius);
+			Ref<ColorRole> sm_bg_color_role = p_config.dark_theme ? dark_sm_bg_color_role: light_sm_bg_color_role;
+
+			Ref<ColorRole> sm_node_style_color_role = p_config.dark_color_3_role->duplicate();
+			sm_node_style_color_role->set_color_scale(sm_node_style_color_role->get_color_scale()*Color(1, 1, 1, 0.7));
+			Ref<StyleBoxFlat> sm_node_style = make_color_role_flat_stylebox(sm_node_style_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, sm_margin_side, 24 * EDSCALE, sm_margin_side, sm_margin_bottom, p_config.corner_radius);
 			sm_node_style->set_border_width_all(p_config.border_width);
 			sm_node_style->set_border_color(sm_bg_color);
 			sm_node_style->set_border_color_role(sm_bg_color_role);
 
 
-			Ref<StyleBoxFlat> sm_node_selected_style = make_color_role_flat_stylebox(sm_bg_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, sm_margin_side, 24 * EDSCALE, sm_margin_side, sm_margin_bottom, p_config.corner_radius);
+			Ref<ColorRole> sm_node_selected_style_color_role = sm_bg_color_role->duplicate();
+			sm_node_selected_style_color_role->set_color_scale(sm_node_style_color_role->get_color_scale()*Color(1, 1, 1, 0.9));
+			Ref<StyleBoxFlat> sm_node_selected_style = make_color_role_flat_stylebox(sm_node_selected_style_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, p_config.default_color_scheme, sm_margin_side, 24 * EDSCALE, sm_margin_side, sm_margin_bottom, p_config.corner_radius);
 			sm_node_selected_style->set_border_width_all(2 * EDSCALE + p_config.border_width);
 			sm_node_selected_style->set_border_color(p_config.accent_color * Color(1, 1, 1, 0.9));
-			sm_node_selected_style->set_border_color_role(p_config.accent_color_role);
+
+			Ref<ColorRole> sm_node_selected_style_border_color_role = p_config.accent_color_role->duplicate();
+			sm_node_selected_style_border_color_role->set_color_scale(sm_node_selected_style_border_color_role->get_color_scale()*Color(1, 1, 1, 0.9));
+			sm_node_selected_style->set_border_color_role(sm_node_selected_style_border_color_role);
 			sm_node_selected_style->set_shadow_size(8 * EDSCALE);
 			sm_node_selected_style->set_shadow_color(p_config.shadow_color);
 			sm_node_selected_style->set_shadow_color_role(p_config.shadow_color_role);
@@ -2796,7 +3018,10 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 			sm_node_playing_style->set_border_color(p_config.warning_color);
 			sm_node_playing_style->set_border_color_role(p_config.warning_color_role);
 			sm_node_playing_style->set_shadow_color(p_config.warning_color * Color(1, 1, 1, 0.2));
-			sm_node_playing_style->set_shadow_color_role(make_color_role(ColorRoleEnum::TERTIARY, Color(1, 1, 1, 0.2)));
+
+			Ref<ColorRole> sm_node_selected_style_warning_color_role = p_config.warning_color_role->duplicate();
+			sm_node_selected_style_warning_color_role->set_color_scale(sm_node_selected_style_warning_color_role->get_color_scale()*Color(1, 1, 1, 0.2));
+			sm_node_playing_style->set_shadow_color_role(sm_node_selected_style_warning_color_role);
 
 			p_theme->set_stylebox("node_frame", "GraphStateMachine", sm_node_style);
 			p_theme->set_stylebox("node_frame_selected", "GraphStateMachine", sm_node_selected_style);
@@ -2805,7 +3030,10 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 			Ref<StyleBoxFlat> sm_node_start_style = sm_node_style->duplicate();
 			sm_node_start_style->set_border_width_all(1 * EDSCALE);
 			sm_node_start_style->set_border_color(p_config.success_color.lightened(0.24));
-			sm_node_start_style->set_border_color_role(p_config.success_color_role);
+			Ref<ColorRole> sm_node_start_style_success_color_role = p_config.success_color_role->duplicate();
+			sm_node_start_style_success_color_role->set_lightened_amount(0.24);
+			sm_node_start_style->set_border_color_role(sm_node_start_style_success_color_role);
+
 			p_theme->set_stylebox("node_frame_start", "GraphStateMachine", sm_node_start_style);
 
 			Ref<StyleBoxFlat> sm_node_end_style = sm_node_style->duplicate();
@@ -2830,14 +3058,23 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 			p_theme->set_color("highlight_color", "GraphStateMachine", p_config.accent_color);
 			p_theme->set_color_role("highlight_color_role", "GraphStateMachine", p_config.accent_color_role);
 			p_theme->set_color("highlight_disabled_color", "GraphStateMachine", p_config.accent_color * Color(1, 1, 1, 0.6));
-			p_theme->set_color_role("highlight_disabled_color_role", "GraphStateMachine", make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(0, 0, 0, 0.6)));
+			Ref<ColorRole> highlight_disabled_color_role_color_role = p_config.accent_color_role->duplicate();
+			highlight_disabled_color_role_color_role->set_color_scale(highlight_disabled_color_role_color_role->get_color_scale()*Color(1, 1, 1, 0.6));
+			p_theme->set_color_role("highlight_disabled_color_role", "GraphStateMachine", highlight_disabled_color_role_color_role);
+
 			p_theme->set_color("guideline_color", "GraphStateMachine", p_config.font_color * Color(1, 1, 1, 0.3));
-			p_theme->set_color_role("guideline_color_role", "GraphStateMachine", make_color_role(ColorRoleEnum::STATIC_ONE, Color(0, 0, 0, 0.3)));
+			Ref<ColorRole> guideline_color_role = p_config.font_color_role->duplicate();
+			guideline_color_role->set_color_scale(guideline_color_role->get_color_scale()*Color(1, 1, 1, 0.3));
+			p_theme->set_color_role("guideline_color_role", "GraphStateMachine", guideline_color_role);
 
 			p_theme->set_color("playback_color", "GraphStateMachine", p_config.font_color);
 			p_theme->set_color_role("playback_color_role", "GraphStateMachine", p_config.font_color_role);
 			p_theme->set_color("playback_background_color", "GraphStateMachine", p_config.font_color * Color(1, 1, 1, 0.3));
-			p_theme->set_color_role("playback_background_color_role", "GraphStateMachine", p_config.font_color_role);
+
+			Ref<ColorRole> playback_background_color_role = p_config.font_color_role->duplicate();
+			playback_background_color_role->set_color_scale(guideline_color_role->get_color_scale()*Color(1, 1, 1, 0.3));
+
+			p_theme->set_color_role("playback_background_color_role", "GraphStateMachine", playback_background_color_role);
 		}
 	}
 }

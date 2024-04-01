@@ -37,7 +37,7 @@ ColorRole::ColorRole() {
 	_update_color();
 }
 
-ColorRole::ColorRole(ColorRoleEnum p_color_role_enum, Color &p_color_scale, bool p_inverted, float p_darkened_amount, float p_lightened_amount, float p_lerp_weight, Ref<ColorRole> p_lerp_color_role, Color &p_lerp_color) {
+ColorRole::ColorRole(ColorRoleEnum p_color_role_enum, Color &p_color_scale, bool p_inverted, float p_darkened_amount, float p_lightened_amount, float p_lerp_weight, Ref<ColorRole> p_lerp_color_role, Color &p_lerp_color, bool p_clamp) {
 	color_role_enum = p_color_role_enum;
 	color_scale = p_color_scale;
 	inverted = p_inverted;
@@ -46,6 +46,7 @@ ColorRole::ColorRole(ColorRoleEnum p_color_role_enum, Color &p_color_scale, bool
 	lerp_weight = p_lerp_weight;
 	lerp_color_role = p_lerp_color_role;
 	lerp_color = p_lerp_color;
+	clamp = p_clamp;
 	dirty = true;
 	_update_color();
 }
@@ -75,6 +76,9 @@ Color ColorRole::get_color(const Ref<ColorScheme> &p_color_scheme) {
 			lerp_color = lerp_color_role->get_color(p_color_scheme);
 		}
 		base_color = base_color.lerp(lerp_color, lerp_weight);
+	}
+	if(clamp){
+		base_color = base_color.clamp();
 	}
 	return base_color;
 }
@@ -112,6 +116,17 @@ void ColorRole::set_inverted(bool p_inverted) {
 bool ColorRole::get_inverted() const {
 	return inverted;
 }
+
+void ColorRole::set_clamp(bool p_clamp) {
+	clamp = p_clamp;
+	dirty = true;
+	_update_color();
+}
+
+bool ColorRole::get_clamp() const {
+	return clamp;
+}
+
 
 void ColorRole::set_darkened_amount(float p_darkened_amount) {
 	darkened_amount = p_darkened_amount;
@@ -199,6 +214,9 @@ void ColorRole::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_lerp_color", "lerp_color"), &ColorRole::set_lerp_color);
 	ClassDB::bind_method(D_METHOD("get_lerp_color"), &ColorRole::get_lerp_color);
 
+	ClassDB::bind_method(D_METHOD("set_clamp", "clamp"), &ColorRole::set_clamp);
+	ClassDB::bind_method(D_METHOD("get_clamp"), &ColorRole::get_clamp);
+
 	ClassDB::bind_method(D_METHOD("get_color", "color_scheme"), &ColorRole::get_color);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "color_role_enum", PROPERTY_HINT_ENUM, color_role_enum_hint), "set_color_role_enum", "get_color_role_enum");
@@ -209,4 +227,5 @@ void ColorRole::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "lerp_weight"), "set_lerp_weight", "get_lerp_weight");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "lerp_color_role"), "set_lerp_color_role", "get_lerp_color_role");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "lerp_color"), "set_lerp_color", "get_lerp_color");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "clamp"), "set_clamp", "get_clamp");
 }
