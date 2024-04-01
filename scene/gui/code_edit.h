@@ -239,9 +239,9 @@ private:
 		Ref<ColorScheme> default_color_scheme;
 		/* Gutters */
 		Color code_folding_color;
-		ColorRole code_folding_color_role;
+		Ref<ColorRole> code_folding_color_role;
 		Color folded_code_region_color;
-		ColorRole folded_code_region_color_role;
+		Ref<ColorRole> folded_code_region_color_role;
 		Ref<Texture2D> can_fold_icon;
 		Ref<Texture2D> folded_icon;
 		Ref<Texture2D> can_fold_code_region_icon;
@@ -249,19 +249,19 @@ private:
 		Ref<Texture2D> folded_eol_icon;
 
 		Color breakpoint_color;
-		ColorRole breakpoint_color_role;
+		Ref<ColorRole> breakpoint_color_role;
 		Ref<Texture2D> breakpoint_icon = Ref<Texture2D>();
 
 		Color bookmark_color;
-		ColorRole bookmark_color_role;
+		Ref<ColorRole> bookmark_color_role;
 		Ref<Texture2D> bookmark_icon = Ref<Texture2D>();
 
 		Color executing_line_color;
-		ColorRole executing_line_color_role;
+		Ref<ColorRole> executing_line_color_role;
 		Ref<Texture2D> executing_line_icon = Ref<Texture2D>();
 
 		Color line_number_color;
-		ColorRole line_number_color_role;
+		Ref<ColorRole> line_number_color_role;
 
 		/* Code Completion */
 		Ref<StyleBox> code_completion_style;
@@ -275,28 +275,28 @@ private:
 		ThemeColorRoleData code_completion_scroll_color_role{ "code_completion_scroll_color_role" };
 
 		Color code_completion_background_color;
-		ColorRole code_completion_background_color_role;
+		Ref<ColorRole> code_completion_background_color_role;
 
 		Color code_completion_selected_color;
-		ColorRole code_completion_selected_color_role;
+		Ref<ColorRole> code_completion_selected_color_role;
 
 		Color code_completion_existing_color;
-		ColorRole code_completion_existing_color_role;
+		Ref<ColorRole> code_completion_existing_color_role;
 
 		/* Code hint */
 		Ref<StyleBox> code_hint_style;
 		Color code_hint_color;
-		ColorRole code_hint_color_role;
+		Ref<ColorRole> code_hint_color_role;
 
 		/* Line length guideline */
 		Color line_length_guideline_color;
-		ColorRole line_length_guideline_color_role;
+		Ref<ColorRole> line_length_guideline_color_role;
 
 		/* Other visuals */
 		Ref<StyleBox> style_normal;
 
 		Color brace_mismatch_color;
-		ColorRole brace_mismatch_color_role;
+		Ref<ColorRole> brace_mismatch_color_role;
 
 		Ref<Font> font;
 		int font_size = 16;

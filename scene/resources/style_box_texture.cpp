@@ -156,24 +156,24 @@ Color StyleBoxTexture::get_modulate() const {
 	return modulate;
 }
 
-void StyleBoxTexture::set_color_role(const ColorRole p_color_role) {
+void StyleBoxTexture::set_color_role(const Ref<ColorRole> p_color_role) {
 	color_role = p_color_role;
 	_update_color();
 	custom_emit_changed();
 }
 
-ColorRole StyleBoxTexture::get_color_role() const {
+Ref<ColorRole> StyleBoxTexture::get_color_role() const {
 	return color_role;
 }
 
 void StyleBoxTexture::_update_color() {
 	if (color_scheme.is_valid()) {
-		const Color target_color = color_scheme->get_color(color_role) * color_scale;
+		const Color target_color = color_role->get_color(color_scheme)* color_scale;
 		if (target_color != modulate) {
 			set_modulate(target_color);
 		}
 	} else if (default_color_scheme.is_valid()) {
-		const Color target_color = default_color_scheme->get_color(color_role) * color_scale;
+		const Color target_color = color_role->get_color(default_color_scheme)* color_scale;
 		if (target_color != modulate) {
 			set_modulate(target_color);
 		}
@@ -270,7 +270,7 @@ void StyleBoxTexture::_bind_methods() {
 
 	ADD_GROUP("Modulate", "modulate_");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "modulate_color"), "set_modulate", "get_modulate");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "color_role", PROPERTY_HINT_ENUM, color_role_hint), "set_color_role", "get_color_role");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "color_role"), "set_color_role", "get_color_role");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color_scale"), "set_color_scale", "get_color_scale");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "draw_center"), "set_draw_center", "is_draw_center_enabled");
 

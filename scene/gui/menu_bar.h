@@ -88,7 +88,7 @@ class MenuBar : public Control {
 
 		int outline_size = 0;
 		Color font_outline_color;
-		ColorRole font_outline_color_role;
+		Ref<ColorRole> font_outline_color_role;
 		
 
 		int h_separation = 0;

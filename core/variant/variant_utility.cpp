@@ -454,8 +454,6 @@ Variant VariantUtilityFunctions::lerp(const Variant &from, const Variant &to, do
 		case Variant::BASIS:
 		case Variant::COLOR:
 			break;
-		case Variant::COLOR_ROLE:
-			break;
 		default:
 			r_error.error = Callable::CallError::CALL_ERROR_INVALID_ARGUMENT;
 			r_error.argument = 0;
@@ -885,8 +883,6 @@ Variant VariantUtilityFunctions::type_convert(const Variant &p_variant, const Va
 			return p_variant.operator Projection();
 		case Variant::Type::COLOR:
 			return p_variant.operator Color();
-		case Variant::Type::COLOR_ROLE:
-			return p_variant.operator ColorRole();
 		case Variant::Type::STRING_NAME:
 			return p_variant.operator StringName();
 		case Variant::Type::NODE_PATH:

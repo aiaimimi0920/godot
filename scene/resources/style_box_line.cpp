@@ -55,24 +55,32 @@ Color StyleBoxLine::get_color() const {
 	return color;
 }
 
-void StyleBoxLine::set_color_role(const ColorRole p_color_role) {
+void StyleBoxLine::set_color_role(const Ref<ColorRole> p_color_role) {
+	if (color_role.is_valid()) {
+		color_role->disconnect_changed(callable_mp(this, &StyleBoxLine::_update_color));
+	}
+
 	color_role = p_color_role;
+	if (color_role.is_valid()) {
+		color_role->connect_changed(callable_mp(this, &StyleBoxLine::_update_color), CONNECT_REFERENCE_COUNTED);
+	}
+
 	_update_color();
 	custom_emit_changed();
 }
 
-ColorRole StyleBoxLine::get_color_role() const {
+Ref<ColorRole> StyleBoxLine::get_color_role() const {
 	return color_role;
 }
 
 void StyleBoxLine::_update_color() {
 	if (color_scheme.is_valid()) {
-		const Color target_color = color_scheme->get_color(color_role);
+		const Color target_color = color_role->get_color(color_scheme);
 		if (target_color != color) {
 			set_color(target_color);
 		}
 	} else if (default_color_scheme.is_valid()) {
-		const Color target_color = default_color_scheme->get_color(color_role);
+		const Color target_color = color_role->get_color(default_color_scheme);
 		if (target_color != color) {
 			set_color(target_color);
 		}
@@ -148,7 +156,7 @@ void StyleBoxLine::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_vertical"), &StyleBoxLine::is_vertical);
 
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "color_role", PROPERTY_HINT_ENUM, color_role_hint), "set_color_role", "get_color_role");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "color_role"), "set_color_role", "get_color_role");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "grow_begin", PROPERTY_HINT_RANGE, "-300,300,1,suffix:px"), "set_grow_begin", "get_grow_begin");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "grow_end", PROPERTY_HINT_RANGE, "-300,300,1,suffix:px"), "set_grow_end", "get_grow_end");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "thickness", PROPERTY_HINT_RANGE, "0,100,suffix:px"), "set_thickness", "get_thickness");

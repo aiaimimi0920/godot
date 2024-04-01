@@ -114,9 +114,6 @@ String Variant::get_type_name(Variant::Type p_type) {
 		case COLOR: {
 			return "Color";
 		}
-		case COLOR_ROLE: {
-			return "ColorRole";
-		}
 		case RID: {
 			return "RID";
 		}
@@ -930,9 +927,6 @@ bool Variant::is_zero() const {
 		case COLOR: {
 			return *reinterpret_cast<const Color *>(_data._mem) == Color();
 		}
-		case COLOR_ROLE: {
-			return *reinterpret_cast<const ColorRole *>(_data._mem) == ColorRole();
-		}
 		case RID: {
 			return *reinterpret_cast<const ::RID *>(_data._mem) == ::RID();
 		}
@@ -1039,9 +1033,6 @@ bool Variant::is_one() const {
 
 		case COLOR: {
 			return *reinterpret_cast<const Color *>(_data._mem) == Color(1, 1, 1, 1);
-		}
-		case COLOR_ROLE: {
-			return *reinterpret_cast<const ColorRole *>(_data._mem) == ColorRole(ColorRoleEnum::STATIC_ONE);
 		}
 		default: {
 			return !is_zero();
@@ -1151,9 +1142,6 @@ void Variant::reference(const Variant &p_variant) {
 		// Miscellaneous types.
 		case COLOR: {
 			memnew_placement(_data._mem, Color(*reinterpret_cast<const Color *>(p_variant._data._mem)));
-		} break;
-		case COLOR_ROLE: {
-			memnew_placement(_data._mem, ColorRole(*reinterpret_cast<const ColorRole *>(p_variant._data._mem)));
 		} break;
 		case RID: {
 			memnew_placement(_data._mem, ::RID(*reinterpret_cast<const ::RID *>(p_variant._data._mem)));
@@ -1299,10 +1287,6 @@ void Variant::zero() {
 
 		case COLOR:
 			*reinterpret_cast<Color *>(_data._mem) = Color();
-			break;
-
-		case COLOR_ROLE:
-			*reinterpret_cast<ColorRole *>(_data._mem) = ColorRole();
 			break;
 
 		default:
@@ -1774,8 +1758,6 @@ String Variant::stringify(int recursion_count) const {
 			return operator NodePath();
 		case COLOR:
 			return operator Color();
-		case COLOR_ROLE:
-			return operator ColorRole();
 		case DICTIONARY: {
 			ERR_FAIL_COND_V_MSG(recursion_count > MAX_RECURSION, "{ ... }", "Maximum dictionary recursion reached!");
 			recursion_count++;
@@ -2122,17 +2104,6 @@ Variant::operator Color() const {
 	}
 }
 
-Variant::operator ColorRole() const {
-	if (type == COLOR_ROLE) {
-		return *reinterpret_cast<const ColorRole *>(_data._mem);
-	} else if (type == INT) {
-		return ColorRole(operator int());
-	} else {
-		return ColorRole();
-	}
-}
-
-
 
 Variant::operator NodePath() const {
 	if (type == NODE_PATH) {
@@ -2433,10 +2404,6 @@ Variant::operator Orientation() const {
 	return (Orientation) operator int();
 }
 
-Variant::operator ColorRole() const {
-	return (ColorRole) operator int();
-}
-
 Variant::operator IPAddress() const {
 	if (type == PACKED_FLOAT32_ARRAY || type == PACKED_INT32_ARRAY || type == PACKED_FLOAT64_ARRAY || type == PACKED_INT64_ARRAY || type == PACKED_BYTE_ARRAY) {
 		Vector<int> addr = operator Vector<int>();
@@ -2626,10 +2593,6 @@ Variant::Variant(const Color &p_color) {
 	memnew_placement(_data._mem, Color(p_color));
 }
 
-Variant::Variant(const ColorRole &p_color_role) {
-	type = COLOR_ROLE;
-	memnew_placement(_data._mem, ColorRole(p_color_role));
-}
 
 Variant::Variant(const NodePath &p_node_path) {
 	type = NODE_PATH;
@@ -2878,9 +2841,7 @@ void Variant::operator=(const Variant &p_variant) {
 		case COLOR: {
 			*reinterpret_cast<Color *>(_data._mem) = *reinterpret_cast<const Color *>(p_variant._data._mem);
 		} break;
-		case COLOR_ROLE: {
-			*reinterpret_cast<ColorRole *>(_data._mem) = *reinterpret_cast<const ColorRole *>(p_variant._data._mem);
-		} break;
+
 		case RID: {
 			*reinterpret_cast<::RID *>(_data._mem) = *reinterpret_cast<const ::RID *>(p_variant._data._mem);
 		} break;
@@ -3110,34 +3071,6 @@ uint32_t Variant::recursive_hash(int recursion_count) const {
 			h = hash_murmur3_one_float(c.a, h);
 			return hash_fmix32(h);
 		} break;
-		case COLOR_ROLE: {
-			uint32_t h = HASH_MURMUR3_SEED;
-			const ColorRole &c = *reinterpret_cast<const ColorRole *>(_data._mem);
-			h = hash_fmix32(c.color_role_enum, h);
-
-			h = hash_murmur3_one_float(c.color_scale.r, h);
-			h = hash_murmur3_one_float(c.color_scale.g, h);
-			h = hash_murmur3_one_float(c.color_scale.b, h);
-			h = hash_murmur3_one_float(c.color_scale.a, h);
-
-			h = hash_fmix32(c.inverted, h);
-
-			h = hash_murmur3_one_float(c.darkened_amount, h);
-			h = hash_murmur3_one_float(c.lightened_amount, h);
-
-			h = hash_murmur3_one_float(c.lerp_weight, h);
-
-			if(c.lerp_color_role==nullptr){
-				h = hash_fmix32(c.lerp_color_role->hash(), h);
-			}else{
-				h = hash_murmur3_one_float(c.lerp_color.r, h);
-				h = hash_murmur3_one_float(c.lerp_color.g, h);
-				h = hash_murmur3_one_float(c.lerp_color.b, h);
-				h = hash_murmur3_one_float(c.lerp_color.a, h);
-			}
-			return hash_fmix32(h);
-		} break;
-
 		case RID: {
 			return hash_one_uint64(reinterpret_cast<const ::RID *>(_data._mem)->get_id());
 		} break;

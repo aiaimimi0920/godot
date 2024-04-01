@@ -318,8 +318,12 @@ bool Control::_set(const StringName &p_name, const Variant &p_value) {
 			String dname = name.get_slicec('/', 1);
 			data.theme_constant_override.erase(dname);
 			_notify_theme_override_changed();
+
 		} else if (name.begins_with("theme_override_color_roles/")) {
 			String dname = name.get_slicec('/', 1);
+			if (data.theme_color_role_override.has(dname)) {
+				data.theme_color_role_override[dname]->disconnect_changed(callable_mp(this, &Control::_notify_theme_override_changed));
+			}
 			data.theme_color_role_override.erase(dname);
 			_notify_theme_override_changed();
 		} else if (name.begins_with("theme_override_color_schemes/")) {
@@ -471,7 +475,7 @@ void Control::_get_property_list(List<PropertyInfo> *p_list) const {
 				if (data.theme_color_role_override.has(E.item_name)) {
 					usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
 				}
-				p_list->push_back(PropertyInfo(Variant::INT, PNAME("theme_override_color_roles") + String("/") + E.item_name, PROPERTY_HINT_ENUM, color_role_hint, usage));
+				p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("theme_override_color_roles") + String("/") + E.item_name, PROPERTY_HINT_RESOURCE_TYPE, "ColorRole", usage));
 			} break;
 
 			case Theme::DATA_TYPE_COLOR_SCHEME: {
@@ -2710,11 +2714,11 @@ Color Control::get_theme_color(const StringName &p_name, const StringName &p_the
 
 	if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
 		const StringName targe_color_role_name = String(p_name) + String("_role");
-		const ColorRole *color_role = data.theme_color_role_override.getptr(targe_color_role_name);
-		if (color_role && *color_role->color_role_enum != ColorRoleEnum::STATIC_COLOR) {
+		const Ref<ColorRole> *color_role = data.theme_color_role_override.getptr(targe_color_role_name);
+		if (color_role && (*color_role)->color_role_enum != ColorRoleEnum::STATIC_COLOR) {
 			const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
 			const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
-			Color color = color_scheme->get_color(*color_role);
+			Color color = (*color_role)->get_color(color_scheme);
 			return color;
 		}
 	}
@@ -2735,10 +2739,10 @@ Color Control::get_theme_color(const StringName &p_name, const StringName &p_the
 	Color target_color;
 	if (color.get_type() == Variant::BOOL) {
 		const StringName targe_color_role_name = String(p_name) + String("_role");
-		ColorRole color_role = get_theme_color_role(targe_color_role_name, p_theme_type);
+		Ref<ColorRole> color_role = get_theme_color_role(targe_color_role_name, p_theme_type);
 		const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
 		const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
-		target_color = color_scheme->get_color(color_role);
+		target_color = color_role->get_color(color_scheme);
 	} else {
 		target_color = Color(color);
 	}
@@ -2771,14 +2775,15 @@ int Control::get_theme_constant(const StringName &p_name, const StringName &p_th
 	return constant;
 }
 
-ColorRole Control::get_theme_color_role(const StringName &p_name, const StringName &p_theme_type) const {
-	ERR_READ_THREAD_GUARD_V(ColorRole());
+
+Ref<ColorRole> Control::get_theme_color_role(const StringName &p_name, const StringName &p_theme_type) const {
+	ERR_READ_THREAD_GUARD_V(Ref<ColorRole>());
 	if (!data.initialized) {
 		WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
 	}
 
 	if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
-		const ColorRole *color_role = data.theme_color_role_override.getptr(p_name);
+		const Ref<ColorRole> *color_role = data.theme_color_role_override.getptr(p_name);
 		if (color_role) {
 			return *color_role;
 		}
@@ -2790,8 +2795,9 @@ ColorRole Control::get_theme_color_role(const StringName &p_name, const StringNa
 
 	List<StringName> theme_types;
 	data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
-	ColorRole color_role = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR_ROLE, p_name, theme_types);
+	Ref<ColorRole> color_role = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR_ROLE, p_name, theme_types);
 	data.theme_color_role_cache[p_theme_type][p_name] = color_role;
+
 	const StringName targe_color_name = String(p_name).trim_suffix("_role");
 	Color color = get_theme_color(targe_color_name, p_theme_type);
 	return color_role;
@@ -3100,9 +3106,16 @@ void Control::add_theme_constant_override(const StringName &p_name, int p_consta
 	_notify_theme_override_changed();
 }
 
-void Control::add_theme_color_role_override(const StringName &p_name, ColorRole p_color_role) {
+void Control::add_theme_color_role_override(const StringName &p_name, const Ref<ColorRole> &p_color_role) {
 	ERR_MAIN_THREAD_GUARD;
+	ERR_FAIL_COND(!p_color_role.is_valid());
+
+	if (data.theme_color_role_override.has(p_name)) {
+		data.theme_color_role_override[p_name]->disconnect_changed(callable_mp(this, &Control::_notify_theme_override_changed));
+	}
+
 	data.theme_color_role_override[p_name] = p_color_role;
+	data.theme_color_role_override[p_name]->connect_changed(callable_mp(this, &Control::_notify_theme_override_changed), CONNECT_REFERENCE_COUNTED);
 	_notify_theme_override_changed();
 }
 
@@ -3175,6 +3188,10 @@ void Control::remove_theme_constant_override(const StringName &p_name) {
 
 void Control::remove_theme_color_role_override(const StringName &p_name) {
 	ERR_MAIN_THREAD_GUARD;
+	if (data.theme_color_role_override.has(p_name)) {
+		data.theme_color_role_override[p_name]->disconnect_changed(callable_mp(this, &Control::_notify_theme_override_changed));
+	}
+
 	data.theme_color_role_override.erase(p_name);
 	_notify_theme_override_changed();
 }
@@ -3233,7 +3250,7 @@ bool Control::has_theme_constant_override(const StringName &p_name) const {
 
 bool Control::has_theme_color_role_override(const StringName &p_name) const {
 	ERR_READ_THREAD_GUARD_V(false);
-	const ColorRole *color_role = data.theme_color_role_override.getptr(p_name);
+	const Ref<ColorRole> *color_role = data.theme_color_role_override.getptr(p_name);
 	return color_role != nullptr;
 }
 
@@ -4075,6 +4092,11 @@ Control::~Control() {
 	for (KeyValue<StringName, Ref<ColorScheme>> &E : data.theme_color_scheme_override) {
 		E.value->disconnect_changed(callable_mp(this, &Control::_notify_theme_override_changed));
 	}
+
+	for (KeyValue<StringName, Ref<ColorRole>> &E : data.theme_color_role_override) {
+		E.value->disconnect_changed(callable_mp(this, &Control::_notify_theme_override_changed));
+	}
+
 
 	// Then override maps can be simply cleared.
 	data.theme_icon_override.clear();

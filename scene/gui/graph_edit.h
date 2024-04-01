@@ -87,7 +87,7 @@ class GraphEditMinimap : public Control {
 		Ref<Texture2D> resizer;
 
 		Color resizer_color;
-		ColorRole resizer_color_role;
+		Ref<ColorRole> resizer_color_role;
 	} theme_cache;
 
 	Vector2 _get_render_size();
@@ -286,28 +286,28 @@ private:
 		Ref<StyleBox> panel;
 
 		Color grid_major;
-		ColorRole grid_major_role;
+		Ref<ColorRole> grid_major_role;
 
 		Color grid_minor;
-		ColorRole grid_minor_role;
+		Ref<ColorRole> grid_minor_role;
 
 		Color activity_color;
-		ColorRole activity_color_role;
+		Ref<ColorRole> activity_color_role;
 
 		Color connection_hover_tint_color;
-		ColorRole connection_hover_tint_color_role;
+		Ref<ColorRole> connection_hover_tint_color_role;
 
 		Color connection_valid_target_tint_color;
-		ColorRole connection_valid_target_tint_color_role;
+		Ref<ColorRole> connection_valid_target_tint_color_role;
 
 		Color connection_rim_color;
-		ColorRole connection_rim_color_role;
+		Ref<ColorRole> connection_rim_color_role;
 
 		Color selection_fill;
-		ColorRole selection_fill_role;
+		Ref<ColorRole> selection_fill_role;
 
 		Color selection_stroke;
-		ColorRole selection_stroke_role;
+		Ref<ColorRole> selection_stroke_role;
 
 		Ref<StyleBox> menu_panel;
 

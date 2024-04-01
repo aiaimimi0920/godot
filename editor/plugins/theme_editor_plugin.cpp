@@ -915,7 +915,7 @@ void ThemeItemImportTree::_import_selected() {
 						break;
 
 					case Theme::DATA_TYPE_COLOR_ROLE:
-						item_value = ColorRole();
+						item_value = Ref<ColorRole>();
 						break;
 
 					case Theme::DATA_TYPE_COLOR_SCHEME:
@@ -3107,81 +3107,31 @@ void ThemeTypeEditor::_update_type_items() {
 		}
 
 		HashMap<StringName, bool> color_role_items = _get_type_items(edited_type, Theme::DATA_TYPE_COLOR_ROLE, show_default);
-		List<String> color_role_keys;
-		color_role_keys.push_back("static_color");
-		color_role_keys.push_back("primary_palette_key");
-		color_role_keys.push_back("secondary_palette_key");
-		color_role_keys.push_back("tertiary_palette_key");
-		color_role_keys.push_back("neutral_palette_key");
-		color_role_keys.push_back("neutral_variant_palette_key");
-		color_role_keys.push_back("background");
-		color_role_keys.push_back("on_background");
-		color_role_keys.push_back("surface");
-		color_role_keys.push_back("surface_dim");
-		color_role_keys.push_back("surface_bright");
-		color_role_keys.push_back("surface_container_lowest");
-		color_role_keys.push_back("surface_container_low");
-		color_role_keys.push_back("surface_container");
-		color_role_keys.push_back("surface_container_high");
-		color_role_keys.push_back("surface_container_highest");
-		color_role_keys.push_back("on_surface");
-		color_role_keys.push_back("surface_variant");
-		color_role_keys.push_back("on_surface_variant");
-		color_role_keys.push_back("inverse_surface");
-		color_role_keys.push_back("inverse_on_surface");
-		color_role_keys.push_back("outline");
-		color_role_keys.push_back("outline_variant");
-		color_role_keys.push_back("shadow");
-		color_role_keys.push_back("scrim");
-		color_role_keys.push_back("surface_tint");
-		color_role_keys.push_back("primary");
-		color_role_keys.push_back("on_primary");
-		color_role_keys.push_back("primary_container");
-		color_role_keys.push_back("on_primary_container");
-		color_role_keys.push_back("inverse_primary");
-		color_role_keys.push_back("secondary");
-		color_role_keys.push_back("on_secondary");
-		color_role_keys.push_back("secondary_container");
-		color_role_keys.push_back("on_secondary_container");
-		color_role_keys.push_back("tertiary");
-		color_role_keys.push_back("on_tertiary");
-		color_role_keys.push_back("tertiary_container");
-		color_role_keys.push_back("on_tertiary_container");
-		color_role_keys.push_back("error");
-		color_role_keys.push_back("on_error");
-		color_role_keys.push_back("error_container");
-		color_role_keys.push_back("on_error_container");
-		color_role_keys.push_back("primary_fixed");
-		color_role_keys.push_back("primary_fixed_dim");
-		color_role_keys.push_back("on_primary_fixed");
-		color_role_keys.push_back("on_primary_fixed_variant");
-		color_role_keys.push_back("secondary_fixed");
-		color_role_keys.push_back("secondary_fixed_dim");
-		color_role_keys.push_back("on_secondary_fixed");
-		color_role_keys.push_back("on_secondary_fixed_variant");
-		color_role_keys.push_back("tertiary_fixed");
-		color_role_keys.push_back("tertiary_fixed_dim");
-		color_role_keys.push_back("on_tertiary_fixed");
-		color_role_keys.push_back("on_tertiary_fixed_variant");
-
 		for (const KeyValue<StringName, bool> &E : color_role_items) {
 			HBoxContainer *item_control = _create_property_control(Theme::DATA_TYPE_COLOR_ROLE, E.key, E.value);
-			OptionButton *item_editor = memnew(OptionButton);
+			EditorResourcePicker *item_editor = memnew(EditorResourcePicker);
 			item_editor->set_h_size_flags(SIZE_EXPAND_FILL);
-			for (int i = 0; i < color_role_keys.size(); i++) {
-				item_editor->add_item(color_role_keys[i]);
-			}
-			item_control->add_child(item_editor);
+			item_editor->set_stretch_ratio(1.5);
+			item_editor->set_base_type("ColorRole");
 
 			if (E.value) {
-				item_editor->select(int(edited_theme->get_color_role(E.key, edited_type)));
-				item_editor->connect("item_selected", callable_mp(this, &ThemeTypeEditor::_color_role_item_changed).bind(E.key));
-				item_editor->set_disabled(false);
+				if (edited_theme->has_color_role(E.key, edited_type)) {
+					item_editor->set_edited_resource(edited_theme->get_color_role(E.key, edited_type));
+				} else {
+					item_editor->set_edited_resource(Ref<Resource>());
+				}
+				item_editor->connect("resource_selected", callable_mp(this, &ThemeTypeEditor::_edit_resource_item));
+				item_editor->connect("resource_changed", callable_mp(this, &ThemeTypeEditor::_color_role_item_changed).bind(E.key));
 			} else {
-				item_editor->select(int(ThemeDB::get_singleton()->get_default_theme()->get_color_role(E.key, edited_type)));
-				item_editor->set_disabled(true);
+				if (ThemeDB::get_singleton()->get_default_theme()->has_stylebox(E.key, edited_type)) {
+					item_editor->set_edited_resource(ThemeDB::get_singleton()->get_default_theme()->get_stylebox(E.key, edited_type));
+				} else {
+					item_editor->set_edited_resource(Ref<Resource>());
+				}
+				item_editor->set_editable(false);
 			}
 
+			item_control->add_child(item_editor);
 			_add_focusable(item_editor);
 			color_role_items_list->add_child(item_control);
 		}
@@ -3756,11 +3706,20 @@ void ThemeTypeEditor::_stylebox_item_changed(Ref<StyleBox> p_value, String p_ite
 	ur->commit_action();
 }
 
-void ThemeTypeEditor::_color_role_item_changed(ColorRole p_value, String p_item_name) {
+void ThemeTypeEditor::_color_role_item_changed(Ref<ColorRole> p_value, String p_item_name) {
 	EditorUndoRedoManager *ur = EditorUndoRedoManager::get_singleton();
 	ur->create_action(TTR("Set Color Role Item in Theme"));
-	ur->add_do_method(*edited_theme, "set_color_role", p_item_name, edited_type, p_value);
-	ur->add_undo_method(*edited_theme, "set_color_role", p_item_name, edited_type, edited_theme->get_color_role(p_item_name, edited_type));
+
+	ur->add_do_method(*edited_theme, "set_color_role", p_item_name, edited_type, p_value.is_valid() ? p_value : Ref<ColorRole>());
+	if (edited_theme->has_color_role(p_item_name, edited_type)) {
+		ur->add_undo_method(*edited_theme, "set_color_role", p_item_name, edited_type, edited_theme->get_color_role(p_item_name, edited_type));
+	} else {
+		ur->add_undo_method(*edited_theme, "set_color_role", p_item_name, edited_type, Ref<ColorRole>());
+	}
+
+	ur->add_do_method(this, "call_deferred", "_update_type_items");
+	ur->add_undo_method(this, "call_deferred", "_update_type_items");
+
 	ur->commit_action();
 }
 

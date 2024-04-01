@@ -124,7 +124,7 @@ private:
 		Ref<Texture2D> file;
 		Ref<Texture2D> create_folder;
 
-		ColorRole folder_icon_color_role;
+		Ref<ColorRole> folder_icon_color_role;
 		Color folder_icon_color;
 
 		ThemeColorRoleData file_icon_color_role{ "file_icon_color_role" };

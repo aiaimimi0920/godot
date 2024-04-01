@@ -58,27 +58,34 @@ Ref<ColorScheme> ColorRect::get_color_scheme() const {
 	return color_scheme;
 }
 
-void ColorRect::set_color_role(const ColorRole p_color_role) {
+void ColorRect::set_color_role(const Ref<ColorRole> &p_color_role) {
 	color_role = p_color_role;
 	_update_color();
 }
 
-ColorRole ColorRect::get_color_role() const {
+Ref<ColorRole> ColorRect::get_color_role() const {
 	return color_role;
 }
 
 void ColorRect::_update_color() {
-	if(color_role.color_role_enum!=ColorRoleEnum::STATIC_COLOR){
-		if (color_scheme.is_valid()) {
-			const Color target_color = color_scheme->get_color(color_role);
-			if (target_color != color) {
-				set_color(target_color);
-			}
-		} else {
-			if (theme_cache.default_color_scheme.is_valid()) {
-				const Color target_color = theme_cache.default_color_scheme->get_color(color_role);
-				if (target_color != color) {
-					set_color(target_color);
+	if(color_role.is_valid()){
+		if(color_role->color_role_enum!=ColorRoleEnum::STATIC_COLOR){
+			if (color_scheme.is_valid()) {
+				if(color_role.is_valid()){
+					const Color target_color = color_role->get_color(color_scheme);
+					if (target_color != color) {
+						set_color(target_color);
+					}
+				}
+
+			} else {
+				if (theme_cache.default_color_scheme.is_valid()) {
+					if(color_role.is_valid()){
+						const Color target_color = color_role->get_color(theme_cache.default_color_scheme);
+						if (target_color != color) {
+							set_color(target_color);
+						}
+					}
 				}
 			}
 		}
@@ -106,7 +113,7 @@ void ColorRect::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "color_scheme"), "set_color_scheme", "get_color_scheme");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "color_role", PROPERTY_HINT_ENUM, color_role_hint), "set_color_role", "get_color_role");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "color_role"), "set_color_role", "get_color_role");
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ColorRect, default_color_scheme);
 }

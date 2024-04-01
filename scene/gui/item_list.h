@@ -146,7 +146,7 @@ private:
 		int font_outline_size = 0;
 
 		Color font_outline_color;
-		ColorRole font_outline_color_role;
+		Ref<ColorRole> font_outline_color_role;
 
 		int line_separation = 0;
 		int icon_margin = 0;
@@ -156,7 +156,7 @@ private:
 		ThemeStyleboxData cursor_style{"cursor_style"};
 
 		Color guide_color;
-		ColorRole guide_color_role;
+		Ref<ColorRole> guide_color_role;
 	} theme_cache;
 
 	void _scroll_changed(double);

@@ -36,7 +36,7 @@
 class StyleBoxLine : public StyleBox {
 	GDCLASS(StyleBoxLine, StyleBox);
 	Color color;
-	ColorRole color_role;
+	Ref<ColorRole> color_role;
 	int thickness = 1;
 	bool vertical = false;
 	float grow_begin = 1.0;
@@ -50,8 +50,8 @@ public:
 	void set_color(const Color &p_color);
 	Color get_color() const;
 
-	void set_color_role(const ColorRole p_color_role);
-	ColorRole get_color_role() const;
+	void set_color_role(const Ref<ColorRole> p_color_role);
+	Ref<ColorRole> get_color_role() const;
 
 	void set_thickness(int p_thickness);
 	int get_thickness() const;

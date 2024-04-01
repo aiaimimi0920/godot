@@ -279,7 +279,7 @@ void Window::_get_property_list(List<PropertyInfo> *p_list) const {
 				usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
 			}
 
-			p_list->push_back(PropertyInfo(Variant::INT, PNAME("theme_override_color_roles") + String("/") + E, PROPERTY_HINT_ENUM, color_role_hint, usage));
+			p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("theme_override_color_roles") + String("/") + E, PROPERTY_HINT_RESOURCE_TYPE, "ColorRole", usage));
 		}
 	}
 	{
@@ -2267,11 +2267,11 @@ Color Window::get_theme_color(const StringName &p_name, const StringName &p_them
 
 	if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == theme_type_variation) {
 		const StringName targe_color_role_name = String(p_name) + String("_role");
-		const ColorRole *color_role = theme_color_role_override.getptr(targe_color_role_name);
-		if (color_role && *color_role->color_role_enum != ColorRoleEnum::STATIC_COLOR) {
+		const Ref<ColorRole> *color_role = theme_color_role_override.getptr(targe_color_role_name);
+		if (color_role && (*color_role)->color_role_enum != ColorRoleEnum::STATIC_COLOR) {
 			const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
 			const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
-			Color color = color_scheme->get_color(*color_role);
+			Color color = (*color_role)->get_color(color_scheme);
 			return color;
 		}
 	}
@@ -2293,10 +2293,10 @@ Color Window::get_theme_color(const StringName &p_name, const StringName &p_them
 	Color target_color;
 	if (color.get_type() == Variant::BOOL) {
 		const StringName targe_color_role_name = String(p_name) + String("_role");
-		ColorRole color_role = get_theme_color_role(targe_color_role_name, p_theme_type);
+		Ref<ColorRole> color_role = get_theme_color_role(targe_color_role_name, p_theme_type);
 		const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
 		const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
-		target_color = color_scheme->get_color(color_role);
+		target_color = color_role->get_color(color_scheme);
 	} else {
 		target_color = Color(color);
 	}
@@ -2329,14 +2329,14 @@ int Window::get_theme_constant(const StringName &p_name, const StringName &p_the
 	return constant;
 }
 
-ColorRole Window::get_theme_color_role(const StringName &p_name, const StringName &p_theme_type) const {
-	ERR_READ_THREAD_GUARD_V(ColorRole());
+Ref<ColorRole> Window::get_theme_color_role(const StringName &p_name, const StringName &p_theme_type) const {
+	ERR_READ_THREAD_GUARD_V(Ref<ColorRole>());
 	if (!initialized) {
 		WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
 	}
 
 	if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == theme_type_variation) {
-		const ColorRole *color_role = theme_color_role_override.getptr(p_name);
+		const Ref<ColorRole> *color_role = theme_color_role_override.getptr(p_name);
 		if (color_role) {
 			return *color_role;
 		}
@@ -2348,7 +2348,7 @@ ColorRole Window::get_theme_color_role(const StringName &p_name, const StringNam
 
 	List<StringName> theme_types;
 	theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
-	ColorRole color_role = theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR_ROLE, p_name, theme_types);
+	Ref<ColorRole> color_role = theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR_ROLE, p_name, theme_types);
 	theme_color_role_cache[p_theme_type][p_name] = color_role;
 	const StringName targe_color_name = String(p_name).trim_suffix("_role");
 	Color color = get_theme_color(targe_color_name, p_theme_type);
@@ -2658,7 +2658,7 @@ void Window::add_theme_constant_override(const StringName &p_name, int p_constan
 	_notify_theme_override_changed();
 }
 
-void Window::add_theme_color_role_override(const StringName &p_name, ColorRole p_color_role) {
+void Window::add_theme_color_role_override(const StringName &p_name, Ref<ColorRole> p_color_role) {
 	ERR_MAIN_THREAD_GUARD;
 	theme_color_role_override[p_name] = p_color_role;
 	_notify_theme_override_changed();
@@ -2791,7 +2791,7 @@ bool Window::has_theme_constant_override(const StringName &p_name) const {
 
 bool Window::has_theme_color_role_override(const StringName &p_name) const {
 	ERR_READ_THREAD_GUARD_V(false);
-	const ColorRole *color_role = theme_color_role_override.getptr(p_name);
+	const Ref<ColorRole> *color_role = theme_color_role_override.getptr(p_name);
 	return color_role != nullptr;
 }
 

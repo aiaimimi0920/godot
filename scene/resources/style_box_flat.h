@@ -93,9 +93,9 @@ private:
 
 	Color border_color = Color(0.8, 0.8, 0.8);
 
-	ColorRole bg_color_role;
-	ColorRole shadow_color_role;
-	ColorRole border_color_role;
+	Ref<ColorRole> bg_color_role;
+	Ref<ColorRole> shadow_color_role;
+	Ref<ColorRole> border_color_role;
 
 	real_t border_width[4] = {};
 	real_t expand_margin[4] = {};
@@ -129,14 +129,14 @@ public:
 	void set_bg_color(const Color &p_color);
 	Color get_bg_color() const;
 
-	void set_bg_color_role(const ColorRole p_color_role);
-	ColorRole get_bg_color_role() const;
+	void set_bg_color_role(const Ref<ColorRole> &p_color_role);
+	Ref<ColorRole> get_bg_color_role() const;
 
 	void set_border_color(const Color &p_color);
 	Color get_border_color() const;
 
-	void set_border_color_role(const ColorRole p_color_role);
-	ColorRole get_border_color_role() const;
+	void set_border_color_role(const Ref<ColorRole> &p_color_role);
+	Ref<ColorRole> get_border_color_role() const;
 
 	void set_border_width_all(int p_size);
 	int get_border_width_min() const;
@@ -172,8 +172,8 @@ public:
 	void set_shadow_color(const Color &p_color);
 	Color get_shadow_color() const;
 
-	void set_shadow_color_role(const ColorRole p_color_role);
-	ColorRole get_shadow_color_role() const;
+	void set_shadow_color_role(const Ref<ColorRole> &p_color_role);
+	Ref<ColorRole> get_shadow_color_role() const;
 
 	void set_shadow_size(const int &p_size);
 	int get_shadow_size() const;

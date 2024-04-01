@@ -68,7 +68,7 @@ private:
 		int font_size;
 
 		Color font_outline_color;
-		ColorRole font_outline_color_role;		
+		Ref<ColorRole> font_outline_color_role;		
 		int outline_size;
 
 		int underline_spacing = 0;

@@ -27,6 +27,7 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
+
 #include "color_scheme.h"
 #include "color_role.h"
 
@@ -121,8 +122,9 @@ float ColorScheme::get_contrast_level() const {
 	return contrast_level;
 }
 
-Color ColorScheme::get_color(ColorRoleEnum& cur_color_role) {
-	switch (cur_color_role) {
+
+Color ColorScheme::get_color(ColorRoleEnum cur_color_role_enum) {
+	switch (cur_color_role_enum) {
 		case ColorRoleEnum::STATIC_COLOR:
 			return Color(1, 1, 1, 1);
 		case ColorRoleEnum::NO_LERP:
@@ -481,7 +483,8 @@ void ColorScheme::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_dark"), &ColorScheme::is_dark);
 	ClassDB::bind_method(D_METHOD("get_contrast_level"), &ColorScheme::get_contrast_level);
 
-	ClassDB::bind_method(D_METHOD("get_color", "color_role"), &ColorScheme::get_color);
+	// ClassDB::bind_method(D_METHOD("get_color", "color_role"), &ColorScheme::get_color);
+	// ClassDB::bind_method(D_METHOD("get_color_from_role", "color_role"), &ColorScheme::get_color);
 
 	ClassDB::bind_method(D_METHOD("get_primary_palette_key_color"), &ColorScheme::get_primary_palette_key_color);
 	ClassDB::bind_method(D_METHOD("get_secondary_palette_key_color"), &ColorScheme::get_secondary_palette_key_color);

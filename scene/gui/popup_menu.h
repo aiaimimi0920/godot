@@ -179,16 +179,16 @@ class PopupMenu : public Popup {
 		ThemeColorData font_color{ "font_color" };
 		ThemeColorRoleData font_color_role{ "font_color_role" };
 		Color font_accelerator_color;
-		ColorRole font_accelerator_color_role;
+		Ref<ColorRole> font_accelerator_color_role;
 		int font_outline_size = 0;
 		Color font_outline_color;
-		ColorRole font_outline_color_role;
+		Ref<ColorRole> font_outline_color_role;
 
 		Color font_separator_color;
-		ColorRole font_separator_color_role;
+		Ref<ColorRole> font_separator_color_role;
 		int font_separator_outline_size = 0;
 		Color font_separator_outline_color;
-		ColorRole font_separator_outline_color_role;
+		Ref<ColorRole> font_separator_outline_color_role;
 	} theme_cache;
 
 	void _draw_items();

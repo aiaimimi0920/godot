@@ -75,19 +75,19 @@ private:
 		Ref<StyleBox> normal_style;
 
 		Color font_color;
-		ColorRole font_color_role;
+		Ref<ColorRole> font_color_role;
 		Ref<Font> font;
 
 		int font_size = 0;
 		int line_spacing = 0;
 
 		Color font_shadow_color;
-		ColorRole font_shadow_color_role;
+		Ref<ColorRole> font_shadow_color_role;
 
 		Point2 font_shadow_offset;
 
 		Color font_outline_color;
-		ColorRole font_outline_color_role;
+		Ref<ColorRole> font_outline_color_role;
 
 		int font_outline_size;
 		int font_shadow_outline_size;

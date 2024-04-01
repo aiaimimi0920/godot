@@ -44,7 +44,7 @@ class EditorTheme : public Theme {
 
 public:
 	virtual Color get_color(const StringName &p_name, const StringName &p_theme_type) const override;
-	virtual ColorRole get_color_role(const StringName &p_name, const StringName &p_theme_type) const override;
+	virtual Ref<ColorRole> get_color_role(const StringName &p_name, const StringName &p_theme_type) const override;
 	virtual Ref<ColorScheme> get_color_scheme(const StringName &p_name, const StringName &p_theme_type) const override;
 	virtual String get_str(const StringName &p_name, const StringName &p_theme_type) const override;
 	virtual int get_constant(const StringName &p_name, const StringName &p_theme_type) const override;

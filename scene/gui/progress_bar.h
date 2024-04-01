@@ -51,10 +51,10 @@ class ProgressBar : public Range {
 		int font_outline_size = 0;
 
 		Color font_color;
-		ColorRole font_color_role;
+		Ref<ColorRole> font_color_role;
 
 		Color font_outline_color;
-		ColorRole font_outline_color_role;
+		Ref<ColorRole> font_outline_color_role;
 	} theme_cache;
 
 protected:

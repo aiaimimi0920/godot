@@ -538,7 +538,7 @@ private:
 		ThemeStyleboxData custom_button{"custom_button"};
 
 		Color title_button_color;
-		ColorRole title_button_color_role;
+		Ref<ColorRole> title_button_color_role;
 		
 		ThemeIconData checked{"checked"};
 		ThemeIconData indeterminate{"indeterminate"};
@@ -552,25 +552,25 @@ private:
 		ThemeColorRoleData font_color_role{"font_color_role"};
 
 		Color guide_color;
-		ColorRole guide_color_role;
+		Ref<ColorRole> guide_color_role;
 
 		Color drop_position_color;
-		ColorRole drop_position_color_role;
+		Ref<ColorRole> drop_position_color_role;
 
 		Color relationship_line_color;
-		ColorRole relationship_line_color_role;
+		Ref<ColorRole> relationship_line_color_role;
 
 		Color parent_hl_line_color;
-		ColorRole parent_hl_line_color_role;
+		Ref<ColorRole> parent_hl_line_color_role;
 
 		Color children_hl_line_color;
-		ColorRole children_hl_line_color_role;
+		Ref<ColorRole> children_hl_line_color_role;
 
 		Color custom_button_font_highlight;
-		ColorRole custom_button_font_highlight_role;
+		Ref<ColorRole> custom_button_font_highlight_role;
 
 		Color font_outline_color;
-		ColorRole font_outline_color_role;
+		Ref<ColorRole> font_outline_color_role;
 
 		float base_scale = 1.0;
 		int font_outline_size = 0;

@@ -621,18 +621,18 @@ private:
 		int normal_font_size;
 
 		Color default_color;
-		ColorRole default_color_role;
+		Ref<ColorRole> default_color_role;
 		Color font_selected_color;
-		ColorRole font_selected_color_role;
+		Ref<ColorRole> font_selected_color_role;
 
 		Color selection_color;
-		ColorRole selection_color_role;
+		Ref<ColorRole> selection_color_role;
 
 		Color font_outline_color;
-		ColorRole font_outline_color_role;
+		Ref<ColorRole> font_outline_color_role;
 
 		Color font_shadow_color;
-		ColorRole font_shadow_color_role;
+		Ref<ColorRole> font_shadow_color_role;
 
 		int shadow_outline_size;
 		int shadow_offset_x;
@@ -640,7 +640,7 @@ private:
 		int outline_size;
 
 		Color outline_color;
-		ColorRole outline_color_role;
+		Ref<ColorRole> outline_color_role;
 
 		Ref<Font> bold_font;
 		int bold_font_size;
@@ -658,13 +658,13 @@ private:
 		int table_v_separation;
 
 		Color table_odd_row_bg;
-		ColorRole table_odd_row_bg_role;
+		Ref<ColorRole> table_odd_row_bg_role;
 
 		Color table_even_row_bg;
-		ColorRole table_even_row_bg_role;
+		Ref<ColorRole> table_even_row_bg_role;
 
 		Color table_border;
-		ColorRole table_border_role;
+		Ref<ColorRole> table_border_role;
 
 		float base_scale = 1.0;
 	} theme_cache;

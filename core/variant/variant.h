@@ -59,7 +59,6 @@
 #include "core/variant/array.h"
 #include "core/variant/callable.h"
 #include "core/variant/dictionary.h"
-#include "modules/color_scheme/color_role.h"
 
 class Object;
 
@@ -108,7 +107,6 @@ public:
 
 		// misc types
 		COLOR,
-		COLOR_ROLE,
 		STRING_NAME,
 		NODE_PATH,
 		RID,
@@ -280,7 +278,6 @@ private:
 
 			// misc types
 			false, //COLOR,
-			false, //COLOR_ROLE,
 			true, //STRING_NAME,
 			true, //NODE_PATH,
 			false, //RID,
@@ -396,7 +393,6 @@ public:
 	operator Projection() const;
 
 	operator Color() const;
-	operator ColorRole() const;
 	operator NodePath() const;
 	operator ::RID() const;
 
@@ -469,7 +465,6 @@ public:
 	Variant(const Transform3D &p_transform);
 	Variant(const Projection &p_projection);
 	Variant(const Color &p_color);
-	Variant(const ColorRole &p_color_role);
 	Variant(const NodePath &p_node_path);
 	Variant(const ::RID &p_rid);
 	Variant(const Object *p_object);
@@ -510,7 +505,6 @@ public:
 	VARIANT_ENUM_CLASS_CONSTRUCTOR(KeyLocation)
 	VARIANT_ENUM_CLASS_CONSTRUCTOR(MIDIMessage)
 	VARIANT_ENUM_CLASS_CONSTRUCTOR(MouseButton)
-	VARIANT_ENUM_CLASS_CONSTRUCTOR(ColorRole)
 
 #undef VARIANT_ENUM_CLASS_CONSTRUCTOR
 

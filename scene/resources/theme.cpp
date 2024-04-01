@@ -177,8 +177,8 @@ void Theme::_get_property_list(List<PropertyInfo> *p_list) const {
 
 	// Color roles.
 	for (const KeyValue<StringName, ThemeColorRoleMap> &E : color_role_map) {
-		for (const KeyValue<StringName, ColorRole> &F : E.value) {
-			list.push_back(PropertyInfo(Variant::INT, String() + E.key + "/color_roles/" + F.key, PROPERTY_HINT_ENUM, color_role_hint));
+		for (const KeyValue<StringName, Ref<ColorRole>> &F : E.value) {
+			list.push_back(PropertyInfo(Variant::OBJECT, String() + E.key + "/color_roles/" + F.key, PROPERTY_HINT_RESOURCE_TYPE, "ColorRole"));
 		}
 	}
 
@@ -915,7 +915,7 @@ void Theme::get_constant_type_list(List<StringName> *p_list) const {
 }
 
 // Color role.
-void Theme::set_color_role(const StringName &p_name, const StringName &p_theme_type, ColorRole p_color_role) {
+void Theme::set_color_role(const StringName &p_name, const StringName &p_theme_type, const Ref<ColorRole> &p_color_role) {
 	ERR_FAIL_COND_MSG(!is_valid_item_name(p_name), vformat("Invalid item name: '%s'", p_name));
 	ERR_FAIL_COND_MSG(!is_valid_type_name(p_theme_type), vformat("Invalid type name: '%s'", p_theme_type));
 
@@ -925,11 +925,11 @@ void Theme::set_color_role(const StringName &p_name, const StringName &p_theme_t
 	_emit_theme_changed(!existing);
 }
 
-ColorRole Theme::get_color_role(const StringName &p_name, const StringName &p_theme_type) const {
+Ref<ColorRole> Theme::get_color_role(const StringName &p_name, const StringName &p_theme_type) const {
 	if (color_role_map.has(p_theme_type) && color_role_map[p_theme_type].has(p_name)) {
 		return color_role_map[p_theme_type][p_name];
 	} else {
-		return ColorRole();
+		return Ref<ColorRole>();
 	}
 }
 
@@ -970,7 +970,7 @@ void Theme::get_color_role_list(const StringName &p_theme_type, List<StringName>
 		return;
 	}
 
-	for (const KeyValue<StringName, ColorRole> &E : color_role_map[p_theme_type]) {
+	for (const KeyValue<StringName, Ref<ColorRole>> &E : color_role_map[p_theme_type]) {
 		p_list->push_back(E.key);
 	}
 }
@@ -1240,9 +1240,9 @@ void Theme::set_theme_item(DataType p_data_type, const StringName &p_name, const
 			set_stylebox(p_name, p_theme_type, stylebox_value);
 		} break;
 		case DATA_TYPE_COLOR_ROLE: {
-			ERR_FAIL_COND_MSG(p_value.get_type() != Variant::INT, "Theme item's data type (int) does not match Variant's type (" + Variant::get_type_name(p_value.get_type()) + ").");
+			ERR_FAIL_COND_MSG(p_value.get_type() != Variant::OBJECT, "Theme item's data type (Object) does not match Variant's type (" + Variant::get_type_name(p_value.get_type()) + ").");
 
-			ColorRole color_role_value = p_value;
+			Ref<ColorRole> color_role_value = p_value;
 			set_color_role(p_name, p_theme_type, color_role_value);
 		} break;
 		case DATA_TYPE_COLOR_SCHEME: {
@@ -2119,7 +2119,7 @@ void Theme::merge_with(const Ref<Theme> &p_other) {
 	// Color roles.
 	{
 		for (const KeyValue<StringName, ThemeColorRoleMap> &E : p_other->color_role_map) {
-			for (const KeyValue<StringName, ColorRole> &F : E.value) {
+			for (const KeyValue<StringName, Ref<ColorRole>> &F : E.value) {
 				set_color_role(F.key, E.key, F.value);
 			}
 		}

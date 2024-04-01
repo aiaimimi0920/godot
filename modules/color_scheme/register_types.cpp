@@ -29,16 +29,18 @@
 /**************************************************************************/
 
 #include "register_types.h"
-
+#include "color_role.h"
 #include "color_scheme.h"
+
 
 void initialize_color_scheme_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
 
+	GDREGISTER_CLASS(ColorRole);
 	GDREGISTER_CLASS(ColorScheme);
-	// GDREGISTER_CLASS(ColorRole);
+	
 }
 
 void uninitialize_color_scheme_module(ModuleInitializationLevel p_level) {

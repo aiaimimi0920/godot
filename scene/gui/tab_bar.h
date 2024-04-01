@@ -130,14 +130,14 @@ private:
 		Ref<Texture2D> drop_mark_icon;
 
 		Color drop_mark_color;
-		ColorRole drop_mark_color_role;
+		Ref<ColorRole> drop_mark_color_role;
 
 
 		ThemeColorData font_color{"font_color"};
 		ThemeColorRoleData font_color_role{"font_color_role"};
 
 		Color font_outline_color;
-		ColorRole font_outline_color_role;
+		Ref<ColorRole> font_outline_color_role;
 		
 		Ref<Font> font;
 		int font_size;

@@ -814,7 +814,7 @@ Vector<State> ThemeData<T>::get_search_order(State p_state) const {
 }
 
 typedef ThemeData<Color> ThemeColorData;
-typedef ThemeData<ColorRole> ThemeColorRoleData;
+typedef ThemeData<Ref<ColorRole>> ThemeColorRoleData;
 typedef ThemeData<Ref<ColorScheme>> ThemeColorSchemeData;
 typedef ThemeData<Ref<Font>> ThemeFontData;
 typedef ThemeData<Ref<Texture2D>> ThemeIconData;

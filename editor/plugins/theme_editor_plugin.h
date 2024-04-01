@@ -429,7 +429,7 @@ class ThemeTypeEditor : public MarginContainer {
 	void _font_item_changed(Ref<Font> p_value, String p_item_name);
 	void _icon_item_changed(Ref<Texture2D> p_value, String p_item_name);
 	void _stylebox_item_changed(Ref<StyleBox> p_value, String p_item_name);
-	void _color_role_item_changed(ColorRole p_value, String p_item_name);
+	void _color_role_item_changed(Ref<ColorRole> p_value, String p_item_name);
 	void _color_scheme_item_changed(Ref<ColorScheme> p_value, String p_item_name);
 	void _str_item_changed(String p_value, String p_item_name);
 	void _change_pinned_stylebox();

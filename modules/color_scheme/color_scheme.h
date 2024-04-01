@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  color_scheme.h                                                 */
+/*  color_scheme.h                                                 		  */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -34,16 +34,14 @@
 #include "core/io/resource.h"
 #include "scene/resources/texture.h"
 
-// #include "color_role.h"
-
 #include "thirdparty/material-color-utilities/quantize/celebi.h"
 #include "thirdparty/material-color-utilities/scheme/scheme.h"
 #include "thirdparty/material-color-utilities/scheme/scheme_content.h"
 #include "thirdparty/material-color-utilities/score/score.h"
 #include "thirdparty/material-color-utilities/utils/utils.h"
 
-// class ColorRole;
-enum class ColorRoleEnum;
+class ColorRole;
+enum ColorRoleEnum;
 
 class ColorScheme : public Resource {
 	GDCLASS(ColorScheme, Resource);
@@ -75,7 +73,7 @@ public:
 	void set_contrast_level(float p_contrast_level);
 	float get_contrast_level() const;
 
-	Color get_color(ColorRoleEnum& cur_color_role);
+	Color get_color(ColorRoleEnum cur_color_role_enum);
 
 	Color get_color_from_argb(material_color_utilities::Argb cur_argb);
 	Color get_source_color_argb();

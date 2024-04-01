@@ -191,19 +191,19 @@ private:
 		int font_size;
 
 		Color font_color;
-		ColorRole font_color_role;
+		Ref<ColorRole> font_color_role;
 		Color font_uneditable_color;
-		ColorRole font_uneditable_color_role;
+		Ref<ColorRole> font_uneditable_color_role;
 		Color font_selected_color;
-		ColorRole font_selected_color_role;
+		Ref<ColorRole> font_selected_color_role;
 		Color font_outline_color;
-		ColorRole font_outline_color_role;
+		Ref<ColorRole> font_outline_color_role;
 		Color font_placeholder_color;
-		ColorRole font_placeholder_color_role;
+		Ref<ColorRole> font_placeholder_color_role;
 		Color caret_color;
-		ColorRole caret_color_role;
+		Ref<ColorRole> caret_color_role;
 		Color selection_color;
-		ColorRole selection_color_role;
+		Ref<ColorRole> selection_color_role;
 
 		int font_outline_size;
 

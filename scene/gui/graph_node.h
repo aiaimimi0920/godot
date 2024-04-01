@@ -92,7 +92,7 @@ class GraphNode : public GraphElement {
 		Ref<Texture2D> resizer;
 
 		Color resizer_color;
-		ColorRole resizer_color_role;
+		Ref<ColorRole> resizer_color_role;
 	} theme_cache;
 
 	bool port_pos_dirty = true;

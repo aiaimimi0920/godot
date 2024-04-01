@@ -554,22 +554,22 @@ private:
 
 		/* Search */
 		Color search_result_color;
-		ColorRole search_result_color_role;
+		Ref<ColorRole> search_result_color_role;
 		Color search_result_border_color;
-		ColorRole search_result_border_color_role;
+		Ref<ColorRole> search_result_border_color_role;
 
 		/* Caret */
 		int caret_width = 0;
 		Color caret_color;
-		ColorRole caret_color_role;
+		Ref<ColorRole> caret_color_role;
 		Color caret_background_color;
-		ColorRole caret_background_color_role;
+		Ref<ColorRole> caret_background_color_role;
 
 		/* Selection */
 		Color font_selected_color;
-		ColorRole font_selected_color_role;
+		Ref<ColorRole> font_selected_color_role;
 		Color selection_color;
-		ColorRole selection_color_role;
+		Ref<ColorRole> selection_color_role;
 
 		/* Other visuals */
 		ThemeStyleboxData default_stylebox{ "default_stylebox" };
@@ -584,29 +584,29 @@ private:
 
 
 		Color font_color;
-		ColorRole font_color_role;
+		Ref<ColorRole> font_color_role;
 
 		Color font_readonly_color;
-		ColorRole font_readonly_color_role;
+		Ref<ColorRole> font_readonly_color_role;
 
 		Color font_placeholder_color;
-		ColorRole font_placeholder_color_role;
+		Ref<ColorRole> font_placeholder_color_role;
 
 		Color outline_color;
-		ColorRole outline_color_role;
+		Ref<ColorRole> outline_color_role;
 
 		int outline_size = 0;
 
 		int line_spacing = 1;
 
 		Color background_color;
-		ColorRole background_color_role;
+		Ref<ColorRole> background_color_role;
 
 		Color current_line_color;
-		ColorRole current_line_color_role;
+		Ref<ColorRole> current_line_color_role;
 
 		Color word_highlighted_color;
-		ColorRole word_highlighted_color_role;
+		Ref<ColorRole> word_highlighted_color_role;
 	} theme_cache;
 
 	bool window_has_focus = true;

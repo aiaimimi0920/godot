@@ -211,12 +211,12 @@ private:
 		int title_font_size = 0;
 
 		Color title_color;
-		ColorRole title_color_role;
+		Ref<ColorRole> title_color_role;
 
 		int title_height = 0;
 
 		Color title_outline_modulate;
-		ColorRole title_outline_modulate_role;
+		Ref<ColorRole> title_outline_modulate_role;
 
 		int title_outline_size = 0;
 
@@ -453,7 +453,7 @@ public:
 	void add_theme_font_size_override(const StringName &p_name, int p_font_size);
 	void add_theme_color_override(const StringName &p_name, const Color &p_color);
 	void add_theme_constant_override(const StringName &p_name, int p_constant);
-	void add_theme_color_role_override(const StringName &p_name, ColorRole p_color_role);
+	void add_theme_color_role_override(const StringName &p_name, Ref<ColorRole> p_color_role);
 	void add_theme_color_scheme_override(const StringName &p_name, const Ref<ColorScheme> &p_color_scheme);
 	void add_theme_str_override(const StringName &p_name, String p_str);
 
@@ -473,7 +473,7 @@ public:
 	int get_theme_font_size(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	Color get_theme_color(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	int get_theme_constant(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
-	ColorRole get_theme_color_role(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
+	Ref<ColorRole> get_theme_color_role(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	Ref<ColorScheme> get_theme_color_scheme(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	String get_theme_str(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 

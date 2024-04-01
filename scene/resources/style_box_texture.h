@@ -53,7 +53,7 @@ private:
 	Color modulate = Color(1, 1, 1, 1);
 	Color color_scale = Color(1, 1, 1, 1);
 
-	ColorRole color_role;
+	Ref<ColorRole> color_role;
 
 	AxisStretchMode axis_h = AXIS_STRETCH_MODE_STRETCH;
 	AxisStretchMode axis_v = AXIS_STRETCH_MODE_STRETCH;
@@ -91,8 +91,8 @@ public:
 	void set_modulate(const Color &p_modulate);
 	Color get_modulate() const;
 
-	void set_color_role(const ColorRole p_color_role);
-	ColorRole get_color_role() const;
+	void set_color_role(const Ref<ColorRole> p_color_role);
+	Ref<ColorRole> get_color_role() const;
 
 	void set_color_scale(const Color &p_color);
 	Color get_color_scale() const;

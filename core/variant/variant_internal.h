@@ -69,9 +69,6 @@ public:
 			case Variant::COLOR:
 				init_color(v);
 				break;
-			case Variant::COLOR_ROLE:
-				init_color_role(v);
-				break;
 			case Variant::STRING_NAME:
 				init_string_name(v);
 				break;
@@ -174,8 +171,6 @@ public:
 	// Misc types.
 	_FORCE_INLINE_ static Color *get_color(Variant *v) { return reinterpret_cast<Color *>(v->_data._mem); }
 	_FORCE_INLINE_ static const Color *get_color(const Variant *v) { return reinterpret_cast<const Color *>(v->_data._mem); }
-	_FORCE_INLINE_ static ColorRole *get_color_role(Variant *v) { return reinterpret_cast<ColorRole *>(v->_data._mem); }
-	_FORCE_INLINE_ static const ColorRole *get_color_role(const Variant *v) { return reinterpret_cast<const ColorRole *>(v->_data._mem); }
 	_FORCE_INLINE_ static StringName *get_string_name(Variant *v) { return reinterpret_cast<StringName *>(v->_data._mem); }
 	_FORCE_INLINE_ static const StringName *get_string_name(const Variant *v) { return reinterpret_cast<const StringName *>(v->_data._mem); }
 	_FORCE_INLINE_ static NodePath *get_node_path(Variant *v) { return reinterpret_cast<NodePath *>(v->_data._mem); }
@@ -257,10 +252,6 @@ public:
 	_FORCE_INLINE_ static void init_color(Variant *v) {
 		memnew_placement(v->_data._mem, Color);
 		v->type = Variant::COLOR;
-	}
-	_FORCE_INLINE_ static void init_color_role(Variant *v) {
-		memnew_placement(v->_data._mem, ColorRole);
-		v->type = Variant::COLOR_ROLE;
 	}
 	_FORCE_INLINE_ static void init_string_name(Variant *v) {
 		memnew_placement(v->_data._mem, StringName);
@@ -394,8 +385,6 @@ public:
 				return get_aabb(v);
 			case Variant::COLOR:
 				return get_color(v);
-			case Variant::COLOR_ROLE:
-				return get_color_role(v);
 			case Variant::STRING_NAME:
 				return get_string_name(v);
 			case Variant::NODE_PATH:
@@ -480,8 +469,6 @@ public:
 				return get_aabb(v);
 			case Variant::COLOR:
 				return get_color(v);
-			case Variant::COLOR_ROLE:
-				return get_color_role(v);
 			case Variant::STRING_NAME:
 				return get_string_name(v);
 			case Variant::NODE_PATH:

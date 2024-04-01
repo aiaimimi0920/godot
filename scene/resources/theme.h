@@ -33,6 +33,7 @@
 
 #include "core/io/resource.h"
 #include "modules/color_scheme/color_scheme.h"
+#include "modules/color_scheme/color_role.h"
 #include "scene/resources/font.h"
 #include "scene/resources/style_box.h"
 #include "scene/resources/texture.h"
@@ -55,7 +56,7 @@ public:
 	using ThemeFontSizeMap = HashMap<StringName, int>;
 	using ThemeColorMap = HashMap<StringName, Color>;
 	using ThemeConstantMap = HashMap<StringName, int>;
-	using ThemeColorRoleMap = HashMap<StringName, ColorRole>;
+	using ThemeColorRoleMap = HashMap<StringName, Ref<ColorRole>>;
 	using ThemeColorSchemeMap = HashMap<StringName, Ref<ColorScheme>>;
 	using ThemeStrMap = HashMap<StringName, String>;
 
@@ -218,8 +219,8 @@ public:
 	void remove_constant_type(const StringName &p_theme_type);
 	void get_constant_type_list(List<StringName> *p_list) const;
 
-	void set_color_role(const StringName &p_name, const StringName &p_theme_type, ColorRole p_color_role);
-	virtual ColorRole get_color_role(const StringName &p_name, const StringName &p_theme_type) const;
+	void set_color_role(const StringName &p_name, const StringName &p_theme_type, const Ref<ColorRole> &p_color_role);
+	virtual Ref<ColorRole> get_color_role(const StringName &p_name, const StringName &p_theme_type) const;
 	bool has_color_role(const StringName &p_name, const StringName &p_theme_type) const;
 	bool has_color_role_nocheck(const StringName &p_name, const StringName &p_theme_type) const;
 	void rename_color_role(const StringName &p_old_name, const StringName &p_name, const StringName &p_theme_type);

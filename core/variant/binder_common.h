@@ -41,7 +41,6 @@
 #include "core/variant/type_info.h"
 #include "core/variant/variant.h"
 #include "core/variant/variant_internal.h"
-#include "modules/color_scheme/color_role.h"
 
 #include <stdio.h>
 
@@ -169,8 +168,6 @@ VARIANT_ENUM_CAST(HorizontalAlignment);
 VARIANT_ENUM_CAST(VerticalAlignment);
 VARIANT_ENUM_CAST(InlineAlignment);
 VARIANT_ENUM_CAST(PropertyHint);
-// VARIANT_ENUM_CAST(ColorRole);
-VARIANT_ENUM_CAST(ColorRoleEnum);
 VARIANT_BITFIELD_CAST(PropertyUsageFlags);
 VARIANT_ENUM_CAST(Variant::Type);
 VARIANT_ENUM_CAST(Variant::Operator);

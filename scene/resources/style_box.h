@@ -35,6 +35,7 @@
 #include "core/object/class_db.h"
 #include "core/object/gdvirtual.gen.inc"
 #include "modules/color_scheme/color_scheme.h"
+#include "modules/color_scheme/color_role.h"
 
 class CanvasItem;
 
