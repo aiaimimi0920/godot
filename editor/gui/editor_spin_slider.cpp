@@ -297,7 +297,11 @@ void EditorSpinSlider::_update_value_input_stylebox() {
 	// Add a left margin to the stylebox to make the number align with the Label
 	// when it's edited. The LineEdit "focus" stylebox uses the "normal" stylebox's
 	// default margins.
-	Ref<StyleBox> stylebox = get_theme_stylebox(SNAME("normal"), SNAME("LineEdit"))->duplicate();
+	ThemeIntData cur_theme_data;
+	cur_theme_data.set_data_name("default_stylebox");
+
+
+	Ref<StyleBox> stylebox = get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("LineEdit"))->duplicate();
 	// EditorSpinSliders with a label have more space on the left, so add an
 	// higher margin to match the location where the text begins.
 	// The margin values below were determined by empirical testing.
@@ -309,7 +313,7 @@ void EditorSpinSlider::_update_value_input_stylebox() {
 		stylebox->set_content_margin(SIDE_RIGHT, 0);
 	}
 
-	value_input->add_theme_style_override("normal", stylebox);
+	value_input->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), stylebox);
 }
 
 void EditorSpinSlider::_draw_spin_slider() {

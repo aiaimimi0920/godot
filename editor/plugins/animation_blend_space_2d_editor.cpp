@@ -795,9 +795,11 @@ void AnimationNodeBlendSpace2DEditor::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE:
 		case NOTIFICATION_THEME_CHANGED: {
-			error_panel->add_theme_style_override("panel", get_theme_stylebox(SNAME("panel"), SNAME("Tree")));
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("default_stylebox");
+			error_panel->add_theme_style_override("panel", get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("Tree")));
 			error_label->add_theme_color_override("font_color", get_theme_color(SNAME("error_color"), EditorStringName(Editor)));
-			panel->add_theme_style_override("panel", get_theme_stylebox(SNAME("panel"), SNAME("Tree")));
+			panel->add_theme_style_override("panel", get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("Tree")));
 			tool_blend->set_icon(get_editor_theme_icon(SNAME("EditPivot")));
 			tool_select->set_icon(get_editor_theme_icon(SNAME("ToolSelect")));
 			tool_create->set_icon(get_editor_theme_icon(SNAME("EditKey")));

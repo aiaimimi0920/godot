@@ -1673,8 +1673,9 @@ void ScriptEditor::_notification(int p_what) {
 
 			filter_scripts->set_right_icon(get_editor_theme_icon(SNAME("Search")));
 			filter_methods->set_right_icon(get_editor_theme_icon(SNAME("Search")));
-
-			filename->add_theme_style_override("normal", get_theme_stylebox(SNAME("normal"), SNAME("LineEdit")));
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("default_stylebox");
+			filename->add_theme_style_override("normal", get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("LineEdit")));
 
 			recent_scripts->reset_size();
 

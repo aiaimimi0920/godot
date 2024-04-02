@@ -998,10 +998,14 @@ void TileSetAtlasSourceEditor::_update_atlas_view() {
 			Button *button = memnew(Button);
 			button->set_flat(true);
 			button->set_icon(get_editor_theme_icon(SNAME("Add")));
-			button->add_theme_style_override("normal", memnew(StyleBoxEmpty));
-			button->add_theme_style_override("hover", memnew(StyleBoxEmpty));
-			button->add_theme_style_override("focus", memnew(StyleBoxEmpty));
-			button->add_theme_style_override("pressed", memnew(StyleBoxEmpty));
+
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("default_stylebox");
+
+			button->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), memnew(StyleBoxEmpty));
+			button->add_theme_style_override(cur_theme_data.get_state_data_name(State::HoverNoneLTR), memnew(StyleBoxEmpty));
+			button->add_theme_style_override(cur_theme_data.get_state_data_name(State::FocusNoneLTR), memnew(StyleBoxEmpty));
+			button->add_theme_style_override(cur_theme_data.get_state_data_name(State::PressedNoneLTR), memnew(StyleBoxEmpty));
 			button->connect("pressed", callable_mp(tile_set_atlas_source, &TileSetAtlasSource::create_alternative_tile).bind(tile_id, TileSetSource::INVALID_TILE_ALTERNATIVE));
 			button->set_rect(Rect2(Vector2(pos.x, pos.y + (y_increment - texture_region_base_size.y) / 2.0), Vector2(texture_region_base_size_min, texture_region_base_size_min)));
 			button->set_expand_icon(true);

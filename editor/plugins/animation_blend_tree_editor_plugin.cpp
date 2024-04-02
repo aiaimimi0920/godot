@@ -946,7 +946,9 @@ void AnimationNodeBlendTreeEditor::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_THEME_CHANGED: {
-			error_panel->add_theme_style_override("panel", get_theme_stylebox(SNAME("panel"), SNAME("Tree")));
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("default_stylebox");
+			error_panel->add_theme_style_override("panel", get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("Tree")));
 			error_label->add_theme_color_override("font_color", get_theme_color(SNAME("error_color"), EditorStringName(Editor)));
 
 			if (is_visible_in_tree()) {

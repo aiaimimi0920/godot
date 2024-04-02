@@ -4223,8 +4223,12 @@ void ThemeEditor::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE:
 		case NOTIFICATION_THEME_CHANGED: {
-			preview_tabs->add_theme_style_override("tab_selected", get_theme_stylebox(SNAME("ThemeEditorPreviewFG"), EditorStringName(EditorStyles)));
-			preview_tabs->add_theme_style_override("tab_unselected", get_theme_stylebox(SNAME("ThemeEditorPreviewBG"), EditorStringName(EditorStyles)));
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("tab");
+
+			preview_tabs->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), get_theme_stylebox(SNAME("ThemeEditorPreviewFG"), EditorStringName(EditorStyles)));
+			preview_tabs->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), get_theme_stylebox(SNAME("ThemeEditorPreviewBG"), EditorStringName(EditorStyles)));
+			
 			preview_tabs_content->add_theme_style_override("panel", get_theme_stylebox(SNAME("panel"), SNAME("TabContainerOdd")));
 
 			add_preview_button->set_icon(get_editor_theme_icon(SNAME("Add")));

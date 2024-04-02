@@ -3006,19 +3006,21 @@ void Node3DEditorViewport::_notification(int p_what) {
 			Control *gui_base = EditorNode::get_singleton()->get_gui_base();
 
 			view_menu->begin_bulk_theme_override();
-			view_menu->add_theme_style_override("normal", gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
-			view_menu->add_theme_style_override("hover", gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
-			view_menu->add_theme_style_override("pressed", gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
-			view_menu->add_theme_style_override("focus", gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
-			view_menu->add_theme_style_override("disabled", gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("default_stylebox");
+			view_menu->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
+			view_menu->add_theme_style_override(cur_theme_data.get_state_data_name(State::HoverNoneLTR), gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
+			view_menu->add_theme_style_override(cur_theme_data.get_state_data_name(State::PressedNoneLTR), gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
+			view_menu->add_theme_style_override(cur_theme_data.get_state_data_name(State::FocusNoneLTR), gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
+			view_menu->add_theme_style_override(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
 			view_menu->end_bulk_theme_override();
 
 			preview_camera->begin_bulk_theme_override();
-			preview_camera->add_theme_style_override("normal", gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
-			preview_camera->add_theme_style_override("hover", gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
-			preview_camera->add_theme_style_override("pressed", gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
-			preview_camera->add_theme_style_override("focus", gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
-			preview_camera->add_theme_style_override("disabled", gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
+			preview_camera->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
+			preview_camera->add_theme_style_override(cur_theme_data.get_state_data_name(State::HoverNoneLTR), gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
+			preview_camera->add_theme_style_override(cur_theme_data.get_state_data_name(State::PressedNoneLTR), gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
+			preview_camera->add_theme_style_override(cur_theme_data.get_state_data_name(State::FocusNoneLTR), gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
+			preview_camera->add_theme_style_override(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), gui_base->get_theme_stylebox(SNAME("Information3dViewport"), EditorStringName(EditorStyles)));
 			preview_camera->end_bulk_theme_override();
 
 			frame_time_gradient->set_color(0, get_theme_color(SNAME("success_color"), EditorStringName(Editor)));

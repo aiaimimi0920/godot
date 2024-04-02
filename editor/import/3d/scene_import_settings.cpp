@@ -1164,9 +1164,11 @@ void SceneImportSettingsDialog::_notification(int p_what) {
 
 		case NOTIFICATION_THEME_CHANGED: {
 			action_menu->begin_bulk_theme_override();
-			action_menu->add_theme_style_override("normal", get_theme_stylebox("normal", "Button"));
-			action_menu->add_theme_style_override("hover", get_theme_stylebox("hover", "Button"));
-			action_menu->add_theme_style_override("pressed", get_theme_stylebox("pressed", "Button"));
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("default_stylebox");
+			action_menu->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button"));
+			action_menu->add_theme_style_override(cur_theme_data.get_state_data_name(State::HoverNoneLTR), get_theme_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button"));
+			action_menu->add_theme_style_override(cur_theme_data.get_state_data_name(State::PressedNoneLTR), get_theme_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button"));
 			action_menu->end_bulk_theme_override();
 
 			if (animation_player != nullptr && animation_player->is_playing()) {

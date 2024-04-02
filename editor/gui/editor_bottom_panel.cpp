@@ -49,10 +49,12 @@ static const String META_TEXT_TO_COPY = "text_to_copy";
 void EditorBottomPanel::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_THEME_CHANGED: {
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("default_stylebox");
 			expand_button->set_icon(get_editor_theme_icon(SNAME("ExpandBottomDock")));
 			for (int i = 0; i < items.size(); i++) {
-				items.write[i].button->add_theme_style_override("pressed", get_theme_stylebox(SNAME("MenuTransparent"), EditorStringName(EditorStyles)));
-				items.write[i].button->add_theme_style_override("hover_pressed", get_theme_stylebox(SNAME("MenuHover"), EditorStringName(EditorStyles)));
+				items.write[i].button->add_theme_style_override(cur_theme_data.get_state_data_name(State::PressedNoneLTR), get_theme_stylebox(SNAME("MenuTransparent"), EditorStringName(EditorStyles)));
+				items.write[i].button->add_theme_style_override(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), get_theme_stylebox(SNAME("MenuHover"), EditorStringName(EditorStyles)));
 			}
 		} break;
 	}

@@ -472,11 +472,12 @@ void VisualShaderGraphPlugin::add_node(VisualShader::Type p_type, int p_id, bool
 	if (vsnode->get_category() != VisualShaderNode::CATEGORY_NONE) {
 		Ref<StyleBoxFlat> sb_colored = editor->get_theme_stylebox("titlebar", "GraphNode")->duplicate();
 		sb_colored->set_bg_color(category_color[vsnode->get_category()]);
-		node->add_theme_style_override("titlebar", sb_colored);
-
+		ThemeIntData cur_theme_data;
+		cur_theme_data.set_data_name("titlebar");
+		node->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), sb_colored);
 		Ref<StyleBoxFlat> sb_colored_selected = editor->get_theme_stylebox("titlebar_selected", "GraphNode")->duplicate();
 		sb_colored_selected->set_bg_color(category_color[vsnode->get_category()].lightened(0.2));
-		node->add_theme_style_override("titlebar_selected", sb_colored_selected);
+		node->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), sb_colored_selected);
 	}
 
 	if (p_just_update) {

@@ -171,8 +171,11 @@ void AnimationPlayerEditor::_notification(int p_what) {
 
 			pin->set_icon(get_editor_theme_icon(SNAME("Pin")));
 
-			tool_anim->add_theme_style_override("normal", get_theme_stylebox(SNAME("normal"), SNAME("Button")));
-			track_editor->get_edit_menu()->add_theme_style_override("normal", get_theme_stylebox(SNAME("normal"), SNAME("Button")));
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("default_stylebox");
+
+			tool_anim->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("Button")));
+			track_editor->get_edit_menu()->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("Button")));
 
 #define ITEM_ICON(m_item, m_icon) tool_anim->get_popup()->set_item_icon(tool_anim->get_popup()->get_item_index(m_item), get_editor_theme_icon(SNAME(m_icon)))
 

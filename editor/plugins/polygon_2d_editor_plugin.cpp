@@ -113,8 +113,10 @@ void Polygon2DEditor::_notification(int p_what) {
 			[[fallthrough]];
 		}
 		case NOTIFICATION_THEME_CHANGED: {
-			uv_edit_draw->add_theme_style_override("panel", get_theme_stylebox(SNAME("panel"), SNAME("Tree")));
-			bone_scroll->add_theme_style_override("panel", get_theme_stylebox(SNAME("panel"), SNAME("Tree")));
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("default_stylebox");
+			uv_edit_draw->add_theme_style_override("panel", get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("Tree")));
+			bone_scroll->add_theme_style_override("panel", get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("Tree")));
 		} break;
 
 		case NOTIFICATION_VISIBILITY_CHANGED: {
