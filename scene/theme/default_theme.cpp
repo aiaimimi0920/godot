@@ -84,7 +84,6 @@ static Ref<ColorRole> make_color_role(ColorRoleEnum p_color_role_enum, Color &p_
 	return color_role;
 }
 
-
 static Ref<StyleBoxFlat> make_color_role_flat_stylebox(Ref<ColorRole> p_color_role, StyleBoxFlat::ElevationLevel p_level = StyleBoxFlat::ElevationLevel::Elevation_Level_0, const Ref<ColorScheme> &default_color_scheme = Ref<ColorScheme>(), float p_margin_left = default_margin, float p_margin_top = default_margin, float p_margin_right = default_margin, float p_margin_bottom = default_margin, int p_corner_radius = default_corner_radius, bool p_draw_center = true, int p_border_width = 0) {
 	Ref<StyleBoxFlat> style(memnew(StyleBoxFlat));
 	if (default_color_scheme.is_valid()) {
@@ -147,8 +146,8 @@ static Ref<StyleBox> make_empty_stylebox(float p_margin_left = -1, float p_margi
 }
 
 void fill_default_theme_panel(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
-	theme->set_stylebox("panel", "Panel", make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0, 0, 0, 0));
-
+	theme->set_color_scheme("panel", "Panel", default_color_scheme);
+	theme->set_stylebox("panel", "Panel", make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SECONDARY, Color(1, 1, 1, 1), false, 0.0, 0.0, 0.3, Ref<ColorRole>(), Color(0, 0, 0, 1), true), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0, 0, 0, 0));
 }
 
 void fill_default_theme_button_variations(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
@@ -332,7 +331,7 @@ void fill_default_theme_texture_button(Ref<Theme> &theme, const Ref<Font> &defau
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextureButton", make_color_role(ColorRoleEnum::PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "TextureButton", make_color_role(ColorRoleEnum::PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "TextureButton", make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "TextureButton", make_color_role(ColorRoleEnum::PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "TextureButton", make_color_role(ColorRoleEnum::PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TextureButton", make_color_role(ColorRoleEnum::PRIMARY));
 
 	cur_theme_data.set_data_name("text_icon_color");
@@ -416,7 +415,7 @@ void fill_default_theme_popup_menu(Ref<Theme> &theme, const Ref<Font> &default_f
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", make_color_role(ColorRoleEnum::ON_PRIMARY_CONTAINER));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "PopupMenu", make_color_role(ColorRoleEnum::ON_PRIMARY));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupMenu", make_color_role(ColorRoleEnum::ON_PRIMARY));
 
 	cur_theme_data.set_data_name("font_color");
@@ -451,7 +450,7 @@ void fill_default_theme_checkbox(Ref<Theme> &theme, const Ref<Font> &default_fon
 	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
 	default_stylebox_focus->set_content_margin_all(Math::round(4 * scale));
 
-	const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.08)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.08)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 	state_layer_stylebox_hover->set_content_margin_all(Math::round(4 * scale));
 	const Ref<StyleBoxFlat> state_layer_stylebox_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.1)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 	state_layer_stylebox_pressed->set_content_margin_all(Math::round(4 * scale));
@@ -515,7 +514,7 @@ void fill_default_theme_checkbox(Ref<Theme> &theme, const Ref<Font> &default_fon
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY));
 
 	cur_theme_data.set_data_name("font_color");
@@ -547,7 +546,7 @@ void fill_default_theme_checkbox(Ref<Theme> &theme, const Ref<Font> &default_fon
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY));
 
 	cur_theme_data.set_data_name("check_icon_color");
@@ -573,7 +572,7 @@ void fill_default_theme_checkbox(Ref<Theme> &theme, const Ref<Font> &default_fon
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::ON_PRIMARY));
 
 	cur_theme_data.set_data_name("text_check_icon_color");
@@ -652,16 +651,14 @@ void fill_default_theme_check_button(Ref<Theme> &theme, const Ref<Font> &default
 	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", Color(1, 1, 1, 0.4));
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", Color(1, 1, 1, 1));
 
-
 	theme->set_color_role("font_outline_color_role", "CheckButton", make_color_role(ColorRoleEnum::OUTLINE));
 	theme->set_color("font_outline_color", "CheckButton", Color(1, 1, 1, 1));
-
 
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 
 	cur_theme_data.set_data_name("font_color");
@@ -692,7 +689,7 @@ void fill_default_theme_check_button(Ref<Theme> &theme, const Ref<Font> &default
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 
 	cur_theme_data.set_data_name("check_icon_color");
@@ -718,8 +715,8 @@ void fill_default_theme_check_button(Ref<Theme> &theme, const Ref<Font> &default
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedUncheckedLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_SURFACE_VARIANT));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusCheckedLTR), "CheckButton", make_color_role(ColorRoleEnum::PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusUncheckedLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_SURFACE_VARIANT));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.38)));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckButton", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.38)));
 
 	cur_theme_data.set_data_name("text_check_icon_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", Color(1, 1, 1, 1));
@@ -796,7 +793,7 @@ void fill_default_theme_button(Ref<Theme> &theme, const Ref<Font> &default_font,
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", make_color_role(ColorRoleEnum::ON_PRIMARY));
 
 	cur_theme_data.set_data_name("text_icon_color");
@@ -827,7 +824,7 @@ void fill_default_theme_button(Ref<Theme> &theme, const Ref<Font> &default_font,
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", make_color_role(ColorRoleEnum::ON_PRIMARY));
 
 	cur_theme_data.set_data_name("font_color");
@@ -886,7 +883,7 @@ void fill_default_theme_menu_button(Ref<Theme> &theme, const Ref<Font> &default_
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuButton", make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 
 	cur_theme_data.set_data_name("text_icon_color");
@@ -987,13 +984,13 @@ void fill_default_theme_elevated_button(Ref<Theme> &theme, const Ref<Font> &defa
 	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE), StyleBoxFlat::ElevationLevel::Elevation_Level_1, default_color_scheme);
 	const Ref<StyleBoxFlat> default_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE), StyleBoxFlat::ElevationLevel::Elevation_Level_2, default_color_scheme);
 	const Ref<StyleBoxFlat> default_stylebox_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE), StyleBoxFlat::ElevationLevel::Elevation_Level_1, default_color_scheme);
-	const Ref<StyleBoxFlat> default_stylebox_disabled = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE, Color(1,1,1,0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> default_stylebox_disabled = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE, Color(1, 1, 1, 0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
 
-	const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.08)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	const Ref<StyleBoxFlat> state_layer_stylebox_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.10)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	Ref<StyleBoxFlat> state_layer_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.10)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.08)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> state_layer_stylebox_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.10)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	Ref<StyleBoxFlat> state_layer_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.10)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 
 	cur_theme_data.set_data_name("default_stylebox");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ElevatedButton", default_stylebox_normal);
@@ -1021,7 +1018,7 @@ void fill_default_theme_elevated_button(Ref<Theme> &theme, const Ref<Font> &defa
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ElevatedButton", make_color_role(ColorRoleEnum::ON_SURFACE));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "ElevatedButton", make_color_role(ColorRoleEnum::ON_SURFACE));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "ElevatedButton", make_color_role(ColorRoleEnum::INVERSE_SURFACE));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ElevatedButton", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ElevatedButton", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ElevatedButton", make_color_role(ColorRoleEnum::ON_SURFACE));
 
 	cur_theme_data.set_data_name("text_icon_color");
@@ -1052,7 +1049,7 @@ void fill_default_theme_elevated_button(Ref<Theme> &theme, const Ref<Font> &defa
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ElevatedButton", make_color_role(ColorRoleEnum::ON_SURFACE));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "ElevatedButton", make_color_role(ColorRoleEnum::ON_SURFACE));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "ElevatedButton", make_color_role(ColorRoleEnum::INVERSE_SURFACE));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ElevatedButton", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ElevatedButton", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ElevatedButton", make_color_role(ColorRoleEnum::ON_SURFACE));
 
 	cur_theme_data.set_data_name("font_color");
@@ -1067,10 +1064,6 @@ void fill_default_theme_elevated_button(Ref<Theme> &theme, const Ref<Font> &defa
 	theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", empty_icon);
 }
 
-
-
-
-
 void fill_default_theme_color_picker(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
 	ThemeIntData cur_theme_data;
 	theme->set_color_scheme("default_color_scheme", "ColorPickerButton", default_color_scheme);
@@ -1080,13 +1073,13 @@ void fill_default_theme_color_picker(Ref<Theme> &theme, const Ref<Font> &default
 	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE), StyleBoxFlat::ElevationLevel::Elevation_Level_1, default_color_scheme);
 	const Ref<StyleBoxFlat> default_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE), StyleBoxFlat::ElevationLevel::Elevation_Level_2, default_color_scheme);
 	const Ref<StyleBoxFlat> default_stylebox_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE), StyleBoxFlat::ElevationLevel::Elevation_Level_1, default_color_scheme);
-	const Ref<StyleBoxFlat> default_stylebox_disabled = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE, Color(1,1,1,0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> default_stylebox_disabled = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE, Color(1, 1, 1, 0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
 
-	const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.08)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	const Ref<StyleBoxFlat> state_layer_stylebox_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.10)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	Ref<StyleBoxFlat> state_layer_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.10)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.08)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> state_layer_stylebox_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.10)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	Ref<StyleBoxFlat> state_layer_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.10)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 
 	cur_theme_data.set_data_name("default_stylebox");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ColorPickerButton", default_stylebox_normal);
@@ -1114,7 +1107,7 @@ void fill_default_theme_color_picker(Ref<Theme> &theme, const Ref<Font> &default
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ColorPickerButton", make_color_role(ColorRoleEnum::ON_SURFACE));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "ColorPickerButton", make_color_role(ColorRoleEnum::ON_SURFACE));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "ColorPickerButton", make_color_role(ColorRoleEnum::INVERSE_SURFACE));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ColorPickerButton", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ColorPickerButton", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ColorPickerButton", make_color_role(ColorRoleEnum::ON_SURFACE));
 
 	cur_theme_data.set_data_name("text_icon_color");
@@ -1138,16 +1131,14 @@ void fill_default_theme_color_picker(Ref<Theme> &theme, const Ref<Font> &default
 	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ColorPickerButton", Color(1, 1, 1, 0.4));
 	theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ColorPickerButton", Color(1, 1, 1, 1));
 
-
 	theme->set_color_role("font_outline_color_role", "ColorPickerButton", make_color_role(ColorRoleEnum::OUTLINE));
 	theme->set_color("font_outline_color", "ColorPickerButton", Color(1, 1, 1, 1));
-
 
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ColorPickerButton", make_color_role(ColorRoleEnum::ON_SURFACE));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "ColorPickerButton", make_color_role(ColorRoleEnum::ON_SURFACE));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "ColorPickerButton", make_color_role(ColorRoleEnum::INVERSE_SURFACE));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ColorPickerButton", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "ColorPickerButton", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ColorPickerButton", make_color_role(ColorRoleEnum::ON_SURFACE));
 
 	cur_theme_data.set_data_name("font_color");
@@ -1250,7 +1241,6 @@ void fill_default_theme_color_picker(Ref<Theme> &theme, const Ref<Font> &default
 	}
 }
 
-
 void fill_default_theme_option_button(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
 	ThemeIntData cur_theme_data;
 	theme->set_color_scheme("default_color_scheme", "OptionButton", default_color_scheme);
@@ -1267,7 +1257,7 @@ void fill_default_theme_option_button(Ref<Theme> &theme, const Ref<Font> &defaul
 	Ref<StyleBox> default_stylebox_normal_mirrored = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 21, default_margin, 2 * default_margin, default_margin);
 	Ref<StyleBox> default_stylebox_hover_mirrored = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 21, default_margin, 2 * default_margin, default_margin);
 	Ref<StyleBox> default_stylebox_pressed_mirrored = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 21, default_margin, 2 * default_margin, default_margin);
-	Ref<StyleBox> default_stylebox_disabled_mirrored = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY, Color(1,1,1,0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 21, default_margin, 2 * default_margin, default_margin);
+	Ref<StyleBox> default_stylebox_disabled_mirrored = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY, Color(1, 1, 1, 0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 21, default_margin, 2 * default_margin, default_margin);
 
 	cur_theme_data.set_data_name("default_stylebox");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", default_stylebox_normal);
@@ -1280,9 +1270,9 @@ void fill_default_theme_option_button(Ref<Theme> &theme, const Ref<Font> &defaul
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneRTL), "OptionButton", default_stylebox_disabled_mirrored);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", default_stylebox_focus);
 
-	const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.08)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	const Ref<StyleBoxFlat> state_layer_stylebox_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.1)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	Ref<StyleBoxFlat> state_layer_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.1)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.08)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> state_layer_stylebox_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.1)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	Ref<StyleBoxFlat> state_layer_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.1)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 
 	cur_theme_data.set_data_name("state_layer_stylebox");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", state_layer_stylebox_hover);
@@ -1303,7 +1293,7 @@ void fill_default_theme_option_button(Ref<Theme> &theme, const Ref<Font> &defaul
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 
 	cur_theme_data.set_data_name("text_icon_color");
@@ -1334,7 +1324,7 @@ void fill_default_theme_option_button(Ref<Theme> &theme, const Ref<Font> &defaul
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::ON_PRIMARY));
 
 	cur_theme_data.set_data_name("font_color");
@@ -1353,7 +1343,6 @@ void fill_default_theme_scroll_container(Ref<Theme> &theme, const Ref<Font> &def
 	ThemeIntData cur_theme_data;
 	Ref<StyleBoxEmpty> empty;
 	empty.instantiate();
-
 	theme->set_stylebox("panel", "ScrollContainer", empty);
 }
 
@@ -1388,9 +1377,9 @@ void fill_default_theme_scrollbar(Ref<Theme> &theme, const Ref<Font> &default_fo
 
 	const Ref<StyleBoxFlat> style_h_scrollbar = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0, 4, 0, 4, 10);
 	const Ref<StyleBoxFlat> style_v_scrollbar = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 0, 4, 0, 10);
-	const Ref<StyleBoxFlat> style_scrollbar_grabber = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(1,1,1,0.38)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4, 10);
+	const Ref<StyleBoxFlat> style_scrollbar_grabber = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(1, 1, 1, 0.38)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4, 10);
 	const Ref<StyleBoxFlat> style_scrollbar_grabber_highlight = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::INVERSE_PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4, 10);
-	const Ref<StyleBoxFlat> style_scrollbar_grabber_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(1,1,1,0.6)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4, 10);
+	const Ref<StyleBoxFlat> style_scrollbar_grabber_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(1, 1, 1, 0.6)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4, 10);
 
 	Ref<StyleBoxFlat> default_scrollbar_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SECONDARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	default_scrollbar_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
@@ -1437,13 +1426,13 @@ void fill_default_theme_menu_bar(Ref<Theme> &theme, const Ref<Font> &default_fon
 	const Ref<StyleBoxFlat> default_stylebox_normal = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 	const Ref<StyleBoxFlat> default_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_1, default_color_scheme);
 	const Ref<StyleBoxFlat> default_stylebox_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	const Ref<StyleBoxFlat> default_stylebox_disabled = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> default_stylebox_disabled = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 	Ref<StyleBoxFlat> default_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
 
-	const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.08)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	const Ref<StyleBoxFlat> state_layer_stylebox_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.1)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	Ref<StyleBoxFlat> state_layer_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.1)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.08)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> state_layer_stylebox_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.1)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	Ref<StyleBoxFlat> state_layer_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.1)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 
 	cur_theme_data.set_data_name("default_stylebox");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuBar", default_stylebox_normal);
@@ -1474,7 +1463,7 @@ void fill_default_theme_menu_bar(Ref<Theme> &theme, const Ref<Font> &default_fon
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverCheckedLTR), "MenuBar", make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuBar", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedCheckedLTR), "MenuBar", make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuBar", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuBar", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuBar", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusCheckedLTR), "MenuBar", make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
 
@@ -1522,13 +1511,12 @@ void fill_default_theme_dialogs(Ref<Theme> &theme, const Ref<Font> &default_font
 	theme->set_icon("folder", "FileDialog", icons["folder"]);
 	theme->set_icon("file", "FileDialog", icons["file"]);
 
-
 	theme->set_color_role("folder_icon_color_role", "FileDialog", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color("folder_icon_color", "FileDialog", Color(1, 1, 1, 1));
 
 	cur_theme_data.set_data_name("file_icon_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", make_color_role(ColorRoleEnum::ON_PRIMARY));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "FileDialog", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "FileDialog", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 
 	cur_theme_data.set_data_name("file_icon_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "FileDialog", Color(1, 1, 1, 1));
@@ -1657,7 +1645,7 @@ void fill_default_theme_item_list(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "ItemList", cursor_stylebox);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "ItemList", cursor_stylebox_focus);
 
-	theme->set_color_role("guide_color_role", "ItemList", make_color_role(ColorRoleEnum::PRIMARY, Color(1,1,1,0.16)));
+	theme->set_color_role("guide_color_role", "ItemList", make_color_role(ColorRoleEnum::PRIMARY, Color(1, 1, 1, 0.16)));
 	theme->set_color("guide_color", "ItemList", Color(0.7, 0.7, 0.7, 0.25));
 }
 
@@ -1677,7 +1665,7 @@ void fill_default_theme_tab_container(Ref<Theme> &theme, const Ref<Font> &defaul
 	Ref<StyleBoxFlat> style_tab_disabled = style_tab_unselected->duplicate();
 	style_tab_disabled->set_bg_color_role(make_color_role(ColorRoleEnum::BACKGROUND));
 	Ref<StyleBoxFlat> style_tab_hovered = style_tab_unselected->duplicate();
-	style_tab_hovered->set_bg_color_role(make_color_role(ColorRoleEnum::BACKGROUND, Color(1,1,1,0.16)));
+	style_tab_hovered->set_bg_color_role(make_color_role(ColorRoleEnum::BACKGROUND, Color(1, 1, 1, 0.16)));
 
 	Ref<StyleBoxFlat> focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	focus->set_expand_margin_all(Math::round(2 * scale));
@@ -1701,7 +1689,7 @@ void fill_default_theme_tab_container(Ref<Theme> &theme, const Ref<Font> &defaul
 	const Ref<StyleBoxFlat> tab_stylebox_selected = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 	const Ref<StyleBoxFlat> tab_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_1, default_color_scheme);
 	const Ref<StyleBoxFlat> tab_stylebox_unselected = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	const Ref<StyleBoxFlat> tab_stylebox_disabled = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> tab_stylebox_disabled = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 	Ref<StyleBoxFlat> tab_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	tab_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
 
@@ -1717,10 +1705,8 @@ void fill_default_theme_tab_container(Ref<Theme> &theme, const Ref<Font> &defaul
 	theme->set_icon("decrement_highlight", "TabContainer", icons["scroll_button_left_hl"]);
 	theme->set_icon("drop_mark", "TabContainer", icons["tabs_drop_mark"]);
 
-
 	theme->set_color_role("drop_mark_color_role", "TabContainer", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color("drop_mark_color", "TabContainer", Color(1, 1, 1, 1));
-
 
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "TabContainer", make_color_role(ColorRoleEnum::ON_PRIMARY));
@@ -1746,13 +1732,12 @@ void fill_default_theme_tab_bar(Ref<Theme> &theme, const Ref<Font> &default_font
 	ThemeIntData cur_theme_data;
 	theme->set_color_scheme("default_color_scheme", "TabBar", default_color_scheme);
 
-
 	cur_theme_data.set_data_name("tab");
 
 	const Ref<StyleBoxFlat> tab_stylebox_selected = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 	const Ref<StyleBoxFlat> tab_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_1, default_color_scheme);
 	const Ref<StyleBoxFlat> tab_stylebox_unselected = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
-	const Ref<StyleBoxFlat> tab_stylebox_disabled = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> tab_stylebox_disabled = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 	Ref<StyleBoxFlat> tab_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	tab_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
 
@@ -1761,7 +1746,6 @@ void fill_default_theme_tab_bar(Ref<Theme> &theme, const Ref<Font> &default_font
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "TabBar", tab_stylebox_unselected);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TabBar", tab_stylebox_disabled);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TabBar", tab_stylebox_focus);
-
 
 	const Ref<StyleBoxFlat> button_pressed_stylebox = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
 	const Ref<StyleBoxFlat> button_highlight_stylebox = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
@@ -1798,9 +1782,7 @@ void fill_default_theme_tab_bar(Ref<Theme> &theme, const Ref<Font> &default_font
 
 	theme->set_color_role("font_outline_color_role", "TabBar", make_color_role(ColorRoleEnum::OUTLINE));
 	theme->set_color("font_outline_color", "TabBar", Color(1, 1, 1, 1));
-
 }
-
 
 // Tree
 void fill_default_theme_tree(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
@@ -1809,7 +1791,7 @@ void fill_default_theme_tree(Ref<Theme> &theme, const Ref<Font> &default_font, c
 
 	cur_theme_data.set_data_name("default_stylebox");
 
-	const Ref<StyleBoxFlat> default_style_normal = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme,4,4,4,5);
+	const Ref<StyleBoxFlat> default_style_normal = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 5);
 	Ref<StyleBoxFlat> default_style_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	default_style_focus->set_expand_margin_all(Math::round(2 * scale));
 
@@ -1820,7 +1802,6 @@ void fill_default_theme_tree(Ref<Theme> &theme, const Ref<Font> &default_font, c
 	theme->set_font_size("font_size", "Tree", -1);
 	theme->set_font("title_button_font", "Tree", Ref<Font>());
 	theme->set_font_size("title_button_font_size", "Tree", -1);
-
 
 	cur_theme_data.set_data_name("selected");
 	const Ref<StyleBoxFlat> selected_style_normal = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
@@ -1840,18 +1821,18 @@ void fill_default_theme_tree(Ref<Theme> &theme, const Ref<Font> &default_font, c
 	theme->set_stylebox("button_pressed", "Tree", make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme));
 
 	cur_theme_data.set_data_name("title_button");
-	const Ref<StyleBoxFlat> title_button_style_normal = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme,4,4,4,4);
-	const Ref<StyleBoxFlat> title_button_style_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme,4,4,4,4);
-	const Ref<StyleBoxFlat> title_button_style_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme,4,4,4,4);
+	const Ref<StyleBoxFlat> title_button_style_normal = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4);
+	const Ref<StyleBoxFlat> title_button_style_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4);
+	const Ref<StyleBoxFlat> title_button_style_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4);
 
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Tree", title_button_style_normal);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Tree", title_button_style_pressed);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Tree", title_button_style_hover);
 
 	cur_theme_data.set_data_name("custom_button");
-	const Ref<StyleBoxFlat> custom_button_style_normal = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme,4,4,4,4);
-	const Ref<StyleBoxFlat> custom_button_style_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme,4,4,4,4);
-	const Ref<StyleBoxFlat> custom_button_style_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme,4,4,4,4);
+	const Ref<StyleBoxFlat> custom_button_style_normal = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4);
+	const Ref<StyleBoxFlat> custom_button_style_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4);
+	const Ref<StyleBoxFlat> custom_button_style_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4);
 
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Tree", custom_button_style_normal);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Tree", custom_button_style_pressed);
@@ -1876,7 +1857,6 @@ void fill_default_theme_tree(Ref<Theme> &theme, const Ref<Font> &default_font, c
 	theme->set_icon("select_arrow", "Tree", icons["option_button_arrow"]);
 	theme->set_icon("updown", "Tree", icons["updown"]);
 
-
 	cur_theme_data.set_data_name("font_color_role");
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Tree", make_color_role(ColorRoleEnum::PRIMARY));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "Tree", make_color_role(ColorRoleEnum::PRIMARY));
@@ -1889,8 +1869,7 @@ void fill_default_theme_tree(Ref<Theme> &theme, const Ref<Font> &default_font, c
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "Tree", Color(1, 1, 1, 1));
 	theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Tree", Color(1, 1, 1, 1));
 
-
-	theme->set_color_role("guide_color_role", "Tree", make_color_role(ColorRoleEnum::PRIMARY, Color(1,1,1,0.16)));
+	theme->set_color_role("guide_color_role", "Tree", make_color_role(ColorRoleEnum::PRIMARY, Color(1, 1, 1, 0.16)));
 	theme->set_color("guide_color", "Tree", Color(0.7, 0.7, 0.7, 0.25));
 
 	theme->set_color_role("drop_position_color_role", "Tree", make_color_role(ColorRoleEnum::PRIMARY));
@@ -1944,7 +1923,6 @@ void fill_default_theme_tree(Ref<Theme> &theme, const Ref<Font> &default_font, c
 	theme->set_constant("scrollbar_v_separation", "Tree", Math::round(4 * scale));
 }
 
-
 // GraphEdit
 void fill_default_theme_graph_edit(Ref<Theme> &theme, const Ref<Font> &default_font, const Ref<Font> &bold_font, const Ref<Font> &bold_italics_font, const Ref<Font> &italics_font, Ref<Texture2D> &default_icon, const Ref<Font> &default_icon_font, Ref<StyleBox> &default_style, float p_scale, const Ref<ColorScheme> &default_color_scheme, Dictionary icons) {
 	ThemeIntData cur_theme_data;
@@ -1961,7 +1939,7 @@ void fill_default_theme_graph_edit(Ref<Theme> &theme, const Ref<Font> &default_f
 	Ref<StyleBoxFlat> graphn_sb_titlebar = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4);
 	Ref<StyleBoxFlat> graphn_sb_titlebar_selected = graphnode_normal->duplicate();
 	graphn_sb_titlebar_selected->set_bg_color(Color(1.0, 0.625, 0.625, 0.6));
-	graphn_sb_titlebar_selected->set_bg_color_role(make_color_role(ColorRoleEnum::PRIMARY, Color(1,1,1,0.38)));
+	graphn_sb_titlebar_selected->set_bg_color_role(make_color_role(ColorRoleEnum::PRIMARY, Color(1, 1, 1, 0.38)));
 
 	Ref<StyleBoxEmpty> graphnode_slot = make_empty_stylebox(0, 0, 0, 0);
 
@@ -2045,13 +2023,13 @@ void fill_default_theme_graph_edit(Ref<Theme> &theme, const Ref<Font> &default_f
 	theme->set_stylebox("panel", "GraphEdit", graph_edit_panel_stylebox_normal);
 	theme->set_stylebox("menu_panel", "GraphEdit", graph_toolbar_style);
 
-	theme->set_color_role("grid_minor_role", "GraphEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1,1,1,0.08)));
+	theme->set_color_role("grid_minor_role", "GraphEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1, 1, 1, 0.08)));
 	theme->set_color("grid_minor", "GraphEdit", Color(1, 1, 1, 0.05));
 
-	theme->set_color_role("grid_major_role", "GraphEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1,1,1,0.16)));
+	theme->set_color_role("grid_major_role", "GraphEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1, 1, 1, 0.16)));
 	theme->set_color("grid_major", "GraphEdit", Color(1, 1, 1, 0.2));
 
-	theme->set_color_role("selection_fill_role", "GraphEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role("selection_fill_role", "GraphEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color("selection_fill", "GraphEdit", Color(1, 1, 1, 0.3));
 
 	theme->set_color_role("selection_stroke_role", "GraphEdit", make_color_role(ColorRoleEnum::PRIMARY));
@@ -2079,7 +2057,6 @@ void fill_default_theme_window(Ref<Theme> &theme, const Ref<Font> &default_font,
 	cur_theme_data.set_data_name("embedded_border");
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Window", embedded_unfocused_border_stylebox_normal);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Window", embedded_border_stylebox_normal);
-
 
 	theme->set_font("title_font", "Window", Ref<Font>());
 	theme->set_font_size("title_font_size", "Window", -1);
@@ -2120,9 +2097,9 @@ void fill_default_theme_line_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "LineEdit", default_stylebox_focus);
 
-	Ref<StyleBoxFlat> read_only_stylebox = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE, Color(1,1,1,0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+	Ref<StyleBoxFlat> read_only_stylebox = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE, Color(1, 1, 1, 0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	read_only_stylebox->set_border_width(SIDE_BOTTOM, 2);
-	read_only_stylebox->set_border_color_role(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	read_only_stylebox->set_border_color_role(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_stylebox("read_only", "LineEdit", read_only_stylebox);
 
 	theme->set_font("font", "LineEdit", default_font);
@@ -2132,7 +2109,7 @@ void fill_default_theme_line_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_color_role("font_color_role", "LineEdit", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color("font_color", "LineEdit", Color(1, 1, 1, 1));
 
-	theme->set_color_role("font_uneditable_color_role", "LineEdit", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.38)));
+	theme->set_color_role("font_uneditable_color_role", "LineEdit", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.38)));
 	theme->set_color("font_uneditable_color", "LineEdit", Color(1, 1, 1, 1));
 
 	theme->set_color_role("font_selected_color_role", "LineEdit", make_color_role(ColorRoleEnum::ON_PRIMARY_CONTAINER));
@@ -2144,7 +2121,7 @@ void fill_default_theme_line_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_constant("outline_size", "LineEdit", 0);
 
 	cur_theme_data.set_data_name("font_placeholder_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1, 1, 1, 0.38)));
 
 	cur_theme_data.set_data_name("font_placeholder_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", Color(1, 1, 1, 1));
@@ -2160,7 +2137,7 @@ void fill_default_theme_line_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_icon("clear", "LineEdit", icons["line_edit_clear"]);
 
 	cur_theme_data.set_data_name("clear_button_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LineEdit", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "LineEdit", make_color_role(ColorRoleEnum::ON_PRIMARY));
 
 	cur_theme_data.set_data_name("clear_button_color");
@@ -2188,9 +2165,9 @@ void fill_default_theme_text_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextEdit", default_stylebox_normal);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TextEdit", default_stylebox_focus);
 
-	Ref<StyleBoxFlat> read_only_stylebox = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE, Color(1,1,1,0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+	Ref<StyleBoxFlat> read_only_stylebox = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE, Color(1, 1, 1, 0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	read_only_stylebox->set_border_width(SIDE_BOTTOM, 2);
-	read_only_stylebox->set_border_color_role(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	read_only_stylebox->set_border_color_role(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	cur_theme_data.set_data_name("read_only");
 	theme->set_stylebox("read_only", "TextEdit", read_only_stylebox);
 
@@ -2199,7 +2176,7 @@ void fill_default_theme_text_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_color_role("search_result_color_role", "TextEdit", make_color_role(ColorRoleEnum::ON_SECONDARY));
 	theme->set_color("search_result_color", "TextEdit", Color(0.3, 0.3, 0.3));
 
-	theme->set_color_role("search_result_border_color_role", "TextEdit", make_color_role(ColorRoleEnum::ON_SECONDARY, Color(1,1,1,0.38)));
+	theme->set_color_role("search_result_border_color_role", "TextEdit", make_color_role(ColorRoleEnum::ON_SECONDARY, Color(1, 1, 1, 0.38)));
 	theme->set_color("search_result_border_color", "TextEdit", Color(0.3, 0.3, 0.3, 0.4));
 
 	theme->set_constant("caret_width", "TextEdit", 1);
@@ -2225,10 +2202,10 @@ void fill_default_theme_text_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_color_role("font_color_role", "TextEdit", make_color_role(ColorRoleEnum::ON_PRIMARY));
 	theme->set_color("font_color", "TextEdit", Color(1, 1, 1, 1));
 
-	theme->set_color_role("font_readonly_color_role", "TextEdit", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.38)));
+	theme->set_color_role("font_readonly_color_role", "TextEdit", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.38)));
 	theme->set_color("font_readonly_color", "TextEdit", Color(1, 1, 1, 1));
 
-	theme->set_color_role("font_placeholder_color_role", "TextEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role("font_placeholder_color_role", "TextEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color("font_placeholder_color", "TextEdit", Color(1, 1, 1, 1));
 
 	theme->set_color_role("font_outline_color_role", "TextEdit", make_color_role(ColorRoleEnum::OUTLINE));
@@ -2257,9 +2234,9 @@ void fill_default_theme_code_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", default_stylebox_normal);
 	theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CodeEdit", default_stylebox_focus);
 
-	Ref<StyleBoxFlat> read_only_stylebox = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE, Color(1,1,1,0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+	Ref<StyleBoxFlat> read_only_stylebox = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::SURFACE, Color(1, 1, 1, 0.12)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
 	read_only_stylebox->set_border_width(SIDE_BOTTOM, 2);
-	read_only_stylebox->set_border_color_role(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.38)));
+	read_only_stylebox->set_border_color_role(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_stylebox("read_only", "CodeEdit", read_only_stylebox);
 
 	theme->set_stylebox("completion", "CodeEdit", make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0, 0, 0, 0));
@@ -2287,12 +2264,12 @@ void fill_default_theme_code_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_color_role("completion_selected_color_role", "CodeEdit", make_color_role(ColorRoleEnum::ON_SECONDARY_CONTAINER));
 	theme->set_color("completion_selected_color", "CodeEdit", Color(0.26, 0.26, 0.27));
 
-	theme->set_color_role("completion_existing_color_role", "CodeEdit", make_color_role(ColorRoleEnum::ON_SECONDARY_CONTAINER, Color(1,1,1,0.12)));
+	theme->set_color_role("completion_existing_color_role", "CodeEdit", make_color_role(ColorRoleEnum::ON_SECONDARY_CONTAINER, Color(1, 1, 1, 0.12)));
 	theme->set_color("completion_existing_color", "CodeEdit", Color(0.87, 0.87, 0.87, 0.13));
 
 	cur_theme_data.set_data_name("completion_scroll_color_role");
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(1,1,1,0.16)));
-	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CodeEdit", make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(1, 1, 1, 0.16)));
+	theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CodeEdit", make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(1, 1, 1, 0.38)));
 	cur_theme_data.set_data_name("completion_scroll_color");
 	theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CodeEdit", Color(1, 1, 1, 0.29));
 	theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CodeEdit", Color(1, 1, 1, 0.4));
@@ -2303,10 +2280,10 @@ void fill_default_theme_code_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_color_role("font_selected_color_role", "CodeEdit", make_color_role(ColorRoleEnum::ON_PRIMARY_CONTAINER));
 	theme->set_color("font_selected_color", "CodeEdit", Color(1, 1, 1, 1));
 
-	theme->set_color_role("font_readonly_color_role", "CodeEdit", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1,1,1,0.38)));
+	theme->set_color_role("font_readonly_color_role", "CodeEdit", make_color_role(ColorRoleEnum::ON_SURFACE, Color(1, 1, 1, 0.38)));
 	theme->set_color("font_readonly_color", "CodeEdit", Color(1, 1, 1, 1));
 
-	theme->set_color_role("font_placeholder_color_role", "CodeEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role("font_placeholder_color_role", "CodeEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color("font_placeholder_color", "CodeEdit", Color(1, 1, 1, 1));
 
 	theme->set_color_role("font_outline_color_role", "CodeEdit", make_color_role(ColorRoleEnum::OUTLINE));
@@ -2324,13 +2301,13 @@ void fill_default_theme_code_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_color_role("executing_line_color_role", "CodeEdit", make_color_role(ColorRoleEnum::TERTIARY_CONTAINER));
 	theme->set_color("executing_line_color", "CodeEdit", Color(0.98, 0.89, 0.27));
 
-	theme->set_color_role("current_line_color_role", "CodeEdit", make_color_role(ColorRoleEnum::TERTIARY, Color(1,1,1,0.38)));
+	theme->set_color_role("current_line_color_role", "CodeEdit", make_color_role(ColorRoleEnum::TERTIARY, Color(1, 1, 1, 0.38)));
 	theme->set_color("current_line_color", "CodeEdit", Color(0.25, 0.25, 0.26, 0.8));
 
-	theme->set_color_role("code_folding_color_role", "CodeEdit", make_color_role(ColorRoleEnum::TERTIARY, Color(1,1,1,0.38)));
+	theme->set_color_role("code_folding_color_role", "CodeEdit", make_color_role(ColorRoleEnum::TERTIARY, Color(1, 1, 1, 0.38)));
 	theme->set_color("code_folding_color", "CodeEdit", Color(0.8, 0.8, 0.8, 0.8));
 
-	theme->set_color_role("folded_code_region_color_role", "CodeEdit", make_color_role(ColorRoleEnum::TERTIARY, Color(1,1,1,0.16)));
+	theme->set_color_role("folded_code_region_color_role", "CodeEdit", make_color_role(ColorRoleEnum::TERTIARY, Color(1, 1, 1, 0.16)));
 	theme->set_color("folded_code_region_color", "CodeEdit", Color(0.68, 0.46, 0.77, 0.2));
 
 	theme->set_color_role("caret_color_role", "CodeEdit", make_color_role(ColorRoleEnum::SECONDARY));
@@ -2342,19 +2319,19 @@ void fill_default_theme_code_edit(Ref<Theme> &theme, const Ref<Font> &default_fo
 	theme->set_color_role("brace_mismatch_color_role", "CodeEdit", make_color_role(ColorRoleEnum::SECONDARY_CONTAINER));
 	theme->set_color("brace_mismatch_color", "CodeEdit", Color(1, 0.2, 0.2));
 
-	theme->set_color_role("line_number_color_role", "CodeEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1,1,1,0.38)));
+	theme->set_color_role("line_number_color_role", "CodeEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1, 1, 1, 0.38)));
 	theme->set_color("line_number_color", "CodeEdit", Color(0.67, 0.67, 0.67, 0.4));
 
-	theme->set_color_role("word_highlighted_color_role", "CodeEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1,1,1,0.16)));
+	theme->set_color_role("word_highlighted_color_role", "CodeEdit", make_color_role(ColorRoleEnum::PRIMARY, Color(1, 1, 1, 0.16)));
 	theme->set_color("word_highlighted_color", "CodeEdit", Color(0.8, 0.9, 0.9, 0.15));
 
-	theme->set_color_role("line_length_guideline_color_role", "CodeEdit", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1,1,1,0.1)));
+	theme->set_color_role("line_length_guideline_color_role", "CodeEdit", make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.1)));
 	theme->set_color("line_length_guideline_color", "CodeEdit", Color(0.3, 0.5, 0.8, 0.1));
 
 	theme->set_color_role("search_result_color_role", "CodeEdit", make_color_role(ColorRoleEnum::ON_SECONDARY));
 	theme->set_color("search_result_color", "CodeEdit", Color(0.3, 0.3, 0.3));
 
-	theme->set_color_role("search_result_border_color_role", "CodeEdit", make_color_role(ColorRoleEnum::ON_SECONDARY, Color(1,1,1,0.38)));
+	theme->set_color_role("search_result_border_color_role", "CodeEdit", make_color_role(ColorRoleEnum::ON_SECONDARY, Color(1, 1, 1, 0.38)));
 	theme->set_color("search_result_border_color", "CodeEdit", Color(0.3, 0.3, 0.3, 0.4));
 
 	theme->set_constant("completion_lines", "CodeEdit", 7);
@@ -2368,7 +2345,7 @@ void fill_default_theme_slider(Ref<Theme> &theme, const Ref<Font> &default_font,
 	ThemeIntData cur_theme_data;
 	const Ref<StyleBoxFlat> style_slider = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4);
 	const Ref<StyleBoxFlat> style_slider_grabber = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::INVERSE_PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4);
-	const Ref<StyleBoxFlat> style_slider_grabber_highlight = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(1,1,1,0.6)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4);
+	const Ref<StyleBoxFlat> style_slider_grabber_highlight = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::INVERSE_PRIMARY, Color(1, 1, 1, 0.6)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4);
 	// HSlider
 
 	theme->set_stylebox("slider", "HSlider", style_slider);
@@ -2412,35 +2389,52 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	const float pressed_state_layer_opacity = 0.10;
 	const float dragged_state_layer_opacity = 0.16;
 
-	const Color hover_state_layer_color_scale = Color(1, 1, 1, hover_state_layer_opacity);
-	const Color focus_state_layer_color_scale = Color(1, 1, 1, focus_state_layer_opacity);
-	const Color pressed_state_layer_color_scale = Color(1, 1, 1, pressed_state_layer_opacity);
-	const Color dragged_state_layer_color_scale = Color(1, 1, 1, dragged_state_layer_opacity);
-
-	const Color one_color_scale = Color(1, 1, 1, 1);
+	Color base_color(0.2, 0.23, 0.31);
+	Color accent_color(0.41, 0.61, 0.91);
 
 	// Font colors
+	Ref<ColorRole> mono_color_role = make_color_role(ColorRoleEnum::ON_SURFACE);
+	Ref<ColorRole> base_color_role = make_color_role(ColorRoleEnum::SECONDARY);
+	Ref<ColorRole> accent_color_role = make_color_role(ColorRoleEnum::PRIMARY);
+	
+	Ref<ColorRole> outline_color_role = make_color_role(ColorRoleEnum::OUTLINE);
+
 	const Color control_font_color = Color(0.875, 0.875, 0.875);
+	Ref<ColorRole> control_font_color_role = mono_color_role->duplicate();
+	control_font_color_role->set_lerp_color_role(base_color_role);
+	control_font_color_role->set_lerp_weight(0.25);
+
 	const Color control_font_low_color = Color(0.7, 0.7, 0.7);
 	const Color control_font_lower_color = Color(0.65, 0.65, 0.65);
-	const Color control_font_hover_color = Color(0.95, 0.95, 0.95);
-	const Color control_font_focus_color = Color(0.95, 0.95, 0.95);
-	const Color control_font_disabled_color = control_font_color * Color(1, 1, 1, 0.5);
-	const Color control_font_placeholder_color = Color(control_font_color.r, control_font_color.g, control_font_color.b, 0.6f);
-	const Color control_font_pressed_color = Color(1, 1, 1);
-	const Color control_selection_color = Color(0.5, 0.5, 0.5);
 
-	const Color control_font_color_scale = Color(1, 1, 1, 1);
-	const Color control_font_low_color_scale = Color(0.8, 0.8, 0.8);
-	const Color control_font_lower_color_scale = Color(0.7, 0.7, 0.7);
-	const Color control_font_hover_color_scale = Color(1.2, 1.2, 1.2, 1);
-	const Color control_font_focus_color_scale = Color(1.2, 1.2, 1.2, 1);
-	const Color control_font_disabled_color_scale = Color(1, 1, 1, 0.5);
-	const Color control_font_pressed_color_scale = Color(1.3, 1.3, 1.3, 1);
-	const Color control_font_hover_pressed_color_scale = Color(1.3, 1.3, 1.3, 1);
-	const Color control_font_outline_color_scale = Color(1, 1, 1);
-	const Color control_font_placeholder_color_scale = Color(1, 1, 1, 0.6f);
-	const Color control_selection_color_scale = Color(0.5, 0.5, 0.5);
+	const Color control_font_hover_color = Color(0.95, 0.95, 0.95);
+	Ref<ColorRole> control_font_hover_color_role = mono_color_role->duplicate();
+	control_font_hover_color_role->set_lerp_color_role(base_color_role);
+	control_font_hover_color_role->set_lerp_weight(0.125);
+
+	const Color control_font_focus_color = Color(0.95, 0.95, 0.95);
+	Ref<ColorRole> control_font_focus_color_role = mono_color_role->duplicate();
+	control_font_focus_color_role->set_lerp_color_role(base_color_role);
+	control_font_focus_color_role->set_lerp_weight(0.125);
+
+	const Color control_font_disabled_color = control_font_color * Color(1, 1, 1, 0.5);
+	Ref<ColorRole> control_font_disabled_color_role = control_font_color_role->duplicate();
+	control_font_disabled_color_role->set_color_scale(control_font_disabled_color_role->get_color_scale() * Color(1, 1, 1, 0.5));
+
+	const Color control_font_placeholder_color = Color(control_font_color.r, control_font_color.g, control_font_color.b, 0.6f);
+	Ref<ColorRole> control_font_placeholder_color_role = control_font_color_role->duplicate();
+	control_font_placeholder_color_role->set_color_scale(Color(control_font_placeholder_color_role->get_color_scale(), 0.6));
+
+	const Color control_font_pressed_color = Color(1, 1, 1);
+	Ref<ColorRole> control_font_pressed_color_role = accent_color_role;
+
+	const Color control_font_hover_pressed_color = control_font_hover_color.lerp(accent_color, 0.74);
+	Ref<ColorRole> control_font_hover_pressed_color_role = accent_color_role->duplicate();
+	control_font_hover_pressed_color_role->set_lerp_color_role(control_font_hover_color_role);
+	control_font_hover_pressed_color_role->set_lerp_weight(0.26);
+
+
+	const Color control_selection_color = Color(0.5, 0.5, 0.5);
 
 	// StyleBox colors
 	const Color style_normal_color = Color(0.1, 0.1, 0.1, 0.6);
@@ -2456,20 +2450,112 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	const Color style_progress_color = Color(1, 1, 1, 0.4);
 	const Color style_separator_color = Color(0.5, 0.5, 0.5);
 
-	const Color style_one_color_scale = Color(1, 1, 1, 1);
-	const Color style_zero_color_scale = Color(1, 1, 1, 0);
+	const Ref<ColorRole> button_style_normal_color_role = make_color_role(ColorRoleEnum::PRIMARY);
+	button_style_normal_color_role->set_color_scale(Color(1,1,1,0.6));
 
-	const Color style_normal_color_scale = Color(1, 1, 1, 0.6);
-	const Color style_hover_color_scale = Color(1.5, 1.5, 1.5, 0.6);
-	const Color style_pressed_color_scale = Color(0.5, 0.5, 0.5, 0.6);
-	const Color style_disabled_color_scale = Color(1, 1, 1, 0.3);
-	const Color style_focus_color_scale = Color(1, 1, 1, 0.75);
-	const Color style_popup_color_scale = Color(1, 1, 1, 1);
-	const Color style_popup_border_color_scale = Color(0.7, 0.7, 0.7);
-	const Color style_popup_hover_color_scale = Color(1.6, 1.6, 1.6);
-	const Color style_selected_color_scale = Color(1, 1, 1, 0.3);
-	const Color style_progress_color_scale = Color(1, 1, 1, 0.4);
-	const Color style_separator_color_scale = Color(1, 1, 1, 1);
+	const Ref<ColorRole> button_style_hover_color_role = make_color_role(ColorRoleEnum::PRIMARY);
+	button_style_hover_color_role->set_lightened_amount(0.25);
+	button_style_hover_color_role->set_color_scale(Color(1,1,1,0.6));
+
+	const Ref<ColorRole> button_style_pressed_color_role = make_color_role(ColorRoleEnum::PRIMARY);
+	button_style_pressed_color_role->set_darkened_amount(0.25);
+	button_style_pressed_color_role->set_color_scale(Color(1,1,1,0.6));
+
+	const Ref<ColorRole> button_style_disabled_color_role = make_color_role(ColorRoleEnum::PRIMARY);
+	button_style_disabled_color_role->set_color_scale(Color(1,1,1,0.3));
+
+	const Ref<ColorRole> button_style_focus_color_role = make_color_role(ColorRoleEnum::PRIMARY);
+	button_style_focus_color_role->set_color_scale(Color(1,1,1,0.75));
+
+	const Ref<StyleBoxFlat> button_style_normal = make_color_role_flat_stylebox(button_style_normal_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> button_style_hover = make_color_role_flat_stylebox(button_style_hover_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_1, default_color_scheme);
+	const Ref<StyleBoxFlat> button_style_pressed = make_color_role_flat_stylebox(button_style_pressed_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> button_style_disabled = make_color_role_flat_stylebox(button_style_disabled_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> button_style_focus = make_color_role_flat_stylebox(button_style_focus_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+	button_style_focus->set_expand_margin_all(Math::round(2 * scale));
+	button_style_focus->set_border_color_role(make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
+
+
+	Ref<ColorRole> button_mono_color_role = make_color_role(ColorRoleEnum::ON_PRIMARY);
+	Ref<ColorRole> button_base_color_role = make_color_role(ColorRoleEnum::ON_SECONDARY);
+	Ref<ColorRole> button_accent_color_role = make_color_role(ColorRoleEnum::INVERSE_PRIMARY);
+
+	Ref<ColorRole> button_font_color_role = button_mono_color_role->duplicate();
+	button_font_color_role->set_lerp_color_role(button_base_color_role);
+	button_font_color_role->set_lerp_weight(0.25);
+
+	Ref<ColorRole> button_font_hover_color_role = button_mono_color_role->duplicate();
+	button_font_hover_color_role->set_lerp_color_role(button_base_color_role);
+	button_font_hover_color_role->set_lerp_weight(0.125);
+
+	Ref<ColorRole> button_font_focus_color_role = button_mono_color_role->duplicate();
+	button_font_focus_color_role->set_lerp_color_role(button_base_color_role);
+	button_font_focus_color_role->set_lerp_weight(0.125);
+
+	Ref<ColorRole> button_font_disabled_color_role = button_mono_color_role->duplicate();
+	button_font_disabled_color_role->set_color_scale(button_font_disabled_color_role->get_color_scale() * Color(1, 1, 1, 0.5));
+
+	Ref<ColorRole> button_font_pressed_color_role = button_accent_color_role;
+
+	Ref<ColorRole> button_font_hover_pressed_color_role = button_accent_color_role->duplicate();
+	button_font_hover_pressed_color_role->set_lerp_color_role(button_font_hover_color_role);
+	button_font_hover_pressed_color_role->set_lerp_weight(0.26);
+
+
+	const Ref<ColorRole> style_normal_color_role = make_color_role(ColorRoleEnum::PRIMARY_CONTAINER);
+	style_normal_color_role->set_color_scale(Color(1,1,1,0.6));
+
+	const Ref<ColorRole> style_hover_color_role = make_color_role(ColorRoleEnum::PRIMARY_CONTAINER);
+	style_hover_color_role->set_lightened_amount(0.25);
+	style_hover_color_role->set_color_scale(Color(1,1,1,0.6));
+
+	const Ref<ColorRole> style_pressed_color_role = make_color_role(ColorRoleEnum::PRIMARY_CONTAINER);
+	style_pressed_color_role->set_darkened_amount(0.25);
+	style_pressed_color_role->set_color_scale(Color(1,1,1,0.6));
+
+	const Ref<ColorRole> style_disabled_color_role = make_color_role(ColorRoleEnum::PRIMARY_CONTAINER);
+	style_disabled_color_role->set_color_scale(Color(1,1,1,0.3));
+
+	const Ref<ColorRole> style_focus_color_role = make_color_role(ColorRoleEnum::PRIMARY_CONTAINER);
+	style_focus_color_role->set_color_scale(Color(1,1,1,0.75));
+
+	const Ref<StyleBoxFlat> style_normal = make_color_role_flat_stylebox(style_normal_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> style_hover = make_color_role_flat_stylebox(style_hover_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_1, default_color_scheme);
+	const Ref<StyleBoxFlat> style_pressed = make_color_role_flat_stylebox(style_pressed_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> style_disabled = make_color_role_flat_stylebox(style_disabled_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> style_focus = make_color_role_flat_stylebox(style_focus_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+	style_focus->set_expand_margin_all(Math::round(2 * scale));
+
+	const Ref<ColorRole> state_layer_style_hover_color_role = make_color_role(ColorRoleEnum::ON_PRIMARY);
+	state_layer_style_hover_color_role->set_lightened_amount(0.25);
+	state_layer_style_hover_color_role->set_color_scale(Color(1,1,1,0.08));
+
+	const Ref<ColorRole> state_layer_style_pressed_color_role = make_color_role(ColorRoleEnum::ON_PRIMARY);
+	state_layer_style_pressed_color_role->set_darkened_amount(0.25);
+	state_layer_style_pressed_color_role->set_color_scale(Color(1,1,1,0.1));
+
+	const Ref<ColorRole> state_layer_style_focus_color_role = make_color_role(ColorRoleEnum::ON_PRIMARY);
+	state_layer_style_focus_color_role->set_color_scale(Color(1,1,1,0.1));
+
+	const Ref<StyleBoxFlat> state_layer_style_hover = make_color_role_flat_stylebox(state_layer_style_hover_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> state_layer_style_pressed = make_color_role_flat_stylebox(state_layer_style_pressed_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+	const Ref<StyleBoxFlat> state_layer_style_focus = make_color_role_flat_stylebox(state_layer_style_focus_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+
+	const Ref<ColorRole> style_popup_color_role = make_color_role(ColorRoleEnum::SECONDARY_CONTAINER);
+
+	const Ref<ColorRole> style_popup_border_color_role = make_color_role(ColorRoleEnum::OUTLINE);
+
+	const Ref<ColorRole> style_popup_hover_color_role = make_color_role(ColorRoleEnum::SECONDARY_CONTAINER);
+	style_popup_hover_color_role->set_lightened_amount(0.25);
+
+	const Ref<ColorRole> style_selected_color_role = make_color_role(ColorRoleEnum::TERTIARY);
+	style_focus_color_role->set_color_scale(Color(1,1,1,0.3));
+
+	// Don't use a color too bright to keep the percentage readable.
+	const Ref<ColorRole> style_progress_color_role = make_color_role(ColorRoleEnum::TERTIARY);
+	style_progress_color_role->set_color_scale(Color(1,1,1,0.4));
+
+	const Ref<ColorRole> style_separator_color_role = make_color_role(ColorRoleEnum::OUTLINE);
 
 	// Convert the generated icon sources to a dictionary for easier access.
 	// Unlike the editor icons, there is no central repository of icons in the Theme resource itself to keep it tidy.
@@ -2477,58 +2563,1209 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	for (int i = 0; i < default_theme_icons_count; i++) {
 		icons[default_theme_icons_names[i]] = generate_icon(i);
 	}
+
 	// Window
-	fill_default_theme_window(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	ThemeIntData cur_theme_data;
+	{
+		theme->set_color_scheme("default_color_scheme", "Window", default_color_scheme);
+
+		const Ref<StyleBoxFlat> embedded_border_stylebox_normal = make_color_role_flat_stylebox(style_popup_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 10, 28, 10, 8);
+		sb_expand(embedded_border_stylebox_normal, 8, 32, 8, 6);
+
+		const Ref<StyleBoxFlat> embedded_unfocused_border_stylebox_normal = make_color_role_flat_stylebox(style_popup_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 10, 28, 10, 8);
+		sb_expand(embedded_unfocused_border_stylebox_normal, 8, 32, 8, 6);
+
+		cur_theme_data.set_data_name("embedded_border");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Window", embedded_unfocused_border_stylebox_normal);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Window", embedded_border_stylebox_normal);
+
+		theme->set_font("title_font", "Window", Ref<Font>());
+		theme->set_font_size("title_font_size", "Window", -1);
+
+		theme->set_color_role("title_color_role", "Window", make_color_role(ColorRoleEnum::ON_SECONDARY_CONTAINER));
+		theme->set_color("title_color", "Window", Color(1, 1, 1, 1));
+
+		theme->set_color_role("title_outline_modulate_role", "Window", make_color_role(ColorRoleEnum::OUTLINE));
+		theme->set_color("title_outline_modulate", "Window", Color(1, 1, 1, 1));
+
+		theme->set_constant("title_outline_size", "Window", 0);
+		theme->set_constant("title_height", "Window", 36 * scale);
+		theme->set_constant("resize_margin", "Window", Math::round(4 * scale));
+
+		cur_theme_data.set_data_name("close");
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Window", icons["close"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Window", icons["close_hl"]);
+		theme->set_constant("close_h_offset", "Window", 18 * scale);
+		theme->set_constant("close_v_offset", "Window", 24 * scale);
+	}
+
+	// Window
+	// fill_default_theme_window(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
 
 	// Panel
-	fill_default_theme_panel(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_panel(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		theme->set_stylebox("panel", "Panel", make_color_role_flat_stylebox(style_normal_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0, 0, 0, 0));
+	}
 
 	// ColorRect
-	theme->set_color_scheme("default_color_scheme", "ColorRect", default_color_scheme);
+	{
+		theme->set_color_scheme("default_color_scheme", "ColorRect", default_color_scheme);
+	}
 
 	// Button
-	fill_default_theme_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		theme->set_color_scheme("default_color_scheme", "Button", default_color_scheme);
 
-	fill_default_theme_elevated_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+		cur_theme_data.set_data_name("default_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", button_style_normal);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", button_style_hover);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", button_style_pressed);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", button_style_disabled);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", button_style_focus);
+
+		cur_theme_data.set_data_name("state_layer_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", state_layer_style_hover);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", state_layer_style_pressed);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", state_layer_style_focus);
+
+		theme->set_font("font", "Button", default_font);
+		theme->set_font("text_icon_font", "Button", default_icon_font);
+
+		theme->set_font_size("font_size", "Button", -1);
+		theme->set_font_size("text_icon_font_size", "Button", -1);
+		theme->set_constant("font_outline_size", "Button", 0);
+
+		theme->set_constant("icon_max_width", "Button", 0);
+		theme->set_constant("h_separation", "Button", Math::round(4 * scale));
+
+		Ref<ColorRole> button_mono_color_role = make_color_role(ColorRoleEnum::ON_PRIMARY);
+		Ref<ColorRole> button_base_color_role = make_color_role(ColorRoleEnum::ON_SECONDARY);
+		Ref<ColorRole> button_accent_color_role = make_color_role(ColorRoleEnum::INVERSE_PRIMARY);
+
+		cur_theme_data.set_data_name("text_icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "Button", button_font_hover_pressed_color_role);
+
+		cur_theme_data.set_data_name("text_icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "Button", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", make_color_role(ColorRoleEnum::STATIC_COLOR));
+
+		cur_theme_data.set_data_name("icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", Color(1, 1, 1, 0.4));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", Color(1, 1, 1, 1));
+
+		theme->set_color_role("font_outline_color_role", "Button", make_color_role(ColorRoleEnum::OUTLINE));
+		theme->set_color("font_outline_color", "Button", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("font_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "Button", button_font_hover_pressed_color_role);
+
+
+		cur_theme_data.set_data_name("font_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "Button", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "Button", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "Button", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "Button", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "Button", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("icon");
+		Ref<Texture2D> empty_icon = memnew(ImageTexture);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Button", empty_icon);
+	}
+
+	// fill_default_theme_elevated_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
 
 	// TextureButton
-	fill_default_theme_texture_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_texture_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		theme->set_color_scheme("default_color_scheme", "TextureButton", default_color_scheme);
+
+		Ref<StyleBoxFlat> texture_button_default_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::PRIMARY), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+		texture_button_default_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
+
+		cur_theme_data.set_data_name("default_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextureButton", make_empty_stylebox(0, 0, 0, 0));
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "TextureButton", make_empty_stylebox(0, 0, 0, 0));
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "TextureButton", make_empty_stylebox(0, 0, 0, 0));
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "TextureButton", make_empty_stylebox(0, 0, 0, 0));
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TextureButton", texture_button_default_stylebox_focus);
+
+		cur_theme_data.set_data_name("state_layer_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "TextureButton", state_layer_style_hover);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "TextureButton", state_layer_style_pressed);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TextureButton", state_layer_style_focus);
+
+		theme->set_font("text_icon_font", "TextureButton", default_icon_font);
+
+		theme->set_font_size("text_icon_font_size", "TextureButton", -1);
+
+		theme->set_constant("icon_max_width", "TextureButton", 0);
+
+		cur_theme_data.set_data_name("text_icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextureButton", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "TextureButton", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "TextureButton", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "TextureButton", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TextureButton", button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "TextureButton", button_font_hover_pressed_color_role);
+
+		cur_theme_data.set_data_name("text_icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "TextureButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "TextureButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "TextureButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "TextureButton", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "TextureButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "TextureButton", Color(1, 1, 1, 1));
+	}
 
 	// OptionButton
-	fill_default_theme_option_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_option_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		theme->set_color_scheme("default_color_scheme", "OptionButton", default_color_scheme);
+
+		const Ref<StyleBox> option_button_style_normal = make_color_role_flat_stylebox(button_style_normal_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 2 * default_margin, default_margin, 21, default_margin);
+		
+		const Ref<StyleBox> option_button_style_hover = make_color_role_flat_stylebox(button_style_hover_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 2 * default_margin, default_margin, 21, default_margin);
+
+		const Ref<StyleBox> option_button_style_pressed = make_color_role_flat_stylebox(button_style_pressed_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 2 * default_margin, default_margin, 21, default_margin);
+
+		const Ref<StyleBox> option_button_style_disabled = make_color_role_flat_stylebox(button_style_disabled_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 2 * default_margin, default_margin, 21, default_margin);
+
+
+		const Ref<StyleBox> option_button_style_normal_mirrored = make_color_role_flat_stylebox(button_style_normal_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 21, default_margin, 2 * default_margin, default_margin);
+
+		const Ref<StyleBox> option_button_style_hover_mirrored = make_color_role_flat_stylebox(button_style_hover_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 21, default_margin, 2 * default_margin, default_margin);
+
+
+		const Ref<StyleBox> option_button_style_pressed_mirrored = make_color_role_flat_stylebox(button_style_pressed_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 21, default_margin, 2 * default_margin, default_margin);
+
+
+		const Ref<StyleBox> option_button_style_disabled_mirrored = make_color_role_flat_stylebox(button_style_disabled_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 21, default_margin, 2 * default_margin, default_margin);
+
+		const Ref<StyleBoxFlat> option_button_style_focus = make_color_role_flat_stylebox(button_style_focus_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+		option_button_style_focus->set_expand_margin_all(Math::round(2 * scale));
+
+		cur_theme_data.set_data_name("default_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", option_button_style_normal);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", option_button_style_hover);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", option_button_style_pressed);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", option_button_style_disabled);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneRTL), "OptionButton", option_button_style_normal_mirrored);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneRTL), "OptionButton", option_button_style_hover_mirrored);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneRTL), "OptionButton", option_button_style_pressed_mirrored);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneRTL), "OptionButton", option_button_style_disabled_mirrored);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", option_button_style_focus);
+
+		cur_theme_data.set_data_name("state_layer_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", state_layer_style_hover);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", state_layer_style_pressed);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", state_layer_style_focus);
+
+		theme->set_font("font", "OptionButton", default_font);
+		theme->set_font("text_icon_font", "OptionButton", default_icon_font);
+
+		theme->set_font_size("font_size", "OptionButton", -1);
+		theme->set_font_size("text_icon_font_size", "OptionButton", -1);
+		theme->set_constant("font_outline_size", "OptionButton", 0);
+
+		theme->set_constant("icon_max_width", "OptionButton", 0);
+		theme->set_constant("h_separation", "OptionButton", Math::round(4 * scale));
+
+		cur_theme_data.set_data_name("text_icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "OptionButton", button_font_hover_pressed_color_role);
+
+		cur_theme_data.set_data_name("text_icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+
+		cur_theme_data.set_data_name("icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", Color(1, 1, 1, 0.4));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+
+		theme->set_color_role("font_outline_color_role", "OptionButton", make_color_role(ColorRoleEnum::OUTLINE));
+		theme->set_color("font_outline_color", "OptionButton", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("font_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "OptionButton", button_font_hover_pressed_color_role);
+
+		cur_theme_data.set_data_name("font_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "OptionButton", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "OptionButton", Color(1, 1, 1, 1));
+
+		theme->set_icon("arrow", "OptionButton", icons["option_button_arrow"]);
+		theme->set_constant("arrow_margin", "OptionButton", Math::round(4 * scale));
+		theme->set_constant("modulate_arrow", "OptionButton", false);
+	}
+
 
 	// ScrollContainer
-	fill_default_theme_scroll_container(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_scroll_container(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		theme->set_stylebox("panel", "ScrollContainer", make_empty_stylebox(0,0,0,0));
+	}
 
 	// Separators
-	fill_default_theme_separators(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_separators(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		Ref<StyleBoxLine> separator_horizontal = memnew(StyleBoxLine);
+		separator_horizontal->set_thickness(Math::round(scale));
+		separator_horizontal->set_color(Color(0.5, 0.5, 0.5));
+		separator_horizontal->set_content_margin_individual(default_margin, 0, default_margin, 0);
+		separator_horizontal->set_color_scheme(default_color_scheme);
+		separator_horizontal->set_color_role(make_color_role(ColorRoleEnum::OUTLINE_VARIANT));
+
+		Ref<StyleBoxLine> separator_vertical = separator_horizontal->duplicate();
+		separator_vertical->set_vertical(true);
+		separator_vertical->set_content_margin_individual(0, default_margin, 0, default_margin);
+
+		cur_theme_data.set_data_name("separator");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "HSeparator", separator_horizontal);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "VSeparator", separator_vertical);
+
+		theme->set_icon("close", "Icons", icons["close"]);
+		theme->set_font("normal", "Fonts", Ref<Font>());
+		theme->set_font("large", "Fonts", Ref<Font>());
+
+		theme->set_constant("separation", "HSeparator", Math::round(4 * scale));
+		theme->set_constant("separation", "VSeparator", Math::round(4 * scale));
+	}
+
 
 	// Scrollbars
-	fill_default_theme_scrollbar(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_scrollbar(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		const Ref<StyleBoxFlat> style_h_scrollbar = make_color_role_flat_stylebox(accent_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 0, 4, 0, 4, 10);
+		const Ref<StyleBoxFlat> style_v_scrollbar = make_color_role_flat_stylebox(accent_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 0, 4, 0, 10);
+		
+		const Ref<ColorRole> style_scrollbar_grabber_normal_role = make_color_role(ColorRoleEnum::INVERSE_PRIMARY);
+		style_scrollbar_grabber_normal_role->set_color_scale(Color(1,1,1,0.6));
+
+		const Ref<ColorRole> style_scrollbar_grabber_hover_role = make_color_role(ColorRoleEnum::INVERSE_PRIMARY);
+		style_scrollbar_grabber_hover_role->set_lightened_amount(0.25);
+		style_scrollbar_grabber_hover_role->set_color_scale(Color(1,1,1,0.6));
+
+		const Ref<ColorRole> style_scrollbar_grabber_pressed_role = make_color_role(ColorRoleEnum::INVERSE_PRIMARY);
+		style_scrollbar_grabber_pressed_role->set_darkened_amount(0.25);
+		style_scrollbar_grabber_pressed_role->set_color_scale(Color(1,1,1,0.6));
+
+		const Ref<StyleBoxFlat> style_scrollbar_grabber = make_color_role_flat_stylebox(style_scrollbar_grabber_normal_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4, 10);
+		const Ref<StyleBoxFlat> style_scrollbar_grabber_highlight = make_color_role_flat_stylebox(style_scrollbar_grabber_hover_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4, 10);
+		const Ref<StyleBoxFlat> style_scrollbar_grabber_pressed = make_color_role_flat_stylebox(style_scrollbar_grabber_pressed_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, 4, 4, 4, 4, 10);
+
+		Ref<StyleBoxFlat> default_scrollbar_stylebox_focus = make_color_role_flat_stylebox(accent_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+		default_scrollbar_stylebox_focus->set_expand_margin_all(Math::round(2 * scale));
+		default_scrollbar_stylebox_focus->set_border_color_role(make_color_role(ColorRoleEnum::INVERSE_PRIMARY));
+
+		Ref<Texture2D> empty_icon = memnew(ImageTexture);
+
+		// HScrollBar
+		cur_theme_data.set_data_name("scroll_style");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "HScrollBar", style_h_scrollbar);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "HScrollBar", default_scrollbar_stylebox_focus);
+		theme->set_stylebox("grabber", "HScrollBar", style_scrollbar_grabber);
+		theme->set_stylebox("grabber_highlight", "HScrollBar", style_scrollbar_grabber_highlight);
+		theme->set_stylebox("grabber_pressed", "HScrollBar", style_scrollbar_grabber_pressed);
+
+		theme->set_icon("increment", "HScrollBar", empty_icon);
+		theme->set_icon("increment_highlight", "HScrollBar", empty_icon);
+		theme->set_icon("increment_pressed", "HScrollBar", empty_icon);
+		theme->set_icon("decrement", "HScrollBar", empty_icon);
+		theme->set_icon("decrement_highlight", "HScrollBar", empty_icon);
+		theme->set_icon("decrement_pressed", "HScrollBar", empty_icon);
+
+		// VScrollBar
+		cur_theme_data.set_data_name("scroll_style");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "VScrollBar", style_v_scrollbar);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "VScrollBar", default_scrollbar_stylebox_focus);
+		theme->set_stylebox("grabber", "VScrollBar", style_scrollbar_grabber);
+		theme->set_stylebox("grabber_highlight", "VScrollBar", style_scrollbar_grabber_highlight);
+		theme->set_stylebox("grabber_pressed", "VScrollBar", style_scrollbar_grabber_pressed);
+
+		theme->set_icon("increment", "VScrollBar", empty_icon);
+		theme->set_icon("increment_highlight", "VScrollBar", empty_icon);
+		theme->set_icon("increment_pressed", "VScrollBar", empty_icon);
+		theme->set_icon("decrement", "VScrollBar", empty_icon);
+		theme->set_icon("decrement_highlight", "VScrollBar", empty_icon);
+		theme->set_icon("decrement_pressed", "VScrollBar", empty_icon);
+	}
 
 	// Label
-	fill_default_theme_label(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_label(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		theme->set_color_scheme("default_color_scheme", "Label", default_color_scheme);
+
+		theme->set_stylebox("normal", "Label", memnew(StyleBoxEmpty));
+
+		theme->set_font("font", "Label", default_font);
+
+		theme->set_font_size("font_size", "Label", -1);
+		theme->set_type_variation("HeaderSmall", "Label");
+		theme->set_font_size("font_size", "HeaderSmall", default_font_size + 4);
+
+		theme->set_type_variation("HeaderMedium", "Label");
+		theme->set_font_size("font_size", "HeaderMedium", default_font_size + 8);
+
+		theme->set_type_variation("HeaderLarge", "Label");
+		theme->set_font_size("font_size", "HeaderLarge", default_font_size + 12);
+
+		theme->set_constant("line_spacing", "Label", Math::round(3 * scale));
+
+		theme->set_color_role("font_color_role", "Label", button_font_color_role);
+		theme->set_color("font_color", "Label", Color(1, 1, 1));
+
+		theme->set_color_role("font_shadow_color_role", "Label", make_color_role(ColorRoleEnum::STATIC_TRANSPARENT));
+		theme->set_color("font_shadow_color", "Label", Color(0, 0, 0, 0));
+
+		theme->set_color_role("font_outline_color_role", "Label", outline_color_role);
+		theme->set_color("font_outline_color", "Label", Color(1, 1, 1));
+
+		theme->set_constant("shadow_offset_x", "Label", Math::round(1 * scale));
+		theme->set_constant("shadow_offset_y", "Label", Math::round(1 * scale));
+		theme->set_constant("outline_size", "Label", 0);
+		theme->set_constant("shadow_outline_size", "Label", Math::round(1 * scale));
+
+		theme->set_type_variation("TooltipLabel", "Label");
+		theme->set_font_size("font_size", "TooltipLabel", -1);
+		theme->set_font("font", "TooltipLabel", Ref<Font>());
+
+		theme->set_color_role("font_color_role", "TooltipLabel", button_font_color_role);
+		theme->set_color("font_color", "TooltipLabel", Color(1, 1, 1));
+
+		theme->set_color_role("font_shadow_color_role", "TooltipLabel", make_color_role(ColorRoleEnum::STATIC_TRANSPARENT));
+		theme->set_color("font_shadow_color", "TooltipLabel", Color(1, 1, 1));
+
+		theme->set_color_role("font_outline_color_role", "TooltipLabel", outline_color_role);
+		theme->set_color("font_outline_color", "TooltipLabel", Color(1, 1, 1));
+
+		theme->set_constant("shadow_offset_x", "TooltipLabel", 1);
+		theme->set_constant("shadow_offset_y", "TooltipLabel", 1);
+		theme->set_constant("outline_size", "TooltipLabel", 0);
+	}
 
 	// RichTextLabel
-	fill_default_theme_rich_text_label(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_rich_text_label(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		theme->set_color_scheme("default_color_scheme", "RichTextLabel", default_color_scheme);
+
+		cur_theme_data.set_data_name("default_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "RichTextLabel", make_empty_stylebox(0, 0, 0, 0));
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "RichTextLabel", button_style_focus);
+
+		theme->set_font("normal_font", "RichTextLabel", Ref<Font>());
+		theme->set_font("bold_font", "RichTextLabel", bold_font);
+		theme->set_font("italics_font", "RichTextLabel", italics_font);
+		theme->set_font("bold_italics_font", "RichTextLabel", bold_italics_font);
+		theme->set_font("mono_font", "RichTextLabel", Ref<Font>());
+		theme->set_font_size("normal_font_size", "RichTextLabel", -1);
+		theme->set_font_size("bold_font_size", "RichTextLabel", -1);
+		theme->set_font_size("italics_font_size", "RichTextLabel", -1);
+		theme->set_font_size("bold_italics_font_size", "RichTextLabel", -1);
+		theme->set_font_size("mono_font_size", "RichTextLabel", -1);
+
+		theme->set_color_role("default_color_role", "RichTextLabel", button_font_color_role);
+		theme->set_color("default_color", "RichTextLabel", Color(1, 1, 1, 1));
+
+		Ref<ColorRole> font_selected_color_role = button_font_color_role->duplicate();
+		font_selected_color_role->set_lightened_amount(0.2);
+		theme->set_color_role("font_selected_color_role", "RichTextLabel", font_selected_color_role);
+		theme->set_color("font_selected_color", "RichTextLabel", Color(0, 0, 0, 0));
+
+		Ref<ColorRole> selection_color_role = make_color_role(ColorRoleEnum::PRIMARY,Color(1,1,1,0.8));
+		selection_color_role->set_darkened_amount(0.2);
+		theme->set_color_role("selection_color_role", "RichTextLabel", selection_color_role);
+		theme->set_color("selection_color", "RichTextLabel", Color(0.1, 0.1, 1, 0.8));
+
+		theme->set_color_role("font_shadow_color_role", "RichTextLabel", make_color_role(ColorRoleEnum::STATIC_TRANSPARENT));
+		theme->set_color("font_shadow_color", "RichTextLabel", Color(0, 0, 0, 0));
+
+		theme->set_color_role("font_outline_color_role", "RichTextLabel", outline_color_role);
+		theme->set_color("font_outline_color", "RichTextLabel", Color(1, 1, 1, 1));
+
+		theme->set_color_role("outline_color_role", "RichTextLabel", outline_color_role);
+		theme->set_color("outline_color", "RichTextLabel", Color(1, 1, 1));
+
+		theme->set_constant("shadow_offset_x", "RichTextLabel", Math::round(1 * scale));
+		theme->set_constant("shadow_offset_y", "RichTextLabel", Math::round(1 * scale));
+		theme->set_constant("shadow_outline_size", "RichTextLabel", Math::round(1 * scale));
+
+		theme->set_constant("line_separation", "RichTextLabel", 0);
+		theme->set_constant("table_h_separation", "RichTextLabel", Math::round(3 * scale));
+		theme->set_constant("table_v_separation", "RichTextLabel", Math::round(3 * scale));
+
+		theme->set_constant("outline_size", "RichTextLabel", 0);
+
+		theme->set_color_role("table_odd_row_bg_role", "RichTextLabel", make_color_role(ColorRoleEnum::STATIC_TRANSPARENT));
+		theme->set_color("table_odd_row_bg", "RichTextLabel", Color(0, 0, 0, 0));
+
+		theme->set_color_role("table_even_row_bg_role", "RichTextLabel", make_color_role(ColorRoleEnum::STATIC_TRANSPARENT));
+		theme->set_color("table_even_row_bg", "RichTextLabel", Color(0, 0, 0, 0));
+
+		theme->set_color_role("table_border_role", "RichTextLabel", make_color_role(ColorRoleEnum::STATIC_TRANSPARENT));
+		theme->set_color("table_border", "RichTextLabel", Color(0, 0, 0, 0));
+
+		theme->set_constant("text_highlight_h_padding", "RichTextLabel", Math::round(3 * scale));
+		theme->set_constant("text_highlight_v_padding", "RichTextLabel", Math::round(3 * scale));
+	}
+
 
 	// MenuBar
-	fill_default_theme_menu_bar(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_menu_bar(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		theme->set_color_scheme("default_color_scheme", "MenuBar", default_color_scheme);
+
+		const Ref<StyleBoxFlat> state_layer_stylebox_hover = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.08)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+		const Ref<StyleBoxFlat> state_layer_stylebox_pressed = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.1)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+		Ref<StyleBoxFlat> state_layer_stylebox_focus = make_color_role_flat_stylebox(make_color_role(ColorRoleEnum::ON_PRIMARY, Color(1, 1, 1, 0.1)), StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+
+		cur_theme_data.set_data_name("default_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuBar", button_style_normal);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuBar", button_style_hover);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuBar", button_style_pressed);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuBar", button_style_disabled);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuBar", button_style_focus);
+
+		cur_theme_data.set_data_name("state_layer_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuBar", state_layer_style_hover_color_role);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuBar", state_layer_style_pressed_color_role);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuBar", state_layer_style_focus_color_role);
+
+		theme->set_font("font", "MenuBar", default_font);
+
+		theme->set_font_size("font_size", "MenuBar", -1);
+		theme->set_constant("outline_size", "MenuBar", 0);
+
+		theme->set_constant("h_separation", "MenuBar", Math::round(4 * scale));
+
+		theme->set_color_role("font_outline_color_role", "MenuBar", make_color_role(ColorRoleEnum::OUTLINE));
+		theme->set_color("font_outline_color", "MenuBar", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("font_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuBar", button_font_color_role);
+		Ref<ColorRole> button_font_color_role_checked = button_font_color_role->duplicate();
+		button_font_color_role_checked->set_lightened_amount(0.5);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "MenuBar", button_font_color_role_checked);
+
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuBar", button_font_hover_color_role);
+		Ref<ColorRole> button_font_hover_color_role_checked = button_font_hover_color_role->duplicate();
+		button_font_hover_color_role_checked->set_lightened_amount(0.5);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverCheckedLTR), "MenuBar", button_font_hover_color_role_checked);
+
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuBar", button_font_pressed_color_role);
+		Ref<ColorRole> button_font_pressed_color_role_checked = button_font_pressed_color_role->duplicate();
+		button_font_pressed_color_role_checked->set_lightened_amount(0.5);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedCheckedLTR), "MenuBar", button_font_pressed_color_role_checked);
+
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuBar", button_font_disabled_color_role);
+
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuBar", button_font_focus_color_role);
+		Ref<ColorRole> button_font_focus_color_role_checked = button_font_focus_color_role->duplicate();
+		button_font_focus_color_role_checked->set_lightened_amount(0.5);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusCheckedLTR), "MenuBar", button_font_focus_color_role_checked);
+
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "MenuBar", button_font_hover_pressed_color_role);
+		Ref<ColorRole> button_font_hover_pressed_color_role_checked = button_font_hover_pressed_color_role->duplicate();
+		button_font_hover_pressed_color_role_checked->set_lightened_amount(0.5);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedCheckedLTR), "MenuBar", button_font_hover_pressed_color_role_checked);
+
+		cur_theme_data.set_data_name("font_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuBar", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuBar", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuBar", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuBar", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuBar", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "MenuBar", Color(1, 1, 1, 1));
+	}
+
+
 
 	// LinkButton
-	fill_default_theme_link_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_link_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		theme->set_color_scheme("default_color_scheme", "LinkButton", default_color_scheme);
+
+		theme->set_stylebox("focus", "LinkButton", button_style_focus);
+
+		cur_theme_data.set_data_name("state_layer_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "LinkButton", state_layer_style_hover_color_role);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "LinkButton", state_layer_style_pressed_color_role);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "LinkButton", state_layer_style_focus_color_role);
+
+		theme->set_font("font", "LinkButton", default_font);
+
+		theme->set_font_size("font_size", "LinkButton", -1);
+		theme->set_constant("outline_size", "LinkButton", 0);
+
+		theme->set_constant("underline_spacing", "LinkButton", Math::round(2 * scale));
+
+		theme->set_color_role("font_outline_color_role", "LinkButton", outline_color_role);
+		theme->set_color("font_outline_color", "LinkButton", Color(0, 0, 0, 1));
+
+		cur_theme_data.set_data_name("font_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LinkButton", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "LinkButton", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "LinkButton", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "LinkButton", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "LinkButton", button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "LinkButton", button_font_hover_pressed_color_role);
+
+
+		cur_theme_data.set_data_name("font_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "LinkButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "LinkButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "LinkButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "LinkButton", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "LinkButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "LinkButton", Color(1, 1, 1, 1));
+	}
+
 
 	// MenuButton
-	fill_default_theme_menu_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_menu_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		theme->set_color_scheme("default_color_scheme", "MenuButton", default_color_scheme);
+
+		cur_theme_data.set_data_name("default_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", button_style_normal);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", button_style_hover);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuButton", button_style_pressed);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", button_style_disabled);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", button_style_focus);
+
+		cur_theme_data.set_data_name("state_layer_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", state_layer_style_hover);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuButton", state_layer_style_pressed);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", state_layer_style_focus);
+
+		theme->set_font("font", "MenuButton", default_font);
+		theme->set_font("text_icon_font", "MenuButton", default_icon_font);
+
+		theme->set_font_size("font_size", "MenuButton", -1);
+		theme->set_font_size("text_icon_font_size", "MenuButton", -1);
+		theme->set_constant("font_outline_size", "MenuButton", 0);
+
+		theme->set_constant("icon_max_width", "MenuButton", 0);
+		theme->set_constant("h_separation", "MenuButton", Math::round(4 * scale));
+
+		cur_theme_data.set_data_name("text_icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuButton", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "MenuButton", button_font_hover_pressed_color_role);
+
+		cur_theme_data.set_data_name("text_icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "MenuButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+
+		cur_theme_data.set_data_name("icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", Color(1, 1, 1, 0.4));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+
+		theme->set_color_role("font_outline_color_role", "MenuButton", make_color_role(ColorRoleEnum::OUTLINE));
+		theme->set_color("font_outline_color", "MenuButton", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("font_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuButton", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "MenuButton", button_font_hover_pressed_color_role);
+
+
+		cur_theme_data.set_data_name("font_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "MenuButton", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "MenuButton", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("icon");
+		Ref<Texture2D> empty_icon = memnew(ImageTexture);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "MenuButton", empty_icon);
+	}
+
 
 	// PopupMenu
-	fill_default_theme_popup_menu(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_popup_menu(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		theme->set_color_scheme("default_color_scheme", "PopupMenu", default_color_scheme);
+		
+		const Ref<ColorRole> popup_menu_style_normal_color_role = make_color_role(ColorRoleEnum::SECONDARY_CONTAINER);
+		popup_menu_style_normal_color_role->set_color_scale(Color(1,1,1,0.6));
+
+		const Ref<ColorRole> popup_menu_style_hover_color_role = make_color_role(ColorRoleEnum::SECONDARY_CONTAINER);
+		popup_menu_style_hover_color_role->set_lightened_amount(0.25);
+		popup_menu_style_hover_color_role->set_color_scale(Color(1,1,1,0.6));
+
+
+		const Ref<ColorRole> popup_menu_style_disabled_color_role = make_color_role(ColorRoleEnum::SECONDARY_CONTAINER);
+		popup_menu_style_disabled_color_role->set_color_scale(Color(1,1,1,0.3));
+
+		const Ref<ColorRole> popup_menu_style_focus_color_role = make_color_role(ColorRoleEnum::SECONDARY_CONTAINER);
+		popup_menu_style_focus_color_role->set_color_scale(Color(1,1,1,0.75));
+
+
+		const Ref<StyleBoxFlat> popup_menu_style_normal = make_color_role_flat_stylebox(popup_menu_style_normal_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+		popup_menu_style_normal->set_border_width_all(2);
+		popup_menu_style_normal->set_border_color_role(make_color_role(ColorRoleEnum::OUTLINE));
+
+		const Ref<StyleBoxFlat> popup_menu_style_hover = make_color_role_flat_stylebox(popup_menu_style_hover_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_1, default_color_scheme);
+		popup_menu_style_hover->set_border_width_all(2);
+		popup_menu_style_hover->set_border_color_role(make_color_role(ColorRoleEnum::OUTLINE));
+
+		const Ref<StyleBoxFlat> popup_menu_style_disabled = make_color_role_flat_stylebox(popup_menu_style_disabled_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+		popup_menu_style_disabled->set_border_width_all(2);
+		popup_menu_style_disabled->set_border_color_role(make_color_role(ColorRoleEnum::OUTLINE));
+		
+		const Ref<StyleBoxFlat> popup_menu_style_focus = make_color_role_flat_stylebox(popup_menu_style_focus_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+		popup_menu_style_focus->set_expand_margin_all(Math::round(2 * scale));
+
+		const Ref<ColorRole> popup_menu_state_layer_style_hover_color_role = make_color_role(ColorRoleEnum::ON_SECONDARY_CONTAINER);
+		popup_menu_state_layer_style_hover_color_role->set_lightened_amount(0.25);
+		popup_menu_state_layer_style_hover_color_role->set_color_scale(Color(1,1,1,0.08));
+
+		const Ref<ColorRole> popup_menu_state_layer_style_focus_color_role = make_color_role(ColorRoleEnum::ON_SECONDARY_CONTAINER);
+		popup_menu_state_layer_style_focus_color_role->set_color_scale(Color(1,1,1,0.1));
+
+		const Ref<StyleBoxFlat> popup_menu_state_layer_style_hover = make_color_role_flat_stylebox(popup_menu_state_layer_style_hover_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+
+		const Ref<StyleBoxFlat> popup_menu_state_layer_style_focus = make_color_role_flat_stylebox(popup_menu_state_layer_style_focus_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme);
+
+		cur_theme_data.set_data_name("default_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", popup_menu_style_normal);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", popup_menu_style_hover);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", popup_menu_style_disabled);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupMenu", popup_menu_style_focus);
+
+		cur_theme_data.set_data_name("state_layer_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", popup_menu_state_layer_style_hover);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupMenu", popup_menu_state_layer_style_focus);
+
+		Ref<StyleBoxLine> separator_horizontal = memnew(StyleBoxLine);
+		separator_horizontal->set_thickness(Math::round(scale));
+		separator_horizontal->set_color_role(make_color_role(ColorRoleEnum::OUTLINE));
+		separator_horizontal->set_content_margin_individual(default_margin, 0, default_margin, 0);
+		Ref<StyleBoxLine> separator_vertical = separator_horizontal->duplicate();
+		separator_vertical->set_vertical(true);
+		separator_vertical->set_content_margin_individual(0, default_margin, 0, default_margin);
+
+		theme->set_stylebox("separator", "PopupMenu", separator_horizontal);
+		theme->set_stylebox("labeled_separator_left", "PopupMenu", separator_horizontal);
+		theme->set_stylebox("labeled_separator_right", "PopupMenu", separator_horizontal);
+
+		cur_theme_data.set_data_name("icon");
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "PopupMenu", icons["checked"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "PopupMenu", icons["checked"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "PopupMenu", icons["unchecked"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "PopupMenu", icons["unchecked"]);
+		cur_theme_data.set_data_name("radio_icon");
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "PopupMenu", icons["radio_checked"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "PopupMenu", icons["radio_checked"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "PopupMenu", icons["radio_unchecked"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "PopupMenu", icons["radio_unchecked"]);
+		cur_theme_data.set_data_name("submenu");
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", icons["popup_menu_arrow_right"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneRTL), "PopupMenu", icons["popup_menu_arrow_left"]);
+
+		theme->set_font("font", "PopupMenu", Ref<Font>());
+		theme->set_font("font_separator", "PopupMenu", Ref<Font>());
+		theme->set_font_size("font_size", "PopupMenu", -1);
+		theme->set_font_size("font_separator_size", "PopupMenu", -1);
+
+		theme->set_constant("indent", "PopupMenu", Math::round(10 * scale));
+		theme->set_constant("h_separation", "PopupMenu", Math::round(4 * scale));
+		theme->set_constant("v_separation", "PopupMenu", Math::round(4 * scale));
+		theme->set_constant("outline_size", "PopupMenu", 0);
+		theme->set_constant("separator_outline_size", "PopupMenu", 0);
+		theme->set_constant("item_start_padding", "PopupMenu", Math::round(2 * scale));
+		theme->set_constant("item_end_padding", "PopupMenu", Math::round(2 * scale));
+		theme->set_constant("icon_max_width", "PopupMenu", 0);
+
+		Ref<ColorRole> popup_menu_mono_color_role = make_color_role(ColorRoleEnum::ON_SECONDARY_CONTAINER);
+		Ref<ColorRole> popup_menu_base_color_role = make_color_role(ColorRoleEnum::ON_PRIMARY);
+		Ref<ColorRole> popup_menu_accent_color_role = make_color_role(ColorRoleEnum::INVERSE_PRIMARY);
+
+		Ref<ColorRole> popup_menu_font_color_role = popup_menu_mono_color_role->duplicate();
+		popup_menu_font_color_role->set_lerp_color_role(popup_menu_base_color_role);
+		popup_menu_font_color_role->set_lerp_weight(0.25);
+
+		Ref<ColorRole> popup_menu_font_hover_color_role = popup_menu_mono_color_role->duplicate();
+		popup_menu_font_hover_color_role->set_lerp_color_role(popup_menu_base_color_role);
+		popup_menu_font_hover_color_role->set_lerp_weight(0.125);
+
+		Ref<ColorRole> popup_menu_font_focus_color_role = popup_menu_mono_color_role->duplicate();
+		popup_menu_font_focus_color_role->set_lerp_color_role(popup_menu_base_color_role);
+		popup_menu_font_focus_color_role->set_lerp_weight(0.125);
+
+		Ref<ColorRole> popup_menu_font_disabled_color_role = popup_menu_mono_color_role->duplicate();
+		popup_menu_font_disabled_color_role->set_color_scale(popup_menu_font_disabled_color_role->get_color_scale() * Color(1, 1, 1, 0.5));
+
+		Ref<ColorRole> popup_menu_font_pressed_color_role = popup_menu_accent_color_role;
+
+		Ref<ColorRole> popup_menu_font_hover_pressed_color_role = popup_menu_accent_color_role->duplicate();
+		popup_menu_font_hover_pressed_color_role->set_lerp_color_role(popup_menu_font_hover_color_role);
+		popup_menu_font_hover_pressed_color_role->set_lerp_weight(0.26);
+
+		cur_theme_data.set_data_name("font_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", popup_menu_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", popup_menu_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "PopupMenu", popup_menu_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", popup_menu_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupMenu", popup_menu_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "PopupMenu", popup_menu_font_hover_pressed_color_role);
+
+		cur_theme_data.set_data_name("font_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "PopupMenu", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "PopupMenu", Color(1, 1, 1, 1));
+
+
+		theme->set_color_role("font_accelerator_color_role", "PopupMenu", make_color_role(ColorRoleEnum::ON_SECONDARY));
+		theme->set_color("font_accelerator_color", "PopupMenu", Color(1, 1, 1, 1));
+
+		theme->set_color_role("font_outline_color_role", "PopupMenu", make_color_role(ColorRoleEnum::OUTLINE));
+		theme->set_color("font_outline_color", "PopupMenu", Color(1, 1, 1, 1));
+
+		theme->set_color_role("font_separator_color_role", "PopupMenu", make_color_role(ColorRoleEnum::OUTLINE));
+		theme->set_color("font_separator_color", "PopupMenu", Color(1, 1, 1, 1));
+
+		theme->set_color_role("font_separator_outline_color_role", "PopupMenu", make_color_role(ColorRoleEnum::OUTLINE_VARIANT));
+		theme->set_color("font_separator_outline_color", "PopupMenu", Color(1, 1, 1, 1));
+	}
 
 	// CheckBox
-	fill_default_theme_checkbox(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_checkbox(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		theme->set_color_scheme("default_color_scheme", "CheckBox", default_color_scheme);
+
+		const Ref<StyleBox> cbx_empty = memnew(StyleBoxEmpty);
+		cbx_empty->set_content_margin_all(Math::round(4 * scale));
+
+		const Ref<StyleBoxFlat> check_box_style_focus = make_color_role_flat_stylebox(style_focus_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+		check_box_style_focus->set_expand_margin_all(Math::round(2 * scale));
+		check_box_style_focus->set_content_margin_all(Math::round(4 * scale));
+
+		const Ref<StyleBoxFlat> check_box_state_layer_style_hover = state_layer_style_hover->duplicate();
+		check_box_state_layer_style_hover->set_content_margin_all(Math::round(4 * scale));
+
+		const Ref<StyleBoxFlat> check_box_state_layer_style_pressed = state_layer_style_pressed->duplicate();
+		check_box_state_layer_style_pressed->set_content_margin_all(Math::round(4 * scale));
+
+		const Ref<StyleBoxFlat> check_box_state_layer_style_focus = state_layer_style_focus->duplicate();
+		check_box_state_layer_style_focus->set_content_margin_all(Math::round(4 * scale));
+
+		cur_theme_data.set_data_name("default_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", cbx_empty);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", cbx_empty);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", cbx_empty);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", cbx_empty);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", check_box_style_focus);
+
+		cur_theme_data.set_data_name("state_layer_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", check_box_state_layer_style_hover);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", check_box_state_layer_style_pressed);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", check_box_state_layer_style_focus);
+
+		theme->set_font("font", "CheckBox", default_font);
+		theme->set_font("text_icon_font", "CheckBox", default_icon_font);
+
+		theme->set_font_size("font_size", "CheckBox", -1);
+		theme->set_font_size("text_icon_font_size", "CheckBox", -1);
+		theme->set_constant("font_outline_size", "CheckBox", 0);
+
+		theme->set_constant("icon_max_width", "CheckBox", 0);
+		theme->set_constant("h_separation", "CheckBox", Math::round(4 * scale));
+
+		cur_theme_data.set_data_name("text_icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckBox", button_font_hover_pressed_color_role);
+
+
+		cur_theme_data.set_data_name("text_icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckBox", make_color_role(ColorRoleEnum::STATIC_COLOR));
+
+
+		cur_theme_data.set_data_name("icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", Color(1, 1, 1, 0.4));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+
+		theme->set_color_role("font_outline_color_role", "CheckBox", outline_color_role);
+		theme->set_color("font_outline_color", "CheckBox", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("font_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckBox", button_font_hover_pressed_color_role);
+
+
+		cur_theme_data.set_data_name("font_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("icon");
+		Ref<Texture2D> empty_icon = memnew(ImageTexture);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", empty_icon);
+
+		theme->set_constant("check_v_offset", "CheckBox", 0);
+
+		cur_theme_data.set_data_name("check_icon");
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckBox", icons["checked"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckBox", icons["unchecked"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckBox", icons["checked"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckBox", icons["unchecked"]);
+
+		cur_theme_data.set_data_name("radio_check_icon");
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckBox", icons["radio_checked"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckBox", icons["radio_unchecked"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckBox", icons["radio_checked"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckBox", icons["radio_unchecked"]);
+
+		cur_theme_data.set_data_name("check_icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckBox", button_font_hover_pressed_color_role);
+
+
+		cur_theme_data.set_data_name("check_icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("text_check_icon");
+		theme->set_str(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckBox", "checkbox-marked");
+		theme->set_str(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckBox", "checkbox-blank-outline");
+		theme->set_str(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckBox", "checkbox-marked");
+		theme->set_str(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckBox", "checkbox-blank-outline");
+
+		cur_theme_data.set_data_name("text_radio_check_icon");
+		theme->set_str(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckBox", "radiobox-marked");
+		theme->set_str(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckBox", "radiobox-blank");
+		theme->set_str(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckBox", "radiobox-marked");
+		theme->set_str(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckBox", "radiobox-blank");
+
+		cur_theme_data.set_data_name("text_check_icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckBox", button_font_hover_pressed_color_role);
+
+		cur_theme_data.set_data_name("text_check_icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckBox", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckBox", Color(1, 1, 1, 1));
+	}
 
 	// CheckButton
-	fill_default_theme_check_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	// fill_default_theme_check_button(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);
+	{
+		theme->set_color_scheme("default_color_scheme", "CheckBox", default_color_scheme);
+
+		Ref<StyleBox> cb_empty = memnew(StyleBoxEmpty);
+		cb_empty->set_content_margin_individual(Math::round(6 * scale), Math::round(4 * scale), 
+		Math::round(6 * scale), Math::round(4 * scale));
+
+		const Ref<StyleBoxFlat> check_button_style_focus = make_color_role_flat_stylebox(style_focus_color_role, StyleBoxFlat::ElevationLevel::Elevation_Level_0, default_color_scheme, default_margin, default_margin, default_margin, default_margin, default_corner_radius, false, 2);
+		check_button_style_focus->set_expand_margin_all(Math::round(2 * scale));
+
+
+		const Ref<StyleBoxFlat> check_button_state_layer_style_hover = state_layer_style_hover->duplicate();
+		check_button_state_layer_style_hover->set_content_margin_all(Math::round(4 * scale));
+
+		const Ref<StyleBoxFlat> check_button_state_layer_style_pressed = state_layer_style_pressed->duplicate();
+		check_button_state_layer_style_pressed->set_content_margin_all(Math::round(4 * scale));
+
+		const Ref<StyleBoxFlat> check_button_state_layer_style_focus = state_layer_style_focus->duplicate();
+		check_button_state_layer_style_focus->set_content_margin_all(Math::round(4 * scale));
+
+		cur_theme_data.set_data_name("default_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", cb_empty);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", cb_empty);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", cb_empty);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", cb_empty);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", check_button_style_focus);
+
+		cur_theme_data.set_data_name("state_layer_stylebox");
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", check_button_state_layer_style_hover);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", check_button_state_layer_style_pressed);
+		theme->set_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", check_button_state_layer_style_focus);
+
+		theme->set_font("font", "CheckButton", default_font);
+		theme->set_font("text_icon_font", "CheckButton", default_icon_font);
+
+		theme->set_font_size("font_size", "CheckButton", -1);
+		theme->set_font_size("text_icon_font_size", "CheckButton", -1);
+		theme->set_constant("font_outline_size", "CheckButton", 0);
+
+		theme->set_constant("icon_max_width", "CheckButton", 0);
+		theme->set_constant("h_separation", "CheckButton", Math::round(4 * scale));
+
+		cur_theme_data.set_data_name("text_icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckButton", button_font_hover_pressed_color_role);
+
+		cur_theme_data.set_data_name("text_icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckButton", make_color_role(ColorRoleEnum::STATIC_COLOR));
+
+		cur_theme_data.set_data_name("icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", Color(1, 1, 1, 0.4));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+
+		theme->set_color_role("font_outline_color_role", "CheckButton", outline_color_role);
+		theme->set_color("font_outline_color", "CheckButton", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("font_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckButton", button_font_hover_pressed_color_role);
+
+
+		cur_theme_data.set_data_name("font_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverPressedNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("icon");
+		Ref<Texture2D> empty_icon = memnew(ImageTexture);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", empty_icon);
+
+		theme->set_constant("check_v_offset", "CheckButton", 0);
+
+		cur_theme_data.set_data_name("check_icon");
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckButton", icons["toggle_on"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckButton", icons["toggle_off"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckButton", icons["toggle_on_disabled"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckButton", icons["toggle_off_disabled"]);
+
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalCheckedRTL), "CheckButton", icons["toggle_on_mirrored"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::NormalUncheckedRTL), "CheckButton", icons["toggle_off_mirrored"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledCheckedRTL), "CheckButton", icons["toggle_on_disabled_mirrored"]);
+		theme->set_icon(cur_theme_data.get_state_data_name(State::DisabledUncheckedRTL), "CheckButton", icons["toggle_off_disabled_mirrored"]);
+
+		cur_theme_data.set_data_name("check_icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", button_font_focus_color_role);
+
+		cur_theme_data.set_data_name("check_icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("text_check_icon");
+		theme->set_str(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckButton", "toggle-switch");
+		theme->set_str(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckButton", "toggle-switch-off-outline");
+
+		theme->set_str(cur_theme_data.get_state_data_name(State::NormalCheckedRTL), "CheckButton", "toggle-switch-off");
+		theme->set_str(cur_theme_data.get_state_data_name(State::NormalUncheckedRTL), "CheckButton", "toggle-switch-outline");
+
+		cur_theme_data.set_data_name("text_check_icon_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckButton", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverCheckedLTR), "CheckButton", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedCheckedLTR), "CheckButton", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusCheckedLTR), "CheckButton", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckButton", button_font_focus_color_role);
+
+		Ref<ColorRole> check_button_mono_color_role = make_color_role(ColorRoleEnum::PRIMARY);
+		Ref<ColorRole> check_button_base_color_role = make_color_role(ColorRoleEnum::SECONDARY);
+		Ref<ColorRole> check_button_accent_color_role = make_color_role(ColorRoleEnum::PRIMARY);
+
+		Ref<ColorRole> check_button_font_color_role = check_button_mono_color_role->duplicate();
+		check_button_font_color_role->set_lerp_color_role(check_button_base_color_role);
+		check_button_font_color_role->set_lerp_weight(0.25);
+		Ref<ColorRole> check_button_font_hover_color_role = check_button_mono_color_role->duplicate();
+		check_button_font_hover_color_role->set_lerp_color_role(check_button_base_color_role);
+		check_button_font_hover_color_role->set_lerp_weight(0.125);
+		Ref<ColorRole> check_button_font_focus_color_role = check_button_mono_color_role->duplicate();
+		check_button_font_focus_color_role->set_lerp_color_role(check_button_base_color_role);
+		check_button_font_focus_color_role->set_lerp_weight(0.125);
+		Ref<ColorRole> check_button_font_disabled_color_role = check_button_mono_color_role->duplicate();
+		check_button_font_disabled_color_role->set_color_scale(check_button_font_disabled_color_role->get_color_scale() * Color(1, 1, 1, 0.5));
+		Ref<ColorRole> check_button_font_pressed_color_role = check_button_accent_color_role;
+
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckButton", check_button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverUncheckedLTR), "CheckButton", check_button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedUncheckedLTR), "CheckButton", check_button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusUncheckedLTR), "CheckButton", check_button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckButton", check_button_font_disabled_color_role);
+
+		cur_theme_data.set_data_name("text_check_icon_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::HoverNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::PressedNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledNoneLTR), "CheckButton", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::FocusNoneLTR), "CheckButton", Color(1, 1, 1, 1));
+
+		cur_theme_data.set_data_name("text_check_icon_bg_1");
+		theme->set_str(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", "toggle-switch-off");
+
+		cur_theme_data.set_data_name("text_check_icon_bg_2");
+		theme->set_str(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "CheckButton", "toggle-switch");
+
+		cur_theme_data.set_data_name("text_check_icon_bg_color_role");
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckButton", button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverCheckedLTR), "CheckButton", button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedCheckedLTR), "CheckButton", button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusCheckedLTR), "CheckButton", button_font_disabled_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckButton", button_font_focus_color_role);
+
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckButton", check_button_font_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::HoverUncheckedLTR), "CheckButton", check_button_font_hover_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::PressedUncheckedLTR), "CheckButton", check_button_font_pressed_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::FocusUncheckedLTR), "CheckButton", check_button_font_focus_color_role);
+		theme->set_color_role(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckButton", check_button_font_disabled_color_role);
+
+		cur_theme_data.set_data_name("text_check_icon_bg_color");
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalCheckedLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::NormalUncheckedLTR), "CheckButton", Color(1, 1, 1, 1));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledCheckedLTR), "CheckButton", Color(1, 1, 1, 0.38));
+		theme->set_color(cur_theme_data.get_state_data_name(State::DisabledUncheckedLTR), "CheckButton", Color(1, 1, 1, 0.38));
+	}
 
 	// Popup
 	fill_default_theme_popup_panel(theme, default_font, bold_font, bold_italics_font, italics_font, default_icon, default_icon_font, default_style, p_scale, default_color_scheme, icons);

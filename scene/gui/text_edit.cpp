@@ -6151,10 +6151,8 @@ bool TextEdit::_has_current_focus_default_stylebox() const {
 Ref<StyleBox> TextEdit::_get_current_focus_default_stylebox() const {
 	State cur_state = get_current_focus_state();
 	Ref<StyleBox> style;
-	ThemeIntData cur_theme_data; 
-	cur_theme_data.set_data_name("style");
 	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
 			style = theme_cache.default_stylebox.get_data(E);
 			break;
 		}
