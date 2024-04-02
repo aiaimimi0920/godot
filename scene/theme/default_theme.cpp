@@ -4406,7 +4406,6 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 		theme->set_font("font", "LineEdit", Ref<Font>());
 		theme->set_font_size("font_size", "LineEdit", -1);
 
-
 		theme->set_color_role("font_color_role", "LineEdit", control_font_color_role);
 		theme->set_color("font_color", "LineEdit", control_font_color);
 

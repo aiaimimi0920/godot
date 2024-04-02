@@ -3064,6 +3064,7 @@ void Control::add_theme_icon_override(const StringName &p_name, const Ref<Textur
 
 void Control::add_theme_style_override(const StringName &p_name, const Ref<StyleBox> &p_style) {
 	ERR_MAIN_THREAD_GUARD;
+
 	ERR_FAIL_COND(!p_style.is_valid());
 
 	if (data.theme_style_override.has(p_name)) {

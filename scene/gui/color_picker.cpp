@@ -1715,10 +1715,15 @@ bool ColorPicker::is_hex_visible() const {
 
 
 bool ColorPicker::_has_current_mode_button_style_with_state(State p_state) const {
+	Ref<StyleBox> style;
 	ThemeIntData cur_theme_data;
 	cur_theme_data.set_data_name("mode_button_style");
 	for (const State &E : theme_cache.mode_button_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+		// if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+		// 	return true;
+		// }
+		style = theme_cache.mode_button_style.get_data(E);
+		if(style.is_valid()){
 			return true;
 		}
 	}
@@ -1735,8 +1740,12 @@ Ref<StyleBox> ColorPicker::_get_current_mode_button_style_with_state(State p_sta
 	ThemeIntData cur_theme_data;
 	cur_theme_data.set_data_name("mode_button_style");
 	for (const State &E : theme_cache.mode_button_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
-			style = theme_cache.mode_button_style.get_data(E);
+		// if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+		// 	style = theme_cache.mode_button_style.get_data(E);
+		// 	break;
+		// }
+		style = theme_cache.mode_button_style.get_data(E);
+		if(style.is_valid()){
 			break;
 		}
 	}

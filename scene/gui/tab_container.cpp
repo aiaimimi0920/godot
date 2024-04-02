@@ -961,8 +961,13 @@ Vector<int> TabContainer::get_allowed_size_flags_vertical() const {
 bool TabContainer::_has_current_tab_style_with_state(State p_state) const {
 	ThemeIntData cur_theme_data; 
 	cur_theme_data.set_data_name("tab");
+	Ref<StyleBox> style;
 	for (const State &E : theme_cache.tab_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+		// if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+		// 	return true;
+		// }
+		style = theme_cache.tab_style.get_data(E);
+		if(style.is_valid()){
 			return true;
 		}
 	}
@@ -980,8 +985,12 @@ Ref<StyleBox> TabContainer::_get_current_tab_style_with_state(State p_state) con
 	ThemeIntData cur_theme_data; 
 	cur_theme_data.set_data_name("tab");
 	for (const State &E : theme_cache.tab_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
-			style = theme_cache.tab_style.get_data(E);
+		// if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
+		// 	style = theme_cache.tab_style.get_data(E);
+		// 	break;
+		// }
+		style = theme_cache.tab_style.get_data(E);
+		if(style.is_valid()){
 			break;
 		}
 	}
