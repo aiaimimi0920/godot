@@ -102,6 +102,7 @@ void EditorAudioBus::_notification(int p_what) {
 
 			audio_value_preview_label->add_theme_color_override("font_color", get_theme_color(SNAME("font_color"), SNAME("TooltipLabel")));
 			audio_value_preview_label->add_theme_color_override("font_shadow_color", get_theme_color(SNAME("font_shadow_color"), SNAME("TooltipLabel")));
+			
 			audio_value_preview_box->add_theme_style_override("panel", get_theme_stylebox(SNAME("panel"), SNAME("TooltipPanel")));
 
 			for (int i = 0; i < effect_options->get_item_count(); i++) {
@@ -603,7 +604,10 @@ Variant EditorAudioBus::get_drag_data(const Point2 &p_point) {
 	Panel *p = memnew(Panel);
 	c->add_child(p);
 	p->set_modulate(Color(1, 1, 1, 0.7));
-	p->add_theme_style_override("panel", get_theme_stylebox(SNAME("focus"), SNAME("Button")));
+	ThemeIntData cur_theme_data;
+	cur_theme_data.set_data_name("default_panel");
+	p->add_theme_style_override("panel", get_theme_stylebox(cur_theme_data.get_state_data_name(State::FocusNoneLTR), SNAME("Button")));
+
 	p->set_size(get_size());
 	p->set_position(-p_point);
 	set_drag_preview(c);
@@ -829,13 +833,17 @@ EditorAudioBus::EditorAudioBus(EditorAudioBuses *p_buses, bool p_is_master) {
 	hbc->add_spacer();
 
 	Ref<StyleBoxEmpty> sbempty = memnew(StyleBoxEmpty);
+
+	ThemeIntData cur_theme_data;
+	cur_theme_data.set_data_name("default_stylebox");
+
 	for (int i = 0; i < hbc->get_child_count(); i++) {
 		Control *child = Object::cast_to<Control>(hbc->get_child(i));
 		child->begin_bulk_theme_override();
-		child->add_theme_style_override("normal", sbempty);
-		child->add_theme_style_override("hover", sbempty);
-		child->add_theme_style_override("focus", sbempty);
-		child->add_theme_style_override("pressed", sbempty);
+		child->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), sbempty);
+		child->add_theme_style_override(cur_theme_data.get_state_data_name(State::HoverNoneLTR), sbempty);
+		child->add_theme_style_override(cur_theme_data.get_state_data_name(State::FocusNoneLTR), sbempty);
+		child->add_theme_style_override(cur_theme_data.get_state_data_name(State::PressedNoneLTR), sbempty);
 		child->end_bulk_theme_override();
 	}
 
@@ -1050,7 +1058,10 @@ void EditorAudioBuses::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE:
 		case NOTIFICATION_THEME_CHANGED: {
-			bus_scroll->add_theme_style_override("panel", get_theme_stylebox(SNAME("panel"), SNAME("Tree")));
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("default_stylebox");
+
+			bus_scroll->add_theme_style_override("panel", get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("Tree")));
 		} break;
 
 		case NOTIFICATION_READY: {

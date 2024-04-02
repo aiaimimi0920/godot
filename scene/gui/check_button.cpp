@@ -241,7 +241,7 @@ Color CheckButton::_get_current_check_icon_color() const {
 bool CheckButton::_has_current_text_check_icon() const {
 	State cur_state = get_current_state_with_focus();
 	for (const State &E : theme_cache.text_check_icon.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_check_icon.get_state_data_name(E))) {
+		if (has_theme_str(theme_cache.text_check_icon.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -253,7 +253,7 @@ String CheckButton::_get_current_text_check_icon() const {
 	String cur_text_check_icon;
 
 	for (const State &E : theme_cache.text_check_icon.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_check_icon.get_state_data_name(E))) {
+		if (has_theme_str(theme_cache.text_check_icon.get_state_data_name(E))) {
 			cur_text_check_icon = theme_cache.text_check_icon.get_data(E);
 			break;
 		}
@@ -264,7 +264,7 @@ String CheckButton::_get_current_text_check_icon() const {
 bool CheckButton::_has_current_text_check_icon_bg_1() const {
 	State cur_state = get_current_state_with_focus();
 	for (const State &E : theme_cache.text_check_icon_bg_1.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_check_icon_bg_1.get_state_data_name(E))) {
+		if (has_theme_str(theme_cache.text_check_icon_bg_1.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -276,7 +276,7 @@ String CheckButton::_get_current_text_check_icon_bg_1() const {
 	String cur_text_check_icon_bg_1;
 
 	for (const State &E : theme_cache.text_check_icon_bg_1.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_check_icon_bg_1.get_state_data_name(E))) {
+		if (has_theme_str(theme_cache.text_check_icon_bg_1.get_state_data_name(E))) {
 			cur_text_check_icon_bg_1 = theme_cache.text_check_icon_bg_1.get_data(E);
 			break;
 		}
@@ -287,7 +287,7 @@ String CheckButton::_get_current_text_check_icon_bg_1() const {
 bool CheckButton::_has_current_text_check_icon_bg_2() const {
 	State cur_state = get_current_state_with_focus();
 	for (const State &E : theme_cache.text_check_icon_bg_2.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_check_icon_bg_2.get_state_data_name(E))) {
+		if (has_theme_str(theme_cache.text_check_icon_bg_2.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -299,7 +299,7 @@ String CheckButton::_get_current_text_check_icon_bg_2() const {
 	String cur_text_check_icon_bg_2;
 
 	for (const State &E : theme_cache.text_check_icon_bg_2.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_check_icon_bg_2.get_state_data_name(E))) {
+		if (has_theme_str(theme_cache.text_check_icon_bg_2.get_state_data_name(E))) {
 			cur_text_check_icon_bg_2 = theme_cache.text_check_icon_bg_2.get_data(E);
 			break;
 		}
@@ -311,7 +311,7 @@ String CheckButton::_get_current_text_check_icon_bg_2() const {
 bool CheckButton::_has_current_text_check_icon_color() const {
 	State cur_state = get_current_state_with_focus();
 	for (const State &E : theme_cache.text_check_icon_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_check_icon_color.get_state_data_name(E))) {
+		if (has_theme_str(theme_cache.text_check_icon_color.get_state_data_name(E))) {
 			return true;
 		}
 	}

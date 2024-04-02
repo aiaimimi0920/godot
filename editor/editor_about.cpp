@@ -133,8 +133,10 @@ ScrollContainer *EditorAbout::_populate_list(const String &p_name, const List<St
 				il->connect("resized", callable_mp(this, &EditorAbout::_item_list_resized).bind(il));
 				il->connect("focus_exited", callable_mp(il, &ItemList::deselect_all));
 
-				il->add_theme_style_override("focus", empty_stylebox);
-				il->add_theme_style_override("selected", empty_stylebox);
+				ThemeIntData cur_theme_data;
+				cur_theme_data.set_data_name("default_panel");
+				il->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), empty_stylebox);
+				il->add_theme_style_override(cur_theme_data.get_state_data_name(State::FocusNoneLTR), empty_stylebox);
 
 				while (*names_ptr) {
 					const String name = String::utf8(*names_ptr++);

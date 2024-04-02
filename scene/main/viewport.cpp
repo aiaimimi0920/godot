@@ -344,6 +344,7 @@ void Viewport::_sub_window_update(Window *p_window) {
 
 		bool pressed = gui.subwindow_focused == sw.window && gui.subwindow_drag == SUB_WINDOW_DRAG_CLOSE && gui.subwindow_drag_close_inside;
 		Ref<Texture2D> close_icon = pressed ? p_window->_get_current_close_with_state(State::PressedNoneLTR) : p_window->_get_current_close_with_state(State::NormalNoneLTR);
+		
 		close_icon->draw(sw.canvas_item, r.position + Vector2(r.size.width - close_h_ofs, -close_v_ofs));
 	}
 

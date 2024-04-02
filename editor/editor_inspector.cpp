@@ -3671,7 +3671,9 @@ void EditorInspector::_update_inspector_bg() {
 		count_subinspectors = MIN(15, count_subinspectors);
 		add_theme_style_override("panel", get_theme_stylebox("sub_inspector_bg" + itos(count_subinspectors), EditorStringName(Editor)));
 	} else {
-		add_theme_style_override("panel", get_theme_stylebox(SNAME("panel"), SNAME("Tree")));
+		ThemeIntData cur_theme_data;
+		cur_theme_data.set_data_name("default_stylebox");
+		add_theme_style_override("panel", get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("Tree")));
 	}
 }
 void EditorInspector::set_sub_inspector(bool p_enable) {

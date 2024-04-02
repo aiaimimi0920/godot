@@ -595,8 +595,9 @@ void FileSystemDock::_notification(int p_what) {
 				button_hist_next->set_icon(get_editor_theme_icon(SNAME("Forward")));
 				button_hist_prev->set_icon(get_editor_theme_icon(SNAME("Back")));
 			}
-
-			overwrite_dialog_scroll->add_theme_style_override("panel", get_theme_stylebox("panel", "Tree"));
+			ThemeIntData cur_theme_data;
+			cur_theme_data.set_data_name("default_stylebox");
+			overwrite_dialog_scroll->add_theme_style_override("panel", get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), "Tree"));
 		} break;
 
 		case EditorSettings::NOTIFICATION_EDITOR_SETTINGS_CHANGED: {

@@ -220,7 +220,7 @@ private:
 
 		int title_outline_size = 0;
 
-		ThemeIconData close;
+		ThemeIconData close{"close"};
 		int close_h_offset = 0;
 		int close_v_offset = 0;
 

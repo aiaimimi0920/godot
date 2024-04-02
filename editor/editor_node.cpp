@@ -509,15 +509,20 @@ void EditorNode::_update_theme(bool p_skip_creation) {
 
 	// Update styles.
 	{
-		gui_base->add_theme_style_override("panel", theme->get_stylebox(SNAME("Background"), EditorStringName(EditorStyles)));
+		ThemeIntData cur_theme_data;
+		cur_theme_data.set_data_name("default_stylebox");
+		
+		gui_base->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), theme->get_stylebox(SNAME("Background"), EditorStringName(EditorStyles)));
 		main_vbox->set_anchors_and_offsets_preset(Control::PRESET_FULL_RECT, Control::PRESET_MODE_MINSIZE, theme->get_constant(SNAME("window_border_margin"), EditorStringName(Editor)));
 		main_vbox->add_theme_constant_override("separation", theme->get_constant(SNAME("top_bar_separation"), EditorStringName(Editor)));
 
 		scene_root_parent->add_theme_style_override("panel", theme->get_stylebox(SNAME("Content"), EditorStringName(EditorStyles)));
 		bottom_panel->add_theme_style_override("panel", theme->get_stylebox(SNAME("BottomPanel"), EditorStringName(EditorStyles)));
-		main_menu->add_theme_style_override("pressed", theme->get_stylebox(SNAME("MenuTransparent"), EditorStringName(EditorStyles)));
+		
+		
+		main_menu->add_theme_style_override(cur_theme_data.get_state_data_name(State::PressedNoneLTR), theme->get_stylebox(SNAME("MenuTransparent"), EditorStringName(EditorStyles)));
 		distraction_free->set_icon(theme->get_icon(SNAME("DistractionFree"), EditorStringName(EditorIcons)));
-		distraction_free->add_theme_style_override("pressed", theme->get_stylebox(SNAME("MenuTransparent"), EditorStringName(EditorStyles)));
+		distraction_free->add_theme_style_override(cur_theme_data.get_state_data_name(State::PressedNoneLTR), theme->get_stylebox(SNAME("MenuTransparent"), EditorStringName(EditorStyles)));
 
 		help_menu->set_item_icon(help_menu->get_item_index(HELP_SEARCH), theme->get_icon(SNAME("HelpSearch"), EditorStringName(EditorIcons)));
 		help_menu->set_item_icon(help_menu->get_item_index(HELP_COPY_SYSTEM_INFO), theme->get_icon(SNAME("ActionCopy"), EditorStringName(EditorIcons)));

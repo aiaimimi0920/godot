@@ -267,7 +267,7 @@ Color CheckBox::_get_current_check_icon_color() const {
 bool CheckBox::_has_current_text_check_icon() const {
 	State cur_state = get_current_state_with_focus();
 	for (const State &E : theme_cache.text_check_icon.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_check_icon.get_state_data_name(E))) {
+		if (has_theme_str(theme_cache.text_check_icon.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -279,7 +279,7 @@ String CheckBox::_get_current_text_check_icon() const {
 	String cur_text_check_icon;
 
 	for (const State &E : theme_cache.text_check_icon.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_check_icon.get_state_data_name(E))) {
+		if (has_theme_str(theme_cache.text_check_icon.get_state_data_name(E))) {
 			cur_text_check_icon = theme_cache.text_check_icon.get_data(E);
 			break;
 		}
@@ -290,7 +290,7 @@ String CheckBox::_get_current_text_check_icon() const {
 bool CheckBox::_has_current_text_radio_check_icon() const {
 	State cur_state = get_current_state_with_focus();
 	for (const State &E : theme_cache.text_radio_check_icon.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_radio_check_icon.get_state_data_name(E))) {
+		if (has_theme_str(theme_cache.text_radio_check_icon.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -302,7 +302,7 @@ String CheckBox::_get_current_text_radio_check_icon() const {
 	String cur_text_radio_check_icon;
 
 	for (const State &E : theme_cache.text_radio_check_icon.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_radio_check_icon.get_state_data_name(E))) {
+		if (has_theme_str(theme_cache.text_radio_check_icon.get_state_data_name(E))) {
 			cur_text_radio_check_icon = theme_cache.text_radio_check_icon.get_data(E);
 			break;
 		}

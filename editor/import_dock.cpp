@@ -658,7 +658,9 @@ void ImportDock::_notification(int p_what) {
 	switch (p_what) {
 		case EditorSettings::NOTIFICATION_EDITOR_SETTINGS_CHANGED: {
 			if (EditorThemeManager::is_generated_theme_outdated()) {
-				imported->add_theme_style_override("normal", get_theme_stylebox(SNAME("normal"), SNAME("LineEdit")));
+				ThemeIntData cur_theme_data;
+				cur_theme_data.set_data_name("default_stylebox");
+				imported->add_theme_style_override("normal", get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("LineEdit")));
 			}
 		} break;
 
@@ -715,7 +717,11 @@ ImportDock::ImportDock() {
 	content->hide();
 
 	imported = memnew(Label);
-	imported->add_theme_style_override("normal", EditorNode::get_singleton()->get_editor_theme()->get_stylebox(SNAME("normal"), SNAME("LineEdit")));
+
+	ThemeIntData cur_theme_data;
+	cur_theme_data.set_data_name("default_stylebox");
+	imported->add_theme_style_override("normal", EditorNode::get_singleton()->get_editor_theme()->get_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("LineEdit")));
+
 	imported->set_clip_text(true);
 	content->add_child(imported);
 	HBoxContainer *hb = memnew(HBoxContainer);

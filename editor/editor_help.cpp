@@ -310,8 +310,10 @@ void EditorHelp::_class_desc_resized(bool p_force_update_theme) {
 		Ref<StyleBox> class_desc_stylebox = theme_cache.background_style->duplicate();
 		class_desc_stylebox->set_content_margin(SIDE_LEFT, display_margin);
 		class_desc_stylebox->set_content_margin(SIDE_RIGHT, display_margin);
-		class_desc->add_theme_style_override("normal", class_desc_stylebox);
-		class_desc->add_theme_style_override("focused", class_desc_stylebox);
+		ThemeIntData cur_theme_data;
+		cur_theme_data.set_data_name("default_stylebox");
+		class_desc->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), class_desc_stylebox);
+		class_desc->add_theme_style_override(cur_theme_data.get_state_data_name(State::FocusNoneLTR), class_desc_stylebox);
 	}
 }
 

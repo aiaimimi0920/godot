@@ -3145,7 +3145,7 @@ Ref<StyleBox> Window::_get_current_embedded_border() const {
 
 bool Window::_has_current_close_with_state(State p_state) const {
 	for (const State &E : theme_cache.close.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.close.get_state_data_name(E))) {
+		if (has_theme_icon(theme_cache.close.get_state_data_name(E))) {
 			return true;
 		}
 	}
@@ -3160,7 +3160,7 @@ bool Window::_has_current_close() const {
 Ref<Texture2D> Window::_get_current_close_with_state(State p_state) const {
 	Ref<Texture2D> cur_icon;
 	for (const State &E : theme_cache.close.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.close.get_state_data_name(E))) {
+		if (has_theme_icon(theme_cache.close.get_state_data_name(E))) {
 			cur_icon = theme_cache.close.get_data(E);
 			break;
 		}

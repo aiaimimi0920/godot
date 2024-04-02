@@ -210,7 +210,9 @@ void EditorSettingsDialog::_update_icons() {
 	shortcut_search_box->set_clear_button_enabled(true);
 
 	restart_close_button->set_icon(shortcuts->get_editor_theme_icon(SNAME("Close")));
-	restart_container->add_theme_style_override("panel", shortcuts->get_theme_stylebox(SNAME("panel"), SNAME("Tree")));
+	ThemeIntData cur_theme_data;
+	cur_theme_data.set_data_name("default_stylebox");
+	restart_container->add_theme_style_override("panel", shortcuts->get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("Tree")));
 	restart_icon->set_texture(shortcuts->get_editor_theme_icon(SNAME("StatusWarning")));
 	restart_label->add_theme_color_override("font_color", shortcuts->get_theme_color(SNAME("warning_color"), EditorStringName(Editor)));
 }
