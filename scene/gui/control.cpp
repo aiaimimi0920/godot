@@ -2748,7 +2748,7 @@ Color Control::get_theme_color(const StringName &p_name, const StringName &p_the
 	}
 
 	data.theme_color_cache[p_theme_type][p_name] = target_color;
-	return color;
+	return target_color;
 }
 
 int Control::get_theme_constant(const StringName &p_name, const StringName &p_theme_type) const {

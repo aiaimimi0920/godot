@@ -5831,7 +5831,6 @@ void EditorNode::reload_instances_with_path_in_edited_scenes(const String &p_ins
 						// Get properties for this node.
 						List<PropertyInfo> pinfo;
 						modifiable_node->get_property_list(&pinfo);
-
 						// Get names of all valid property names (TODO: make this more efficient).
 						List<String> property_names;
 						for (const PropertyInfo &E2 : pinfo) {
