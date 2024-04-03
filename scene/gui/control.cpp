@@ -2706,22 +2706,58 @@ int Control::get_theme_font_size(const StringName &p_name, const StringName &p_t
 	return font_size;
 }
 
+// Color Control::get_theme_color(const StringName &p_name, const StringName &p_theme_type) const {
+// 	ERR_READ_THREAD_GUARD_V(Color());
+// 	if (!data.initialized) {
+// 		WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
+// 	}
+
+// 	if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
+// 		const StringName targe_color_role_name = String(p_name) + String("_role");
+// 		const Ref<ColorRole> *color_role = data.theme_color_role_override.getptr(targe_color_role_name);
+// 		if (color_role && (*color_role)->color_role_enum != ColorRoleEnum::STATIC_COLOR) {
+// 			const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
+// 			const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
+// 			Color color = (*color_role)->get_color(color_scheme);
+// 			return color;
+// 		}
+// 	}
+// 	if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
+// 		const Color *color = data.theme_color_override.getptr(p_name);
+// 		if (color) {
+// 			return *color;
+// 		}
+// 	}
+
+// 	if (data.theme_color_cache.has(p_theme_type) && data.theme_color_cache[p_theme_type].has(p_name)) {
+// 		return data.theme_color_cache[p_theme_type][p_name];
+// 	}
+
+// 	List<StringName> theme_types;
+// 	data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
+// 	Variant color = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR, p_name, theme_types);
+// 	Color target_color;
+// 	if (color.get_type() == Variant::BOOL) {
+// 		const StringName targe_color_role_name = String(p_name) + String("_role");
+// 		Ref<ColorRole> color_role = get_theme_color_role(targe_color_role_name, p_theme_type);
+// 		const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
+// 		const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
+// 		target_color = color_role->get_color(color_scheme);
+// 	} else {
+// 		target_color = Color(color);
+// 	}
+
+// 	data.theme_color_cache[p_theme_type][p_name] = target_color;
+// 	return target_color;
+// }
+
+
 Color Control::get_theme_color(const StringName &p_name, const StringName &p_theme_type) const {
 	ERR_READ_THREAD_GUARD_V(Color());
 	if (!data.initialized) {
 		WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
 	}
 
-	if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
-		const StringName targe_color_role_name = String(p_name) + String("_role");
-		const Ref<ColorRole> *color_role = data.theme_color_role_override.getptr(targe_color_role_name);
-		if (color_role && (*color_role)->color_role_enum != ColorRoleEnum::STATIC_COLOR) {
-			const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
-			const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
-			Color color = (*color_role)->get_color(color_scheme);
-			return color;
-		}
-	}
 	if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
 		const Color *color = data.theme_color_override.getptr(p_name);
 		if (color) {
@@ -2735,21 +2771,11 @@ Color Control::get_theme_color(const StringName &p_name, const StringName &p_the
 
 	List<StringName> theme_types;
 	data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
-	Variant color = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR, p_name, theme_types);
-	Color target_color;
-	if (color.get_type() == Variant::BOOL) {
-		const StringName targe_color_role_name = String(p_name) + String("_role");
-		Ref<ColorRole> color_role = get_theme_color_role(targe_color_role_name, p_theme_type);
-		const StringName targe_color_role_scheme = String(p_name) + String("_scheme");
-		const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
-		target_color = color_role->get_color(color_scheme);
-	} else {
-		target_color = Color(color);
-	}
-
-	data.theme_color_cache[p_theme_type][p_name] = target_color;
-	return target_color;
+	Color color = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR, p_name, theme_types);
+	data.theme_color_cache[p_theme_type][p_name] = color;
+	return color;
 }
+
 
 int Control::get_theme_constant(const StringName &p_name, const StringName &p_theme_type) const {
 	ERR_READ_THREAD_GUARD_V(0);
@@ -2776,6 +2802,34 @@ int Control::get_theme_constant(const StringName &p_name, const StringName &p_th
 }
 
 
+// Ref<ColorRole> Control::get_theme_color_role(const StringName &p_name, const StringName &p_theme_type) const {
+// 	ERR_READ_THREAD_GUARD_V(Ref<ColorRole>());
+// 	if (!data.initialized) {
+// 		WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
+// 	}
+
+// 	if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
+// 		const Ref<ColorRole> *color_role = data.theme_color_role_override.getptr(p_name);
+// 		if (color_role) {
+// 			return *color_role;
+// 		}
+// 	}
+
+// 	if (data.theme_color_role_cache.has(p_theme_type) && data.theme_color_role_cache[p_theme_type].has(p_name)) {
+// 		return data.theme_color_role_cache[p_theme_type][p_name];
+// 	}
+
+// 	List<StringName> theme_types;
+// 	data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
+// 	Ref<ColorRole> color_role = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR_ROLE, p_name, theme_types);
+// 	data.theme_color_role_cache[p_theme_type][p_name] = color_role;
+
+// 	const StringName targe_color_name = String(p_name).trim_suffix("_role");
+// 	Color color = get_theme_color(targe_color_name, p_theme_type);
+// 	return color_role;
+// }
+
+
 Ref<ColorRole> Control::get_theme_color_role(const StringName &p_name, const StringName &p_theme_type) const {
 	ERR_READ_THREAD_GUARD_V(Ref<ColorRole>());
 	if (!data.initialized) {
@@ -2797,11 +2851,44 @@ Ref<ColorRole> Control::get_theme_color_role(const StringName &p_name, const Str
 	data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
 	Ref<ColorRole> color_role = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR_ROLE, p_name, theme_types);
 	data.theme_color_role_cache[p_theme_type][p_name] = color_role;
-
-	const StringName targe_color_name = String(p_name).trim_suffix("_role");
-	Color color = get_theme_color(targe_color_name, p_theme_type);
 	return color_role;
 }
+
+
+// Ref<ColorScheme> Control::get_theme_color_scheme(const StringName &p_name, const StringName &p_theme_type) const {
+// 	ERR_READ_THREAD_GUARD_V(Ref<ColorScheme>());
+// 	if (!data.initialized) {
+// 		WARN_PRINT_ONCE(vformat("Attempting to access theme items too early in %s; prefer NOTIFICATION_POSTINITIALIZE and NOTIFICATION_THEME_CHANGED", get_description()));
+// 	}
+
+// 	if (p_theme_type == StringName() || p_theme_type == get_class_name() || p_theme_type == data.theme_type_variation) {
+// 		const Ref<ColorScheme> *color_scheme = data.theme_color_scheme_override.getptr(p_name);
+// 		if (color_scheme) {
+// 			return *color_scheme;
+// 		} else {
+// 			const Ref<ColorScheme> *default_color_scheme = data.theme_color_scheme_override.getptr("default_color_scheme");
+// 			if (default_color_scheme) {
+// 				return *default_color_scheme;
+// 			}
+// 		}
+// 	}
+
+// 	if (data.theme_color_scheme_cache.has(p_theme_type) && data.theme_color_scheme_cache[p_theme_type].has(p_name)) {
+// 		return data.theme_color_scheme_cache[p_theme_type][p_name];
+// 	}
+
+// 	List<StringName> theme_types;
+// 	data.theme_owner->get_theme_type_dependencies(this, p_theme_type, &theme_types);
+
+// 	Ref<ColorScheme> color_scheme = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR_SCHEME, p_name, theme_types);
+
+// 	data.theme_color_scheme_cache[p_theme_type][p_name] = color_scheme;
+
+// 	const StringName targe_color_name = String(p_name).trim_suffix("_scheme");
+// 	Color color = get_theme_color(targe_color_name, p_theme_type);
+// 	return color_scheme;
+// }
+
 
 Ref<ColorScheme> Control::get_theme_color_scheme(const StringName &p_name, const StringName &p_theme_type) const {
 	ERR_READ_THREAD_GUARD_V(Ref<ColorScheme>());
@@ -2813,11 +2900,6 @@ Ref<ColorScheme> Control::get_theme_color_scheme(const StringName &p_name, const
 		const Ref<ColorScheme> *color_scheme = data.theme_color_scheme_override.getptr(p_name);
 		if (color_scheme) {
 			return *color_scheme;
-		} else {
-			const Ref<ColorScheme> *default_color_scheme = data.theme_color_scheme_override.getptr("default_color_scheme");
-			if (default_color_scheme) {
-				return *default_color_scheme;
-			}
 		}
 	}
 
@@ -2831,11 +2913,9 @@ Ref<ColorScheme> Control::get_theme_color_scheme(const StringName &p_name, const
 	Ref<ColorScheme> color_scheme = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_COLOR_SCHEME, p_name, theme_types);
 
 	data.theme_color_scheme_cache[p_theme_type][p_name] = color_scheme;
-
-	const StringName targe_color_name = String(p_name).trim_suffix("_scheme");
-	Color color = get_theme_color(targe_color_name, p_theme_type);
 	return color_scheme;
 }
+
 
 String Control::get_theme_str(const StringName &p_name, const StringName &p_theme_type) const {
 	ERR_READ_THREAD_GUARD_V(String());
