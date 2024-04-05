@@ -249,112 +249,6 @@ void ThemeOwner::get_theme_type_dependencies(const Node *p_for_node, const Strin
 	ThemeDB::get_singleton()->get_native_type_dependencies(p_theme_type, r_list);
 }
 
-// Variant ThemeOwner::get_theme_item_in_types(Theme::DataType p_data_type, const StringName &p_name, const List<StringName> &p_theme_types) {
-// 	ERR_FAIL_COND_V_MSG(p_theme_types.is_empty(), Variant(), "At least one theme type must be specified.");
-
-// 	// First, look through each control or window node in the branch, until no valid parent can be found.
-// 	// Only nodes with a theme resource attached are considered.
-// 	Node *owner_node = get_owner_node();
-
-// 	bool get_static_color = false;
-// 	while (owner_node) {
-// 		// For each theme resource check the theme types provided and see if p_name exists with any of them.
-// 		for (const StringName &E : p_theme_types) {
-// 			Ref<Theme> owner_theme = _get_owner_node_theme(owner_node);
-
-// 			if (owner_theme.is_valid() && owner_theme->has_theme_item(p_data_type, p_name, E)) {
-// 				if (p_data_type == Theme::DATA_TYPE_COLOR && get_static_color == false) {
-// 					const StringName targe_color_role_name = String(p_name) + String("_role");
-// 					if (owner_theme.is_valid() && owner_theme->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
-// 						Ref<ColorRole> cur_color_role = owner_theme->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
-// 						if (cur_color_role->get_color_role_enum() == ColorRoleEnum::STATIC_COLOR) {
-// 							return owner_theme->get_theme_item(p_data_type, p_name, E);
-// 						} else {
-// 							return false;
-// 						}
-// 					} else {
-// 						return owner_theme->get_theme_item(p_data_type, p_name, E);
-// 					}
-// 				} else {
-// 					return owner_theme->get_theme_item(p_data_type, p_name, E);
-// 				}
-// 			} else {
-// 				if (p_data_type == Theme::DATA_TYPE_COLOR && get_static_color == false) {
-// 					const StringName targe_color_role_name = String(p_name) + String("_role");
-// 					if (owner_theme.is_valid() && owner_theme->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
-// 						Ref<ColorRole> cur_color_role = owner_theme->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
-// 						if (cur_color_role->get_color_role_enum() != ColorRoleEnum::STATIC_COLOR) {
-// 							return false;
-// 						} else {
-// 							get_static_color = true;
-// 						}
-// 					}
-// 				}
-// 			}
-// 		}
-
-// 		owner_node = _get_next_owner_node(owner_node);
-// 	}
-
-// 	// Second, check global themes from the appropriate context.
-// 	ThemeContext *global_context = _get_active_owner_context();
-// 	for (const Ref<Theme> &theme : global_context->get_themes()) {
-// 		if (theme.is_valid()) {
-// 			for (const StringName &E : p_theme_types) {
-// 				if (theme->has_theme_item(p_data_type, p_name, E)) {
-// 					if (p_data_type == Theme::DATA_TYPE_COLOR && get_static_color == false) {
-// 						const StringName targe_color_role_name = String(p_name) + String("_role");
-// 						if (theme.is_valid() && theme->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
-// 							Ref<ColorRole> cur_color_role = theme->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
-// 							if (cur_color_role->get_color_role_enum() == ColorRoleEnum::STATIC_COLOR) {
-// 								return theme->get_theme_item(p_data_type, p_name, E);
-// 							} else {
-// 								return false;
-// 							}
-// 						} else {
-// 							return global_context->get_fallback_theme()->get_theme_item(p_data_type, p_name, E);
-// 						}
-// 					} else {
-// 						return theme->get_theme_item(p_data_type, p_name, E);
-// 					}
-// 				} else {
-// 					if (p_data_type == Theme::DATA_TYPE_COLOR && get_static_color == false) {
-// 						const StringName targe_color_role_name = String(p_name) + String("_role");
-// 						if (theme.is_valid() && theme->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
-// 							Ref<ColorRole> cur_color_role = theme->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
-// 							if (cur_color_role->get_color_role_enum() != ColorRoleEnum::STATIC_COLOR) {
-// 								return false;
-// 							} else {
-// 								get_static_color = true;
-// 							}
-// 						}
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	// Finally, if no match exists, use any type to return the default/empty value.
-// 	for (const StringName &E : p_theme_types) {
-// 		if (p_data_type == Theme::DATA_TYPE_COLOR && get_static_color == false) {
-// 			const StringName targe_color_role_name = String(p_name) + String("_role");
-// 			if (global_context->get_fallback_theme().is_valid() && global_context->get_fallback_theme()->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
-// 				Ref<ColorRole> cur_color_role = global_context->get_fallback_theme()->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
-// 				if (cur_color_role->get_color_role_enum() == ColorRoleEnum::STATIC_COLOR) {
-// 					return global_context->get_fallback_theme()->get_theme_item(p_data_type, p_name, E);
-// 				} else {
-// 					return false;
-// 				}
-// 			} else {
-// 				return global_context->get_fallback_theme()->get_theme_item(p_data_type, p_name, E);
-// 			}
-// 		} else {
-// 			return global_context->get_fallback_theme()->get_theme_item(p_data_type, p_name, E);
-// 		}
-// 	}
-// 	return global_context->get_fallback_theme()->get_theme_item(p_data_type, p_name, StringName());
-// }
-
 Variant ThemeOwner::get_theme_item_in_types(Theme::DataType p_data_type, const StringName &p_name, const List<StringName> &p_theme_types) {
 	ERR_FAIL_COND_V_MSG(p_theme_types.is_empty(), Variant(), "At least one theme type must be specified.");
 
@@ -362,13 +256,40 @@ Variant ThemeOwner::get_theme_item_in_types(Theme::DataType p_data_type, const S
 	// Only nodes with a theme resource attached are considered.
 	Node *owner_node = get_owner_node();
 
+	bool get_static_color = false;
 	while (owner_node) {
 		// For each theme resource check the theme types provided and see if p_name exists with any of them.
 		for (const StringName &E : p_theme_types) {
 			Ref<Theme> owner_theme = _get_owner_node_theme(owner_node);
 
 			if (owner_theme.is_valid() && owner_theme->has_theme_item(p_data_type, p_name, E)) {
-				return owner_theme->get_theme_item(p_data_type, p_name, E);
+				if (p_data_type == Theme::DATA_TYPE_COLOR && get_static_color == false) {
+					const StringName targe_color_role_name = String(p_name) + String("_role");
+					if (owner_theme.is_valid() && owner_theme->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
+						Ref<ColorRole> cur_color_role = owner_theme->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
+						if (cur_color_role->get_color_role_enum() == ColorRoleEnum::STATIC_COLOR) {
+							return owner_theme->get_theme_item(p_data_type, p_name, E);
+						} else {
+							return false;
+						}
+					} else {
+						return owner_theme->get_theme_item(p_data_type, p_name, E);
+					}
+				} else {
+					return owner_theme->get_theme_item(p_data_type, p_name, E);
+				}
+			} else {
+				if (p_data_type == Theme::DATA_TYPE_COLOR && get_static_color == false) {
+					const StringName targe_color_role_name = String(p_name) + String("_role");
+					if (owner_theme.is_valid() && owner_theme->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
+						Ref<ColorRole> cur_color_role = owner_theme->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
+						if (cur_color_role->get_color_role_enum() != ColorRoleEnum::STATIC_COLOR) {
+							return false;
+						} else {
+							get_static_color = true;
+						}
+					}
+				}
 			}
 		}
 
@@ -381,16 +302,58 @@ Variant ThemeOwner::get_theme_item_in_types(Theme::DataType p_data_type, const S
 		if (theme.is_valid()) {
 			for (const StringName &E : p_theme_types) {
 				if (theme->has_theme_item(p_data_type, p_name, E)) {
-					return theme->get_theme_item(p_data_type, p_name, E);
+					if (p_data_type == Theme::DATA_TYPE_COLOR && get_static_color == false) {
+						const StringName targe_color_role_name = String(p_name) + String("_role");
+						if (theme.is_valid() && theme->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
+							Ref<ColorRole> cur_color_role = theme->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
+							if (cur_color_role->get_color_role_enum() == ColorRoleEnum::STATIC_COLOR) {
+								return theme->get_theme_item(p_data_type, p_name, E);
+							} else {
+								return false;
+							}
+						} else {
+							return global_context->get_fallback_theme()->get_theme_item(p_data_type, p_name, E);
+						}
+					} else {
+						return theme->get_theme_item(p_data_type, p_name, E);
+					}
+				} else {
+					if (p_data_type == Theme::DATA_TYPE_COLOR && get_static_color == false) {
+						const StringName targe_color_role_name = String(p_name) + String("_role");
+						if (theme.is_valid() && theme->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
+							Ref<ColorRole> cur_color_role = theme->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
+							if (cur_color_role->get_color_role_enum() != ColorRoleEnum::STATIC_COLOR) {
+								return false;
+							} else {
+								get_static_color = true;
+							}
+						}
+					}
 				}
 			}
 		}
 	}
 
 	// Finally, if no match exists, use any type to return the default/empty value.
+	for (const StringName &E : p_theme_types) {
+		if (p_data_type == Theme::DATA_TYPE_COLOR && get_static_color == false) {
+			const StringName targe_color_role_name = String(p_name) + String("_role");
+			if (global_context->get_fallback_theme().is_valid() && global_context->get_fallback_theme()->has_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E)) {
+				Ref<ColorRole> cur_color_role = global_context->get_fallback_theme()->get_theme_item(Theme::DATA_TYPE_COLOR_ROLE, targe_color_role_name, E);
+				if (cur_color_role->get_color_role_enum() == ColorRoleEnum::STATIC_COLOR) {
+					return global_context->get_fallback_theme()->get_theme_item(p_data_type, p_name, E);
+				} else {
+					return false;
+				}
+			} else {
+				return global_context->get_fallback_theme()->get_theme_item(p_data_type, p_name, E);
+			}
+		} else {
+			return global_context->get_fallback_theme()->get_theme_item(p_data_type, p_name, E);
+		}
+	}
 	return global_context->get_fallback_theme()->get_theme_item(p_data_type, p_name, StringName());
 }
-
 
 
 bool ThemeOwner::has_theme_item_in_types(Theme::DataType p_data_type, const StringName &p_name, const List<StringName> &p_theme_types) {
