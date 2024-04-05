@@ -549,6 +549,38 @@ Ref<ColorScheme> ThemeOwner::get_theme_default_color_scheme() {
 	return ThemeDB::get_singleton()->get_fallback_color_scheme();
 }
 
+
+Ref<ColorRole> ThemeOwner::get_theme_default_color_role() {
+	// First, look through each control or window node in the branch, until no valid parent can be found.
+	// Only nodes with a theme resource attached are considered.
+	// For each theme resource see if their assigned theme has the default value defined and valid.
+	Node *owner_node = get_owner_node();
+
+	while (owner_node) {
+		Ref<Theme> owner_theme = _get_owner_node_theme(owner_node);
+
+		if (owner_theme.is_valid() && owner_theme->has_default_color_role()) {
+			return owner_theme->get_default_color_role();
+		}
+
+		owner_node = _get_next_owner_node(owner_node);
+	}
+
+	// Second, check global themes from the appropriate context.
+	ThemeContext *global_context = _get_active_owner_context();
+	for (const Ref<Theme> &theme : global_context->get_themes()) {
+		if (theme.is_valid()) {
+			if (theme->has_default_color_role()) {
+				return theme->get_default_color_role();
+			}
+		}
+	}
+
+	// Finally, if no match exists, return the universal default.
+	return ThemeDB::get_singleton()->get_fallback_color_role();
+}
+
+
 Ref<Theme> ThemeOwner::_get_owner_node_theme(Node *p_owner_node) const {
 	const Control *owner_c = Object::cast_to<Control>(p_owner_node);
 	if (owner_c) {

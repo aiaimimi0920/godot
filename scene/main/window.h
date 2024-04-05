@@ -506,6 +506,7 @@ public:
 	Ref<Font> get_theme_default_font() const;
 	int get_theme_default_font_size() const;
 	Ref<ColorScheme> get_theme_default_color_scheme() const;
+	Ref<ColorRole> get_theme_default_color_role() const;
 
 	//
 

@@ -113,6 +113,7 @@ protected:
 	Ref<Font> default_font;
 	int default_font_size = -1;
 	Ref<ColorScheme> default_color_scheme;
+	Ref<ColorRole> default_color_role;
 
 	HashMap<StringName, ThemeIconMap> icon_map;
 	HashMap<StringName, ThemeStyleMap> style_map;
@@ -152,6 +153,10 @@ public:
 	void set_default_color_scheme(const Ref<ColorScheme> &p_default_color_scheme);
 	Ref<ColorScheme> get_default_color_scheme() const;
 	bool has_default_color_scheme() const;
+
+	void set_default_color_role(const Ref<ColorRole> &p_default_color_role);
+	Ref<ColorRole> get_default_color_role() const;
+	bool has_default_color_role() const;
 
 	void set_icon(const StringName &p_name, const StringName &p_theme_type, const Ref<Texture2D> &p_icon);
 	virtual Ref<Texture2D> get_icon(const StringName &p_name, const StringName &p_theme_type) const;

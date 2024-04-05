@@ -57,7 +57,7 @@ Ref<ColorRole> EditorTheme::get_color_role(const StringName &p_name, const Strin
 		if (editor_theme_types.has(p_theme_type)) {
 			WARN_PRINT(vformat("Trying to access a non-existing editor theme color role '%s' in '%s'.", p_name, p_theme_type));
 		}
-		return Ref<ColorRole>();
+		return ThemeDB::get_singleton()->get_fallback_color_role();
 	}
 }
 

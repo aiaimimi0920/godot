@@ -102,6 +102,11 @@ void ThemeDB::initialize_theme() {
 	project_color_scheme->set_source_color(project_color_scheme_source_color);
     set_fallback_color_scheme(project_color_scheme);
 
+    Ref<ColorRole> project_color_role;
+	project_color_role.instantiate();
+	project_color_role->set_color_role_enum(ColorRoleEnum::STATIC_COLOR);
+    set_fallback_color_role(project_color_role);
+
 	// Always generate the default theme to serve as a fallback for all required theme definitions.
 
 	if (RenderingServer::get_singleton()) {
@@ -219,6 +224,20 @@ void ThemeDB::set_fallback_color_scheme(const Ref<ColorScheme> p_color_scheme) {
 
 Ref<ColorScheme> ThemeDB::get_fallback_color_scheme() {
     return fallback_color_scheme;
+}
+
+void ThemeDB::set_fallback_color_role(const Ref<ColorRole> p_color_role) {
+    if (fallback_color_role == p_color_role) {
+        return;
+    }
+
+    fallback_color_role = p_color_role;
+    emit_signal(SNAME("fallback_changed"));
+}
+
+
+Ref<ColorRole> ThemeDB::get_fallback_color_role() {
+    return fallback_color_role;
 }
 
 
@@ -411,6 +430,7 @@ void ThemeDB::update_class_instance_items(Node *p_instance) {
 	// Use the hierarchy to initialize all inherited theme caches. Setters carry the necessary
 	// context and will set the values appropriately.
 	StringName class_name = p_instance->get_class();
+
 	while (class_name != StringName()) {
 		HashMap<StringName, HashMap<StringName, ThemeItemBind>>::Iterator E = theme_item_binds.find(class_name);
 		if (E) {
@@ -478,6 +498,8 @@ void ThemeDB::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_fallback_font_size"), &ThemeDB::get_fallback_font_size);
 	ClassDB::bind_method(D_METHOD("set_fallback_color_scheme", "color_scheme"), &ThemeDB::set_fallback_color_scheme);
     ClassDB::bind_method(D_METHOD("get_fallback_color_scheme"), &ThemeDB::get_fallback_color_scheme);
+	ClassDB::bind_method(D_METHOD("set_fallback_color_role", "color_role"), &ThemeDB::set_fallback_color_role);
+    ClassDB::bind_method(D_METHOD("get_fallback_color_role"), &ThemeDB::get_fallback_color_role);
 	ClassDB::bind_method(D_METHOD("set_fallback_icon", "icon"), &ThemeDB::set_fallback_icon);
 	ClassDB::bind_method(D_METHOD("get_fallback_icon"), &ThemeDB::get_fallback_icon);
 	ClassDB::bind_method(D_METHOD("set_fallback_stylebox", "stylebox"), &ThemeDB::set_fallback_stylebox);
@@ -489,6 +511,7 @@ void ThemeDB::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fallback_icon_font", PROPERTY_HINT_RESOURCE_TYPE, "Font", PROPERTY_USAGE_NONE), "set_fallback_icon_font", "get_fallback_icon_font");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "fallback_font_size", PROPERTY_HINT_RANGE, "0,256,1,or_greater,suffix:px"), "set_fallback_font_size", "get_fallback_font_size");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fallback_color_scheme", PROPERTY_HINT_RESOURCE_TYPE, "ColorScheme", PROPERTY_USAGE_NONE), "set_fallback_color_scheme", "get_fallback_color_scheme");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fallback_color_role", PROPERTY_HINT_RESOURCE_TYPE, "ColorRole", PROPERTY_USAGE_NONE), "set_fallback_color_role", "get_fallback_color_role");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fallback_icon", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D", PROPERTY_USAGE_NONE), "set_fallback_icon", "get_fallback_icon");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fallback_stylebox", PROPERTY_HINT_RESOURCE_TYPE, "StyleBox", PROPERTY_USAGE_NONE), "set_fallback_stylebox", "get_fallback_stylebox");
 

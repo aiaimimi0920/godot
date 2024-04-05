@@ -322,6 +322,33 @@ bool Theme::has_default_color_scheme() const {
 	return default_color_scheme.is_valid();
 }
 
+void Theme::set_default_color_role(const Ref<ColorRole> &p_default_color_role) {
+	if (default_color_role == p_default_color_role) {
+		return;
+	}
+	if (default_color_role.is_valid()) {
+		default_color_role->disconnect_changed(callable_mp(this, &Theme::_emit_theme_changed));
+	}
+
+	default_color_role = p_default_color_role;
+
+	if (default_color_role.is_valid()) {
+		default_color_role->connect_changed(callable_mp(this, &Theme::_emit_theme_changed).bind(false), CONNECT_REFERENCE_COUNTED);
+	}
+
+	_emit_theme_changed();
+}
+
+Ref<ColorRole> Theme::get_default_color_role() const {
+	return default_color_role;
+}
+
+bool Theme::has_default_color_role() const {
+	return default_color_role.is_valid();
+}
+
+
+
 // Icons.
 void Theme::set_icon(const StringName &p_name, const StringName &p_theme_type, const Ref<Texture2D> &p_icon) {
 	ERR_FAIL_COND_MSG(!is_valid_item_name(p_name), vformat("Invalid item name: '%s'", p_name));
@@ -929,7 +956,7 @@ Ref<ColorRole> Theme::get_color_role(const StringName &p_name, const StringName 
 	if (color_role_map.has(p_theme_type) && color_role_map[p_theme_type].has(p_name)) {
 		return color_role_map[p_theme_type][p_name];
 	} else {
-		return Ref<ColorRole>();
+		return ThemeDB::get_singleton()->get_fallback_color_role();
 	}
 }
 
@@ -2364,6 +2391,10 @@ void Theme::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_default_color_scheme"), &Theme::get_default_color_scheme);
 	ClassDB::bind_method(D_METHOD("has_default_color_scheme"), &Theme::has_default_color_scheme);
 
+	ClassDB::bind_method(D_METHOD("set_default_color_role", "color_role"), &Theme::set_default_color_role);
+	ClassDB::bind_method(D_METHOD("get_default_color_role"), &Theme::get_default_color_role);
+	ClassDB::bind_method(D_METHOD("has_default_color_role"), &Theme::has_default_color_role);
+
 	ClassDB::bind_method(D_METHOD("set_theme_item", "data_type", "name", "theme_type", "value"), &Theme::set_theme_item);
 	ClassDB::bind_method(D_METHOD("get_theme_item", "data_type", "name", "theme_type"), &Theme::get_theme_item);
 	ClassDB::bind_method(D_METHOD("has_theme_item", "data_type", "name", "theme_type"), &Theme::has_theme_item);
@@ -2389,6 +2420,7 @@ void Theme::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "default_font", PROPERTY_HINT_RESOURCE_TYPE, "Font"), "set_default_font", "get_default_font");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "default_font_size", PROPERTY_HINT_RANGE, "0,256,1,or_greater,suffix:px"), "set_default_font_size", "get_default_font_size");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "default_color_scheme", PROPERTY_HINT_RESOURCE_TYPE, "ColorScheme"), "set_default_color_scheme", "get_default_color_scheme");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "default_color_role", PROPERTY_HINT_RESOURCE_TYPE, "ColorRole"), "set_default_color_role", "get_default_color_role");
 
 	BIND_ENUM_CONSTANT(DATA_TYPE_COLOR);
 	BIND_ENUM_CONSTANT(DATA_TYPE_CONSTANT);

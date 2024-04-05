@@ -56,7 +56,7 @@ class ColorScheme;
 #define BIND_THEME_ITEM_MULTI(m_data_type, m_class, m_prop)                                                                                                                                             \
 	ThemeIntData cur_theme_data_##m_prop;                                                                                                                                                               \
 	cur_theme_data_##m_prop.set_data_name(#m_prop);                                                                                                                                                     \
-	for (int i = 0; i < STATE_MAX; i++) {                                                                                                                                                               \
+	for (int i = 0; i < 1; i++) {                                                                                                                                                               \
 		String cur_theme_data_state_##m_prop = cur_theme_data_##m_prop.get_state_data_name(static_cast<State>(i));                                                                                      \
 		ThemeDB::get_singleton()->bind_class_item(m_data_type, get_class_static(), cur_theme_data_state_##m_prop, cur_theme_data_state_##m_prop, [i, cur_theme_data_state_##m_prop](Node *p_instance) { \
 			m_class *p_cast = Object::cast_to<m_class>(p_instance);                                                                                                                                     \
@@ -75,7 +75,7 @@ class ColorScheme;
 	cur_theme_data_##m_item_name.set_data_name(#m_item_name);                                                                                                                                                     \
 	ThemeIntData cur_theme_data_##m_prop;                                                                                                                                                                         \
 	cur_theme_data_##m_prop.set_data_name(#m_prop);                                                                                                                                                               \
-	for (int i = 0; i < STATE_MAX; i++) {                                                                                                                                                                         \
+	for (int i = 0; i < 1; i++) {                                                                                                                                                                         \
 		String cur_theme_data_state_##m_item_name = cur_theme_data_##m_item_name.get_state_data_name(static_cast<State>(i));                                                                                      \
 		String cur_theme_data_state_##m_prop = cur_theme_data_##m_prop.get_state_data_name(static_cast<State>(i));                                                                                                \
 		ThemeDB::get_singleton()->bind_class_item(m_data_type, get_class_static(), cur_theme_data_state_##m_prop, cur_theme_data_state_##m_item_name, [i, cur_theme_data_state_##m_item_name](Node *p_instance) { \
@@ -98,7 +98,7 @@ class ColorScheme;
 	cur_theme_data_##m_item_name.set_data_name(#m_item_name);                                                                                                                                                                  \
 	ThemeIntData cur_theme_data_##m_prop;                                                                                                                                                                                      \
 	cur_theme_data_##m_prop.set_data_name(#m_prop);                                                                                                                                                                            \
-	for (int i = 0; i < STATE_MAX; i++) {                                                                                                                                                                                      \
+	for (int i = 0; i < 1; i++) {                                                                                                                                                                                      \
 		String cur_theme_data_state_##m_item_name = cur_theme_data_##m_item_name.get_state_data_name(static_cast<State>(i));                                                                                                   \
 		String cur_theme_data_state_##m_prop = cur_theme_data_##m_prop.get_state_data_name(static_cast<State>(i));                                                                                                             \
 		ThemeDB::get_singleton()->bind_class_external_item(m_data_type, get_class_static(), cur_theme_data_state_##m_prop, cur_theme_data_state_##m_item_name, m_type_name, [i, cur_theme_data_state_##m_item_name](Node *p_instance) { \
@@ -127,6 +127,7 @@ class ThemeDB : public Object {
 	Ref<Texture2D> fallback_icon;
 	Ref<StyleBox> fallback_stylebox;
 	Ref<ColorScheme> fallback_color_scheme;
+	Ref<ColorRole> fallback_color_role;
 
 	// Global theme contexts used to scope global Theme resources.
 
@@ -196,6 +197,9 @@ public:
 
 	void set_fallback_color_scheme(const Ref<ColorScheme> p_color_scheme);
 	Ref<ColorScheme> get_fallback_color_scheme();
+
+	void set_fallback_color_role(const Ref<ColorRole> p_color_scheme);
+	Ref<ColorRole> get_fallback_color_role();
 
 	void set_fallback_icon(const Ref<Texture2D> &p_icon);
 	Ref<Texture2D> get_fallback_icon();

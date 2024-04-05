@@ -78,6 +78,7 @@ public:
 	Ref<Font> get_theme_default_font();
 	int get_theme_default_font_size();
 	Ref<ColorScheme> get_theme_default_color_scheme();
+	Ref<ColorRole> get_theme_default_color_role();
 
 	ThemeOwner(Node *p_holder) { holder = p_holder; }
 	~ThemeOwner() {}

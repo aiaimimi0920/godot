@@ -555,7 +555,7 @@ public:
 	String get_state_data_name(State p_state = State::NormalNoneLTR) const;
 
 	T get_data(State p_state = State::NormalNoneLTR) const;
-	void set_data(T p_data, State p_state = State::NormalNoneLTR);
+	void set_data(const T &p_data, State p_state = State::NormalNoneLTR);
 
 	Vector<State> get_search_order(State p_state) const;
 
@@ -692,7 +692,7 @@ T ThemeData<T>::get_data(State p_state) const {
 }
 
 template <typename T>
-void ThemeData<T>::set_data(T p_data, State p_state) {
+void ThemeData<T>::set_data(const T &p_data, State p_state) {
 	switch (p_state) {
 		case State::NormalNoneLTR: {
 			data_cache.normal = p_data;

@@ -2829,6 +2829,11 @@ Ref<ColorScheme> Window::get_theme_default_color_scheme() const {
 	return theme_owner->get_theme_default_color_scheme();
 }
 
+Ref<ColorRole> Window::get_theme_default_color_role() const {
+	ERR_READ_THREAD_GUARD_V(Ref<ColorRole>());
+	return theme_owner->get_theme_default_color_role();
+}
+
 /// Bulk actions.
 
 void Window::begin_bulk_theme_override() {
@@ -3340,6 +3345,7 @@ void Window::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_theme_default_font"), &Window::get_theme_default_font);
 	ClassDB::bind_method(D_METHOD("get_theme_default_font_size"), &Window::get_theme_default_font_size);
 	ClassDB::bind_method(D_METHOD("get_theme_default_color_scheme"), &Window::get_theme_default_color_scheme);
+	ClassDB::bind_method(D_METHOD("get_theme_default_color_role"), &Window::get_theme_default_color_role);
 
 	ClassDB::bind_method(D_METHOD("set_layout_direction", "direction"), &Window::set_layout_direction);
 	ClassDB::bind_method(D_METHOD("get_layout_direction"), &Window::get_layout_direction);
