@@ -34,6 +34,8 @@
 #include "core/io/resource.h"
 #include "core/object/class_db.h"
 #include "core/object/gdvirtual.gen.inc"
+#include "modules/color_scheme/color_scheme.h"
+#include "modules/color_scheme/color_role.h"
 
 class CanvasItem;
 
@@ -54,7 +56,11 @@ protected:
 	GDVIRTUAL2RC(bool, _test_mask, Point2, Rect2)
 
 public:
+	Ref<ColorScheme> default_color_scheme;
+	Ref<ColorScheme> color_scheme;
 	virtual Size2 get_minimum_size() const;
+
+	bool emit_changed_signal_flag = true;
 
 	void set_content_margin(Side p_side, float p_value);
 	void set_content_margin_all(float p_value);
@@ -66,6 +72,19 @@ public:
 
 	virtual void draw(RID p_canvas_item, const Rect2 &p_rect) const;
 	virtual Rect2 get_draw_rect(const Rect2 &p_rect) const;
+	virtual void _update_color();
+	void base_update_color();
+
+	void custom_emit_changed();
+
+	void set_emit_changed_signal_flag(bool p_emit_changed_signal_flag);
+	bool is_emit_changed_signal_flag() const;
+
+	void set_default_color_scheme(const Ref<ColorScheme> &p_color_scheme);
+	Ref<ColorScheme> get_default_color_scheme() const;
+
+	void set_color_scheme(const Ref<ColorScheme> &p_color_scheme);
+	Ref<ColorScheme> get_color_scheme() const;
 
 	CanvasItem *get_current_item_drawn() const;
 
@@ -80,6 +99,7 @@ class StyleBoxEmpty : public StyleBox {
 
 public:
 	virtual void draw(RID p_canvas_item, const Rect2 &p_rect) const override {}
+	virtual void _update_color() override;
 	StyleBoxEmpty() {}
 };
 

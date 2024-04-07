@@ -55,6 +55,8 @@ class Slider : public Range {
 	float gamepad_event_delay_ms = DEFAULT_GAMEPAD_EVENT_DELAY_MS;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+		
 		Ref<StyleBox> slider_style;
 		Ref<StyleBox> grabber_area_style;
 		Ref<StyleBox> grabber_area_hl_style;

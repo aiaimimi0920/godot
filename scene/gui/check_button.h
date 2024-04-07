@@ -32,14 +32,29 @@
 #define CHECK_BUTTON_H
 
 #include "scene/gui/button.h"
+#include "scene/resources/text_paragraph.h"
 
 class CheckButton : public Button {
 	GDCLASS(CheckButton, Button);
 
+	Ref<TextParagraph> check_button_text_icon_buf;
+	String xl_text_checked;
+	String xl_text_unchecked;
+	String xl_text_checked_disabled;
+	String xl_text_unchecked_disabled;
+	String xl_text_checked_mirrored;
+	String xl_text_unchecked_mirrored;
+	String xl_text_checked_disabled_mirrored;
+	String xl_text_unchecked_disabled_mirrored;
+
 	struct ThemeCache {
 		int h_separation = 0;
+		int icon_max_width = 0;
 		int check_v_offset = 0;
 		Ref<StyleBox> normal_style;
+
+		Ref<Font> text_icon_font;
+		int text_icon_font_size;
 
 		Ref<Texture2D> checked;
 		Ref<Texture2D> unchecked;
@@ -49,6 +64,25 @@ class CheckButton : public Button {
 		Ref<Texture2D> unchecked_mirrored;
 		Ref<Texture2D> checked_disabled_mirrored;
 		Ref<Texture2D> unchecked_disabled_mirrored;
+
+		String text_checked;
+		String text_unchecked;
+		String text_checked_disabled;
+		String text_unchecked_disabled;
+		String text_checked_mirrored;
+		String text_unchecked_mirrored;
+		String text_checked_disabled_mirrored;
+		String text_unchecked_disabled_mirrored;
+
+		Color text_checked_color;
+		Ref<ColorRole> text_checked_color_role;
+		Color text_unchecked_color;
+		Ref<ColorRole> text_unchecked_color_role;
+		Color text_checked_disabled_color;
+		Ref<ColorRole> text_checked_disabled_color_role;
+		Color text_unchecked_disabled_color;
+		Ref<ColorRole> text_unchecked_disabled_color_role;
+
 	} theme_cache;
 
 protected:
@@ -57,6 +91,8 @@ protected:
 
 	void _notification(int p_what);
 	static void _bind_methods();
+
+	void update_xl_text();
 
 public:
 	CheckButton(const String &p_text = String());

@@ -51,11 +51,17 @@ class OptionButton : public Button {
 		Ref<StyleBox> normal;
 
 		Color font_color;
+		Ref<ColorRole> font_color_role;
 		Color font_focus_color;
+		Ref<ColorRole> font_focus_color_role;
 		Color font_pressed_color;
+		Ref<ColorRole> font_pressed_color_role;
 		Color font_hover_color;
+		Ref<ColorRole> font_hover_color_role;
 		Color font_hover_pressed_color;
+		Ref<ColorRole> font_hover_pressed_color_role;
 		Color font_disabled_color;
+		Ref<ColorRole> font_disabled_color_role;
 
 		int h_separation = 0;
 

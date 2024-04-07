@@ -193,44 +193,68 @@ void FileDialog::_notification(int p_what) {
 
 			dir_up->begin_bulk_theme_override();
 			dir_up->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
+			dir_up->add_theme_color_role_override("icon_normal_color_role", theme_cache.icon_normal_color_role);
 			dir_up->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
+			dir_up->add_theme_color_role_override("icon_hover_color_role", theme_cache.icon_hover_color_role);
 			dir_up->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
+			dir_up->add_theme_color_role_override("icon_focus_color_role", theme_cache.icon_focus_color_role);
 			dir_up->add_theme_color_override("icon_pressed_color", theme_cache.icon_pressed_color);
+			dir_up->add_theme_color_role_override("icon_pressed_color_role", theme_cache.icon_pressed_color_role);
 			dir_up->end_bulk_theme_override();
 
 			dir_prev->begin_bulk_theme_override();
 			dir_prev->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
+			dir_prev->add_theme_color_role_override("icon_normal_color_role", theme_cache.icon_normal_color_role);
 			dir_prev->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
+			dir_prev->add_theme_color_role_override("icon_hover_color_role", theme_cache.icon_hover_color_role);
 			dir_prev->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
+			dir_prev->add_theme_color_role_override("icon_focus_color_role", theme_cache.icon_focus_color_role);
 			dir_prev->add_theme_color_override("icon_color_pressed", theme_cache.icon_pressed_color);
+			dir_prev->add_theme_color_role_override("icon_color_pressed_role", theme_cache.icon_pressed_color_role);
 			dir_prev->end_bulk_theme_override();
 
 			dir_next->begin_bulk_theme_override();
 			dir_next->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
+			dir_next->add_theme_color_role_override("icon_normal_color_role", theme_cache.icon_normal_color_role);
 			dir_next->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
+			dir_next->add_theme_color_role_override("icon_hover_color_role", theme_cache.icon_hover_color_role);
 			dir_next->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
+			dir_next->add_theme_color_role_override("icon_focus_color_role", theme_cache.icon_focus_color_role);
 			dir_next->add_theme_color_override("icon_color_pressed", theme_cache.icon_pressed_color);
+			dir_next->add_theme_color_role_override("icon_color_pressed_role", theme_cache.icon_pressed_color_role);
 			dir_next->end_bulk_theme_override();
 
 			refresh->begin_bulk_theme_override();
 			refresh->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
+			refresh->add_theme_color_role_override("icon_normal_color_role", theme_cache.icon_normal_color_role);
 			refresh->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
+			refresh->add_theme_color_role_override("icon_hover_color_role", theme_cache.icon_hover_color_role);
 			refresh->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
+			refresh->add_theme_color_role_override("icon_focus_color_role", theme_cache.icon_focus_color_role);
 			refresh->add_theme_color_override("icon_pressed_color", theme_cache.icon_pressed_color);
+			refresh->add_theme_color_role_override("icon_pressed_color_role", theme_cache.icon_pressed_color_role);
 			refresh->end_bulk_theme_override();
 
 			show_hidden->begin_bulk_theme_override();
 			show_hidden->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
+			show_hidden->add_theme_color_role_override("icon_normal_color_role", theme_cache.icon_normal_color_role);
 			show_hidden->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
+			show_hidden->add_theme_color_role_override("icon_hover_color_role", theme_cache.icon_hover_color_role);
 			show_hidden->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
+			show_hidden->add_theme_color_role_override("icon_focus_color_role", theme_cache.icon_focus_color_role);
 			show_hidden->add_theme_color_override("icon_pressed_color", theme_cache.icon_pressed_color);
+			show_hidden->add_theme_color_role_override("icon_pressed_color_role", theme_cache.icon_pressed_color_role);
 			show_hidden->end_bulk_theme_override();
 
 			makedir->begin_bulk_theme_override();
 			makedir->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
+			makedir->add_theme_color_role_override("icon_normal_color_role", theme_cache.icon_normal_color_role);
 			makedir->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
+			makedir->add_theme_color_role_override("icon_hover_color_role", theme_cache.icon_hover_color_role);
 			makedir->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
+			makedir->add_theme_color_role_override("icon_focus_color_role", theme_cache.icon_focus_color_role);
 			makedir->add_theme_color_override("icon_pressed_color", theme_cache.icon_pressed_color);
+			makedir->add_theme_color_role_override("icon_pressed_color_role", theme_cache.icon_pressed_color_role);
 			makedir->end_bulk_theme_override();
 
 			invalidate();
@@ -1364,14 +1388,21 @@ void FileDialog::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, create_folder);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, folder_icon_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, folder_icon_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, file_icon_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, file_icon_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, file_disabled_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, file_disabled_color_role);
 
 	// TODO: Define own colors?
 	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_normal_color, "font_color", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_normal_color_role, "font_color_role", "Button");
 	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_hover_color, "font_hover_color", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_hover_color_role, "font_hover_color_role", "Button");
 	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_focus_color, "font_focus_color", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_focus_color_role, "font_focus_color_role", "Button");
 	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_pressed_color, "font_pressed_color", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_pressed_color_role, "font_pressed_color_role", "Button");
 }
 
 void FileDialog::set_show_hidden_files(bool p_show) {

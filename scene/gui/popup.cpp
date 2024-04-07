@@ -258,6 +258,7 @@ void PopupPanel::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_READY:
 		case NOTIFICATION_THEME_CHANGED: {
+			panel->add_theme_color_scheme_override("default_color_scheme", theme_cache.panel_default_color_scheme);
 			panel->add_theme_style_override("panel", theme_cache.panel_style);
 			_update_child_rects();
 		} break;
@@ -269,6 +270,7 @@ void PopupPanel::_notification(int p_what) {
 }
 
 void PopupPanel::_bind_methods() {
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_SCHEME, PopupPanel, panel_default_color_scheme, "default_color_scheme");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, PopupPanel, panel_style, "panel");
 }
 

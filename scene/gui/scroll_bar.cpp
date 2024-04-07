@@ -621,6 +621,8 @@ void ScrollBar::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "custom_step", PROPERTY_HINT_RANGE, "-1,4096,suffix:px"), "set_custom_step", "get_custom_step");
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ScrollBar, default_color_scheme);
+
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollBar, scroll_style, "scroll");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollBar, scroll_focus_style, "scroll_focus");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollBar, grabber_style, "grabber");

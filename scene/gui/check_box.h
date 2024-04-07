@@ -32,14 +32,29 @@
 #define CHECK_BOX_H
 
 #include "scene/gui/button.h"
+#include "scene/resources/text_paragraph.h"
 
 class CheckBox : public Button {
 	GDCLASS(CheckBox, Button);
 
+	Ref<TextParagraph> check_box_text_icon_buf;
+	String xl_text_checked;
+	String xl_text_unchecked;
+	String xl_text_radio_checked;
+	String xl_text_radio_unchecked;
+	String xl_text_checked_disabled;
+	String xl_text_unchecked_disabled;
+	String xl_text_radio_checked_disabled;
+	String xl_text_radio_unchecked_disabled;
+
 	struct ThemeCache {
 		int h_separation = 0;
+		int icon_max_width = 0;
 		int check_v_offset = 0;
 		Ref<StyleBox> normal_style;
+
+		Ref<Font> text_icon_font;
+		int text_icon_font_size;
 
 		Ref<Texture2D> checked;
 		Ref<Texture2D> unchecked;
@@ -49,6 +64,25 @@ class CheckBox : public Button {
 		Ref<Texture2D> unchecked_disabled;
 		Ref<Texture2D> radio_checked_disabled;
 		Ref<Texture2D> radio_unchecked_disabled;
+
+		String text_checked;
+		String text_unchecked;
+		String text_radio_checked;
+		String text_radio_unchecked;
+		String text_checked_disabled;
+		String text_unchecked_disabled;
+		String text_radio_checked_disabled;
+		String text_radio_unchecked_disabled;
+
+		Color text_checked_color;
+		Ref<ColorRole> text_checked_color_role;
+		Color text_unchecked_color;
+		Ref<ColorRole> text_unchecked_color_role;
+		Color text_checked_disabled_color;
+		Ref<ColorRole> text_checked_disabled_color_role;
+		Color text_unchecked_disabled_color;
+		Ref<ColorRole> text_unchecked_disabled_color_role;
+
 	} theme_cache;
 
 protected:
@@ -59,6 +93,8 @@ protected:
 	static void _bind_methods();
 
 	bool is_radio();
+
+	void update_xl_text();
 
 public:
 	CheckBox(const String &p_text = String());

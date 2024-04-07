@@ -199,11 +199,13 @@ void GraphEditMinimap::_adjust_graph_scroll(const Vector2 &p_offset) {
 }
 
 void GraphEditMinimap::_bind_methods() {
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphEditMinimap, default_color_scheme);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, panel);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, node_style, "node");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, GraphEditMinimap, camera_style, "camera");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, GraphEditMinimap, resizer);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEditMinimap, resizer_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEditMinimap, resizer_color_role);
 }
 
 GraphEditMinimap::GraphEditMinimap(GraphEdit *p_edit) {
@@ -2712,16 +2714,26 @@ void GraphEdit::_bind_methods() {
 	BIND_ENUM_CONSTANT(GRID_PATTERN_LINES);
 	BIND_ENUM_CONSTANT(GRID_PATTERN_DOTS);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphEdit, default_color_scheme);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphEdit, panel);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, grid_major);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, grid_major_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, grid_minor);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, grid_minor_role);
 
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, GraphEdit, activity_color, "activity");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, activity_color_role, "activity");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, connection_hover_tint_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, connection_hover_tint_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, connection_valid_target_tint_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, connection_valid_target_tint_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, connection_rim_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, connection_rim_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, selection_fill);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, selection_fill_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphEdit, selection_stroke);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphEdit, selection_stroke_role);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphEdit, menu_panel);
 

@@ -33,6 +33,7 @@
 
 #include "scene/gui/base_button.h"
 #include "scene/resources/bit_map.h"
+#include "scene/resources/text_paragraph.h"
 class TextureButton : public BaseButton {
 	GDCLASS(TextureButton, BaseButton);
 
@@ -57,6 +58,24 @@ private:
 	bool ignore_texture_size = false;
 	StretchMode stretch_mode = STRETCH_KEEP;
 
+	Ref<TextParagraph> text_icon_buf;
+	Ref<TextParagraph> text_icon_focus_buf;
+
+	String text_normal = "";
+	String xl_text_normal;
+
+	String text_pressed = "";
+	String xl_text_pressed;
+
+	String text_hover = "";
+	String xl_text_hover;
+
+	String text_disabled = "";
+	String xl_text_disabled;
+
+	String text_focused = "";
+	String xl_text_focused;
+
 	Rect2 _texture_region;
 	Rect2 _position_rect;
 	bool _tile = false;
@@ -67,11 +86,35 @@ private:
 	void _set_texture(Ref<Texture2D> *p_destination, const Ref<Texture2D> &p_texture);
 	void _texture_changed();
 
+	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
+		int icon_max_width = 0;
+
+		Ref<Font> text_icon_font;
+		int text_icon_font_size;
+
+		Color text_normal_color;
+		Ref<ColorRole> text_normal_color_role;
+		Color text_pressed_color;
+		Ref<ColorRole> text_pressed_color_role;
+		Color text_hover_color;
+		Ref<ColorRole> text_hover_color_role;
+		Color text_disabled_color;
+		Ref<ColorRole> text_disabled_color_role;
+		Color text_focused_color;
+		Ref<ColorRole> text_focused_color_role;
+
+	} theme_cache;
+
 protected:
 	virtual Size2 get_minimum_size() const override;
 	virtual bool has_point(const Point2 &p_point) const override;
 	void _notification(int p_what);
 	static void _bind_methods();
+
+	String _get_trans_text(const String &p_text_icon);
+	void update_xl_text();
 
 public:
 	void set_texture_normal(const Ref<Texture2D> &p_normal);
@@ -87,6 +130,18 @@ public:
 	Ref<Texture2D> get_texture_disabled() const;
 	Ref<Texture2D> get_texture_focused() const;
 	Ref<BitMap> get_click_mask() const;
+
+	void set_text_normal(const String &p_normal);
+	void set_text_pressed(const String &p_pressed);
+	void set_text_hover(const String &p_hover);
+	void set_text_disabled(const String &p_disabled);
+	void set_text_focused(const String &p_focused);
+
+	String get_text_normal() const;
+	String get_text_pressed() const;
+	String get_text_hover() const;
+	String get_text_disabled() const;
+	String get_text_focused() const;
 
 	bool get_ignore_texture_size() const;
 	void set_ignore_texture_size(bool p_ignore);

@@ -42,6 +42,7 @@ private:
 	String text;
 	String xl_text;
 	Ref<TextParagraph> text_buf;
+	Ref<TextParagraph> text_icon_buf;
 
 	String language;
 	TextDirection text_direction = TEXT_DIRECTION_AUTO;
@@ -49,6 +50,9 @@ private:
 	TextServer::OverrunBehavior overrun_behavior = TextServer::OVERRUN_NO_TRIMMING;
 
 	Ref<Texture2D> icon;
+	String text_icon;
+	String xl_text_icon;
+
 	bool expand_icon = false;
 	bool clip_text = false;
 	HorizontalAlignment alignment = HORIZONTAL_ALIGNMENT_CENTER;
@@ -57,6 +61,8 @@ private:
 	float _internal_margin[4] = {};
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> normal;
 		Ref<StyleBox> normal_mirrored;
 		Ref<StyleBox> pressed;
@@ -69,26 +75,48 @@ private:
 		Ref<StyleBox> disabled_mirrored;
 		Ref<StyleBox> focus;
 
+		Ref<StyleBox> state_hover_layer;
+		Ref<StyleBox> state_pressed_layer;
+		Ref<StyleBox> state_hover_pressed_layer;
+		Ref<StyleBox> state_focus_layer;
+
 		Color font_color;
+		Ref<ColorRole> font_color_role;
 		Color font_focus_color;
+		Ref<ColorRole> font_focus_color_role;
 		Color font_pressed_color;
+		Ref<ColorRole> font_pressed_color_role;
 		Color font_hover_color;
+		Ref<ColorRole> font_hover_color_role;
 		Color font_hover_pressed_color;
+		Ref<ColorRole> font_hover_pressed_color_role;
 		Color font_disabled_color;
+		Ref<ColorRole> font_disabled_color_role;
 
 		Ref<Font> font;
 		int font_size = 0;
 		int outline_size = 0;
 		Color font_outline_color;
+		Ref<ColorRole> font_outline_color_role;
+
+		Ref<Font> text_icon_font;
+		int text_icon_font_size;
 
 		Color icon_normal_color;
+		Ref<ColorRole> icon_normal_color_role;
 		Color icon_focus_color;
+		Ref<ColorRole> icon_focus_color_role;
 		Color icon_pressed_color;
+		Ref<ColorRole> icon_pressed_color_role;
 		Color icon_hover_color;
+		Ref<ColorRole> icon_hover_color_role;
 		Color icon_hover_pressed_color;
+		Ref<ColorRole> icon_hover_pressed_color_role;
 		Color icon_disabled_color;
+		Ref<ColorRole> icon_disabled_color_role;
 
 		Ref<Texture2D> icon;
+		String text_icon;
 
 		int h_separation = 0;
 		int icon_max_width = 0;
@@ -97,6 +125,7 @@ private:
 	Size2 _fit_icon_size(const Size2 &p_size) const;
 
 	void _shape(Ref<TextParagraph> p_paragraph = Ref<TextParagraph>(), String p_text = "");
+	void _text_shape(Ref<TextParagraph> p_paragraph = Ref<TextParagraph>(), String p_text = "", int expand_icon_size = -1);
 	void _texture_changed();
 
 protected:
@@ -104,16 +133,21 @@ protected:
 	virtual void _queue_update_size_cache();
 
 	Ref<StyleBox> _get_current_stylebox() const;
+	Ref<StyleBox> _get_current_state_layer_stylebox() const;
 	void _notification(int p_what);
 	static void _bind_methods();
+
+	String _get_trans_text(const String &p_text_icon);
 
 public:
 	virtual Size2 get_minimum_size() const override;
 
-	Size2 get_minimum_size_for_text_and_icon(const String &p_text, Ref<Texture2D> p_icon) const;
+	Size2 get_minimum_size_for_text_and_icon(const String &p_text, Ref<Texture2D> p_icon, const String &p_text_icon = "") const;
 
 	void set_text(const String &p_text);
 	String get_text() const;
+	void set_text_icon(const String &p_text_icon);
+	String get_text_icon() const;
 
 	void set_text_overrun_behavior(TextServer::OverrunBehavior p_behavior);
 	TextServer::OverrunBehavior get_text_overrun_behavior() const;

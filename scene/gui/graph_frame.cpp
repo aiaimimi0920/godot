@@ -203,6 +203,8 @@ void GraphFrame::_bind_methods() {
 
 	ADD_SIGNAL(MethodInfo(SNAME("autoshrink_changed")));
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphFrame, default_color_scheme);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphFrame, panel);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphFrame, panel_selected);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphFrame, titlebar);
@@ -210,6 +212,7 @@ void GraphFrame::_bind_methods() {
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, GraphFrame, resizer);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphFrame, resizer_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphFrame, resizer_color_role);
 }
 
 void GraphFrame::_validate_property(PropertyInfo &p_property) const {

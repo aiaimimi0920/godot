@@ -411,6 +411,7 @@ void MenuBar::_draw_menu_item(int p_index) {
 
 	Color color;
 	Ref<StyleBox> style;
+	Ref<StyleBox> state_stylebox;
 	Rect2 item_rect = _get_menu_item_rect(p_index);
 
 	if (menu_cache[p_index].disabled) {
@@ -435,6 +436,13 @@ void MenuBar::_draw_menu_item(int p_index) {
 		if (has_theme_color(SNAME("font_hover_pressed_color"))) {
 			color = theme_cache.font_hover_pressed_color;
 		}
+		if (has_theme_stylebox("state_hover_pressed_layer")) {
+			state_stylebox = theme_cache.state_hover_pressed_layer;
+			if (state_stylebox.is_valid()) {
+				state_stylebox->draw(ci, item_rect);
+			}
+		}
+
 	} else if (pressed) {
 		if (rtl && has_theme_stylebox(SNAME("pressed_mirrored"))) {
 			style = theme_cache.pressed_mirrored;
@@ -449,6 +457,14 @@ void MenuBar::_draw_menu_item(int p_index) {
 		} else {
 			color = theme_cache.font_color;
 		}
+
+		if (has_theme_stylebox("state_pressed_layer")) {
+			state_stylebox = theme_cache.state_pressed_layer;
+			if (state_stylebox.is_valid()) {
+				state_stylebox->draw(ci, item_rect);
+			}
+		}
+
 	} else if (hovered) {
 		if (rtl && has_theme_stylebox(SNAME("hover_mirrored"))) {
 			style = theme_cache.hover_mirrored;
@@ -459,6 +475,12 @@ void MenuBar::_draw_menu_item(int p_index) {
 			style->draw(ci, item_rect);
 		}
 		color = theme_cache.font_hover_color;
+		if (has_theme_stylebox("state_hover_layer")) {
+			state_stylebox = theme_cache.state_hover_layer;
+			if (state_stylebox.is_valid()) {
+				state_stylebox->draw(ci, item_rect);
+			}
+		}
 	} else {
 		if (rtl && has_theme_stylebox(SNAME("normal_mirrored"))) {
 			style = theme_cache.normal_mirrored;
@@ -473,6 +495,14 @@ void MenuBar::_draw_menu_item(int p_index) {
 			color = theme_cache.font_focus_color;
 		} else {
 			color = theme_cache.font_color;
+		}
+		if (has_focus()) {
+			if (has_theme_stylebox("state_focus_layer")) {
+				state_stylebox = theme_cache.state_focus_layer;
+				if (state_stylebox.is_valid()) {
+					state_stylebox->draw(ci, item_rect);
+				}
+			}
 		}
 	}
 
@@ -690,6 +720,8 @@ void MenuBar::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "text_direction", PROPERTY_HINT_ENUM, "Auto,Left-to-Right,Right-to-Left,Inherited"), "set_text_direction", "get_text_direction");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "language", PROPERTY_HINT_LOCALE_ID, ""), "set_language", "get_language");
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, MenuBar, default_color_scheme);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, normal);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, normal_mirrored);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, disabled);
@@ -705,13 +737,20 @@ void MenuBar::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, MenuBar, font_size);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, MenuBar, outline_size);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_outline_color_role);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_disabled_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_disabled_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_pressed_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_pressed_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_hover_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_hover_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_hover_pressed_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_hover_pressed_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_focus_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_focus_color_role);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, MenuBar, h_separation);
 }

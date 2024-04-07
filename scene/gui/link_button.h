@@ -57,19 +57,28 @@ private:
 	Array st_args;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> focus;
 
 		Color font_color;
+		Ref<ColorRole> font_color_role;
 		Color font_focus_color;
+		Ref<ColorRole> font_focus_color_role;
 		Color font_pressed_color;
+		Ref<ColorRole> font_pressed_color_role;
 		Color font_hover_color;
+		Ref<ColorRole> font_hover_color_role;
 		Color font_hover_pressed_color;
+		Ref<ColorRole> font_hover_pressed_color_role;
 		Color font_disabled_color;
+		Ref<ColorRole> font_disabled_color_role;
 
 		Ref<Font> font;
 		int font_size = 0;
 		int outline_size = 0;
 		Color font_outline_color;
+		Ref<ColorRole> font_outline_color_role;
 
 		int underline_spacing = 0;
 	} theme_cache;

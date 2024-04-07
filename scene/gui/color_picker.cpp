@@ -1776,6 +1776,8 @@ void ColorPicker::_bind_methods() {
 	BIND_ENUM_CONSTANT(SHAPE_OKHSL_CIRCLE);
 	BIND_ENUM_CONSTANT(SHAPE_NONE);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ColorPicker, default_color_scheme);
+
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, ColorPicker, content_margin, "margin");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, ColorPicker, label_width);
 
@@ -2263,6 +2265,7 @@ Color ColorPresetButton::get_preset_color() const {
 }
 
 void ColorPresetButton::_bind_methods() {
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ColorPresetButton, default_color_scheme);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ColorPresetButton, foreground_style, "preset_fg");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, ColorPresetButton, background_icon, "preset_bg");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, ColorPresetButton, overbright_indicator);

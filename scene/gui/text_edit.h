@@ -549,20 +549,28 @@ private:
 
 	/* Visual. */
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		float base_scale = 1.0;
 
 		/* Search */
 		Color search_result_color = Color(1, 1, 1);
+		Ref<ColorRole> search_result_color_role;
 		Color search_result_border_color = Color(1, 1, 1);
+		Ref<ColorRole> search_result_border_color_role;
 
 		/* Caret */
 		int caret_width = 1;
 		Color caret_color = Color(1, 1, 1);
+		Ref<ColorRole> caret_color_role;
 		Color caret_background_color = Color(0, 0, 0);
+		Ref<ColorRole> caret_background_color_role;
 
 		/* Selection */
 		Color font_selected_color = Color(0, 0, 0, 0);
+		Ref<ColorRole> font_selected_color_role;
 		Color selection_color = Color(1, 1, 1);
+		Ref<ColorRole> selection_color_role;
 
 		/* Other visuals */
 		Ref<StyleBox> style_normal;
@@ -575,17 +583,24 @@ private:
 		Ref<Font> font;
 		int font_size = 16;
 		Color font_color = Color(1, 1, 1);
+		Ref<ColorRole> font_color_role;
 		Color font_readonly_color = Color(1, 1, 1);
+		Ref<ColorRole> font_readonly_color_role;
 		Color font_placeholder_color = Color(1, 1, 1, 0.6);
+		Ref<ColorRole> font_placeholder_color_role;
 
 		int outline_size = 0;
 		Color outline_color = Color(1, 1, 1);
+		Ref<ColorRole> outline_color_role;
 
 		int line_spacing = 1;
 
 		Color background_color = Color(1, 1, 1);
+		Ref<ColorRole> background_color_role;
 		Color current_line_color = Color(1, 1, 1);
+		Ref<ColorRole> current_line_color_role;
 		Color word_highlighted_color = Color(1, 1, 1);
+		Ref<ColorRole> word_highlighted_color_role;
 	} theme_cache;
 
 	bool window_has_focus = true;

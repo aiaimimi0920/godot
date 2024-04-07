@@ -61,6 +61,8 @@ private:
 	bool updating_visibility = false;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		int side_margin = 0;
 
 		Ref<StyleBox> panel_style;
@@ -86,12 +88,18 @@ private:
 		Ref<Texture2D> decrement_hl_icon;
 		Ref<Texture2D> drop_mark_icon;
 		Color drop_mark_color;
+		Ref<ColorRole> drop_mark_color_role;
 
 		Color font_selected_color;
+		Ref<ColorRole> font_selected_color_role;
 		Color font_hovered_color;
+		Ref<ColorRole> font_hovered_color_role;
 		Color font_unselected_color;
+		Ref<ColorRole> font_unselected_color_role;
 		Color font_disabled_color;
+		Ref<ColorRole> font_disabled_color_role;
 		Color font_outline_color;
+		Ref<ColorRole> font_outline_color_role;
 
 		Ref<Font> tab_font;
 		int tab_font_size;

@@ -37,6 +37,8 @@ class Panel : public Control {
 	GDCLASS(Panel, Control);
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> panel_style;
 	} theme_cache;
 

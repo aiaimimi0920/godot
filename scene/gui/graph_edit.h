@@ -79,12 +79,15 @@ class GraphEditMinimap : public Control {
 	bool is_resizing = false;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+		
 		Ref<StyleBox> panel;
 		Ref<StyleBox> node_style;
 		Ref<StyleBox> camera_style;
 
 		Ref<Texture2D> resizer;
 		Color resizer_color;
+		Ref<ColorRole> resizer_color_role;
 	} theme_cache;
 
 	Vector2 _get_render_size();
@@ -268,17 +271,27 @@ private:
 	struct ThemeCache {
 		float base_scale = 1.0;
 
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> panel;
 		Color grid_major;
+		Ref<ColorRole> grid_major_role;
 		Color grid_minor;
+		Ref<ColorRole> grid_minor_role;
 
 		Color activity_color;
+		Ref<ColorRole> activity_color_role;
 		Color connection_hover_tint_color;
+		Ref<ColorRole> connection_hover_tint_color_role;
 		Color connection_valid_target_tint_color;
+		Ref<ColorRole> connection_valid_target_tint_color_role;
 		Color connection_rim_color;
+		Ref<ColorRole> connection_rim_color_role;
 
 		Color selection_fill;
+		Ref<ColorRole> selection_fill_role;
 		Color selection_stroke;
+		Ref<ColorRole> selection_stroke_role;
 
 		Ref<StyleBox> menu_panel;
 

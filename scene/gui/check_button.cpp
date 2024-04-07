@@ -63,6 +63,13 @@ Size2 CheckButton::get_icon_size() const {
 		tex_size = tex_size.max(off_tex->get_size());
 	}
 
+	if (!theme_cache.text_checked.is_empty() || !theme_cache.text_unchecked.is_empty() ||!theme_cache.text_checked_disabled.is_empty() || !theme_cache.text_unchecked_disabled.is_empty()||!theme_cache.text_checked_mirrored.is_empty()||!theme_cache.text_unchecked_mirrored.is_empty()||!theme_cache.text_checked_disabled_mirrored.is_empty()||!theme_cache.text_unchecked_disabled_mirrored.is_empty()) {
+		tex_size = Size2(theme_cache.text_icon_font_size, theme_cache.text_icon_font_size);
+		if(theme_cache.icon_max_width>0){
+			tex_size = tex_size.min(Size2(theme_cache.icon_max_width, theme_cache.icon_max_width));
+		}
+	}
+
 	return tex_size;
 }
 
@@ -96,6 +103,7 @@ void CheckButton::_notification(int p_what) {
 				_set_internal_margin(SIDE_LEFT, 0.f);
 				_set_internal_margin(SIDE_RIGHT, get_icon_size().width);
 			}
+			update_xl_text();
 		} break;
 
 		case NOTIFICATION_DRAW: {
@@ -105,21 +113,43 @@ void CheckButton::_notification(int p_what) {
 			Ref<Texture2D> on_tex;
 			Ref<Texture2D> off_tex;
 
+			String on_text;
+			String off_text;
+
+			Color on_text_color;
+			Color off_text_color;
+
 			if (rtl) {
 				if (is_disabled()) {
 					on_tex = theme_cache.checked_disabled_mirrored;
 					off_tex = theme_cache.unchecked_disabled_mirrored;
+					on_text = xl_text_checked_disabled_mirrored;
+					off_tex = xl_text_unchecked_disabled_mirrored;
+					on_text_color = theme_cache.text_checked_disabled_color;
+					off_text_color = theme_cache.text_unchecked_disabled_color;
 				} else {
 					on_tex = theme_cache.checked_mirrored;
 					off_tex = theme_cache.unchecked_mirrored;
+					on_text = xl_text_checked_mirrored;
+					off_text = xl_text_unchecked_mirrored;
+					on_text_color = theme_cache.text_checked_color;
+					off_text_color = theme_cache.text_unchecked_color;
 				}
 			} else {
 				if (is_disabled()) {
 					on_tex = theme_cache.checked_disabled;
 					off_tex = theme_cache.unchecked_disabled;
+					on_text = xl_text_checked_disabled;
+					off_text = xl_text_unchecked_disabled;
+					on_text_color = theme_cache.text_checked_disabled_color;
+					off_text_color = theme_cache.text_unchecked_disabled_color;
 				} else {
 					on_tex = theme_cache.checked;
 					off_tex = theme_cache.unchecked;
+					on_text = xl_text_checked;
+					off_text = xl_text_unchecked;
+					on_text_color = theme_cache.text_checked_color;
+					off_text_color = theme_cache.text_unchecked_color;
 				}
 			}
 
@@ -134,18 +164,52 @@ void CheckButton::_notification(int p_what) {
 			ofs.y = (get_size().height - tex_size.height) / 2 + theme_cache.check_v_offset;
 
 			if (is_pressed()) {
-				on_tex->draw(ci, ofs);
+				if(on_text.is_empty()){
+					on_tex->draw(ci, ofs);
+				}else{
+					Ref<Font> text_icon_font = theme_cache.text_icon_font;
+					Size2 cur_size = get_icon_size();
+					check_button_text_icon_buf->clear();
+					check_button_text_icon_buf->set_width(cur_size.width);
+					check_button_text_icon_buf->add_string(on_text, text_icon_font, cur_size.width, "");
+					check_button_text_icon_buf->draw(ci, ofs, on_text_color);
+				}
+				
 			} else {
-				off_tex->draw(ci, ofs);
+				if(off_text.is_empty()){
+					off_tex->draw(ci, ofs);
+				}else{
+					Ref<Font> text_icon_font = theme_cache.text_icon_font;
+					Size2 cur_size = get_icon_size();
+					check_button_text_icon_buf->clear();
+					check_button_text_icon_buf->set_width(cur_size.width);
+					check_button_text_icon_buf->add_string(off_text, text_icon_font, cur_size.width, "");
+					check_button_text_icon_buf->draw(ci, ofs, off_text_color);
+				}
 			}
 		} break;
 	}
 }
 
+void CheckButton::update_xl_text(){
+	xl_text_checked = _get_trans_text(theme_cache.text_checked);
+	xl_text_unchecked = _get_trans_text(theme_cache.text_unchecked);
+	xl_text_checked_mirrored = _get_trans_text(theme_cache.text_checked_mirrored);
+	xl_text_unchecked_mirrored = _get_trans_text(theme_cache.text_unchecked_mirrored);
+	xl_text_checked_disabled = _get_trans_text(theme_cache.text_checked_disabled);
+	xl_text_unchecked_disabled = _get_trans_text(theme_cache.text_unchecked_disabled);
+	xl_text_checked_disabled_mirrored = _get_trans_text(theme_cache.text_checked_disabled_mirrored);
+	xl_text_unchecked_disabled_mirrored = _get_trans_text(theme_cache.text_unchecked_disabled_mirrored);
+}
+
 void CheckButton::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, CheckButton, h_separation);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, CheckButton, icon_max_width);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, CheckButton, check_v_offset);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, CheckButton, normal_style, "normal");
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, CheckButton, text_icon_font);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, CheckButton, text_icon_font_size);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, CheckButton, checked);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, CheckButton, unchecked);
@@ -155,6 +219,26 @@ void CheckButton::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, CheckButton, unchecked_mirrored);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, CheckButton, checked_disabled_mirrored);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, CheckButton, unchecked_disabled_mirrored);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STR, CheckButton, text_checked);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STR, CheckButton, text_unchecked);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STR, CheckButton, text_checked_disabled);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STR, CheckButton, text_unchecked_disabled);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STR, CheckButton, text_checked_mirrored);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STR, CheckButton, text_unchecked_mirrored);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STR, CheckButton, text_checked_disabled_mirrored);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STR, CheckButton, text_unchecked_disabled_mirrored);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CheckButton, text_checked_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CheckButton, text_checked_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CheckButton, text_unchecked_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CheckButton, text_unchecked_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CheckButton, text_checked_disabled_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CheckButton, text_checked_disabled_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CheckButton, text_unchecked_disabled_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CheckButton, text_unchecked_disabled_color_role);
+
+
 }
 
 CheckButton::CheckButton(const String &p_text) :
@@ -168,6 +252,9 @@ CheckButton::CheckButton(const String &p_text) :
 	} else {
 		_set_internal_margin(SIDE_RIGHT, get_icon_size().width);
 	}
+
+	check_button_text_icon_buf.instantiate();
+	check_button_text_icon_buf->set_break_flags(TextServer::BREAK_MANDATORY | TextServer::BREAK_TRIM_EDGE_SPACES);
 }
 
 CheckButton::~CheckButton() {

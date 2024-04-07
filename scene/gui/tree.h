@@ -522,6 +522,8 @@ private:
 	void propagate_set_columns(TreeItem *p_item);
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> panel_style;
 		Ref<StyleBox> focus_style;
 
@@ -543,6 +545,7 @@ private:
 		Ref<StyleBox> custom_button_pressed;
 
 		Color title_button_color;
+		Ref<ColorRole> title_button_color_role;
 
 		Ref<Texture2D> checked;
 		Ref<Texture2D> unchecked;
@@ -557,15 +560,25 @@ private:
 		Ref<Texture2D> updown;
 
 		Color font_color;
+		Ref<ColorRole> font_color_role;
 		Color font_selected_color;
+		Ref<ColorRole> font_selected_color_role;
 		Color font_disabled_color;
+		Ref<ColorRole> font_disabled_color_role;
 		Color guide_color;
+		Ref<ColorRole> guide_color_role;
 		Color drop_position_color;
+		Ref<ColorRole> drop_position_color_role;
 		Color relationship_line_color;
+		Ref<ColorRole> relationship_line_color_role;
 		Color parent_hl_line_color;
+		Ref<ColorRole> parent_hl_line_color_role;
 		Color children_hl_line_color;
+		Ref<ColorRole> children_hl_line_color_role;
 		Color custom_button_font_highlight;
+		Ref<ColorRole> custom_button_font_highlight_role;
 		Color font_outline_color;
+		Ref<ColorRole> font_outline_color_role;
 
 		float base_scale = 1.0;
 		int font_outline_size = 0;

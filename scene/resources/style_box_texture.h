@@ -51,6 +51,10 @@ private:
 	Ref<Texture2D> texture;
 	bool draw_center = true;
 	Color modulate = Color(1, 1, 1, 1);
+	Color color_scale = Color(1, 1, 1, 1);
+
+	Ref<ColorRole> color_role;
+
 	AxisStretchMode axis_h = AXIS_STRETCH_MODE_STRETCH;
 	AxisStretchMode axis_v = AXIS_STRETCH_MODE_STRETCH;
 
@@ -86,6 +90,14 @@ public:
 
 	void set_modulate(const Color &p_modulate);
 	Color get_modulate() const;
+
+	void set_color_role(const Ref<ColorRole> p_color_role);
+	Ref<ColorRole> get_color_role() const;
+
+	void set_color_scale(const Color &p_color);
+	Color get_color_scale() const;
+
+	virtual void _update_color() override;
 
 	virtual Rect2 get_draw_rect(const Rect2 &p_rect) const override;
 	virtual void draw(RID p_canvas_item, const Rect2 &p_rect) const override;

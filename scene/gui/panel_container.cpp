@@ -102,6 +102,7 @@ void PanelContainer::_notification(int p_what) {
 }
 
 void PanelContainer::_bind_methods() {
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, PanelContainer, default_color_scheme);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, PanelContainer, panel_style, "panel");
 }
 

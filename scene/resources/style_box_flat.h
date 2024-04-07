@@ -36,9 +36,66 @@
 class StyleBoxFlat : public StyleBox {
 	GDCLASS(StyleBoxFlat, StyleBox);
 
+public:
+	enum ElevationLevel {
+		Elevation_Level_0,
+		Elevation_Level_1,
+		Elevation_Level_2,
+		Elevation_Level_3,
+		Elevation_Level_4,
+		Elevation_Level_5,
+	};
+
+	inline static const Vector2 umbra_shadow_offset_map[6]={
+		Vector2(0,0),Vector2(0,2),Vector2(0,3),Vector2(0,3),Vector2(0,5),Vector2(0,7)
+	};
+
+	inline static const Vector2 penumbra_shadow_offset_map[6]={
+		Vector2(0,0),Vector2(0,1),Vector2(0,3),Vector2(0,6),Vector2(0,8),Vector2(0,12)
+	};
+
+	inline static const Vector2 ambient_shadow_offset_map[6]={
+		Vector2(0,0),Vector2(0,1),Vector2(0,1),Vector2(0,1),Vector2(0,3),Vector2(0,5)
+	};
+
+	inline static const Vector2 *dynamic_shadow_offset_map[3]={
+		umbra_shadow_offset_map,
+		penumbra_shadow_offset_map,
+		ambient_shadow_offset_map,
+	};
+
+
+	inline static const int umbra_shadow_size_map[6]={
+		0,1,3,5,5,8
+	};
+
+	inline static const int penumbra_shadow_size_map[6]={
+		0,1,4,10,10,17
+	};
+
+	inline static const int ambient_shadow_size_map[6]={
+		0,3,8,18,14,22
+	};
+
+	inline static const int *dynamic_shadow_size_map[3]={
+		umbra_shadow_size_map,
+		penumbra_shadow_size_map,
+		ambient_shadow_size_map,
+	};
+
+
+private:
 	Color bg_color = Color(0.6, 0.6, 0.6);
 	Color shadow_color = Color(0, 0, 0, 0.6);
+	Color umbra_shadow_color = Color(0, 0, 0, 0.2);
+	Color penumbra_shadow_color = Color(0, 0, 0, 0.14);
+	Color ambient_shadow_color = Color(0, 0, 0, 0.12);
+
 	Color border_color = Color(0.8, 0.8, 0.8);
+
+	Ref<ColorRole> bg_color_role;
+	Ref<ColorRole> shadow_color_role;
+	Ref<ColorRole> border_color_role;
 
 	real_t border_width[4] = {};
 	real_t expand_margin[4] = {};
@@ -54,6 +111,15 @@ class StyleBoxFlat : public StyleBox {
 	Point2 shadow_offset;
 	real_t aa_size = 1;
 
+	bool dynamic_shadow = false;
+	ElevationLevel elevation_level = ElevationLevel::Elevation_Level_0;
+	int umbra_shadow_size = 0;
+	int penumbra_shadow_size = 0;
+	int ambient_shadow_size = 0;
+	Point2 umbra_shadow_offset = Vector2(0,0);
+	Point2 penumbra_shadow_offset = Vector2(0,0);
+	Point2 ambient_shadow_offset = Vector2(0,0);
+
 protected:
 	virtual float get_style_margin(Side p_side) const override;
 	static void _bind_methods();
@@ -63,8 +129,14 @@ public:
 	void set_bg_color(const Color &p_color);
 	Color get_bg_color() const;
 
+	void set_bg_color_role(const Ref<ColorRole> &p_color_role);
+	Ref<ColorRole> get_bg_color_role() const;
+
 	void set_border_color(const Color &p_color);
 	Color get_border_color() const;
+
+	void set_border_color_role(const Ref<ColorRole> &p_color_role);
+	Ref<ColorRole> get_border_color_role() const;
 
 	void set_border_width_all(int p_size);
 	int get_border_width_min() const;
@@ -91,11 +163,17 @@ public:
 	void set_draw_center(bool p_enabled);
 	bool is_draw_center_enabled() const;
 
+	void set_dynamic_shadow(bool p_enabled);
+	bool is_dynamic_shadow_enabled() const;
+
 	void set_skew(Vector2 p_skew);
 	Vector2 get_skew() const;
 
 	void set_shadow_color(const Color &p_color);
 	Color get_shadow_color() const;
+
+	void set_shadow_color_role(const Ref<ColorRole> &p_color_role);
+	Ref<ColorRole> get_shadow_color_role() const;
 
 	void set_shadow_size(const int &p_size);
 	int get_shadow_size() const;
@@ -111,8 +189,15 @@ public:
 	virtual Rect2 get_draw_rect(const Rect2 &p_rect) const override;
 	virtual void draw(RID p_canvas_item, const Rect2 &p_rect) const override;
 
+	virtual void _update_color() override;
+
+	void set_elevation_level(ElevationLevel p_elevation_level);
+	ElevationLevel get_elevation_level() const;
+
 	StyleBoxFlat();
 	~StyleBoxFlat();
 };
+
+VARIANT_ENUM_CAST(StyleBoxFlat::ElevationLevel);
 
 #endif // STYLE_BOX_FLAT_H

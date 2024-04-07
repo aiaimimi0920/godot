@@ -6134,6 +6134,8 @@ void RichTextLabel::_bind_methods() {
 	BIND_BITFIELD_FLAG(UPDATE_TOOLTIP);
 	BIND_BITFIELD_FLAG(UPDATE_WIDTH_IN_PERCENT);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, RichTextLabel, default_color_scheme);
+	
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, RichTextLabel, normal_style, "normal");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, RichTextLabel, focus_style, "focus");
 	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_STYLEBOX, RichTextLabel, progress_bg_style, "background", "ProgressBar");
@@ -6145,10 +6147,15 @@ void RichTextLabel::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, RichTextLabel, normal_font_size);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, default_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, default_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, font_selected_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, font_selected_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, selection_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, selection_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, font_outline_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, font_shadow_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, font_shadow_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, RichTextLabel, shadow_outline_size);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, RichTextLabel, shadow_offset_x);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, RichTextLabel, shadow_offset_y);
@@ -6169,8 +6176,11 @@ void RichTextLabel::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, RichTextLabel, table_h_separation);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, RichTextLabel, table_v_separation);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, table_odd_row_bg);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, table_odd_row_bg_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, table_even_row_bg);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, table_even_row_bg_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, RichTextLabel, table_border);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, RichTextLabel, table_border_role);
 }
 
 TextServer::VisibleCharactersBehavior RichTextLabel::get_visible_characters_behavior() const {

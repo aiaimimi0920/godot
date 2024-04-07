@@ -159,6 +159,20 @@ Ref<StyleBoxLine> make_line_stylebox(Color p_color, int p_thickness = 1, float p
 	return style;
 }
 
+static Ref<ColorRole> make_color_role(ColorRoleEnum p_color_role_enum, Color &p_color_scale = Color(1, 1, 1, 1), bool p_inverted = false, float p_darkened_amount = 0.0, float p_lightened_amount = 0.0, float p_lerp_weight = 0.0, Ref<ColorRole> p_lerp_color_role = Ref<ColorRole>(), Color &p_lerp_color = Color(1, 1, 1, 1), bool p_clamp = false) {
+	Ref<ColorRole> color_role(memnew(ColorRole));
+	color_role->set_color_role_enum(p_color_role_enum);
+	color_role->set_color_scale(p_color_scale);
+	color_role->set_inverted(p_inverted);
+	color_role->set_darkened_amount(p_darkened_amount);
+	color_role->set_lightened_amount(p_lightened_amount);
+	color_role->set_lerp_weight(p_lerp_weight);
+	color_role->set_lerp_color_role(p_lerp_color_role);
+	color_role->set_lerp_color(p_lerp_color);
+	color_role->set_clamp(p_clamp);
+	return color_role;
+}
+
 // Theme generation and population routines.
 
 Ref<EditorTheme> EditorThemeManager::_create_base_theme(const Ref<EditorTheme> &p_old_theme) {

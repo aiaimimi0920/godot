@@ -51,14 +51,14 @@ void StyleBox::set_content_margin(Side p_side, float p_value) {
 	ERR_FAIL_INDEX((int)p_side, 4);
 
 	content_margin[p_side] = p_value;
-	emit_changed();
+	custom_emit_changed();
 }
 
 void StyleBox::set_content_margin_all(float p_value) {
 	for (int i = 0; i < 4; i++) {
 		content_margin[i] = p_value;
 	}
-	emit_changed();
+	custom_emit_changed();
 }
 
 void StyleBox::set_content_margin_individual(float p_left, float p_top, float p_right, float p_bottom) {
@@ -66,7 +66,7 @@ void StyleBox::set_content_margin_individual(float p_left, float p_top, float p_
 	content_margin[SIDE_TOP] = p_top;
 	content_margin[SIDE_RIGHT] = p_right;
 	content_margin[SIDE_BOTTOM] = p_bottom;
-	emit_changed();
+	custom_emit_changed();
 }
 
 float StyleBox::get_content_margin(Side p_side) const {
@@ -111,6 +111,64 @@ bool StyleBox::test_mask(const Point2 &p_point, const Rect2 &p_rect) const {
 	return ret;
 }
 
+void StyleBox::set_emit_changed_signal_flag(bool p_emit_changed_signal_flag) {
+	emit_changed_signal_flag = p_emit_changed_signal_flag;
+}
+
+bool StyleBox::is_emit_changed_signal_flag() const {
+	return emit_changed_signal_flag;
+}
+
+void StyleBox::set_color_scheme(const Ref<ColorScheme> &p_color_scheme) {
+	if (color_scheme.is_valid()) {
+		color_scheme->disconnect_changed(callable_mp(this, &StyleBox::base_update_color));
+	}
+
+	color_scheme = p_color_scheme;
+	if (color_scheme.is_valid()) {
+		color_scheme->connect_changed(callable_mp(this, &StyleBox::base_update_color), CONNECT_REFERENCE_COUNTED);
+	}
+
+	base_update_color();
+
+	custom_emit_changed();
+}
+
+void StyleBox::base_update_color() {
+	_update_color();
+}
+
+Ref<ColorScheme> StyleBox::get_color_scheme() const {
+	return color_scheme;
+}
+void StyleBox::set_default_color_scheme(const Ref<ColorScheme> &p_color_scheme) {
+	if (default_color_scheme.is_valid()) {
+		default_color_scheme->disconnect_changed(callable_mp(this, &StyleBox::base_update_color));
+	}
+
+	default_color_scheme = p_color_scheme;
+	if (default_color_scheme.is_valid()) {
+		default_color_scheme->connect_changed(callable_mp(this, &StyleBox::base_update_color), CONNECT_REFERENCE_COUNTED);
+	}
+
+	base_update_color();
+
+	custom_emit_changed();
+}
+
+Ref<ColorScheme> StyleBox::get_default_color_scheme() const {
+	return default_color_scheme;
+}
+
+void StyleBox::_update_color() {
+}
+
+void StyleBox::custom_emit_changed() {
+	if (is_emit_changed_signal_flag()) {
+		emit_changed();
+	}
+}
+
 void StyleBox::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_minimum_size"), &StyleBox::get_minimum_size);
 
@@ -126,11 +184,18 @@ void StyleBox::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("test_mask", "point", "rect"), &StyleBox::test_mask);
 
+	ClassDB::bind_method(D_METHOD("set_color_scheme", "color_scheme"), &StyleBox::set_color_scheme);
+	ClassDB::bind_method(D_METHOD("get_color_scheme"), &StyleBox::get_color_scheme);
+	ClassDB::bind_method(D_METHOD("set_default_color_scheme", "color_scheme"), &StyleBox::set_default_color_scheme);
+	ClassDB::bind_method(D_METHOD("get_default_color_scheme"), &StyleBox::get_default_color_scheme);
+
 	ADD_GROUP("Content Margins", "content_margin_");
 	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "content_margin_left", PROPERTY_HINT_RANGE, "-1,2048,1,suffix:px"), "set_content_margin", "get_content_margin", SIDE_LEFT);
 	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "content_margin_top", PROPERTY_HINT_RANGE, "-1,2048,1,suffix:px"), "set_content_margin", "get_content_margin", SIDE_TOP);
 	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "content_margin_right", PROPERTY_HINT_RANGE, "-1,2048,1,suffix:px"), "set_content_margin", "get_content_margin", SIDE_RIGHT);
 	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "content_margin_bottom", PROPERTY_HINT_RANGE, "-1,2048,1,suffix:px"), "set_content_margin", "get_content_margin", SIDE_BOTTOM);
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "color_scheme"), "set_color_scheme", "get_color_scheme");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "default_color_scheme"), "set_default_color_scheme", "get_default_color_scheme");
 
 	GDVIRTUAL_BIND(_draw, "to_canvas_item", "rect")
 	GDVIRTUAL_BIND(_get_draw_rect, "rect")
@@ -142,4 +207,7 @@ StyleBox::StyleBox() {
 	for (int i = 0; i < 4; i++) {
 		content_margin[i] = -1;
 	}
+}
+
+void StyleBoxEmpty::_update_color() {
 }

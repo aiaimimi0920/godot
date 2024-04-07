@@ -70,6 +70,7 @@ private:
 	bool follow_focus = false;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
 		Ref<StyleBox> panel_style;
 	} theme_cache;
 

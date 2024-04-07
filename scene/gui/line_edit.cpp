@@ -2695,6 +2695,8 @@ void LineEdit::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "structured_text_bidi_override", PROPERTY_HINT_ENUM, "Default,URI,File,Email,List,None,Custom"), "set_structured_text_bidi_override", "get_structured_text_bidi_override");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "structured_text_bidi_override_options"), "set_structured_text_bidi_override_options", "get_structured_text_bidi_override_options");
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, LineEdit, default_color_scheme);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, LineEdit, normal);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, LineEdit, read_only);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, LineEdit, focus);
@@ -2702,19 +2704,28 @@ void LineEdit::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, LineEdit, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, LineEdit, font_size);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_uneditable_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_uneditable_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_selected_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_selected_color_role);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, LineEdit, font_outline_size, "outline_size");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_outline_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, font_placeholder_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, font_placeholder_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, LineEdit, caret_width);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, caret_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, caret_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, LineEdit, minimum_character_width);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, selection_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, selection_color_role);
 
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, LineEdit, clear_icon, "clear");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, clear_button_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, clear_button_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, LineEdit, clear_button_color_pressed);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, LineEdit, clear_button_color_pressed_role);
 }
 
 LineEdit::LineEdit(const String &p_placeholder) {

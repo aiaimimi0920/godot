@@ -37,6 +37,8 @@ class PanelContainer : public Container {
 	GDCLASS(PanelContainer, Container);
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+		
 		Ref<StyleBox> panel_style;
 	} theme_cache;
 

@@ -30,7 +30,10 @@
 
 #include "texture_button.h"
 
+#include "core/string/translation.h"
 #include "core/typedefs.h"
+#include "scene/theme/theme_db.h"
+#include "servers/rendering_server.h"
 
 #include <stdlib.h>
 
@@ -55,6 +58,28 @@ Size2 TextureButton::get_minimum_size() const {
 
 		} else {
 			rscale = normal->get_size();
+		}
+	}
+
+	if (!ignore_texture_size) {
+		int icon_max_width = theme_cache.icon_max_width;
+		int max_size = theme_cache.text_icon_font_size;
+		if (icon_max_width > 0) {
+			if (max_size > icon_max_width) {
+				max_size = icon_max_width;
+			}
+		}
+		if (text_normal.is_empty()) {
+			if (text_pressed.is_empty()) {
+				if (text_hover.is_empty()) {
+				} else {
+					rscale = Size2(max_size, max_size);
+				}
+			} else {
+				rscale = Size2(max_size, max_size);
+			}
+		} else {
+			rscale = Size2(max_size, max_size);
 		}
 	}
 
@@ -120,16 +145,32 @@ bool TextureButton::has_point(const Point2 &p_point) const {
 
 void TextureButton::_notification(int p_what) {
 	switch (p_what) {
+		case NOTIFICATION_THEME_CHANGED:
+		case NOTIFICATION_LAYOUT_DIRECTION_CHANGED:
+		case NOTIFICATION_TRANSLATION_CHANGED: {
+			update_xl_text();
+			
+		} break;
+
 		case NOTIFICATION_DRAW: {
 			DrawMode draw_mode = get_draw_mode();
-
+			const RID ci = get_canvas_item();
 			Ref<Texture2D> texdraw;
+
+			String text_icon;
+			String xl_text_icon;
+			Color text_icon_color;
 
 			switch (draw_mode) {
 				case DRAW_NORMAL: {
 					if (normal.is_valid()) {
 						texdraw = normal;
 					}
+					if (!text_normal.is_empty()) {
+						text_icon = text_normal;
+						xl_text_icon = xl_text_normal;
+					}
+					text_icon_color = theme_cache.text_normal_color;
 				} break;
 				case DRAW_HOVER_PRESSED:
 				case DRAW_PRESSED: {
@@ -145,6 +186,23 @@ void TextureButton::_notification(int p_what) {
 					} else {
 						texdraw = pressed;
 					}
+					if (text_pressed.is_empty()) {
+						if (text_hover.is_empty()) {
+							if (!text_normal.is_empty()) {
+								text_icon = text_normal;
+								xl_text_icon = xl_text_normal;
+							}
+						} else {
+							text_icon = text_hover;
+							xl_text_icon = xl_text_hover;
+						}
+
+					} else {
+						text_icon = text_pressed;
+						xl_text_icon = xl_text_pressed;
+					}
+
+					text_icon_color = theme_cache.text_pressed_color;
 				} break;
 				case DRAW_HOVER: {
 					if (hover.is_null()) {
@@ -156,6 +214,20 @@ void TextureButton::_notification(int p_what) {
 					} else {
 						texdraw = hover;
 					}
+					if (text_hover.is_empty()) {
+						if (!text_pressed.is_empty() && is_pressed()) {
+							text_icon = text_pressed;
+							xl_text_icon = xl_text_pressed;
+						} else if (!text_normal.is_empty()) {
+							text_icon = text_normal;
+							xl_text_icon = xl_text_normal;
+						}
+					} else {
+						text_icon = text_hover;
+						xl_text_icon = xl_text_hover;
+					}
+					text_icon_color = theme_cache.text_hover_color;
+
 				} break;
 				case DRAW_DISABLED: {
 					if (disabled.is_null()) {
@@ -165,17 +237,30 @@ void TextureButton::_notification(int p_what) {
 					} else {
 						texdraw = disabled;
 					}
+
+					if (text_disabled.is_empty()) {
+						if (!text_normal.is_empty()) {
+							text_icon = text_normal;
+							xl_text_icon = xl_text_normal;
+						}
+					} else {
+						text_icon = text_disabled;
+						xl_text_icon = xl_text_disabled;
+					}
+					text_icon_color = theme_cache.text_disabled_color;
 				} break;
 			}
 
 			Point2 ofs;
 			Size2 size;
-			bool draw_focus = (has_focus() && focused.is_valid());
+			bool draw_focus = (has_focus() && (focused.is_valid() || !text_focused.is_empty()));
 
 			// If no other texture is valid, try using focused texture.
-			bool draw_focus_only = draw_focus && !texdraw.is_valid();
+			bool draw_focus_only = draw_focus && !texdraw.is_valid() && text_icon.is_empty();
 			if (draw_focus_only) {
 				texdraw = focused;
+				text_icon = text_focused;
+				xl_text_icon = xl_text_focused;
 			}
 
 			if (texdraw.is_valid()) {
@@ -238,16 +323,173 @@ void TextureButton::_notification(int p_what) {
 				} else {
 					draw_texture_rect_region(texdraw, Rect2(ofs, size), _texture_region);
 				}
+			} else if (!text_icon.is_empty()) {
+				int max_width = theme_cache.icon_max_width;
+				int cur_min_size = 0;
+				size = Size2(theme_cache.text_icon_font_size, theme_cache.text_icon_font_size);
+				switch (stretch_mode) {
+					case STRETCH_KEEP:
+						size = Size2(theme_cache.text_icon_font_size, theme_cache.text_icon_font_size);
+						if (max_width > 0) {
+							size = size.max(Size2(max_width, max_width));
+						}
+						ofs = Size2(0, 0);
+						break;
+					case STRETCH_SCALE:
+					case STRETCH_TILE:
+						size = get_size();
+						cur_min_size = MIN(size.width, size.height);
+						size = Size2(cur_min_size, cur_min_size);
+						if (max_width > 0) {
+							size = size.max(Size2(max_width, max_width));
+						}
+						ofs = (get_size() - size) / 2;
+						break;
+					case STRETCH_KEEP_CENTERED:
+						size = Size2(theme_cache.text_icon_font_size, theme_cache.text_icon_font_size);
+						if (max_width > 0) {
+							size = size.max(Size2(max_width, max_width));
+						}
+
+						ofs = (get_size() - size) / 2;
+						break;
+					case STRETCH_KEEP_ASPECT_CENTERED:
+					case STRETCH_KEEP_ASPECT:
+					case STRETCH_KEEP_ASPECT_COVERED: {
+						size = get_size();
+						cur_min_size = MIN(size.width, size.height);
+						size = Size2(cur_min_size, cur_min_size);
+						if (max_width > 0) {
+							size = size.max(Size2(max_width, max_width));
+						}
+						if (stretch_mode == STRETCH_KEEP_ASPECT_CENTERED || stretch_mode == STRETCH_KEEP_ASPECT_COVERED) {
+							ofs = (get_size() - size) / 2;
+						} else {
+							ofs = Size2(0, 0);
+						}
+					} break;
+				}
+
+				text_icon_buf->clear();
+				text_icon_buf->set_width(size.width);
+				Ref<Font> font = theme_cache.text_icon_font;
+				text_icon_buf->add_string(xl_text_icon, font, size.width, "");
+
+				_position_rect = Rect2(ofs, size);
+
+				if (draw_focus_only) {
+					// Do nothing, we only needed to calculate the rectangle.
+				} else {
+					text_icon_buf->draw(ci, ofs, text_icon_color);
+				}
+
 			} else {
 				_position_rect = Rect2();
 			}
 
 			if (draw_focus) {
+				if (text_focused.is_empty()) {
+					draw_texture_rect(focused, Rect2(ofs, size), false);
+				} else {
+					text_icon_focus_buf->clear();
+					text_icon_focus_buf->set_width(size.width);
+					Ref<Font> font = theme_cache.text_icon_font;
+					text_icon_focus_buf->add_string(xl_text_focused, font, size.width, "");
+
+					text_icon_focus_buf->draw(ci, ofs, theme_cache.text_focused_color);
+				}
+
 				draw_texture_rect(focused, Rect2(ofs, size), false);
 			};
 		} break;
 	}
 }
+
+String TextureButton::_get_trans_text(const String &p_text_icon) {
+	Ref<Font> text_icon_font = theme_cache.text_icon_font;
+
+	String local_name = text_icon_font->get_path().get_file().get_basename();
+	if (local_name.is_empty()) {
+		local_name = text_icon_font->get_name();
+	}
+
+	Ref<Translation> trans = TranslationServer::get_singleton()->get_translation_object(local_name);
+	String result_text = "";
+	if (trans.is_valid()) {
+		result_text = trans->get_message(p_text_icon);
+		if (!result_text.is_empty()) {
+			result_text = String::chr(("0x" + result_text.to_lower()).hex_to_int());
+		}
+	} else {
+		result_text = "";
+	}
+	return result_text;
+}
+
+void TextureButton::update_xl_text() {
+	xl_text_normal = _get_trans_text(text_normal);
+	xl_text_pressed = _get_trans_text(text_pressed);
+	xl_text_hover = _get_trans_text(text_hover);
+	xl_text_disabled = _get_trans_text(text_disabled);
+	xl_text_focused = _get_trans_text(text_focused);
+	update_minimum_size();
+	queue_redraw();
+}
+
+void TextureButton::set_text_normal(const String &p_normal) {
+	text_normal = p_normal;
+	xl_text_normal = _get_trans_text(text_normal);
+	update_minimum_size();
+	queue_redraw();
+};
+
+void TextureButton::set_text_pressed(const String &p_pressed) {
+	text_pressed = p_pressed;
+	xl_text_pressed = _get_trans_text(text_pressed);
+	update_minimum_size();
+	queue_redraw();
+};
+
+void TextureButton::set_text_hover(const String &p_hover) {
+	text_hover = p_hover;
+	xl_text_hover = _get_trans_text(text_hover);
+	update_minimum_size();
+	queue_redraw();
+};
+
+void TextureButton::set_text_disabled(const String &p_disabled) {
+	text_disabled = p_disabled;
+	xl_text_disabled = _get_trans_text(text_disabled);
+	update_minimum_size();
+	queue_redraw();
+};
+
+void TextureButton::set_text_focused(const String &p_focused) {
+	text_focused = p_focused;
+	xl_text_focused = _get_trans_text(text_focused);
+	update_minimum_size();
+	queue_redraw();
+};
+
+String TextureButton::get_text_normal() const {
+	return text_normal;
+};
+
+String TextureButton::get_text_pressed() const {
+	return text_pressed;
+};
+
+String TextureButton::get_text_hover() const {
+	return text_hover;
+};
+
+String TextureButton::get_text_disabled() const {
+	return text_disabled;
+};
+
+String TextureButton::get_text_focused() const {
+	return text_focused;
+};
 
 void TextureButton::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_texture_normal", "texture"), &TextureButton::set_texture_normal);
@@ -255,6 +497,11 @@ void TextureButton::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_texture_hover", "texture"), &TextureButton::set_texture_hover);
 	ClassDB::bind_method(D_METHOD("set_texture_disabled", "texture"), &TextureButton::set_texture_disabled);
 	ClassDB::bind_method(D_METHOD("set_texture_focused", "texture"), &TextureButton::set_texture_focused);
+	ClassDB::bind_method(D_METHOD("set_text_normal", "text_icon"), &TextureButton::set_text_normal);
+	ClassDB::bind_method(D_METHOD("set_text_pressed", "text_icon"), &TextureButton::set_text_pressed);
+	ClassDB::bind_method(D_METHOD("set_text_hover", "text_icon"), &TextureButton::set_text_hover);
+	ClassDB::bind_method(D_METHOD("set_text_disabled", "text_icon"), &TextureButton::set_text_disabled);
+	ClassDB::bind_method(D_METHOD("set_text_focused", "text_icon"), &TextureButton::set_text_focused);
 	ClassDB::bind_method(D_METHOD("set_click_mask", "mask"), &TextureButton::set_click_mask);
 	ClassDB::bind_method(D_METHOD("set_ignore_texture_size", "ignore"), &TextureButton::set_ignore_texture_size);
 	ClassDB::bind_method(D_METHOD("set_stretch_mode", "mode"), &TextureButton::set_stretch_mode);
@@ -262,12 +509,16 @@ void TextureButton::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_flipped_h"), &TextureButton::is_flipped_h);
 	ClassDB::bind_method(D_METHOD("set_flip_v", "enable"), &TextureButton::set_flip_v);
 	ClassDB::bind_method(D_METHOD("is_flipped_v"), &TextureButton::is_flipped_v);
-
 	ClassDB::bind_method(D_METHOD("get_texture_normal"), &TextureButton::get_texture_normal);
 	ClassDB::bind_method(D_METHOD("get_texture_pressed"), &TextureButton::get_texture_pressed);
 	ClassDB::bind_method(D_METHOD("get_texture_hover"), &TextureButton::get_texture_hover);
 	ClassDB::bind_method(D_METHOD("get_texture_disabled"), &TextureButton::get_texture_disabled);
 	ClassDB::bind_method(D_METHOD("get_texture_focused"), &TextureButton::get_texture_focused);
+	ClassDB::bind_method(D_METHOD("get_text_normal"), &TextureButton::get_text_normal);
+	ClassDB::bind_method(D_METHOD("get_text_pressed"), &TextureButton::get_text_pressed);
+	ClassDB::bind_method(D_METHOD("get_text_hover"), &TextureButton::get_text_hover);
+	ClassDB::bind_method(D_METHOD("get_text_disabled"), &TextureButton::get_text_disabled);
+	ClassDB::bind_method(D_METHOD("get_text_focused"), &TextureButton::get_text_focused);
 	ClassDB::bind_method(D_METHOD("get_click_mask"), &TextureButton::get_click_mask);
 	ClassDB::bind_method(D_METHOD("get_ignore_texture_size"), &TextureButton::get_ignore_texture_size);
 	ClassDB::bind_method(D_METHOD("get_stretch_mode"), &TextureButton::get_stretch_mode);
@@ -278,6 +529,12 @@ void TextureButton::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture_hover", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture_hover", "get_texture_hover");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture_disabled", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture_disabled", "get_texture_disabled");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture_focused", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture_focused", "get_texture_focused");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_normal", PROPERTY_HINT_NONE, ""), "set_text_normal", "get_text_normal");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_pressed", PROPERTY_HINT_NONE, ""), "set_text_pressed", "get_text_pressed");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_hover", PROPERTY_HINT_NONE, ""), "set_text_hover", "get_text_hover");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_disabled", PROPERTY_HINT_NONE, ""), "set_text_disabled", "get_text_disabled");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_focused", PROPERTY_HINT_NONE, ""), "set_text_focused", "get_text_focused");
+
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture_click_mask", PROPERTY_HINT_RESOURCE_TYPE, "BitMap"), "set_click_mask", "get_click_mask");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "ignore_texture_size", PROPERTY_HINT_RESOURCE_TYPE, "bool"), "set_ignore_texture_size", "get_ignore_texture_size");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "stretch_mode", PROPERTY_HINT_ENUM, "Scale,Tile,Keep,Keep Centered,Keep Aspect,Keep Aspect Centered,Keep Aspect Covered"), "set_stretch_mode", "get_stretch_mode");
@@ -291,6 +548,22 @@ void TextureButton::_bind_methods() {
 	BIND_ENUM_CONSTANT(STRETCH_KEEP_ASPECT);
 	BIND_ENUM_CONSTANT(STRETCH_KEEP_ASPECT_CENTERED);
 	BIND_ENUM_CONSTANT(STRETCH_KEEP_ASPECT_COVERED);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, default_color_scheme);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, TextureButton, text_icon_font);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, TextureButton, text_icon_font_size);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextureButton, icon_max_width);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_normal_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, text_normal_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_pressed_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, text_pressed_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_hover_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, text_hover_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_disabled_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, text_disabled_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TextureButton, text_focused_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, text_focused_color_role);
 }
 
 void TextureButton::set_texture_normal(const Ref<Texture2D> &p_normal) {
@@ -420,4 +693,10 @@ bool TextureButton::is_flipped_v() const {
 	return vflip;
 }
 
-TextureButton::TextureButton() {}
+TextureButton::TextureButton() {
+	text_icon_buf.instantiate();
+	text_icon_buf->set_break_flags(TextServer::BREAK_MANDATORY | TextServer::BREAK_TRIM_EDGE_SPACES);
+
+	text_icon_focus_buf.instantiate();
+	text_icon_focus_buf->set_break_flags(TextServer::BREAK_MANDATORY | TextServer::BREAK_TRIM_EDGE_SPACES);
+}

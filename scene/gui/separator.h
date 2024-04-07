@@ -36,6 +36,8 @@ class Separator : public Control {
 	GDCLASS(Separator, Control);
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		int separation = 0;
 		Ref<StyleBox> separator_style;
 	} theme_cache;

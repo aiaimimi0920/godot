@@ -60,6 +60,8 @@ class ColorPresetButton : public BaseButton {
 	Color preset_color;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> foreground_style;
 
 		Ref<Texture2D> background_icon;
@@ -215,6 +217,8 @@ private:
 	Color last_color;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+		
 		float base_scale = 1.0;
 
 		int content_margin = 0;

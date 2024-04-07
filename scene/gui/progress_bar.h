@@ -41,14 +41,18 @@ class ProgressBar : public Range {
 	bool editor_preview_indeterminate = false;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> background_style;
 		Ref<StyleBox> fill_style;
 
 		Ref<Font> font;
 		int font_size = 0;
 		Color font_color;
+		Ref<ColorRole> font_color_role;
 		int font_outline_size = 0;
 		Color font_outline_color;
+		Ref<ColorRole> font_outline_color_role;
 	} theme_cache;
 
 protected:

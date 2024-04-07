@@ -45,6 +45,8 @@ class GraphFrame : public GraphElement {
 	};
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> panel;
 		Ref<StyleBox> panel_selected;
 		Ref<StyleBox> titlebar;
@@ -52,6 +54,7 @@ class GraphFrame : public GraphElement {
 
 		Ref<Texture2D> resizer;
 		Color resizer_color;
+		Ref<ColorRole> resizer_color_role;
 	} theme_cache;
 
 private:

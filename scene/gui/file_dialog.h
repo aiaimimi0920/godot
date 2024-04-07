@@ -123,13 +123,20 @@ private:
 		Ref<Texture2D> create_folder;
 
 		Color folder_icon_color;
+		Ref<ColorRole> folder_icon_color_role;
 		Color file_icon_color;
+		Ref<ColorRole> file_icon_color_role;
 		Color file_disabled_color;
+		Ref<ColorRole> file_disabled_color_role;
 
 		Color icon_normal_color;
+		Ref<ColorRole> icon_normal_color_role;
 		Color icon_hover_color;
+		Ref<ColorRole> icon_hover_color_role;
 		Color icon_focus_color;
+		Ref<ColorRole> icon_focus_color_role;
 		Color icon_pressed_color;
+		Ref<ColorRole> icon_pressed_color_role;
 	} theme_cache;
 
 	struct Option {

@@ -153,6 +153,8 @@ class PopupMenu : public Popup {
 	float gamepad_event_delay_ms = DEFAULT_GAMEPAD_EVENT_DELAY_MS;
 
 	struct ThemeCache {
+		Ref<ColorScheme> popup_default_color_scheme;
+
 		Ref<StyleBox> panel_style;
 		Ref<StyleBox> hover_style;
 
@@ -185,15 +187,22 @@ class PopupMenu : public Popup {
 		int font_separator_size = 0;
 
 		Color font_color;
+		Ref<ColorRole> font_color_role;
 		Color font_hover_color;
+		Ref<ColorRole> font_hover_color_role;
 		Color font_disabled_color;
+		Ref<ColorRole> font_disabled_color_role;
 		Color font_accelerator_color;
+		Ref<ColorRole> font_accelerator_color_role;
 		int font_outline_size = 0;
 		Color font_outline_color;
+		Ref<ColorRole> font_outline_color_role;
 
 		Color font_separator_color;
+		Ref<ColorRole> font_separator_color_role;
 		int font_separator_outline_size = 0;
 		Color font_separator_outline_color;
+		Ref<ColorRole> font_separator_outline_color_role;
 	} theme_cache;
 
 	void _draw_items();

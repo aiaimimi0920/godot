@@ -86,6 +86,8 @@ class ScrollBar : public Range {
 	bool smooth_scroll_enabled = false;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+		
 		Ref<StyleBox> scroll_style;
 		Ref<StyleBox> scroll_focus_style;
 		Ref<StyleBox> scroll_offset_style;

@@ -1861,6 +1861,8 @@ void TabBar::_bind_methods() {
 	BIND_ENUM_CONSTANT(CLOSE_BUTTON_SHOW_ALWAYS);
 	BIND_ENUM_CONSTANT(CLOSE_BUTTON_MAX);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TabBar, default_color_scheme);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TabBar, h_separation);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TabBar, icon_max_width);
 
@@ -1876,12 +1878,18 @@ void TabBar::_bind_methods() {
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, TabBar, decrement_hl_icon, "decrement_highlight");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, TabBar, drop_mark_icon, "drop_mark");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabBar, drop_mark_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabBar, drop_mark_color_role);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabBar, font_selected_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabBar, font_selected_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabBar, font_hovered_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabBar, font_hovered_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabBar, font_unselected_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabBar, font_unselected_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabBar, font_disabled_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabBar, font_disabled_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabBar, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabBar, font_outline_color_role);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, TabBar, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, TabBar, font_size);

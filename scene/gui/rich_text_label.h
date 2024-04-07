@@ -608,6 +608,8 @@ private:
 	bool fit_content = false;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> normal_style;
 		Ref<StyleBox> focus_style;
 		Ref<StyleBox> progress_bg_style;
@@ -619,15 +621,21 @@ private:
 		int normal_font_size;
 
 		Color default_color;
+		Ref<ColorRole> default_color_role;
 		Color font_selected_color;
+		Ref<ColorRole> font_selected_color_role;
 		Color selection_color;
+		Ref<ColorRole> selection_color_role;
 		Color font_outline_color;
+		Ref<ColorRole> font_outline_color_role;
 		Color font_shadow_color;
+		Ref<ColorRole> font_shadow_color_role;
 		int shadow_outline_size;
 		int shadow_offset_x;
 		int shadow_offset_y;
 		int outline_size;
 		Color outline_color;
+		Ref<ColorRole> outline_color_role;
 
 		Ref<Font> bold_font;
 		int bold_font_size;
@@ -644,8 +652,11 @@ private:
 		int table_h_separation;
 		int table_v_separation;
 		Color table_odd_row_bg;
+		Ref<ColorRole> table_odd_row_bg_role;
 		Color table_even_row_bg;
+		Ref<ColorRole> table_even_row_bg_role;
 		Color table_border;
+		Ref<ColorRole> table_border_role;
 
 		float base_scale = 1.0;
 	} theme_cache;

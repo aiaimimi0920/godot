@@ -181,6 +181,8 @@ private:
 	bool select_all_on_focus = false;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> normal;
 		Ref<StyleBox> read_only;
 		Ref<StyleBox> focus;
@@ -188,19 +190,28 @@ private:
 		Ref<Font> font;
 		int font_size = 0;
 		Color font_color;
+		Ref<ColorRole> font_color_role;
 		Color font_uneditable_color;
+		Ref<ColorRole> font_uneditable_color_role;
 		Color font_selected_color;
+		Ref<ColorRole> font_selected_color_role;
 		int font_outline_size;
 		Color font_outline_color;
+		Ref<ColorRole> font_outline_color_role;
 		Color font_placeholder_color;
+		Ref<ColorRole> font_placeholder_color_role;
 		int caret_width = 0;
 		Color caret_color;
+		Ref<ColorRole> caret_color_role;
 		int minimum_character_width = 0;
 		Color selection_color;
+		Ref<ColorRole> selection_color_role;
 
 		Ref<Texture2D> clear_icon;
 		Color clear_button_color;
+		Ref<ColorRole> clear_button_color_role;
 		Color clear_button_color_pressed;
+		Ref<ColorRole> clear_button_color_pressed_role;
 
 		float base_scale = 1.0;
 	} theme_cache;

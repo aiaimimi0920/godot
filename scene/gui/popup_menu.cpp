@@ -1020,6 +1020,7 @@ void PopupMenu::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_THEME_CHANGED: {
+			scroll_container->add_theme_color_scheme_override("default_color_scheme", theme_cache.popup_default_color_scheme);
 			scroll_container->add_theme_style_override("panel", theme_cache.panel_style);
 
 			[[fallthrough]];
@@ -2754,6 +2755,8 @@ void PopupMenu::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("index_pressed", PropertyInfo(Variant::INT, "index")));
 	ADD_SIGNAL(MethodInfo("menu_changed"));
 
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_SCHEME, PopupMenu, popup_default_color_scheme, "default_color_scheme");
+	
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, PopupMenu, panel_style, "panel");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, PopupMenu, hover_style, "hover");
 
@@ -2786,15 +2789,22 @@ void PopupMenu::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, PopupMenu, font_separator_size);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, PopupMenu, font_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, PopupMenu, font_hover_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_hover_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, PopupMenu, font_disabled_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_disabled_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, PopupMenu, font_accelerator_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_accelerator_color_role);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, PopupMenu, font_outline_size, "outline_size");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, PopupMenu, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_outline_color_role);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, PopupMenu, font_separator_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_separator_color_role);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, PopupMenu, font_separator_outline_size, "separator_outline_size");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, PopupMenu, font_separator_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, PopupMenu, font_separator_outline_color_role);
 
 	Item defaults(true);
 

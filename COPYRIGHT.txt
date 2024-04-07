@@ -224,6 +224,11 @@ Comment: etcpak
 Copyright: 2013-2022, Bartosz Taudul
 License: BSD-3-clause
 
+Files: ./thirdparty/color_scheme/
+Comment: color_scheme
+Copyright: 2024-2024, mimi
+License: BSD-3-clause
+
 Files: ./thirdparty/fonts/DroidSans*.woff2
 Comment: DroidSans font
 Copyright: 2008, The Android Open Source Project

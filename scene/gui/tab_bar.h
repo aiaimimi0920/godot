@@ -116,6 +116,8 @@ private:
 	float gamepad_event_delay_ms = DEFAULT_GAMEPAD_EVENT_DELAY_MS;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		int h_separation = 0;
 		int icon_max_width = 0;
 
@@ -131,16 +133,22 @@ private:
 		Ref<Texture2D> decrement_hl_icon;
 		Ref<Texture2D> drop_mark_icon;
 		Color drop_mark_color;
+		Ref<ColorRole> drop_mark_color_role;
 
 		Ref<Font> font;
 		int font_size;
 		int outline_size = 0;
 
 		Color font_selected_color;
+		Ref<ColorRole> font_selected_color_role;
 		Color font_hovered_color;
+		Ref<ColorRole> font_hovered_color_role;
 		Color font_unselected_color;
+		Ref<ColorRole> font_unselected_color_role;
 		Color font_disabled_color;
+		Ref<ColorRole> font_disabled_color_role;
 		Color font_outline_color;
+		Ref<ColorRole> font_outline_color_role;
 
 		Ref<Texture2D> close_icon;
 		Ref<StyleBox> button_pressed_style;

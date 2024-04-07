@@ -1856,6 +1856,8 @@ void ItemList::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("multi_selected", PropertyInfo(Variant::INT, "index"), PropertyInfo(Variant::BOOL, "selected")));
 	ADD_SIGNAL(MethodInfo("item_activated", PropertyInfo(Variant::INT, "index")));
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ItemList, default_color_scheme);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, ItemList, h_separation);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, ItemList, v_separation);
 
@@ -1865,10 +1867,14 @@ void ItemList::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, ItemList, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, ItemList, font_size);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, font_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ItemList, font_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, font_hovered_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ItemList, font_hovered_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, font_selected_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ItemList, font_selected_color_role);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, ItemList, font_outline_size, "outline_size");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ItemList, font_outline_color_role);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, ItemList, line_separation);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, ItemList, icon_margin);
@@ -1878,6 +1884,7 @@ void ItemList::_bind_methods() {
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ItemList, cursor_style, "cursor_unfocused");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ItemList, cursor_focus_style, "cursor");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, ItemList, guide_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, ItemList, guide_color_role);
 
 	Item defaults(true);
 
