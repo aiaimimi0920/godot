@@ -56,8 +56,7 @@ Size2 ScrollContainer::get_minimum_size() const {
 
 		Size2 child_min_size = c->get_combined_minimum_size();
 
-		largest_child_min_size.x = MAX(largest_child_min_size.x, child_min_size.x);
-		largest_child_min_size.y = MAX(largest_child_min_size.y, child_min_size.y);
+		largest_child_min_size = largest_child_min_size.max(child_min_size);
 	}
 
 	if (horizontal_scroll_mode == SCROLL_MODE_DISABLED) {
@@ -298,7 +297,6 @@ void ScrollContainer::_reposition_children() {
 
 	size -= theme_cache.panel_style->get_minimum_size();
 	ofs += theme_cache.panel_style->get_offset();
-
 	bool rtl = is_layout_rtl();
 
 	if (h_scroll->is_visible_in_tree() && h_scroll->get_parent() == this) { //scrolls may have been moved out for reasons
@@ -621,6 +619,7 @@ void ScrollContainer::_bind_methods() {
 	BIND_ENUM_CONSTANT(SCROLL_MODE_SHOW_ALWAYS);
 	BIND_ENUM_CONSTANT(SCROLL_MODE_SHOW_NEVER);
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ScrollContainer, default_color_scheme);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollContainer, panel_style, "panel");
 
 	GLOBAL_DEF("gui/common/default_scroll_deadzone", 0);

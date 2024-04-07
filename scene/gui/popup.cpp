@@ -194,6 +194,7 @@ Rect2i Popup::_popup_adjust_rect() const {
 
 void Popup::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("popup_hide"));
+
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, Popup, panel_style, "panel");
 }
 
@@ -223,12 +224,10 @@ Size2 PopupPanel::_get_contents_minimum_size() const {
 		}
 
 		Size2 cms = c->get_combined_minimum_size();
-		ms.x = MAX(cms.x, ms.x);
-		ms.y = MAX(cms.y, ms.y);
+		ms = cms.max(ms);
 	}
 
 	return ms + theme_cache.panel_style->get_minimum_size();
-
 }
 
 void PopupPanel::_update_child_rects() {
@@ -259,6 +258,7 @@ void PopupPanel::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_READY:
 		case NOTIFICATION_THEME_CHANGED: {
+			panel->add_theme_color_scheme_override("default_color_scheme", theme_cache.panel_default_color_scheme);
 			panel->add_theme_style_override("panel", theme_cache.panel_style);
 			_update_child_rects();
 		} break;
@@ -270,6 +270,7 @@ void PopupPanel::_notification(int p_what) {
 }
 
 void PopupPanel::_bind_methods() {
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_SCHEME, PopupPanel, panel_default_color_scheme, "default_color_scheme");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, PopupPanel, panel_style, "panel");
 }
 

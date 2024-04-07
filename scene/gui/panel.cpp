@@ -41,6 +41,7 @@ void Panel::_notification(int p_what) {
 }
 
 void Panel::_bind_methods() {
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Panel, default_color_scheme);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, Panel, panel_style, "panel");
 }
 

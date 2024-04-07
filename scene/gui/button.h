@@ -43,17 +43,12 @@ private:
 	String xl_text;
 	Ref<TextParagraph> text_buf;
 
-	Ref<TextParagraph> text_icon_buf;
-
 	String language;
 	TextDirection text_direction = TEXT_DIRECTION_AUTO;
 	TextServer::AutowrapMode autowrap_mode = TextServer::AUTOWRAP_OFF;
 	TextServer::OverrunBehavior overrun_behavior = TextServer::OVERRUN_NO_TRIMMING;
 
 	Ref<Texture2D> icon;
-	// String text_icon;
-	// String code_text_icon;
-
 	bool expand_icon = false;
 	bool clip_text = false;
 	HorizontalAlignment alignment = HORIZONTAL_ALIGNMENT_CENTER;
@@ -63,78 +58,83 @@ private:
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
-		ThemeStyleboxData default_stylebox{ "default_stylebox" };
-		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
+		
+		Ref<StyleBox> normal;
+		Ref<StyleBox> normal_mirrored;
+		Ref<StyleBox> pressed;
+		Ref<StyleBox> pressed_mirrored;
+		Ref<StyleBox> hover;
+		Ref<StyleBox> hover_mirrored;
+		Ref<StyleBox> hover_pressed;
+		Ref<StyleBox> hover_pressed_mirrored;
+		Ref<StyleBox> disabled;
+		Ref<StyleBox> disabled_mirrored;
+		Ref<StyleBox> focus;
 
-		ThemeColorData font_color{ "font_color" };
-		ThemeColorRoleData font_color_role{ "font_color_role" };
+		Ref<StyleBox> state_hover_layer;
+		Ref<StyleBox> state_pressed_layer;
+		Ref<StyleBox> state_hover_pressed_layer;
+		Ref<StyleBox> state_focus_layer;
+
+		Color font_color;
+		Ref<ColorRole> font_color_role;
+		Color font_focus_color;
+		Ref<ColorRole> font_focus_color_role;
+		Color font_pressed_color;
+		Ref<ColorRole> font_pressed_color_role;
+		Color font_hover_color;
+		Ref<ColorRole> font_hover_color_role;
+		Color font_hover_pressed_color;
+		Ref<ColorRole> font_hover_pressed_color_role;
+		Color font_disabled_color;
+		Ref<ColorRole> font_disabled_color_role;
+
 		Ref<Font> font;
-		int font_size;
-
+		int font_size = 0;
+		int outline_size = 0;
 		Color font_outline_color;
 		Ref<ColorRole> font_outline_color_role;
-		int font_outline_size;
 
-		Ref<Font> text_icon_font;
-		int text_icon_font_size;
+		Color icon_normal_color;
+		Ref<ColorRole> icon_normal_color_role;
+		Color icon_focus_color;
+		Ref<ColorRole> icon_focus_color_role;
+		Color icon_pressed_color;
+		Ref<ColorRole> icon_pressed_color_role;
+		Color icon_hover_color;
+		Ref<ColorRole> icon_hover_color_role;
+		Color icon_hover_pressed_color;
+		Ref<ColorRole> icon_hover_pressed_color_role;
+		Color icon_disabled_color;
+		Ref<ColorRole> icon_disabled_color_role;
 
-		ThemeIconData icon{ "icon" };
-		ThemeColorData icon_color{"icon_color"};
-		ThemeColorRoleData icon_color_role{"icon_color_role"};
+		Ref<Texture2D> icon;
 
-		int icon_max_width;
-
-		ThemeStrData text_icon{"text_icon"};
-		ThemeColorData text_icon_color{"text_icon_color"};
-		ThemeColorRoleData text_icon_color_role{"text_icon_color_role"};
-
-		int h_separation;
+		int h_separation = 0;
+		int icon_max_width = 0;
 	} theme_cache;
 
 	Size2 _fit_icon_size(const Size2 &p_size) const;
 
 	void _shape(Ref<TextParagraph> p_paragraph = Ref<TextParagraph>(), String p_text = "");
-	void _icon_shape(Ref<TextParagraph> p_paragraph = Ref<TextParagraph>(), String p_text = "", int expand_icon_size = 0);
-
 	void _texture_changed();
 
 protected:
 	void _set_internal_margin(Side p_side, float p_value);
 	virtual void _queue_update_size_cache();
 
+	Ref<StyleBox> _get_current_stylebox() const;
+	Ref<StyleBox> _get_current_state_layer_stylebox() const;
 	void _notification(int p_what);
 	static void _bind_methods();
 
-	bool _has_current_icon() const;
-	Ref<Texture2D> _get_current_icon() const;
-	bool _has_current_text_icon() const;
-	String _get_current_text_icon() const;
-	bool _has_current_default_stylebox_with_state(State p_state) const;
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
-	bool _has_current_focus_default_stylebox() const;
-	Ref<StyleBox> _get_current_focus_default_stylebox() const;
-	bool _has_current_state_layer_stylebox() const;
-	Ref<StyleBox> _get_current_state_layer_stylebox() const;
-	bool _has_current_font_color() const;
-	Color _get_current_font_color() const;
-	bool _has_current_icon_color() const;
-	Color _get_current_icon_color() const;
-	bool _has_current_text_icon_color() const;
-	Color _get_current_text_icon_color() const;
-
-	String _get_trans_text(const String &p_text_icon);
 public:
 	virtual Size2 get_minimum_size() const override;
 
-	Size2 get_minimum_size_for_text_and_icon(const String &p_text, Ref<Texture2D> p_icon, const String &p_text_icon = "") const;
+	Size2 get_minimum_size_for_text_and_icon(const String &p_text, Ref<Texture2D> p_icon) const;
 
 	void set_text(const String &p_text);
 	String get_text() const;
-
-	void set_text_icon(const String &p_text_icon);
-	String get_text_icon() const;
 
 	void set_text_overrun_behavior(TextServer::OverrunBehavior p_behavior);
 	TextServer::OverrunBehavior get_text_overrun_behavior() const;
@@ -171,34 +171,5 @@ public:
 	Button(const String &p_text = String());
 	~Button();
 };
-
-class ElevatedButton : public Button {
-	GDCLASS(ElevatedButton, Button);
-};
-
-class FilledButton : public Button {
-	GDCLASS(FilledButton, Button);
-};
-
-class FilledTonalButton : public Button {
-	GDCLASS(FilledTonalButton, Button);
-};
-
-class OutlinedButton : public Button {
-	GDCLASS(OutlinedButton, Button);
-};
-
-class TextButton : public Button {
-	GDCLASS(TextButton, Button);
-};
-
-class FabButton : public Button {
-	GDCLASS(FabButton, Button);
-};
-
-class ExtendedFabButton : public Button {
-	GDCLASS(ExtendedFabButton, Button);
-};
-
 
 #endif // BUTTON_H

@@ -37,7 +37,6 @@
 #include "scene/main/canvas_item.h"
 #include "scene/main/timer.h"
 #include "scene/resources/theme.h"
-#include "scene/theme/theme_data.h"
 
 class Viewport;
 class Label;
@@ -253,7 +252,6 @@ private:
 		mutable HashMap<StringName, Theme::ThemeColorRoleMap> theme_color_role_cache;
 		mutable HashMap<StringName, Theme::ThemeColorSchemeMap> theme_color_scheme_cache;
 		mutable HashMap<StringName, Theme::ThemeStrMap> theme_str_cache;
-
 		// Internationalization.
 
 		LayoutDirection layout_dir = LAYOUT_DIRECTION_INHERITED;
@@ -645,7 +643,6 @@ public:
 	Ref<ColorScheme> get_theme_default_color_scheme() const;
 	Ref<ColorRole> get_theme_default_color_role() const;
 
-
 	// Internationalization.
 
 	void set_layout_direction(LayoutDirection p_direction);
@@ -665,10 +662,6 @@ public:
 	void set_tooltip_text(const String &text);
 	virtual String get_tooltip(const Point2 &p_pos) const;
 	virtual Control *make_custom_tooltip(const String &p_text) const;
-
-	State get_current_state() const;
-	State get_current_state_with_focus() const;
-	State get_current_focus_state() const;
 
 	Control();
 	~Control();

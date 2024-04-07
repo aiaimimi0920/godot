@@ -192,7 +192,7 @@ bool MenuBar::is_native_menu() const {
 	}
 #endif
 
-	return (NativeMenu::get_singleton()->has_feature(NativeMenu::FEATURE_GLOBAL_MENU) && is_native);
+	return (NativeMenu::get_singleton()->has_feature(NativeMenu::FEATURE_GLOBAL_MENU) && prefer_native);
 }
 
 void MenuBar::bind_global_menu() {
@@ -236,12 +236,12 @@ void MenuBar::bind_global_menu() {
 		RID submenu_rid = popups[i]->bind_global_menu();
 		if (!popups[i]->is_system_menu()) {
 			int index = nmenu->add_submenu_item(main_menu, menu_cache[i].name, submenu_rid, global_menu_tag + "#" + itos(i), global_start_idx + i);
-			menu_cache.write[i].global_index = index;
+			menu_cache.write[i].submenu_rid = submenu_rid;
 			nmenu->set_item_hidden(main_menu, index, menu_cache[i].hidden);
 			nmenu->set_item_disabled(main_menu, index, menu_cache[i].disabled);
 			nmenu->set_item_tooltip(main_menu, index, menu_cache[i].tooltip);
 		} else {
-			menu_cache.write[i].global_index = -1;
+			menu_cache.write[i].submenu_rid = RID();
 		}
 	}
 }
@@ -257,11 +257,14 @@ void MenuBar::unbind_global_menu() {
 	Vector<PopupMenu *> popups = _get_popups();
 	for (int i = menu_cache.size() - 1; i >= 0; i--) {
 		if (!popups[i]->is_system_menu()) {
-			popups[i]->unbind_global_menu();
-			if (menu_cache[i].global_index >= 0) {
-				nmenu->remove_item(main_menu, menu_cache[i].global_index);
+			if (menu_cache[i].submenu_rid.is_valid()) {
+				int item_idx = nmenu->find_item_index_with_submenu(main_menu, menu_cache[i].submenu_rid);
+				if (item_idx >= 0) {
+					nmenu->remove_item(main_menu, item_idx);
+				}
 			}
-			menu_cache.write[i].global_index = -1;
+			popups[i]->unbind_global_menu();
+			menu_cache.write[i].submenu_rid = RID();
 		}
 	}
 
@@ -292,8 +295,11 @@ void MenuBar::_notification(int p_what) {
 			RID main_menu = is_global ? nmenu->get_system_menu(NativeMenu::MAIN_MENU_ID) : RID();
 			for (int i = 0; i < menu_cache.size(); i++) {
 				shape(menu_cache.write[i]);
-				if (is_global && menu_cache[i].global_index >= 0) {
-					nmenu->set_item_text(main_menu, menu_cache[i].global_index, atr(menu_cache[i].name));
+				if (is_global && menu_cache[i].submenu_rid.is_valid()) {
+					int item_idx = nmenu->find_item_index_with_submenu(main_menu, menu_cache[i].submenu_rid);
+					if (item_idx >= 0) {
+						nmenu->set_item_text(main_menu, item_idx, atr(menu_cache[i].name));
+					}
 				}
 			}
 		} break;
@@ -347,8 +353,7 @@ void MenuBar::_notification(int p_what) {
 }
 
 int MenuBar::_get_index_at_point(const Point2 &p_point) const {
-	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
-
+	Ref<StyleBox> style = theme_cache.normal;
 	int offset = 0;
 	Point2 point = p_point;
 	if (is_layout_rtl()) {
@@ -359,11 +364,7 @@ int MenuBar::_get_index_at_point(const Point2 &p_point) const {
 		if (menu_cache[i].hidden) {
 			continue;
 		}
-
-		Size2 size = menu_cache[i].text_buf->get_size();
-		if (style.is_valid()) {
-			size += style->get_minimum_size();
-		}
+		Size2 size = menu_cache[i].text_buf->get_size() + style->get_minimum_size();
 		if (point.x > offset && point.x < offset + size.x) {
 			if (point.y > 0 && point.y < size.y) {
 				return i;
@@ -377,23 +378,18 @@ int MenuBar::_get_index_at_point(const Point2 &p_point) const {
 Rect2 MenuBar::_get_menu_item_rect(int p_index) const {
 	ERR_FAIL_INDEX_V(p_index, menu_cache.size(), Rect2());
 
-	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> style = theme_cache.normal;
 
 	int offset = 0;
 	for (int i = 0; i < p_index; i++) {
 		if (menu_cache[i].hidden) {
 			continue;
 		}
-		Size2 size = menu_cache[i].text_buf->get_size();
-		if (style.is_valid()) {
-			size += style->get_minimum_size();
-		}
+		Size2 size = menu_cache[i].text_buf->get_size() + style->get_minimum_size();
 		offset += size.x + theme_cache.h_separation;
 	}
-	Size2 size = menu_cache[p_index].text_buf->get_size();
-	if (style.is_valid()) {
-		size += style->get_minimum_size();
-	}
+
+	Size2 size = menu_cache[p_index].text_buf->get_size() + style->get_minimum_size();
 	if (is_layout_rtl()) {
 		return Rect2(Point2(get_size().x - offset - size.x, 0), size);
 	} else {
@@ -416,58 +412,75 @@ void MenuBar::_draw_menu_item(int p_index) {
 	Color color;
 	Ref<StyleBox> style;
 	Rect2 item_rect = _get_menu_item_rect(p_index);
-	State cur_state;
+
 	if (menu_cache[p_index].disabled) {
-		if (rtl) {
-			cur_state = State::DisabledNoneRTL;
+		if (rtl && has_theme_stylebox(SNAME("disabled_mirrored"))) {
+			style = theme_cache.disabled_mirrored;
 		} else {
-			cur_state = State::DisabledNoneLTR;
+			style = theme_cache.disabled;
 		}
-	} else if (hovered && pressed) {
-		if (rtl) {
-			cur_state = State::HoverPressedNoneRTL;
-		} else {
-			cur_state = State::HoverPressedNoneLTR;
-		}
-	} else if (pressed) {
-		if (rtl) {
-			cur_state = State::PressedNoneRTL;
-		} else {
-			cur_state = State::PressedNoneLTR;
-		}
-	} else if (hovered) {
-		if (rtl) {
-			cur_state = State::HoverNoneRTL;
-		} else {
-			cur_state = State::HoverNoneLTR;
-		}
-	} else {
-		if (has_focus()) {
-			if (rtl) {
-				cur_state = State::FocusNoneRTL;
-			} else {
-				cur_state = State::FocusNoneLTR;
-			}
-		} else {
-			if (rtl) {
-				cur_state = State::NormalNoneRTL;
-			} else {
-				cur_state = State::NormalNoneLTR;
-			}
-		}
-	}
-	style = _get_current_default_stylebox_with_state(cur_state);
-	if (!flat) {
-		if(style.is_valid()){
+		if (!flat) {
 			style->draw(ci, item_rect);
 		}
+		color = theme_cache.font_disabled_color;
+	} else if (hovered && pressed && has_theme_stylebox("hover_pressed")) {
+		if (rtl && has_theme_stylebox(SNAME("hover_pressed_mirrored"))) {
+			style = theme_cache.hover_pressed_mirrored;
+		} else {
+			style = theme_cache.hover_pressed;
+		}
+		if (!flat) {
+			style->draw(ci, item_rect);
+		}
+		if (has_theme_color(SNAME("font_hover_pressed_color"))) {
+			color = theme_cache.font_hover_pressed_color;
+		}
+	} else if (pressed) {
+		if (rtl && has_theme_stylebox(SNAME("pressed_mirrored"))) {
+			style = theme_cache.pressed_mirrored;
+		} else {
+			style = theme_cache.pressed;
+		}
+		if (!flat) {
+			style->draw(ci, item_rect);
+		}
+		if (has_theme_color(SNAME("font_pressed_color"))) {
+			color = theme_cache.font_pressed_color;
+		} else {
+			color = theme_cache.font_color;
+		}
+	} else if (hovered) {
+		if (rtl && has_theme_stylebox(SNAME("hover_mirrored"))) {
+			style = theme_cache.hover_mirrored;
+		} else {
+			style = theme_cache.hover;
+		}
+		if (!flat) {
+			style->draw(ci, item_rect);
+		}
+		color = theme_cache.font_hover_color;
+	} else {
+		if (rtl && has_theme_stylebox(SNAME("normal_mirrored"))) {
+			style = theme_cache.normal_mirrored;
+		} else {
+			style = theme_cache.normal;
+		}
+		if (!flat) {
+			style->draw(ci, item_rect);
+		}
+		// Focus colors only take precedence over normal state.
+		if (has_focus()) {
+			color = theme_cache.font_focus_color;
+		} else {
+			color = theme_cache.font_color;
+		}
 	}
-	color = _get_current_font_color_with_state(cur_state);
+	const Ref<StyleBox> state_layer_style = _get_current_state_layer_stylebox();
+	if(state_layer_style.is_valid()){
+		state_layer_style->draw(ci, item_rect);
+	}
 
-	Point2 text_ofs = item_rect.position;
-	if(style.is_valid()){
-		text_ofs += Point2(style->get_margin(SIDE_LEFT), style->get_margin(SIDE_TOP));
-	}
+	Point2 text_ofs = item_rect.position + Point2(style->get_margin(SIDE_LEFT), style->get_margin(SIDE_TOP));
 
 	Color font_outline_color = theme_cache.font_outline_color;
 	int outline_size = theme_cache.outline_size;
@@ -497,8 +510,11 @@ void MenuBar::_refresh_menu_names() {
 		if (!popups[i]->has_meta("_menu_name") && String(popups[i]->get_name()) != get_menu_title(i)) {
 			menu_cache.write[i].name = popups[i]->get_name();
 			shape(menu_cache.write[i]);
-			if (is_global && menu_cache[i].global_index >= 0) {
-				nmenu->set_item_text(main_menu, menu_cache[i].global_index, atr(menu_cache[i].name));
+			if (is_global && menu_cache[i].submenu_rid.is_valid()) {
+				int item_idx = nmenu->find_item_index_with_submenu(main_menu, menu_cache[i].submenu_rid);
+				if (item_idx >= 0) {
+					nmenu->set_item_text(main_menu, item_idx, atr(menu_cache[i].name));
+				}
 			}
 		}
 	}
@@ -551,8 +567,8 @@ void MenuBar::add_child_notify(Node *p_child) {
 
 		RID submenu_rid = pm->bind_global_menu();
 		if (!pm->is_system_menu()) {
-			int index = nmenu->add_submenu_item(main_menu, atr(menu.name), submenu_rid, global_menu_tag + "#" + itos(menu_cache.size() - 1), _find_global_start_index() + menu_cache.size() - 1);
-			menu_cache.write[menu_cache.size() - 1].global_index = index;
+			nmenu->add_submenu_item(main_menu, atr(menu.name), submenu_rid, global_menu_tag + "#" + itos(menu_cache.size() - 1), _find_global_start_index() + menu_cache.size() - 1);
+			menu_cache.write[menu_cache.size() - 1].submenu_rid = submenu_rid;
 		}
 	}
 	update_minimum_size();
@@ -586,13 +602,14 @@ void MenuBar::move_child_notify(Node *p_child) {
 			RID main_menu = nmenu->get_system_menu(NativeMenu::MAIN_MENU_ID);
 
 			int global_start = _find_global_start_index();
-			if (menu.global_index >= 0) {
-				nmenu->remove_item(main_menu, menu.global_index);
+			if (menu.submenu_rid.is_valid()) {
+				int item_idx = nmenu->find_item_index_with_submenu(main_menu, menu.submenu_rid);
+				if (item_idx >= 0) {
+					nmenu->remove_item(main_menu, item_idx);
+				}
 			}
 			if (new_idx != -1) {
-				RID submenu_rid = pm->bind_global_menu();
-				int index = nmenu->add_submenu_item(main_menu, atr(menu.name), submenu_rid, global_menu_tag + "#" + itos(new_idx), global_start + new_idx);
-				menu_cache.write[new_idx].global_index = index;
+				nmenu->add_submenu_item(main_menu, atr(menu.name), menu.submenu_rid, global_menu_tag + "#" + itos(new_idx), global_start + new_idx);
 			}
 		}
 	}
@@ -608,19 +625,21 @@ void MenuBar::remove_child_notify(Node *p_child) {
 
 	int idx = get_menu_idx_from_control(pm);
 
-	menu_cache.remove_at(idx);
-
 	if (!global_menu_tag.is_empty()) {
 		if (!pm->is_system_menu()) {
-			pm->unbind_global_menu();
-			if (menu_cache[idx].global_index >= 0) {
+			if (menu_cache[idx].submenu_rid.is_valid()) {
 				NativeMenu *nmenu = NativeMenu::get_singleton();
 				RID main_menu = nmenu->get_system_menu(NativeMenu::MAIN_MENU_ID);
-				nmenu->remove_item(main_menu, menu_cache[idx].global_index);
-				menu_cache.write[idx].global_index = -1;
+				int item_idx = nmenu->find_item_index_with_submenu(main_menu, menu_cache[idx].submenu_rid);
+				if (item_idx >= 0) {
+					nmenu->remove_item(main_menu, item_idx);
+				}
 			}
+			pm->unbind_global_menu();
 		}
 	}
+
+	menu_cache.remove_at(idx);
 
 	p_child->remove_meta("_menu_name");
 	p_child->remove_meta("_menu_tooltip");
@@ -632,116 +651,39 @@ void MenuBar::remove_child_notify(Node *p_child) {
 	update_minimum_size();
 }
 
-Ref<StyleBox> MenuBar::_get_current_default_stylebox_with_state(State p_state) const {
-	Ref<StyleBox> style;
-
-	for (const State &E : theme_cache.default_stylebox.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
-			style = theme_cache.default_stylebox.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-
-bool MenuBar::_has_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Ref<StyleBox> MenuBar::_get_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
-	style = _get_current_default_stylebox_with_state(cur_state);
-	return style;
-}
-
-bool MenuBar::_has_current_focus_default_stylebox() const {
-	State cur_state = get_current_focus_state();
-	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Ref<StyleBox> MenuBar::_get_current_focus_default_stylebox() const {
-	State cur_state = get_current_focus_state();
-	Ref<StyleBox> style;
-
-	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
-			style = theme_cache.default_stylebox.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-bool MenuBar::_has_current_state_layer_stylebox() const {
-	State cur_state = get_current_state();
-	for (const State &E : theme_cache.state_layer_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.state_layer_stylebox.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
 
 Ref<StyleBox> MenuBar::_get_current_state_layer_stylebox() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
+	Ref<StyleBox> stylebox;
+	switch (get_draw_mode()) {
+		case DRAW_NORMAL: {
+		} break;
 
-	for (const State &E : theme_cache.state_layer_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.state_layer_stylebox.get_state_data_name(E))) {
-			style = theme_cache.state_layer_stylebox.get_data(E);
-			break;
+		case DRAW_HOVER_PRESSED: {
+			// Edge case for CheckButton and CheckBox.
+			if (has_theme_stylebox("state_hover_pressed_layer")) {
+				stylebox = theme_cache.state_hover_pressed_layer;
+				break;
+			}
+		}
+			[[fallthrough]];
+		case DRAW_PRESSED: {
+			stylebox = theme_cache.state_pressed_layer;
+		} break;
+
+		case DRAW_HOVER: {
+			stylebox = theme_cache.state_hover_layer;
+		} break;
+
+		case DRAW_DISABLED: {
+		} break;
+	}
+	if(stylebox.is_null()){
+		if(has_focus()){
+			stylebox = theme_cache.state_focus_layer;
 		}
 	}
-	return style;
-}
 
-bool MenuBar::_has_current_font_color() const {
-	State cur_state = get_current_state();
-	for (const State &E : theme_cache.font_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color MenuBar::_get_current_font_color_with_state(State p_state) const {
-	Color cur_font_color;
-
-	for (const State &E : theme_cache.font_color.get_search_order(p_state)) {
-		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
-			cur_font_color = theme_cache.font_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_color;
-}
-
-
-Color MenuBar::_get_current_font_color() const {
-	State cur_state = get_current_state();
-	Color cur_font_color;
-
-	for (const State &E : theme_cache.font_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
-			cur_font_color = theme_cache.font_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_color;
+	return stylebox;
 }
 
 void MenuBar::_bind_methods() {
@@ -788,17 +730,36 @@ void MenuBar::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "language", PROPERTY_HINT_LOCALE_ID, ""), "set_language", "get_language");
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, MenuBar, default_color_scheme);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, MenuBar, default_stylebox);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, MenuBar, state_layer_stylebox);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, MenuBar, font_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, normal);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, normal_mirrored);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, disabled);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, disabled_mirrored);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, pressed);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, pressed_mirrored);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, hover);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, hover_mirrored);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, hover_pressed);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, MenuBar, hover_pressed_mirrored);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, MenuBar, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, MenuBar, font_size);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_outline_color_role);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_outline_color);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, MenuBar, outline_size);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_outline_color_role);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_disabled_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_disabled_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_pressed_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_pressed_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_hover_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_hover_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_hover_pressed_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_hover_pressed_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, MenuBar, font_focus_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, MenuBar, font_focus_color_role);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, MenuBar, h_separation);
 }
@@ -866,9 +827,9 @@ int MenuBar::get_start_index() const {
 }
 
 void MenuBar::set_prefer_global_menu(bool p_enabled) {
-	if (is_native != p_enabled) {
-		is_native = p_enabled;
-		if (is_native) {
+	if (prefer_native != p_enabled) {
+		prefer_native = p_enabled;
+		if (prefer_native) {
 			bind_global_menu();
 		} else {
 			unbind_global_menu();
@@ -877,7 +838,7 @@ void MenuBar::set_prefer_global_menu(bool p_enabled) {
 }
 
 bool MenuBar::is_prefer_global_menu() const {
-	return is_native;
+	return prefer_native;
 }
 
 Size2 MenuBar::get_minimum_size() const {
@@ -885,17 +846,14 @@ Size2 MenuBar::get_minimum_size() const {
 		return Size2();
 	}
 
-	Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> style = theme_cache.normal;
+
 	Vector2 size;
 	for (int i = 0; i < menu_cache.size(); i++) {
 		if (menu_cache[i].hidden) {
 			continue;
 		}
-
-		Size2 sz = menu_cache[i].text_buf->get_size();
-		if (style.is_valid()) {
-			sz += style->get_minimum_size();
-		}
+		Size2 sz = menu_cache[i].text_buf->get_size() + style->get_minimum_size();
 		size.y = MAX(size.y, sz.y);
 		size.x += sz.x;
 	}
@@ -919,10 +877,13 @@ void MenuBar::set_menu_title(int p_menu, const String &p_title) {
 	}
 	menu_cache.write[p_menu].name = p_title;
 	shape(menu_cache.write[p_menu]);
-	if (!global_menu_tag.is_empty() && menu_cache[p_menu].global_index >= 0) {
+	if (!global_menu_tag.is_empty() && menu_cache[p_menu].submenu_rid.is_valid()) {
 		NativeMenu *nmenu = NativeMenu::get_singleton();
 		RID main_menu = nmenu->get_system_menu(NativeMenu::MAIN_MENU_ID);
-		nmenu->set_item_text(main_menu, menu_cache[p_menu].global_index, atr(menu_cache[p_menu].name));
+		int item_idx = nmenu->find_item_index_with_submenu(main_menu, menu_cache[p_menu].submenu_rid);
+		if (item_idx >= 0) {
+			nmenu->set_item_text(main_menu, item_idx, atr(menu_cache[p_menu].name));
+		}
 	}
 	update_minimum_size();
 }
@@ -937,10 +898,13 @@ void MenuBar::set_menu_tooltip(int p_menu, const String &p_tooltip) {
 	PopupMenu *pm = get_menu_popup(p_menu);
 	pm->set_meta("_menu_tooltip", p_tooltip);
 	menu_cache.write[p_menu].tooltip = p_tooltip;
-	if (!global_menu_tag.is_empty() && menu_cache[p_menu].global_index >= 0) {
+	if (!global_menu_tag.is_empty() && menu_cache[p_menu].submenu_rid.is_valid()) {
 		NativeMenu *nmenu = NativeMenu::get_singleton();
 		RID main_menu = nmenu->get_system_menu(NativeMenu::MAIN_MENU_ID);
-		nmenu->set_item_tooltip(main_menu, menu_cache[p_menu].global_index, p_tooltip);
+		int item_idx = nmenu->find_item_index_with_submenu(main_menu, menu_cache[p_menu].submenu_rid);
+		if (item_idx >= 0) {
+			nmenu->set_item_tooltip(main_menu, item_idx, p_tooltip);
+		}
 	}
 }
 
@@ -952,10 +916,13 @@ String MenuBar::get_menu_tooltip(int p_menu) const {
 void MenuBar::set_menu_disabled(int p_menu, bool p_disabled) {
 	ERR_FAIL_INDEX(p_menu, menu_cache.size());
 	menu_cache.write[p_menu].disabled = p_disabled;
-	if (!global_menu_tag.is_empty() && menu_cache[p_menu].global_index >= 0) {
+	if (!global_menu_tag.is_empty() && menu_cache[p_menu].submenu_rid.is_valid()) {
 		NativeMenu *nmenu = NativeMenu::get_singleton();
 		RID main_menu = nmenu->get_system_menu(NativeMenu::MAIN_MENU_ID);
-		nmenu->set_item_disabled(main_menu, menu_cache[p_menu].global_index, p_disabled);
+		int item_idx = nmenu->find_item_index_with_submenu(main_menu, menu_cache[p_menu].submenu_rid);
+		if (item_idx >= 0) {
+			nmenu->set_item_disabled(main_menu, item_idx, p_disabled);
+		}
 	}
 }
 
@@ -967,10 +934,13 @@ bool MenuBar::is_menu_disabled(int p_menu) const {
 void MenuBar::set_menu_hidden(int p_menu, bool p_hidden) {
 	ERR_FAIL_INDEX(p_menu, menu_cache.size());
 	menu_cache.write[p_menu].hidden = p_hidden;
-	if (!global_menu_tag.is_empty() && menu_cache[p_menu].global_index >= 0) {
+	if (!global_menu_tag.is_empty() && menu_cache[p_menu].submenu_rid.is_valid()) {
 		NativeMenu *nmenu = NativeMenu::get_singleton();
 		RID main_menu = nmenu->get_system_menu(NativeMenu::MAIN_MENU_ID);
-		nmenu->set_item_hidden(main_menu, menu_cache[p_menu].global_index, p_hidden);
+		int item_idx = nmenu->find_item_index_with_submenu(main_menu, menu_cache[p_menu].submenu_rid);
+		if (item_idx >= 0) {
+			nmenu->set_item_hidden(main_menu, item_idx, p_hidden);
+		}
 	}
 	update_minimum_size();
 }

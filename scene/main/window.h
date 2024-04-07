@@ -33,7 +33,6 @@
 
 #include "scene/main/viewport.h"
 #include "scene/resources/theme.h"
-#include "scene/theme/theme_data.h"
 
 class Font;
 class Shortcut;
@@ -205,22 +204,20 @@ private:
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
 
-		ThemeStyleboxData embedded_border{"embedded_border"};
+		Ref<StyleBox> embedded_border;
+		Ref<StyleBox> embedded_unfocused_border;
 
 		Ref<Font> title_font;
 		int title_font_size = 0;
-
 		Color title_color;
 		Ref<ColorRole> title_color_role;
-
 		int title_height = 0;
-
 		Color title_outline_modulate;
 		Ref<ColorRole> title_outline_modulate_role;
-
 		int title_outline_size = 0;
 
-		ThemeIconData close{"close"};
+		Ref<Texture2D> close;
+		Ref<Texture2D> close_pressed;
 		int close_h_offset = 0;
 		int close_v_offset = 0;
 
@@ -271,17 +268,6 @@ protected:
 	virtual void remove_child_notify(Node *p_child) override;
 
 	GDVIRTUAL0RC(Vector2, _get_contents_minimum_size)
-
-
-	bool _has_current_embedded_border_with_state(State p_state) const;
-	bool _has_current_embedded_border() const;
-	Ref<StyleBox> _get_current_embedded_border_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_embedded_border() const;
-
-	bool _has_current_close_with_state(State p_state) const;
-	bool _has_current_close() const;
-	Ref<Texture2D> _get_current_close_with_state(State p_state) const;
-	Ref<Texture2D> _get_current_close() const;
 
 public:
 	enum {
@@ -467,6 +453,7 @@ public:
 	void remove_theme_color_scheme_override(const StringName &p_name);
 	void remove_theme_str_override(const StringName &p_name);
 
+
 	Ref<Texture2D> get_theme_icon(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	Ref<StyleBox> get_theme_stylebox(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	Ref<Font> get_theme_font(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
@@ -476,7 +463,6 @@ public:
 	Ref<ColorRole> get_theme_color_role(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	Ref<ColorScheme> get_theme_color_scheme(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 	String get_theme_str(const StringName &p_name, const StringName &p_theme_type = StringName()) const;
-
 	Variant get_theme_item(Theme::DataType p_data_type, const StringName &p_name, const StringName &p_theme_type = StringName()) const;
 #ifdef TOOLS_ENABLED
 	Ref<Texture2D> get_editor_theme_icon(const StringName &p_name) const;
@@ -507,7 +493,7 @@ public:
 	int get_theme_default_font_size() const;
 	Ref<ColorScheme> get_theme_default_color_scheme() const;
 	Ref<ColorRole> get_theme_default_color_role() const;
-
+	
 	//
 
 	virtual Transform2D get_final_transform() const override;
@@ -520,10 +506,6 @@ public:
 	virtual DisplayServer::WindowID get_window_id() const override;
 
 	virtual Size2 _get_contents_minimum_size() const;
-
-	State get_current_state() const;
-	State get_current_state_with_focus() const;
-	State get_current_focus_state() const;
 
 	Window();
 	~Window();

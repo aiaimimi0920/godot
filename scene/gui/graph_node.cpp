@@ -152,10 +152,8 @@ void GraphNode::_get_property_list(List<PropertyInfo> *p_list) const {
 
 void GraphNode::_resort() {
 	Size2 new_size = get_size();
-	
-	Ref<StyleBox> sb_panel = _get_current_panel_with_state(State::NormalNoneLTR);
-	
-	Ref<StyleBox> sb_titlebar = _get_current_titlebar_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> sb_panel = theme_cache.panel;
+	Ref<StyleBox> sb_titlebar = theme_cache.titlebar;
 
 	// Resort titlebar first.
 	Size2 titlebar_size = Size2(new_size.width, titlebar_hbox->get_size().height);
@@ -314,13 +312,11 @@ void GraphNode::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_DRAW: {
 			// Used for layout calculations.
-			Ref<StyleBox> sb_panel = _get_current_panel_with_state(State::NormalNoneLTR);
-			
-			Ref<StyleBox> sb_titlebar = _get_current_titlebar_with_state(State::NormalNoneLTR);
-
+			Ref<StyleBox> sb_panel = theme_cache.panel;
+			Ref<StyleBox> sb_titlebar = theme_cache.titlebar;
 			// Used for drawing.
-			Ref<StyleBox> sb_to_draw_panel = selected ? _get_current_panel_with_state(State::NormalCheckedLTR) :  _get_current_panel_with_state(State::NormalUncheckedLTR);;
-			Ref<StyleBox> sb_to_draw_titlebar = selected ? _get_current_titlebar_with_state(State::NormalCheckedLTR) :  _get_current_titlebar_with_state(State::NormalUncheckedLTR) ;
+			Ref<StyleBox> sb_to_draw_panel = selected ? theme_cache.panel_selected : theme_cache.panel;
+			Ref<StyleBox> sb_to_draw_titlebar = selected ? theme_cache.titlebar_selected : theme_cache.titlebar;
 
 			Ref<StyleBox> sb_slot = theme_cache.slot;
 
@@ -609,9 +605,8 @@ void GraphNode::set_slot_draw_stylebox(int p_slot_index, bool p_enable) {
 }
 
 Size2 GraphNode::get_minimum_size() const {
-
-	Ref<StyleBox> sb_panel = _get_current_panel_with_state(State::NormalNoneLTR);
-	Ref<StyleBox> sb_titlebar = _get_current_titlebar_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> sb_panel = theme_cache.panel;
+	Ref<StyleBox> sb_titlebar = theme_cache.titlebar;
 	Ref<StyleBox> sb_slot = theme_cache.slot;
 
 	int separation = theme_cache.separation;
@@ -646,8 +641,8 @@ void GraphNode::_port_pos_update() {
 	int edgeofs = theme_cache.port_h_offset;
 	int separation = theme_cache.separation;
 
-	Ref<StyleBox> sb_panel = _get_current_panel_with_state(State::NormalNoneLTR);
-	Ref<StyleBox> sb_titlebar = _get_current_titlebar_with_state(State::NormalNoneLTR);
+	Ref<StyleBox> sb_panel = theme_cache.panel;
+	Ref<StyleBox> sb_titlebar = theme_cache.titlebar;
 
 	left_port_cache.clear();
 	right_port_cache.clear();
@@ -825,71 +820,6 @@ Vector<int> GraphNode::get_allowed_size_flags_vertical() const {
 	return flags;
 }
 
-
-bool GraphNode::_has_current_panel_with_state(State p_state) const {
-	for (const State &E : theme_cache.panel.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.panel.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool GraphNode::_has_current_panel() const {
-	State cur_state = get_current_state();
-	return _has_current_panel_with_state(cur_state);
-}
-
-Ref<StyleBox> GraphNode::_get_current_panel_with_state(State p_state) const {
-	Ref<StyleBox> style;
-	for (const State &E : theme_cache.panel.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.panel.get_state_data_name(E))) {
-			style = theme_cache.panel.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-Ref<StyleBox> GraphNode::_get_current_panel() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
-	style = _get_current_panel_with_state(cur_state);
-	return style;
-}
-
-bool GraphNode::_has_current_titlebar_with_state(State p_state) const {
-	for (const State &E : theme_cache.titlebar.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.titlebar.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool GraphNode::_has_current_titlebar() const {
-	State cur_state = get_current_state();
-	return _has_current_titlebar_with_state(cur_state);
-}
-
-Ref<StyleBox> GraphNode::_get_current_titlebar_with_state(State p_state) const {
-	Ref<StyleBox> style;
-	for (const State &E : theme_cache.titlebar.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.titlebar.get_state_data_name(E))) {
-			style = theme_cache.titlebar.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-Ref<StyleBox> GraphNode::_get_current_titlebar() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
-	style = _get_current_titlebar_with_state(cur_state);
-	return style;
-}
-
 void GraphNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_title", "title"), &GraphNode::set_title);
 	ClassDB::bind_method(D_METHOD("get_title"), &GraphNode::get_title);
@@ -946,8 +876,10 @@ void GraphNode::_bind_methods() {
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, GraphNode, default_color_scheme);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, GraphNode, panel);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, GraphNode, titlebar);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphNode, panel);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphNode, panel_selected);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphNode, titlebar);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphNode, titlebar_selected);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphNode, slot);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, GraphNode, separation);
@@ -955,9 +887,8 @@ void GraphNode::_bind_methods() {
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, GraphNode, port);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, GraphNode, resizer);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphNode, resizer_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, GraphNode, resizer_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, GraphNode, resizer_color_role);
 }
 
 GraphNode::GraphNode() {

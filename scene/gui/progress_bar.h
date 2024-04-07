@@ -48,11 +48,9 @@ class ProgressBar : public Range {
 
 		Ref<Font> font;
 		int font_size = 0;
-		int font_outline_size = 0;
-
 		Color font_color;
 		Ref<ColorRole> font_color_role;
-
+		int font_outline_size = 0;
 		Color font_outline_color;
 		Ref<ColorRole> font_outline_color_role;
 	} theme_cache;
@@ -88,6 +86,7 @@ public:
 
 	Size2 get_minimum_size() const override;
 	ProgressBar();
+
 private:
 	float _inderminate_fill_progress = 0;
 

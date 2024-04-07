@@ -95,6 +95,9 @@ bool Window::_set(const StringName &p_name, const Variant &p_value) {
 			_notify_theme_override_changed();
 		} else if (name.begins_with("theme_override_color_roles/")) {
 			String dname = name.get_slicec('/', 1);
+			if (theme_color_role_override.has(dname)) {
+				theme_color_role_override[dname]->disconnect_changed(callable_mp(this, &Window::_notify_theme_override_changed));
+			}
 			theme_color_role_override.erase(dname);
 			_notify_theme_override_changed();
 		} else if (name.begins_with("theme_override_color_schemes/")) {
@@ -271,8 +274,6 @@ void Window::_get_property_list(List<PropertyInfo> *p_list) const {
 		List<StringName> names;
 		default_theme->get_color_role_list(get_class_name(), &names);
 
-		// String color_role_hint = "Primary Palette key,Secondary Palette key,Tertiary Palette key,Neutral Palette key,Neutral Variant Palette key,Background,On Background,Surface,Surface Dim,Surface Bright,Surface Container Lowest,Surface Container Low,Surface Container,Surface Container High,Surface Container Highest,On Surface,Surface Variant,On Surface Variant,Inverse Surface,Inverse On Surface,Outline,Outline Variant,Shadow,Scrim,Surface Tint,Primary,On Primary,Primary Container,On Primary Container,Inverse Primary,Secondary,On Secondary,Secondary Container,On Secondary Container,Tertiary,On Tertiary,Tertiary Container,On Tertiary Container,Error,On Error,Error Container,On Error Container,Primary Fixed,Primary Fixed Dim,On Primary Fixed,On Primary Fixed Variant,Secondary Fixed,Secondary Fixed Dim,On Secondary Fixed,On Secondary Fixed Variant,Tertiary Fixed,Tertiary Fixed Dim,On Tertiary Fixed,On Tertiary Fixed Variant";
-
 		for (const StringName &E : names) {
 			uint32_t usage = PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_CHECKABLE;
 			if (theme_color_role_override.has(E)) {
@@ -305,6 +306,7 @@ void Window::_get_property_list(List<PropertyInfo> *p_list) const {
 			p_list->push_back(PropertyInfo(Variant::STRING, PNAME("theme_override_strs") + String("/") + E, PROPERTY_HINT_NONE, "", usage));
 		}
 	}
+
 }
 
 void Window::_validate_property(PropertyInfo &p_property) const {
@@ -795,6 +797,9 @@ void Window::_event_callback(DisplayServer::WindowEvent p_event) {
 			if (!is_inside_tree()) {
 				return;
 			}
+			// Ensure keeping the order of input events and window events when input events are buffered or accumulated.
+			Input::get_singleton()->flush_buffered_events();
+
 			Window *root = get_tree()->get_root();
 			if (!root->gui.windowmanager_window_over) {
 #ifdef DEV_ENABLED
@@ -1104,8 +1109,7 @@ void Window::_update_window_size() {
 	}
 
 	if (embedder) {
-		size.x = MAX(size.x, 1);
-		size.y = MAX(size.y, 1);
+		size = size.max(Size2i(1, 1));
 
 		embedder->_sub_window_update(this);
 	} else if (window_id != DisplayServer::INVALID_WINDOW_ID) {
@@ -1285,7 +1289,7 @@ void Window::set_force_native(bool p_force_native) {
 		return;
 	}
 	force_native = p_force_native;
-	if (is_visible()) {
+	if (is_visible() && !is_in_edited_scene_root()) {
 		WARN_PRINT("Can't change \"force_native\" while a window is displayed. Consider hiding window before changing this value.");
 	}
 }
@@ -1296,7 +1300,7 @@ bool Window::get_force_native() const {
 
 Viewport *Window::get_embedder() const {
 	ERR_READ_THREAD_GUARD_V(nullptr);
-	if (force_native && DisplayServer::get_singleton()->has_feature(DisplayServer::FEATURE_SUBWINDOWS)) {
+	if (force_native && DisplayServer::get_singleton()->has_feature(DisplayServer::FEATURE_SUBWINDOWS) && !is_in_edited_scene_root()) {
 		return nullptr;
 	}
 
@@ -1616,8 +1620,7 @@ Size2 Window::_get_contents_minimum_size() const {
 			Point2i pos = c->get_position();
 			Size2i min = c->get_combined_minimum_size();
 
-			max.x = MAX(pos.x + min.x, max.x);
-			max.y = MAX(pos.y + min.y, max.y);
+			max = max.max(pos + min);
 		}
 	}
 
@@ -1774,7 +1777,7 @@ void Window::popup_centered_clamped(const Size2i &p_size, float p_fallback_ratio
 	Vector2i size_ratio = parent_rect.size * p_fallback_ratio;
 
 	Rect2i popup_rect;
-	popup_rect.size = Vector2i(MIN(size_ratio.x, expected_size.x), MIN(size_ratio.y, expected_size.y));
+	popup_rect.size = size_ratio.min(expected_size);
 	popup_rect.size = _clamp_window_size(popup_rect.size);
 
 	if (parent_rect != Rect2()) {
@@ -2199,7 +2202,7 @@ Ref<StyleBox> Window::get_theme_stylebox(const StringName &p_name, const StringN
 	Ref<StyleBox> style = theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_STYLEBOX, p_name, theme_types);
 	theme_style_cache[p_theme_type][p_name] = style;
 
-	if (style.is_valid()) {
+	if (style.is_valid() && style->get_default_color_scheme().is_null()) {
 		const StringName targe_color_role_scheme = String("default_color_scheme");
 		const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
 		if (color_scheme.is_valid()) {
@@ -2208,6 +2211,7 @@ Ref<StyleBox> Window::get_theme_stylebox(const StringName &p_name, const StringN
 			style->set_emit_changed_signal_flag(true);
 		}
 	}
+
 	return style;
 }
 
@@ -2329,6 +2333,8 @@ int Window::get_theme_constant(const StringName &p_name, const StringName &p_the
 	return constant;
 }
 
+
+
 Ref<ColorRole> Window::get_theme_color_role(const StringName &p_name, const StringName &p_theme_type) const {
 	ERR_READ_THREAD_GUARD_V(Ref<ColorRole>());
 	if (!initialized) {
@@ -2385,7 +2391,7 @@ Ref<ColorScheme> Window::get_theme_color_scheme(const StringName &p_name, const 
 	theme_color_scheme_cache[p_theme_type][p_name] = color_scheme;
 
 	const StringName targe_color_name = String(p_name).trim_suffix("_scheme");
-	get_theme_color(targe_color_name, p_theme_type);
+	Color color = get_theme_color(targe_color_name, p_theme_type);
 	return color_scheme;
 }
 
@@ -2412,6 +2418,7 @@ String Window::get_theme_str(const StringName &p_name, const StringName &p_theme
 	theme_str_cache[p_theme_type][p_name] = str;
 	return str;
 }
+
 
 Variant Window::get_theme_item(Theme::DataType p_data_type, const StringName &p_name, const StringName &p_theme_type) const {
 	switch (p_data_type) {
@@ -2548,6 +2555,7 @@ bool Window::has_theme_constant(const StringName &p_name, const StringName &p_th
 	return theme_owner->has_theme_item_in_types(Theme::DATA_TYPE_CONSTANT, p_name, theme_types);
 }
 
+
 bool Window::has_theme_color_role(const StringName &p_name, const StringName &p_theme_type) const {
 	ERR_READ_THREAD_GUARD_V(false);
 	if (!initialized) {
@@ -2660,7 +2668,14 @@ void Window::add_theme_constant_override(const StringName &p_name, int p_constan
 
 void Window::add_theme_color_role_override(const StringName &p_name, Ref<ColorRole> p_color_role) {
 	ERR_MAIN_THREAD_GUARD;
+
+	if (theme_color_role_override.has(p_name)) {
+		theme_color_role_override[p_name]->disconnect_changed(callable_mp(this, &Window::_notify_theme_override_changed));
+	}
+
 	theme_color_role_override[p_name] = p_color_role;
+	theme_color_role_override[p_name]->connect_changed(callable_mp(this, &Window::_notify_theme_override_changed), CONNECT_REFERENCE_COUNTED);
+
 	_notify_theme_override_changed();
 }
 
@@ -2682,6 +2697,7 @@ void Window::add_theme_str_override(const StringName &p_name, String p_str) {
 	theme_str_override[p_name] = p_str;
 	_notify_theme_override_changed();
 }
+
 
 void Window::remove_theme_icon_override(const StringName &p_name) {
 	ERR_MAIN_THREAD_GUARD;
@@ -2733,7 +2749,11 @@ void Window::remove_theme_constant_override(const StringName &p_name) {
 
 void Window::remove_theme_color_role_override(const StringName &p_name) {
 	ERR_MAIN_THREAD_GUARD;
+	if (theme_color_role_override.has(p_name)) {
+		theme_color_role_override[p_name]->disconnect_changed(callable_mp(this, &Window::_notify_theme_override_changed));
+	}
 	theme_color_role_override.erase(p_name);
+
 	_notify_theme_override_changed();
 }
 
@@ -3041,9 +3061,6 @@ void Window::_update_mouse_over(Vector2 p_pos) {
 		if (is_embedded()) {
 			mouse_in_window = true;
 			_propagate_window_notification(this, NOTIFICATION_WM_MOUSE_ENTER);
-		} else {
-			// Prevent update based on delayed InputEvents from DisplayServer.
-			return;
 		}
 	}
 
@@ -3070,115 +3087,6 @@ void Window::_mouse_leave_viewport() {
 		_propagate_window_notification(this, NOTIFICATION_WM_MOUSE_EXIT);
 	}
 }
-
-State Window::get_current_state() const {
-	const bool rtl = is_layout_rtl();
-	State cur_state;
-	if (rtl) {
-		cur_state = State::NormalNoneRTL;
-	} else {
-		cur_state = State::NormalNoneLTR;
-	}
-	return cur_state;
-}
-
-State Window::get_current_state_with_focus() const {
-	const bool rtl = is_layout_rtl();
-	State cur_state;
-	if (rtl) {
-		if (has_focus()) {
-			cur_state = State::FocusNoneRTL;
-		} else {
-			cur_state = State::NormalNoneRTL;
-		}
-
-	} else {
-		if (has_focus()) {
-			cur_state = State::FocusNoneLTR;
-		} else {
-			cur_state = State::NormalNoneLTR;
-		}
-	}
-	return cur_state;
-}
-
-State Window::get_current_focus_state() const {
-	const bool rtl = is_layout_rtl();
-	State cur_state;
-	if (rtl) {
-		cur_state = State::FocusNoneRTL;
-	} else {
-		cur_state = State::FocusNoneLTR;
-	}
-	return cur_state;
-}
-
-
-
-bool Window::_has_current_embedded_border_with_state(State p_state) const {
-	for (const State &E : theme_cache.embedded_border.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.embedded_border.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool Window::_has_current_embedded_border() const {
-	State cur_state = get_current_state();
-	return _has_current_embedded_border_with_state(cur_state);
-}
-
-Ref<StyleBox> Window::_get_current_embedded_border_with_state(State p_state) const {
-	Ref<StyleBox> style;
-	for (const State &E : theme_cache.embedded_border.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.embedded_border.get_state_data_name(E))) {
-			style = theme_cache.embedded_border.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-Ref<StyleBox> Window::_get_current_embedded_border() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
-	style = _get_current_embedded_border_with_state(cur_state);
-	return style;
-}
-
-
-bool Window::_has_current_close_with_state(State p_state) const {
-	for (const State &E : theme_cache.close.get_search_order(p_state)) {
-		if (has_theme_icon(theme_cache.close.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool Window::_has_current_close() const {
-	State cur_state = get_current_state();
-	return _has_current_close_with_state(cur_state);
-}
-
-Ref<Texture2D> Window::_get_current_close_with_state(State p_state) const {
-	Ref<Texture2D> cur_icon;
-	for (const State &E : theme_cache.close.get_search_order(p_state)) {
-		if (has_theme_icon(theme_cache.close.get_state_data_name(E))) {
-			cur_icon = theme_cache.close.get_data(E);
-			break;
-		}
-	}
-	return cur_icon;
-}
-
-Ref<Texture2D> Window::_get_current_close() const {
-	State cur_state = get_current_state();
-	Ref<Texture2D> cur_icon = _get_current_close_with_state(cur_state);
-	return cur_icon;
-}
-
 
 void Window::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_title", "title"), &Window::set_title);
@@ -3477,24 +3385,18 @@ void Window::_bind_methods() {
 
 	GDVIRTUAL_BIND(_get_contents_minimum_size);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Window, default_color_scheme);
-
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, Window, embedded_border);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Window, embedded_border);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, Window, embedded_unfocused_border);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, Window, title_font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, Window, title_font_size);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Window, title_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Window, title_color);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Window, title_height);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, Window, title_outline_modulate_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, Window, title_outline_modulate);
-
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Window, title_outline_size);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_ICON, Window, close);
-
+	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, Window, close);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, Window, close_pressed);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Window, close_h_offset);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Window, close_v_offset);
 
@@ -3523,10 +3425,6 @@ Window::~Window() {
 		E.value->disconnect_changed(callable_mp(this, &Window::_notify_theme_override_changed));
 	}
 	for (KeyValue<StringName, Ref<Font>> &E : theme_font_override) {
-		E.value->disconnect_changed(callable_mp(this, &Window::_notify_theme_override_changed));
-	}
-
-	for (KeyValue<StringName, Ref<ColorScheme>> &E : theme_color_scheme_override) {
 		E.value->disconnect_changed(callable_mp(this, &Window::_notify_theme_override_changed));
 	}
 

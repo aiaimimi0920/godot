@@ -38,6 +38,13 @@ class Label : public Control {
 	GDCLASS(Label, Control);
 
 private:
+	enum LabelDrawStep {
+		DRAW_STEP_SHADOW,
+		DRAW_STEP_OUTLINE,
+		DRAW_STEP_TEXT,
+		DRAW_STEP_MAX,
+	};
+
 	HorizontalAlignment horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT;
 	VerticalAlignment vertical_alignment = VERTICAL_ALIGNMENT_TOP;
 	String text;
@@ -72,23 +79,19 @@ private:
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
-		Ref<StyleBox> normal_style;
 
-		Color font_color;
-		Ref<ColorRole> font_color_role;
+		Ref<StyleBox> normal_style;
 		Ref<Font> font;
 
 		int font_size = 0;
 		int line_spacing = 0;
-
+		Color font_color;
+		Ref<ColorRole> font_color_role;
 		Color font_shadow_color;
 		Ref<ColorRole> font_shadow_color_role;
-
 		Point2 font_shadow_offset;
-
 		Color font_outline_color;
 		Ref<ColorRole> font_outline_color_role;
-
 		int font_outline_size;
 		int font_shadow_outline_size;
 	} theme_cache;
@@ -174,8 +177,6 @@ public:
 	int get_visible_line_count() const;
 
 	Rect2 get_character_bounds(int p_pos) const;
-
-	State get_current_state_with_focus() const;
 
 	Label(const String &p_text = String());
 	~Label();

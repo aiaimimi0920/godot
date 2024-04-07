@@ -182,41 +182,36 @@ private:
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
-		ThemeStyleboxData default_stylebox{ "default_stylebox" };
-		Ref<StyleBox> read_only;
-		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
 
+		Ref<StyleBox> normal;
+		Ref<StyleBox> read_only;
+		Ref<StyleBox> focus;
 
 		Ref<Font> font;
-		int font_size;
-
+		int font_size = 0;
 		Color font_color;
 		Ref<ColorRole> font_color_role;
 		Color font_uneditable_color;
 		Ref<ColorRole> font_uneditable_color_role;
 		Color font_selected_color;
 		Ref<ColorRole> font_selected_color_role;
+		int font_outline_size;
 		Color font_outline_color;
 		Ref<ColorRole> font_outline_color_role;
 		Color font_placeholder_color;
 		Ref<ColorRole> font_placeholder_color_role;
+		int caret_width = 0;
 		Color caret_color;
-		Ref<ColorRole> caret_color_role;
+		Ref<ColorRole> caret_color;
+		int minimum_character_width = 0;
 		Color selection_color;
 		Ref<ColorRole> selection_color_role;
 
-		int font_outline_size;
-
-		
-		int caret_width = 0;
-
-		int minimum_character_width = 0;
-
-
 		Ref<Texture2D> clear_icon;
-
-		ThemeColorData clear_button_color{ "clear_button_color" };
-		ThemeColorRoleData clear_button_color_role{ "clear_button_color_role" };
+		Color clear_button_color;
+		Ref<ColorRole> clear_button_color_role;
+		Color clear_button_color_pressed;
+		Ref<ColorRole> clear_button_color_pressed_role;
 
 		float base_scale = 1.0;
 	} theme_cache;
@@ -272,19 +267,6 @@ protected:
 	virtual void unhandled_key_input(const Ref<InputEvent> &p_event) override;
 	virtual void gui_input(const Ref<InputEvent> &p_event) override;
 
-	bool _has_current_default_stylebox_with_state(State p_state) const;
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
-	bool _has_current_focus_default_stylebox() const;
-	Ref<StyleBox> _get_current_focus_default_stylebox() const;
-	bool _has_current_state_layer_stylebox() const;
-	Ref<StyleBox> _get_current_state_layer_stylebox() const;
-
-	bool _has_current_clear_button_color_with_state(State p_state) const;
-	bool _has_current_clear_button_color() const;
-	Color _get_current_clear_button_color_with_state(State p_state) const;
-	Color _get_current_clear_button_color() const;
 public:
 	void set_horizontal_alignment(HorizontalAlignment p_alignment);
 	HorizontalAlignment get_horizontal_alignment() const;

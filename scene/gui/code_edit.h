@@ -236,11 +236,10 @@ private:
 
 	/* Visual */
 	struct ThemeCache {
-		Ref<ColorScheme> default_color_scheme;
 		/* Gutters */
-		Color code_folding_color;
+		Color code_folding_color = Color(1, 1, 1);
 		Ref<ColorRole> code_folding_color_role;
-		Color folded_code_region_color;
+		Color folded_code_region_color = Color(1, 1, 1);
 		Ref<ColorRole> folded_code_region_color_role;
 		Ref<Texture2D> can_fold_icon;
 		Ref<Texture2D> folded_icon;
@@ -248,19 +247,19 @@ private:
 		Ref<Texture2D> folded_code_region_icon;
 		Ref<Texture2D> folded_eol_icon;
 
-		Color breakpoint_color;
+		Color breakpoint_color = Color(1, 1, 1);
 		Ref<ColorRole> breakpoint_color_role;
 		Ref<Texture2D> breakpoint_icon = Ref<Texture2D>();
 
-		Color bookmark_color;
+		Color bookmark_color = Color(1, 1, 1);
 		Ref<ColorRole> bookmark_color_role;
 		Ref<Texture2D> bookmark_icon = Ref<Texture2D>();
 
-		Color executing_line_color;
+		Color executing_line_color = Color(1, 1, 1);
 		Ref<ColorRole> executing_line_color_role;
 		Ref<Texture2D> executing_line_icon = Ref<Texture2D>();
 
-		Color line_number_color;
+		Color line_number_color = Color(1, 1, 1);
 		Ref<ColorRole> line_number_color_role;
 
 		/* Code Completion */
@@ -270,17 +269,15 @@ private:
 		int code_completion_max_width = 0;
 		int code_completion_max_lines = 7;
 		int code_completion_scroll_width = 0;
-
-		ThemeColorData code_completion_scroll_color{ "code_completion_scroll_color" };
-		ThemeColorRoleData code_completion_scroll_color_role{ "code_completion_scroll_color_role" };
-
-		Color code_completion_background_color;
+		Color code_completion_scroll_color = Color(0, 0, 0, 0);
+		Ref<ColorRole> code_completion_scroll_color_role;
+		Color code_completion_scroll_hovered_color = Color(0, 0, 0, 0);
+		Ref<ColorRole> code_completion_scroll_hovered_color_role;
+		Color code_completion_background_color = Color(0, 0, 0, 0);
 		Ref<ColorRole> code_completion_background_color_role;
-
-		Color code_completion_selected_color;
+		Color code_completion_selected_color = Color(0, 0, 0, 0);
 		Ref<ColorRole> code_completion_selected_color_role;
-
-		Color code_completion_existing_color;
+		Color code_completion_existing_color = Color(0, 0, 0, 0);
 		Ref<ColorRole> code_completion_existing_color_role;
 
 		/* Code hint */
@@ -335,12 +332,6 @@ protected:
 	GDVIRTUAL1(_confirm_code_completion, bool)
 	GDVIRTUAL1(_request_code_completion, bool)
 	GDVIRTUAL1RC(TypedArray<Dictionary>, _filter_code_completion_candidates, TypedArray<Dictionary>)
-
-
-	bool _has_current_code_completion_scroll_color_with_state(State p_state) const;
-	bool _has_current_code_completion_scroll_color() const;
-	Color _get_current_code_completion_scroll_color_with_state(State p_state) const;
-	Color _get_current_code_completion_scroll_color() const;
 
 public:
 	/* General overrides */

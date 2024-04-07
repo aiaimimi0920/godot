@@ -38,9 +38,7 @@ void OpenXRSelectActionDialog::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE:
 		case NOTIFICATION_THEME_CHANGED: {
-			ThemeIntData cur_theme_data;
-			cur_theme_data.set_data_name("default_stylebox");
-			scroll->add_theme_style_override("panel", get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("Tree")));
+			scroll->add_theme_style_override("panel", get_theme_stylebox(SNAME("panel"), SNAME("Tree")));
 		} break;
 	}
 }

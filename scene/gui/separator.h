@@ -36,8 +36,10 @@ class Separator : public Control {
 	GDCLASS(Separator, Control);
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		int separation = 0;
-		ThemeStyleboxData separator_style{"separator_style"};
+		Ref<StyleBox> separator_style;
 	} theme_cache;
 
 protected:
@@ -45,10 +47,6 @@ protected:
 
 	void _notification(int p_what);
 	static void _bind_methods();
-
-	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
 
 public:
 	virtual Size2 get_minimum_size() const override;

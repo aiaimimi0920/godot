@@ -205,15 +205,10 @@ EditorZoomWidget::EditorZoomWidget() {
 	zoom_reset->set_flat(true);
 
 	Ref<StyleBoxEmpty> empty_stylebox = memnew(StyleBoxEmpty);
-	ThemeIntData cur_theme_data;
-	cur_theme_data.set_data_name("default_stylebox");
-
-	zoom_reset->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), empty_stylebox);
-	zoom_reset->add_theme_style_override(cur_theme_data.get_state_data_name(State::HoverNoneLTR), empty_stylebox);
-	zoom_reset->add_theme_style_override(cur_theme_data.get_state_data_name(State::FocusNoneLTR), empty_stylebox);
-	zoom_reset->add_theme_style_override(cur_theme_data.get_state_data_name(State::PressedNoneLTR), empty_stylebox);
-	
-	
+	zoom_reset->add_theme_style_override("normal", empty_stylebox);
+	zoom_reset->add_theme_style_override("hover", empty_stylebox);
+	zoom_reset->add_theme_style_override("focus", empty_stylebox);
+	zoom_reset->add_theme_style_override("pressed", empty_stylebox);
 	zoom_reset->add_theme_constant_override("outline_size", Math::ceil(2 * EDSCALE));
 	zoom_reset->add_theme_color_override("font_outline_color", Color(0, 0, 0));
 	zoom_reset->add_theme_color_override("font_color", Color(1, 1, 1));

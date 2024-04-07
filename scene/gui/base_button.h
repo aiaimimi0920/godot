@@ -100,11 +100,6 @@ public:
 		DRAW_HOVER_PRESSED,
 	};
 
-	bool draw_state_layer = true;
-
-	void set_draw_state_layer(bool p_enabled);
-	bool is_draw_state_layer_enabled() const;
-
 	DrawMode get_draw_mode() const;
 
 	/* Signals */
@@ -145,10 +140,6 @@ public:
 	Ref<ButtonGroup> get_button_group() const;
 
 	PackedStringArray get_configuration_warnings() const override;
-
-	State get_current_state() const;
-	State get_current_state_with_focus() const;
-	State get_current_focus_state() const;
 
 	BaseButton();
 	~BaseButton();

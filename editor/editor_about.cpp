@@ -133,10 +133,8 @@ ScrollContainer *EditorAbout::_populate_list(const String &p_name, const List<St
 				il->connect("resized", callable_mp(this, &EditorAbout::_item_list_resized).bind(il));
 				il->connect("focus_exited", callable_mp(il, &ItemList::deselect_all));
 
-				ThemeIntData cur_theme_data;
-				cur_theme_data.set_data_name("default_panel");
-				il->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), empty_stylebox);
-				il->add_theme_style_override(cur_theme_data.get_state_data_name(State::FocusNoneLTR), empty_stylebox);
+				il->add_theme_style_override("focus", empty_stylebox);
+				il->add_theme_style_override("selected", empty_stylebox);
 
 				while (*names_ptr) {
 					const String name = String::utf8(*names_ptr++);
@@ -306,6 +304,7 @@ EditorAbout::EditorAbout() {
 	license_thirdparty->add_child(tpl_hbc);
 
 	_tpl_tree = memnew(Tree);
+	_tpl_tree->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
 	_tpl_tree->set_hide_root(true);
 	TreeItem *root = _tpl_tree->create_item();
 	TreeItem *tpl_ti_all = _tpl_tree->create_item(root);

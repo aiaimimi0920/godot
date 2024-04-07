@@ -998,14 +998,10 @@ void TileSetAtlasSourceEditor::_update_atlas_view() {
 			Button *button = memnew(Button);
 			button->set_flat(true);
 			button->set_icon(get_editor_theme_icon(SNAME("Add")));
-
-			ThemeIntData cur_theme_data;
-			cur_theme_data.set_data_name("default_stylebox");
-
-			button->add_theme_style_override(cur_theme_data.get_state_data_name(State::NormalNoneLTR), memnew(StyleBoxEmpty));
-			button->add_theme_style_override(cur_theme_data.get_state_data_name(State::HoverNoneLTR), memnew(StyleBoxEmpty));
-			button->add_theme_style_override(cur_theme_data.get_state_data_name(State::FocusNoneLTR), memnew(StyleBoxEmpty));
-			button->add_theme_style_override(cur_theme_data.get_state_data_name(State::PressedNoneLTR), memnew(StyleBoxEmpty));
+			button->add_theme_style_override("normal", memnew(StyleBoxEmpty));
+			button->add_theme_style_override("hover", memnew(StyleBoxEmpty));
+			button->add_theme_style_override("focus", memnew(StyleBoxEmpty));
+			button->add_theme_style_override("pressed", memnew(StyleBoxEmpty));
 			button->connect("pressed", callable_mp(tile_set_atlas_source, &TileSetAtlasSource::create_alternative_tile).bind(tile_id, TileSetSource::INVALID_TILE_ALTERNATIVE));
 			button->set_rect(Rect2(Vector2(pos.x, pos.y + (y_increment - texture_region_base_size.y) / 2.0), Vector2(texture_region_base_size_min, texture_region_base_size_min)));
 			button->set_expand_icon(true);
@@ -2687,10 +2683,8 @@ TileSetAtlasSourceEditor::TileSetAtlasSourceEditor() {
 	help_label = memnew(Label(TTR("Hold Shift to create big tiles.")));
 	tile_create_help->add_child(help_label);
 
-	tile_create_help->set_anchors_and_offsets_preset(Control::PRESET_BOTTOM_LEFT, Control::PRESET_MODE_MINSIZE);
-	Vector2 pos = tile_create_help->get_position();
-	pos.y -= 8 * EDSCALE;
-	tile_create_help->set_position(pos);
+	tile_create_help->set_anchors_and_offsets_preset(Control::PRESET_BOTTOM_LEFT, Control::PRESET_MODE_MINSIZE, 8);
+	tile_create_help->set_grow_direction_preset(Control::PRESET_BOTTOM_LEFT);
 
 	base_tile_popup_menu = memnew(PopupMenu);
 	base_tile_popup_menu->add_shortcut(ED_SHORTCUT("tiles_editor/delete", TTR("Delete"), Key::KEY_DELETE), TILE_DELETE);

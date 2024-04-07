@@ -59,6 +59,17 @@ void FileDialog::_focus_file_text() {
 	}
 }
 
+void FileDialog::_native_popup() {
+	// Show native dialog directly.
+	String root;
+	if (access == ACCESS_RESOURCES) {
+		root = ProjectSettings::get_singleton()->get_resource_path();
+	} else if (access == ACCESS_USERDATA) {
+		root = OS::get_singleton()->get_user_data_dir();
+	}
+	DisplayServer::get_singleton()->file_dialog_with_options_show(get_title(), ProjectSettings::get_singleton()->globalize_path(dir->get_text()), root, file->get_text().get_file(), show_hidden_files, DisplayServer::FileDialogMode(mode), filters, _get_options(), callable_mp(this, &FileDialog::_native_dialog_cb));
+}
+
 void FileDialog::popup(const Rect2i &p_rect) {
 	_update_option_controls();
 
@@ -68,21 +79,17 @@ void FileDialog::popup(const Rect2i &p_rect) {
 	}
 #endif
 
-	if (DisplayServer::get_singleton()->has_feature(DisplayServer::FEATURE_NATIVE_DIALOG) && (use_native_dialog || OS::get_singleton()->is_sandboxed())) {
-		String root;
-		if (access == ACCESS_RESOURCES) {
-			root = ProjectSettings::get_singleton()->get_resource_path();
-		} else if (access == ACCESS_USERDATA) {
-			root = OS::get_singleton()->get_user_data_dir();
-		}
-		DisplayServer::get_singleton()->file_dialog_with_options_show(get_title(), ProjectSettings::get_singleton()->globalize_path(dir->get_text()), root, file->get_text().get_file(), show_hidden_files, DisplayServer::FileDialogMode(mode), filters, _get_options(), callable_mp(this, &FileDialog::_native_dialog_cb));
+	if (DisplayServer::get_singleton()->has_feature(DisplayServer::FEATURE_NATIVE_DIALOG_FILE) && (use_native_dialog || OS::get_singleton()->is_sandboxed())) {
+		_native_popup();
 	} else {
 		ConfirmationDialog::popup(p_rect);
 	}
 }
 
 void FileDialog::set_visible(bool p_visible) {
-	_update_option_controls();
+	if (p_visible) {
+		_update_option_controls();
+	}
 
 #ifdef TOOLS_ENABLED
 	if (is_part_of_edited_scene()) {
@@ -91,68 +98,63 @@ void FileDialog::set_visible(bool p_visible) {
 	}
 #endif
 
-	if (DisplayServer::get_singleton()->has_feature(DisplayServer::FEATURE_NATIVE_DIALOG) && (use_native_dialog || OS::get_singleton()->is_sandboxed())) {
-		if (p_visible) {
-			String root;
-			if (access == ACCESS_RESOURCES) {
-				root = ProjectSettings::get_singleton()->get_resource_path();
-			} else if (access == ACCESS_USERDATA) {
-				root = OS::get_singleton()->get_user_data_dir();
-			}
-			DisplayServer::get_singleton()->file_dialog_with_options_show(get_title(), ProjectSettings::get_singleton()->globalize_path(dir->get_text()), root, file->get_text().get_file(), show_hidden_files, DisplayServer::FileDialogMode(mode), filters, _get_options(), callable_mp(this, &FileDialog::_native_dialog_cb));
-		}
+	if (DisplayServer::get_singleton()->has_feature(DisplayServer::FEATURE_NATIVE_DIALOG_FILE) && (use_native_dialog || OS::get_singleton()->is_sandboxed())) {
+		_native_popup();
 	} else {
 		ConfirmationDialog::set_visible(p_visible);
 	}
 }
 
 void FileDialog::_native_dialog_cb(bool p_ok, const Vector<String> &p_files, int p_filter, const Dictionary &p_selected_options) {
-	if (p_ok) {
-		if (p_files.size() > 0) {
-			Vector<String> files = p_files;
-			if (access != ACCESS_FILESYSTEM) {
-				for (String &file_name : files) {
-					file_name = ProjectSettings::get_singleton()->localize_path(file_name);
-				}
-			}
-			String f = files[0];
-			if (mode == FILE_MODE_OPEN_FILES) {
-				emit_signal(SNAME("files_selected"), files);
-			} else {
-				if (mode == FILE_MODE_SAVE_FILE) {
-					if (p_filter >= 0 && p_filter < filters.size()) {
-						bool valid = false;
-						String flt = filters[p_filter].get_slice(";", 0);
-						int filter_slice_count = flt.get_slice_count(",");
-						for (int j = 0; j < filter_slice_count; j++) {
-							String str = (flt.get_slice(",", j).strip_edges());
-							if (f.match(str)) {
-								valid = true;
-								break;
-							}
-						}
-
-						if (!valid && filter_slice_count > 0) {
-							String str = (flt.get_slice(",", 0).strip_edges());
-							f += str.substr(1, str.length() - 1);
-						}
-					}
-					emit_signal(SNAME("file_selected"), f);
-				} else if ((mode == FILE_MODE_OPEN_ANY || mode == FILE_MODE_OPEN_FILE) && dir_access->file_exists(f)) {
-					emit_signal(SNAME("file_selected"), f);
-				} else if (mode == FILE_MODE_OPEN_ANY || mode == FILE_MODE_OPEN_DIR) {
-					emit_signal(SNAME("dir_selected"), f);
-				}
-			}
-			file->set_text(f);
-			dir->set_text(f.get_base_dir());
-			selected_options = p_selected_options;
-			filter->select(p_filter);
-		}
-	} else {
+	if (!p_ok) {
 		file->set_text("");
 		emit_signal(SNAME("canceled"));
+		return;
 	}
+
+	if (p_files.is_empty()) {
+		return;
+	}
+
+	Vector<String> files = p_files;
+	if (access != ACCESS_FILESYSTEM) {
+		for (String &file_name : files) {
+			file_name = ProjectSettings::get_singleton()->localize_path(file_name);
+		}
+	}
+	String f = files[0];
+	if (mode == FILE_MODE_OPEN_FILES) {
+		emit_signal(SNAME("files_selected"), files);
+	} else {
+		if (mode == FILE_MODE_SAVE_FILE) {
+			if (p_filter >= 0 && p_filter < filters.size()) {
+				bool valid = false;
+				String flt = filters[p_filter].get_slice(";", 0);
+				int filter_slice_count = flt.get_slice_count(",");
+				for (int j = 0; j < filter_slice_count; j++) {
+					String str = (flt.get_slice(",", j).strip_edges());
+					if (f.match(str)) {
+						valid = true;
+						break;
+					}
+				}
+
+				if (!valid && filter_slice_count > 0) {
+					String str = (flt.get_slice(",", 0).strip_edges());
+					f += str.substr(1, str.length() - 1);
+				}
+			}
+			emit_signal(SNAME("file_selected"), f);
+		} else if ((mode == FILE_MODE_OPEN_ANY || mode == FILE_MODE_OPEN_FILE) && dir_access->file_exists(f)) {
+			emit_signal(SNAME("file_selected"), f);
+		} else if (mode == FILE_MODE_OPEN_ANY || mode == FILE_MODE_OPEN_DIR) {
+			emit_signal(SNAME("dir_selected"), f);
+		}
+	}
+	file->set_text(f);
+	dir->set_text(f.get_base_dir());
+	selected_options = p_selected_options;
+	filter->select(p_filter);
 }
 
 VBoxContainer *FileDialog::get_vbox() {
@@ -188,49 +190,71 @@ void FileDialog::_notification(int p_what) {
 			refresh->set_icon(theme_cache.reload);
 			show_hidden->set_icon(theme_cache.toggle_hidden);
 			makedir->set_icon(theme_cache.create_folder);
-			ThemeIntData cur_theme_data;
-			cur_theme_data.set_data_name("icon_color");
 
 			dir_up->begin_bulk_theme_override();
-			for (int i = 0; i < STATE_MAX; i++) {  
-				State cur_state = static_cast<State>(i);
-				dir_up->add_theme_color_override(cur_theme_data.get_state_data_name(cur_state), _get_current_icon_color_with_state(cur_state));
-			}
+			dir_up->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
+			dir_up->add_theme_color_role_override("icon_normal_color_role", theme_cache.icon_normal_color_role);
+			dir_up->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
+			dir_up->add_theme_color_role_override("icon_hover_color_role", theme_cache.icon_hover_color_role);
+			dir_up->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
+			dir_up->add_theme_color_role_override("icon_focus_color_role", theme_cache.icon_focus_color_role);
+			dir_up->add_theme_color_override("icon_pressed_color", theme_cache.icon_pressed_color);
+			dir_up->add_theme_color_role_override("icon_pressed_color_role", theme_cache.icon_pressed_color_role);
 			dir_up->end_bulk_theme_override();
 
 			dir_prev->begin_bulk_theme_override();
-			for (int i = 0; i < STATE_MAX; i++) {  
-				State cur_state = static_cast<State>(i);
-				dir_prev->add_theme_color_override(cur_theme_data.get_state_data_name(cur_state), _get_current_icon_color_with_state(cur_state));
-			}
+			dir_prev->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
+			dir_prev->add_theme_color_role_override("icon_normal_color_role", theme_cache.icon_normal_color_role);
+			dir_prev->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
+			dir_prev->add_theme_color_role_override("icon_hover_color_role", theme_cache.icon_hover_color_role);
+			dir_prev->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
+			dir_prev->add_theme_color_role_override("icon_focus_color_role", theme_cache.icon_focus_color_role);
+			dir_prev->add_theme_color_override("icon_color_pressed", theme_cache.icon_pressed_color);
+			dir_prev->add_theme_color_role_override("icon_color_pressed_role", theme_cache.icon_pressed_color_role);
 			dir_prev->end_bulk_theme_override();
 
 			dir_next->begin_bulk_theme_override();
-			for (int i = 0; i < STATE_MAX; i++) {  
-				State cur_state = static_cast<State>(i);
-				dir_next->add_theme_color_override(cur_theme_data.get_state_data_name(cur_state), _get_current_icon_color_with_state(cur_state));
-			}
+			dir_next->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
+			dir_next->add_theme_color_role_override("icon_normal_color_role", theme_cache.icon_normal_color_role);
+			dir_next->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
+			dir_next->add_theme_color_role_override("icon_hover_color_role", theme_cache.icon_hover_color_role);
+			dir_next->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
+			dir_next->add_theme_color_role_override("icon_focus_color_role", theme_cache.icon_focus_color_role);
+			dir_next->add_theme_color_override("icon_color_pressed", theme_cache.icon_pressed_color);
+			dir_next->add_theme_color_role_override("icon_color_pressed_role", theme_cache.icon_pressed_color_role);
 			dir_next->end_bulk_theme_override();
 
 			refresh->begin_bulk_theme_override();
-			for (int i = 0; i < STATE_MAX; i++) {  
-				State cur_state = static_cast<State>(i);
-				refresh->add_theme_color_override(cur_theme_data.get_state_data_name(cur_state), _get_current_icon_color_with_state(cur_state));
-			}
+			refresh->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
+			refresh->add_theme_color_role_override("icon_normal_color_role", theme_cache.icon_normal_color_role);
+			refresh->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
+			refresh->add_theme_color_role_override("icon_hover_color_role", theme_cache.icon_hover_color_role);
+			refresh->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
+			refresh->add_theme_color_role_override("icon_focus_color_role", theme_cache.icon_focus_color_role);
+			refresh->add_theme_color_override("icon_pressed_color", theme_cache.icon_pressed_color);
+			refresh->add_theme_color_role_override("icon_pressed_color_role", theme_cache.icon_pressed_color_role);
 			refresh->end_bulk_theme_override();
 
 			show_hidden->begin_bulk_theme_override();
-			for (int i = 0; i < STATE_MAX; i++) {  
-				State cur_state = static_cast<State>(i);
-				show_hidden->add_theme_color_override(cur_theme_data.get_state_data_name(cur_state), _get_current_icon_color_with_state(cur_state));
-			}
+			show_hidden->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
+			show_hidden->add_theme_color_role_override("icon_normal_color_role", theme_cache.icon_normal_color_role);
+			show_hidden->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
+			show_hidden->add_theme_color_role_override("icon_hover_color_role", theme_cache.icon_hover_color_role);
+			show_hidden->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
+			show_hidden->add_theme_color_role_override("icon_focus_color_role", theme_cache.icon_focus_color_role);
+			show_hidden->add_theme_color_override("icon_pressed_color", theme_cache.icon_pressed_color);
+			show_hidden->add_theme_color_role_override("icon_pressed_color_role", theme_cache.icon_pressed_color_role);
 			show_hidden->end_bulk_theme_override();
 
 			makedir->begin_bulk_theme_override();
-			for (int i = 0; i < STATE_MAX; i++) {  
-				State cur_state = static_cast<State>(i);
-				makedir->add_theme_color_override(cur_theme_data.get_state_data_name(cur_state), _get_current_icon_color_with_state(cur_state));
-			}
+			makedir->add_theme_color_override("icon_normal_color", theme_cache.icon_normal_color);
+			makedir->add_theme_color_role_override("icon_normal_color_role", theme_cache.icon_normal_color_role);
+			makedir->add_theme_color_override("icon_hover_color", theme_cache.icon_hover_color);
+			makedir->add_theme_color_role_override("icon_hover_color_role", theme_cache.icon_hover_color_role);
+			makedir->add_theme_color_override("icon_focus_color", theme_cache.icon_focus_color);
+			makedir->add_theme_color_role_override("icon_focus_color_role", theme_cache.icon_focus_color_role);
+			makedir->add_theme_color_override("icon_pressed_color", theme_cache.icon_pressed_color);
+			makedir->add_theme_color_role_override("icon_pressed_color_role", theme_cache.icon_pressed_color_role);
 			makedir->end_bulk_theme_override();
 
 			invalidate();
@@ -673,8 +697,9 @@ void FileDialog::update_file_list() {
 		item = dir_access->get_next();
 	}
 
-	dirs.sort_custom<NaturalNoCaseComparator>();
-	files.sort_custom<NaturalNoCaseComparator>();
+	dirs.sort_custom<FileNoCaseComparator>();
+	files.sort_custom<FileNoCaseComparator>();
+
 	while (!dirs.is_empty()) {
 		String &dir_name = dirs.front()->get();
 		TreeItem *ti = tree->create_item(root);
@@ -718,8 +743,7 @@ void FileDialog::update_file_list() {
 	}
 
 	String base_dir = dir_access->get_current_dir();
-	Color file_icon_color = _get_current_file_icon_color_with_state(State::NormalNoneLTR);
-	Color file_disabled_color = _get_current_file_icon_color_with_state(State::DisabledNoneLTR);
+
 	while (!files.is_empty()) {
 		bool match = patterns.is_empty();
 		String match_str;
@@ -742,10 +766,10 @@ void FileDialog::update_file_list() {
 			} else {
 				ti->set_icon(0, theme_cache.file);
 			}
-			ti->set_icon_modulate(0, file_icon_color);
+			ti->set_icon_modulate(0, theme_cache.file_icon_color);
 
 			if (mode == FILE_MODE_OPEN_DIR) {
-				ti->set_custom_color(0, file_disabled_color);
+				ti->set_custom_color(0, theme_cache.file_disabled_color);
 				ti->set_selectable(0, false);
 			}
 			Dictionary d;
@@ -1112,7 +1136,7 @@ void FileDialog::_update_option_controls() {
 	}
 	options_dirty = false;
 
-	while (grid_options->get_child_count(false) > 0) {
+	while (grid_options->get_child_count() > 0) {
 		Node *child = grid_options->get_child(0);
 		grid_options->remove_child(child);
 		child->queue_free();
@@ -1224,9 +1248,8 @@ void FileDialog::add_option(const String &p_name, const Vector<String> &p_values
 
 void FileDialog::set_option_count(int p_count) {
 	ERR_FAIL_COND(p_count < 0);
-	int prev_size = options.size();
 
-	if (prev_size == p_count) {
+	if (options.size() == p_count) {
 		return;
 	}
 	options.resize(p_count);
@@ -1288,85 +1311,6 @@ void FileDialog::_get_property_list(List<PropertyInfo> *p_list) const {
 	}
 }
 
-
-bool FileDialog::_has_current_file_icon_color_with_state(State p_state) const {
-	for (const State &E : theme_cache.file_icon_color.get_search_order(p_state)) {
-		if (has_theme_color(theme_cache.file_icon_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool FileDialog::_has_current_file_icon_color() const {
-	State cur_state = get_current_state_with_focus();
-	return _has_current_file_icon_color_with_state(cur_state);
-}
-
-
-Color FileDialog::_get_current_file_icon_color_with_state(State p_state) const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_color;
-
-	for (const State &E : theme_cache.file_icon_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.file_icon_color.get_state_data_name(E))) {
-			cur_color = theme_cache.file_icon_color.get_data(E);
-			break;
-		}
-	}
-	return cur_color;
-}
-
-Color FileDialog::_get_current_file_icon_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_color;
-	cur_color = _get_current_file_icon_color_with_state(cur_state);
-	return cur_color;
-}
-
-
-bool FileDialog::_has_current_icon_color_with_state(State p_state) const {
-	ThemeIntData cur_theme_data; 
-	cur_theme_data.set_data_name("font_color");
-
-	for (const State &E : theme_cache.icon_color.get_search_order(p_state)) {
-		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool FileDialog::_has_current_icon_color() const {
-	State cur_state = get_current_state_with_focus();
-	return _has_current_icon_color_with_state(cur_state);
-}
-
-
-Color FileDialog::_get_current_icon_color_with_state(State p_state) const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_color;
-	ThemeIntData cur_theme_data; 
-	cur_theme_data.set_data_name("font_color");
-
-	for (const State &E : theme_cache.icon_color.get_search_order(cur_state)) {
-		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
-			cur_color = theme_cache.icon_color.get_data(E);
-			break;
-		}
-	}
-	return cur_color;
-}
-
-Color FileDialog::_get_current_icon_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_color;
-	cur_color = _get_current_icon_color_with_state(cur_state);
-	return cur_color;
-}
-
-
-
 void FileDialog::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_cancel_pressed"), &FileDialog::_cancel_pressed);
 
@@ -1379,10 +1323,10 @@ void FileDialog::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_option_default", "option"), &FileDialog::get_option_default);
 	ClassDB::bind_method(D_METHOD("set_option_name", "option", "name"), &FileDialog::set_option_name);
 	ClassDB::bind_method(D_METHOD("set_option_values", "option", "values"), &FileDialog::set_option_values);
-	ClassDB::bind_method(D_METHOD("set_option_default", "option", "index"), &FileDialog::set_option_default);
+	ClassDB::bind_method(D_METHOD("set_option_default", "option", "default_value_index"), &FileDialog::set_option_default);
 	ClassDB::bind_method(D_METHOD("set_option_count", "count"), &FileDialog::set_option_count);
 	ClassDB::bind_method(D_METHOD("get_option_count"), &FileDialog::get_option_count);
-	ClassDB::bind_method(D_METHOD("add_option", "name", "values", "index"), &FileDialog::add_option);
+	ClassDB::bind_method(D_METHOD("add_option", "name", "values", "default_value_index"), &FileDialog::add_option);
 	ClassDB::bind_method(D_METHOD("get_selected_options"), &FileDialog::get_selected_options);
 	ClassDB::bind_method(D_METHOD("get_current_dir"), &FileDialog::get_current_dir);
 	ClassDB::bind_method(D_METHOD("get_current_file"), &FileDialog::get_current_file);
@@ -1434,8 +1378,6 @@ void FileDialog::_bind_methods() {
 	BIND_ENUM_CONSTANT(ACCESS_USERDATA);
 	BIND_ENUM_CONSTANT(ACCESS_FILESYSTEM);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, FileDialog, default_color_scheme);
-
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, parent_folder);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, forward_folder);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, back_folder);
@@ -1445,15 +1387,22 @@ void FileDialog::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, file);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, FileDialog, create_folder);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, folder_icon_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, folder_icon_color);
-
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, file_icon_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, FileDialog, file_icon_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, folder_icon_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, file_icon_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, file_icon_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, FileDialog, file_disabled_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, file_disabled_color_role);
 
 	// TODO: Define own colors?
-	BIND_THEME_ITEM_EXT_MULTI(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_color_role, font_color_role, "Button");
-	BIND_THEME_ITEM_EXT_MULTI(Theme::DATA_TYPE_COLOR, FileDialog, icon_color, font_color, "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_normal_color, "font_color", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_normal_color_role, "font_color_role", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_hover_color, "font_hover_color", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_hover_color_role, "font_hover_color_role", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_focus_color, "font_focus_color", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_focus_color_role, "font_focus_color_role", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, FileDialog, icon_pressed_color, "font_pressed_color", "Button");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, FileDialog, icon_pressed_color_role, "font_pressed_color_role", "Button");
 }
 
 void FileDialog::set_show_hidden_files(bool p_show) {

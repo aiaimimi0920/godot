@@ -46,55 +46,21 @@ void Separator::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_DRAW: {
 			Size2i size = get_size();
-			Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
-			if (style.is_valid()) {
-				Size2i ssize = style->get_minimum_size();
-				if (orientation == VERTICAL) {
-					style->draw(get_canvas_item(), Rect2((size.x - ssize.x) / 2, 0, ssize.x, size.y));
-				} else {
-					style->draw(get_canvas_item(), Rect2(0, (size.y - ssize.y) / 2, size.x, ssize.y));
-				}
+			Size2i ssize = theme_cache.separator_style->get_minimum_size();
+
+			if (orientation == VERTICAL) {
+				theme_cache.separator_style->draw(get_canvas_item(), Rect2((size.x - ssize.x) / 2, 0, ssize.x, size.y));
+			} else {
+				theme_cache.separator_style->draw(get_canvas_item(), Rect2(0, (size.y - ssize.y) / 2, size.x, ssize.y));
 			}
 		} break;
 	}
 }
 
-Ref<StyleBox> Separator::_get_current_default_stylebox_with_state(State p_state) const {
-	Ref<StyleBox> style;
-	ThemeIntData cur_theme_data; 
-	cur_theme_data.set_data_name("separator");
-	for (const State &E : theme_cache.separator_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
-			style = theme_cache.separator_style.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-bool Separator::_has_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	ThemeIntData cur_theme_data; 
-	cur_theme_data.set_data_name("separator");
-	for (const State &E : theme_cache.separator_style.get_search_order(cur_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Ref<StyleBox> Separator::_get_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
-	style = _get_current_default_stylebox_with_state(cur_state);
-
-	return style;
-}
-
 void Separator::_bind_methods() {
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Separator, default_color_scheme);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, Separator, separation);
-	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, Separator, separator_style, separator);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, Separator, separator_style, "separator");
 }
 
 Separator::Separator() {

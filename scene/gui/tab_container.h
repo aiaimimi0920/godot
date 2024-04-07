@@ -76,23 +76,31 @@ private:
 		int icon_max_width = 0;
 		int outline_size = 0;
 
-		ThemeStyleboxData tab_style{"tab_style"};
+		Ref<StyleBox> tab_unselected_style;
+		Ref<StyleBox> tab_hovered_style;
+		Ref<StyleBox> tab_selected_style;
+		Ref<StyleBox> tab_disabled_style;
+		Ref<StyleBox> tab_focus_style;
 
 		Ref<Texture2D> increment_icon;
 		Ref<Texture2D> increment_hl_icon;
 		Ref<Texture2D> decrement_icon;
 		Ref<Texture2D> decrement_hl_icon;
 		Ref<Texture2D> drop_mark_icon;
-
 		Color drop_mark_color;
 		Ref<ColorRole> drop_mark_color_role;
 
-		ThemeColorData font_color{"font_color"};
-		ThemeColorRoleData font_color_role{"font_color_role"};
-
+		Color font_selected_color;
+		Ref<ColorRole> font_selected_color_role;
+		Color font_hovered_color;
+		Ref<ColorRole> font_hovered_color_role;
+		Color font_unselected_color;
+		Ref<ColorRole> font_unselected_color_role;
+		Color font_disabled_color;
+		Ref<ColorRole> font_disabled_color_role;
 		Color font_outline_color;
 		Ref<ColorRole> font_outline_color_role;
-		
+
 		Ref<Font> tab_font;
 		int tab_font_size;
 	} theme_cache;
@@ -126,20 +134,6 @@ protected:
 	virtual void move_child_notify(Node *p_child) override;
 	virtual void remove_child_notify(Node *p_child) override;
 	static void _bind_methods();
-
-	bool _has_current_tab_style_with_state(State p_state) const;
-	bool _has_current_tab_style() const;
-	Ref<StyleBox> _get_current_tab_style_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_tab_style() const;	
-
-	bool _has_current_focus_tab_style() const;
-	Ref<StyleBox> _get_current_focus_tab_style() const;	
-
-	bool _has_current_font_color_with_state(State p_state) const;
-	bool _has_current_font_color() const;
-	Color _get_current_font_color_with_state(State p_state) const;
-	Color _get_current_font_color() const;
-
 
 public:
 	TabBar *get_tab_bar() const;

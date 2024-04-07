@@ -42,36 +42,6 @@ void ScrollBar::set_can_focus_by_default(bool p_can_focus) {
 	focus_by_default = p_can_focus;
 }
 
-Ref<StyleBox> ScrollBar::_get_current_default_stylebox_with_state(State p_state) const {
-	Ref<StyleBox> style;
-
-	for (const State &E : theme_cache.scroll_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(theme_cache.scroll_style.get_state_data_name(E))) {
-			style = theme_cache.scroll_style.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-
-bool ScrollBar::_has_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	for (const State &E : theme_cache.scroll_style.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.scroll_style.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Ref<StyleBox> ScrollBar::_get_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
-	style = _get_current_default_stylebox_with_state(cur_state);
-	return style;
-}
-
 void ScrollBar::gui_input(const Ref<InputEvent> &p_event) {
 	ERR_FAIL_COND(p_event.is_null());
 
@@ -275,7 +245,7 @@ void ScrollBar::_notification(int p_what) {
 				incr = theme_cache.increment_icon;
 			}
 
-			Ref<StyleBox> bg = _get_current_default_stylebox();
+			Ref<StyleBox> bg = has_focus() ? theme_cache.scroll_focus_style : theme_cache.scroll_style;
 
 			Ref<StyleBox> grabber;
 			if (drag.active) {
@@ -303,9 +273,8 @@ void ScrollBar::_notification(int p_what) {
 			} else {
 				area.height -= incr->get_height() + decr->get_height();
 			}
-			if(bg.is_valid()){
-				bg->draw(ci, Rect2(ofs, area));
-			}
+
+			bg->draw(ci, Rect2(ofs, area));
 
 			if (orientation == HORIZONTAL) {
 				ofs.width += area.width;
@@ -479,10 +448,7 @@ double ScrollBar::get_area_size() const {
 	switch (orientation) {
 		case VERTICAL: {
 			double area = get_size().height;
-			Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
-			if (style.is_valid()) {
-				area -= style->get_minimum_size().height;
-			}
+			area -= theme_cache.scroll_style->get_minimum_size().height;
 			area -= theme_cache.increment_icon->get_height();
 			area -= theme_cache.decrement_icon->get_height();
 			area -= get_grabber_min_size();
@@ -490,10 +456,7 @@ double ScrollBar::get_area_size() const {
 		} break;
 		case HORIZONTAL: {
 			double area = get_size().width;
-			Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
-			if (style.is_valid()) {
-				area -= style->get_minimum_size().width;
-			}
+			area -= theme_cache.scroll_style->get_minimum_size().width;
 			area -= theme_cache.increment_icon->get_width();
 			area -= theme_cache.decrement_icon->get_width();
 			area -= get_grabber_min_size();
@@ -512,29 +475,22 @@ double ScrollBar::get_grabber_offset() const {
 Size2 ScrollBar::get_minimum_size() const {
 	Ref<Texture2D> incr = theme_cache.increment_icon;
 	Ref<Texture2D> decr = theme_cache.decrement_icon;
-	Ref<StyleBox> bg = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
-
+	Ref<StyleBox> bg = theme_cache.scroll_style;
 	Size2 minsize;
 
 	if (orientation == VERTICAL) {
-		minsize.width = incr->get_size().width;
+		minsize.width = MAX(incr->get_size().width, bg->get_minimum_size().width);
 		minsize.height += incr->get_size().height;
 		minsize.height += decr->get_size().height;
-		if (bg.is_valid()) {
-			minsize.width = MAX(incr->get_size().width, bg->get_minimum_size().width);
-			minsize.height += bg->get_minimum_size().height;
-		}
+		minsize.height += bg->get_minimum_size().height;
 		minsize.height += get_grabber_min_size();
 	}
 
 	if (orientation == HORIZONTAL) {
-		minsize.height = incr->get_size().height;
+		minsize.height = MAX(incr->get_size().height, bg->get_minimum_size().height);
 		minsize.width += incr->get_size().width;
 		minsize.width += decr->get_size().width;
-		if (bg.is_valid()) {
-			minsize.height = MAX(incr->get_size().height, bg->get_minimum_size().height);
-			minsize.width += bg->get_minimum_size().width;
-		}
+		minsize.width += bg->get_minimum_size().width;
 		minsize.width += get_grabber_min_size();
 	}
 
@@ -665,8 +621,10 @@ void ScrollBar::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "custom_step", PROPERTY_HINT_RANGE, "-1,4096,suffix:px"), "set_custom_step", "get_custom_step");
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, ScrollBar, scroll_style);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, ScrollBar, default_color_scheme);
 
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollBar, scroll_style, "scroll");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollBar, scroll_focus_style, "scroll_focus");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollBar, grabber_style, "grabber");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollBar, grabber_hl_style, "grabber_highlight");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, ScrollBar, grabber_pressed_style, "grabber_pressed");
@@ -677,7 +635,6 @@ void ScrollBar::_bind_methods() {
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, ScrollBar, decrement_icon, "decrement");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, ScrollBar, decrement_hl_icon, "decrement_highlight");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, ScrollBar, decrement_pressed_icon, "decrement_pressed");
-
 }
 
 ScrollBar::ScrollBar(Orientation p_orientation) {

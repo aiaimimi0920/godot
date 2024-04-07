@@ -88,9 +88,6 @@ class ThemeItemImportTree : public VBoxContainer {
 	List<TreeItem *> tree_font_size_items;
 	List<TreeItem *> tree_icon_items;
 	List<TreeItem *> tree_stylebox_items;
-	List<TreeItem *> tree_color_role_items;
-	List<TreeItem *> tree_color_scheme_items;
-	List<TreeItem *> tree_str_items;
 
 	bool updating_tree = false;
 
@@ -140,27 +137,6 @@ class ThemeItemImportTree : public VBoxContainer {
 	Button *select_full_styleboxes_button = nullptr;
 	Button *deselect_all_styleboxes_button = nullptr;
 	Label *total_selected_styleboxes_label = nullptr;
-
-	TextureRect *select_color_roles_icon = nullptr;
-	Label *select_color_roles_label = nullptr;
-	Button *select_all_color_roles_button = nullptr;
-	Button *select_full_color_roles_button = nullptr;
-	Button *deselect_all_color_roles_button = nullptr;
-	Label *total_selected_color_roles_label = nullptr;
-
-    TextureRect *select_color_schemes_icon = nullptr;
-    Label *select_color_schemes_label = nullptr;
-    Button *select_all_color_schemes_button = nullptr;
-    Button *select_full_color_schemes_button = nullptr;
-    Button *deselect_all_color_schemes_button = nullptr;
-    Label *total_selected_color_schemes_label = nullptr;
-
-    TextureRect *select_strs_icon = nullptr;
-    Label *select_strs_label = nullptr;
-    Button *select_all_strs_button = nullptr;
-    Button *select_full_strs_button = nullptr;
-    Button *deselect_all_strs_button = nullptr;
-    Label *total_selected_strs_label = nullptr;
 
 	HBoxContainer *select_icons_warning_hb = nullptr;
 	TextureRect *select_icons_warning_icon = nullptr;
@@ -235,9 +211,6 @@ class ThemeItemEditorDialog : public AcceptDialog {
 	Button *edit_items_add_font_size = nullptr;
 	Button *edit_items_add_icon = nullptr;
 	Button *edit_items_add_stylebox = nullptr;
-	Button *edit_items_add_color_role = nullptr;
-	Button *edit_items_add_color_scheme = nullptr;
-	Button *edit_items_add_str = nullptr;
 	Button *edit_items_remove_class = nullptr;
 	Button *edit_items_remove_custom = nullptr;
 	Button *edit_items_remove_all = nullptr;
@@ -381,9 +354,6 @@ class ThemeTypeEditor : public MarginContainer {
 	VBoxContainer *font_size_items_list = nullptr;
 	VBoxContainer *icon_items_list = nullptr;
 	VBoxContainer *stylebox_items_list = nullptr;
-	VBoxContainer *color_role_items_list = nullptr;
-	VBoxContainer *color_scheme_items_list = nullptr;
-	VBoxContainer *str_items_list = nullptr;
 
 	LineEdit *type_variation_edit = nullptr;
 	Button *type_variation_button = nullptr;
@@ -403,7 +373,7 @@ class ThemeTypeEditor : public MarginContainer {
 	VBoxContainer *_create_item_list(Theme::DataType p_data_type);
 	void _update_type_list();
 	void _update_type_list_debounced();
-    HashMap<StringName, bool> _get_type_items(String p_type_name, Theme::DataType p_type, bool p_include_default);
+	HashMap<StringName, bool> _get_type_items(String p_type_name, Theme::DataType p_type, bool p_include_default);
 	HBoxContainer *_create_property_control(Theme::DataType p_data_type, String p_item_name, bool p_editable);
 	void _add_focusable(Control *p_control);
 	void _update_type_items();
@@ -429,9 +399,6 @@ class ThemeTypeEditor : public MarginContainer {
 	void _font_item_changed(Ref<Font> p_value, String p_item_name);
 	void _icon_item_changed(Ref<Texture2D> p_value, String p_item_name);
 	void _stylebox_item_changed(Ref<StyleBox> p_value, String p_item_name);
-	void _color_role_item_changed(Ref<ColorRole> p_value, String p_item_name);
-	void _color_scheme_item_changed(Ref<ColorScheme> p_value, String p_item_name);
-	void _str_item_changed(String p_value, String p_item_name);
 	void _change_pinned_stylebox();
 	void _on_pin_leader_button_pressed(Control *p_editor, String p_item_name);
 	void _pin_leading_stylebox(String p_item_name, Ref<StyleBox> p_stylebox);

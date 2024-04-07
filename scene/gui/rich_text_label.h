@@ -610,8 +610,8 @@ private:
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
 
-		ThemeStyleboxData default_stylebox{"default_stylebox"};
-
+		Ref<StyleBox> normal_style;
+		Ref<StyleBox> focus_style;
 		Ref<StyleBox> progress_bg_style;
 		Ref<StyleBox> progress_fg_style;
 
@@ -624,21 +624,16 @@ private:
 		Ref<ColorRole> default_color_role;
 		Color font_selected_color;
 		Ref<ColorRole> font_selected_color_role;
-
 		Color selection_color;
 		Ref<ColorRole> selection_color_role;
-
 		Color font_outline_color;
 		Ref<ColorRole> font_outline_color_role;
-
 		Color font_shadow_color;
 		Ref<ColorRole> font_shadow_color_role;
-
 		int shadow_outline_size;
 		int shadow_offset_x;
 		int shadow_offset_y;
 		int outline_size;
-
 		Color outline_color;
 		Ref<ColorRole> outline_color_role;
 
@@ -656,13 +651,10 @@ private:
 
 		int table_h_separation;
 		int table_v_separation;
-
 		Color table_odd_row_bg;
 		Ref<ColorRole> table_odd_row_bg_role;
-
 		Color table_even_row_bg;
 		Ref<ColorRole> table_even_row_bg_role;
-
 		Color table_border;
 		Ref<ColorRole> table_border_role;
 
@@ -844,14 +836,6 @@ public:
 	void install_effect(const Variant effect);
 
 	virtual Size2 get_minimum_size() const override;
-
-	bool _has_current_default_stylebox_with_state(State p_state) const;
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
-
-	bool _has_current_focus_default_stylebox() const;
-	Ref<StyleBox> _get_current_focus_default_stylebox() const;
 
 	RichTextLabel(const String &p_text = String());
 	~RichTextLabel();

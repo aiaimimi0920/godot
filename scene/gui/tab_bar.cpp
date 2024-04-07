@@ -43,11 +43,8 @@ Size2 TabBar::get_minimum_size() const {
 	if (tabs.is_empty()) {
 		return ms;
 	}
-	Ref<StyleBox> tab_unselected_style = _get_current_tab_style_with_state(State::NormalUncheckedLTR);
-	Ref<StyleBox> tab_hovered_style = _get_current_tab_style_with_state(State::HoverNoneLTR);
-	Ref<StyleBox> tab_selected_style = _get_current_tab_style_with_state(State::NormalCheckedLTR);
-	Ref<StyleBox> tab_disabled_style = _get_current_tab_style_with_state(State::DisabledNoneLTR);
-	int y_margin = MAX(MAX(MAX(tab_unselected_style->get_minimum_size().height, tab_hovered_style->get_minimum_size().height), tab_selected_style->get_minimum_size().height), tab_disabled_style->get_minimum_size().height);
+
+	int y_margin = MAX(MAX(MAX(theme_cache.tab_unselected_style->get_minimum_size().height, theme_cache.tab_hovered_style->get_minimum_size().height), theme_cache.tab_selected_style->get_minimum_size().height), theme_cache.tab_disabled_style->get_minimum_size().height);
 
 	for (int i = 0; i < tabs.size(); i++) {
 		if (tabs[i].hidden) {
@@ -58,13 +55,13 @@ Size2 TabBar::get_minimum_size() const {
 
 		Ref<StyleBox> style;
 		if (tabs[i].disabled) {
-			style = tab_disabled_style;
+			style = theme_cache.tab_disabled_style;
 		} else if (current == i) {
-			style = tab_selected_style;
+			style = theme_cache.tab_selected_style;
 		} else if (hover == i) {
-			style = tab_hovered_style;
+			style = theme_cache.tab_hovered_style;
 		} else {
-			style = tab_unselected_style;
+			style = theme_cache.tab_unselected_style;
 		}
 		ms.width += style->get_minimum_size().width;
 
@@ -405,6 +402,7 @@ void TabBar::_notification(int p_what) {
 		case NOTIFICATION_DRAW: {
 			bool rtl = is_layout_rtl();
 			Vector2 size = get_size();
+
 			if (tabs.is_empty()) {
 				// Draw the drop indicator where the first tab would be if there are no tabs.
 				if (dragging_valid_tab) {
@@ -419,18 +417,6 @@ void TabBar::_notification(int p_what) {
 
 			int ofs = tabs[offset].ofs_cache;
 
-
-			Ref<StyleBox> tab_disabled_style = _get_current_tab_style_with_state(State::DisabledNoneLTR);
-			Ref<StyleBox> tab_hovered_style = _get_current_tab_style_with_state(State::HoverNoneLTR);
-			Ref<StyleBox> tab_unselected_style = _get_current_tab_style_with_state(State::NormalUncheckedLTR);
-			Ref<StyleBox> tab_selected_style = _get_current_tab_style_with_state(State::NormalCheckedLTR);
-
-
-			Color font_disabled_color = _get_current_font_color_with_state(State::DisabledNoneLTR);
-			Color font_hovered_color = _get_current_font_color_with_state(State::HoverNoneLTR);
-			Color font_unselected_color = _get_current_font_color_with_state(State::NormalUncheckedLTR);
-			Color font_selected_color = _get_current_font_color_with_state(State::NormalCheckedLTR);
-
 			// Draw unselected tabs in the back.
 			for (int i = offset; i <= max_drawn_tab; i++) {
 				if (tabs[i].hidden) {
@@ -442,14 +428,14 @@ void TabBar::_notification(int p_what) {
 					Color col;
 
 					if (tabs[i].disabled) {
-						sb = tab_disabled_style;
-						col = font_disabled_color;
+						sb = theme_cache.tab_disabled_style;
+						col = theme_cache.font_disabled_color;
 					} else if (i == hover) {
-						sb = tab_hovered_style;
-						col = font_hovered_color;
+						sb = theme_cache.tab_hovered_style;
+						col = theme_cache.font_hovered_color;
 					} else {
-						sb = tab_unselected_style;
-						col = font_unselected_color;
+						sb = theme_cache.tab_unselected_style;
+						col = theme_cache.font_unselected_color;
 					}
 
 					_draw_tab(sb, col, i, rtl ? size.width - ofs - tabs[i].size_cache : ofs, false);
@@ -460,10 +446,10 @@ void TabBar::_notification(int p_what) {
 
 			// Draw selected tab in the front, but only if it's visible.
 			if (current >= offset && current <= max_drawn_tab && !tabs[current].hidden) {
-				Ref<StyleBox> sb = tabs[current].disabled ? tab_disabled_style : tab_selected_style;
+				Ref<StyleBox> sb = tabs[current].disabled ? theme_cache.tab_disabled_style : theme_cache.tab_selected_style;
 				float x = rtl ? size.width - tabs[current].ofs_cache - tabs[current].size_cache : tabs[current].ofs_cache;
 
-				_draw_tab(sb, font_selected_color, current, x, has_focus());
+				_draw_tab(sb, theme_cache.font_selected_color, current, x, has_focus());
 			}
 
 			if (buttons_visible) {
@@ -542,8 +528,7 @@ void TabBar::_draw_tab(Ref<StyleBox> &p_tab_style, Color &p_font_color, int p_in
 		draw_set_transform(Point2(), 0.0, Size2(1.0, 1.0));
 	}
 	if (p_focus) {
-		
-		Ref<StyleBox> focus_style = _get_current_focus_tab_style();
+		Ref<StyleBox> focus_style = theme_cache.tab_focus_style;
 		focus_style->draw(ci, sb_rect);
 	}
 
@@ -565,6 +550,7 @@ void TabBar::_draw_tab(Ref<StyleBox> &p_tab_style, Color &p_font_color, int p_in
 	if (!tabs[p_index].text.is_empty()) {
 		Point2i text_pos = Point2i(rtl ? p_x - tabs[p_index].size_text : p_x,
 				p_tab_style->get_margin(SIDE_TOP) + ((sb_rect.size.y - sb_ms.y) - tabs[p_index].text_buf->get_size().y) / 2);
+
 		if (theme_cache.outline_size > 0 && theme_cache.font_outline_color.a > 0) {
 			tabs[p_index].text_buf->draw_outline(ci, text_pos, theme_cache.outline_size, theme_cache.font_outline_color);
 		}
@@ -1463,20 +1449,15 @@ int TabBar::get_tab_width(int p_idx) const {
 
 	Ref<StyleBox> style;
 
-	Ref<StyleBox> tab_unselected_style = _get_current_tab_style_with_state(State::NormalUncheckedLTR);
-	Ref<StyleBox> tab_hovered_style = _get_current_tab_style_with_state(State::HoverNoneLTR);
-	Ref<StyleBox> tab_selected_style = _get_current_tab_style_with_state(State::NormalCheckedLTR);
-	Ref<StyleBox> tab_disabled_style = _get_current_tab_style_with_state(State::DisabledNoneLTR);
-
 	if (tabs[p_idx].disabled) {
-		style = tab_disabled_style;
+		style = theme_cache.tab_disabled_style;
 	} else if (current == p_idx) {
-		style = tab_selected_style;
+		style = theme_cache.tab_selected_style;
 		// Use the unselected style's width if the hovered one is shorter, to avoid an infinite loop when switching tabs with the mouse.
-	} else if (hover == p_idx && tab_hovered_style->get_minimum_size().width >= tab_unselected_style->get_minimum_size().width) {
-		style = tab_hovered_style;
+	} else if (hover == p_idx && theme_cache.tab_hovered_style->get_minimum_size().width >= theme_cache.tab_unselected_style->get_minimum_size().width) {
+		style = theme_cache.tab_hovered_style;
 	} else {
-		style = tab_unselected_style;
+		style = theme_cache.tab_unselected_style;
 	}
 	int x = style->get_minimum_size().width;
 
@@ -1791,87 +1772,6 @@ void TabBar::_get_property_list(List<PropertyInfo> *p_list) const {
 	}
 }
 
-bool TabBar::_has_current_tab_style_with_state(State p_state) const {
-	ThemeIntData cur_theme_data;
-	cur_theme_data.set_data_name("tab");
-	for (const State &E : theme_cache.tab_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool TabBar::_has_current_tab_style() const {
-	State cur_state = get_current_state_with_focus();
-	return _has_current_tab_style_with_state(cur_state);
-}
-
-Ref<StyleBox> TabBar::_get_current_tab_style_with_state(State p_state) const {
-	Ref<StyleBox> style;
-	ThemeIntData cur_theme_data;
-	cur_theme_data.set_data_name("tab");
-	for (const State &E : theme_cache.tab_style.get_search_order(p_state)) {
-		if (has_theme_stylebox(cur_theme_data.get_state_data_name(E))) {
-			style = theme_cache.tab_style.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-Ref<StyleBox> TabBar::_get_current_tab_style() const {
-	State cur_state = get_current_state_with_focus();
-	Ref<StyleBox> style;
-	style = _get_current_tab_style_with_state(cur_state);
-	return style;
-}
-
-bool TabBar::_has_current_focus_tab_style() const {
-	State cur_state = State::FocusNoneLTR;
-	return _has_current_tab_style_with_state(cur_state);
-}
-
-Ref<StyleBox> TabBar::_get_current_focus_tab_style() const {
-	State cur_state = State::FocusNoneLTR;
-	Ref<StyleBox> style;
-	style = _get_current_tab_style_with_state(cur_state);
-	return style;
-}
-
-bool TabBar::_has_current_font_color_with_state(State p_state) const {
-	for (const State &E : theme_cache.font_color.get_search_order(p_state)) {
-		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool TabBar::_has_current_font_color() const {
-	State cur_state = get_current_state_with_focus();
-	return _has_current_font_color_with_state(cur_state);
-}
-
-Color TabBar::_get_current_font_color_with_state(State p_state) const {
-	Color cur_font_color;
-	for (const State &E : theme_cache.font_color.get_search_order(p_state)) {
-		if (has_theme_color(theme_cache.font_color.get_state_data_name(E))) {
-			cur_font_color = theme_cache.font_color.get_data(E);
-			break;
-		}
-	}
-	return cur_font_color;
-}
-
-Color TabBar::_get_current_font_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_font_color;
-	cur_font_color = _get_current_font_color_with_state(cur_state);
-	return cur_font_color;
-}
-
-
 void TabBar::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_tab_count", "count"), &TabBar::set_tab_count);
 	ClassDB::bind_method(D_METHOD("get_tab_count"), &TabBar::get_tab_count);
@@ -1966,22 +1866,30 @@ void TabBar::_bind_methods() {
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TabBar, h_separation);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TabBar, icon_max_width);
 
-	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_STYLEBOX, TabBar, tab_style, tab);
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, TabBar, tab_unselected_style, "tab_unselected");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, TabBar, tab_hovered_style, "tab_hovered");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, TabBar, tab_selected_style, "tab_selected");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, TabBar, tab_disabled_style, "tab_disabled");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, TabBar, tab_focus_style, "tab_focus");
 
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, TabBar, increment_icon, "increment");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, TabBar, increment_hl_icon, "increment_highlight");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, TabBar, decrement_icon, "decrement");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, TabBar, decrement_hl_icon, "decrement_highlight");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, TabBar, drop_mark_icon, "drop_mark");
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabBar, drop_mark_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabBar, drop_mark_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabBar, drop_mark_color_role);
 
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TabBar, font_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TabBar, font_color);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabBar, font_outline_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabBar, font_selected_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabBar, font_selected_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabBar, font_hovered_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabBar, font_hovered_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabBar, font_unselected_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabBar, font_unselected_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabBar, font_disabled_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabBar, font_disabled_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, TabBar, font_outline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, TabBar, font_outline_color_role);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, TabBar, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, TabBar, font_size);

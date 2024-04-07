@@ -227,13 +227,10 @@ void CodeEdit::_notification(int p_what) {
 						}
 						tl->draw(ci, title_pos, code_completion_options[l].font_color);
 					}
-					Color code_completion_scroll_hovered_color = _get_current_code_completion_scroll_color_with_state(State::HoverNoneLTR);
-					Color code_completion_scroll_color = _get_current_code_completion_scroll_color_with_state(State::NormalNoneLTR);
-
 
 					/* Draw a small scroll rectangle to show a position in the options. */
 					if (scroll_width) {
-						Color scroll_color = is_code_completion_scroll_hovered || is_code_completion_scroll_pressed ? code_completion_scroll_hovered_color : code_completion_scroll_color;
+						Color scroll_color = is_code_completion_scroll_hovered || is_code_completion_scroll_pressed ? theme_cache.code_completion_scroll_hovered_color : theme_cache.code_completion_scroll_color;
 
 						float r = (float)theme_cache.code_completion_max_lines / code_completion_options_count;
 						float o = (float)code_completion_line_ofs / code_completion_options_count;
@@ -2495,43 +2492,6 @@ Ref<Texture2D> CodeEdit::_get_folded_eol_icon() const {
 	return theme_cache.folded_eol_icon;
 }
 
-bool CodeEdit::_has_current_code_completion_scroll_color_with_state(State p_state) const {
-	ThemeIntData cur_theme_data; 
-	cur_theme_data.set_data_name("completion_scroll_color");
-	for (const State &E : theme_cache.code_completion_scroll_color.get_search_order(p_state)) {
-		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool CodeEdit::_has_current_code_completion_scroll_color() const {
-	State cur_state = get_current_state_with_focus();
-	return _has_current_code_completion_scroll_color_with_state(cur_state);
-}
-
-Color CodeEdit::_get_current_code_completion_scroll_color_with_state(State p_state) const {
-	Color cur_color;
-	ThemeIntData cur_theme_data; 
-	cur_theme_data.set_data_name("completion_scroll_color");
-	for (const State &E : theme_cache.code_completion_scroll_color.get_search_order(p_state)) {
-		if (has_theme_color(cur_theme_data.get_state_data_name(E))) {
-			cur_color = theme_cache.code_completion_scroll_color.get_data(E);
-			break;
-		}
-	}
-	return cur_color;
-}
-
-Color CodeEdit::_get_current_code_completion_scroll_color() const {
-	State cur_state = get_current_state_with_focus();
-	Color cur_color;
-	cur_color = _get_current_code_completion_scroll_color_with_state(cur_state);
-	return cur_color;
-}
-
-
 void CodeEdit::_bind_methods() {
 	/* Indent management */
 	ClassDB::bind_method(D_METHOD("set_indent_size", "size"), &CodeEdit::set_indent_size);
@@ -2770,33 +2730,31 @@ void CodeEdit::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("symbol_validate", PropertyInfo(Variant::STRING, "symbol")));
 
 	/* Theme items */
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, CodeEdit, default_color_scheme);
-
 	/* Gutters */
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_folding_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, code_folding_color);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, folded_code_region_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_folding_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, folded_code_region_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, folded_code_region_color_role);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, CodeEdit, can_fold_icon, "can_fold");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, CodeEdit, folded_icon, "folded");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, CodeEdit, can_fold_code_region_icon, "can_fold_code_region");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, CodeEdit, folded_code_region_icon, "folded_code_region");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_ICON, CodeEdit, folded_eol_icon);
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, breakpoint_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, breakpoint_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, breakpoint_color_role);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, CodeEdit, breakpoint_icon, "breakpoint");
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, bookmark_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, bookmark_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, bookmark_color_role);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, CodeEdit, bookmark_icon, "bookmark");
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, executing_line_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, executing_line_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, executing_line_color_role);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, CodeEdit, executing_line_icon, "executing_line");
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, line_number_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, line_number_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, line_number_color_role);
 
 	/* Code Completion */
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, CodeEdit, code_completion_style, "completion");
@@ -2805,33 +2763,31 @@ void CodeEdit::_bind_methods() {
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, CodeEdit, code_completion_max_width, "completion_max_width");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, CodeEdit, code_completion_max_lines, "completion_lines");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_CONSTANT, CodeEdit, code_completion_scroll_width, "completion_scroll_width");
-
-	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_scroll_color_role, completion_scroll_color_role);
-	BIND_THEME_ITEM_CUSTOM_MULTI(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_scroll_color, completion_scroll_color);
-	
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_background_color_role, "completion_background_color_role");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_scroll_color, "completion_scroll_color");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_scroll_color_role, "completion_scroll_color_role");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_scroll_hovered_color, "completion_scroll_hovered_color");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_scroll_hovered_color_role, "completion_scroll_hovered_color_role");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_background_color, "completion_background_color");
-
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_selected_color_role, "completion_selected_color_role");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_background_color_role, "completion_background_color_role");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_selected_color, "completion_selected_color");
-
-	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_existing_color_role, "completion_existing_color_role");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_selected_color_role, "completion_selected_color_role");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR, CodeEdit, code_completion_existing_color, "completion_existing_color");
+	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_completion_existing_color_role, "completion_existing_color_role");
 
 	/* Code hint */
 	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_STYLEBOX, CodeEdit, code_hint_style, "panel", "TooltipPanel");
-	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_hint_color_role, "font_color_role", "TooltipLabel");
 	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR, CodeEdit, code_hint_color, "font_color", "TooltipLabel");
+	BIND_THEME_ITEM_EXT(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, code_hint_color_role, "font_color_role", "TooltipLabel");
 
 	/* Line length guideline */
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, line_length_guideline_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, line_length_guideline_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, line_length_guideline_color_role);
 
 	/* Other visuals */
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, CodeEdit, style_normal, "normal");
 
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, brace_mismatch_color_role);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, CodeEdit, brace_mismatch_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, CodeEdit, brace_mismatch_color_role);
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, CodeEdit, font);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, CodeEdit, font_size);
@@ -3456,9 +3412,16 @@ void CodeEdit::_filter_code_completion_candidates_impl() {
 		int offset = option.default_value.get_type() == Variant::COLOR ? line_height : 0;
 
 		if (in_string != -1) {
+			// The completion string may have a literal behind it, which should be removed before re-quoting.
+			String literal;
+			if (option.insert_text.substr(1).is_quoted()) {
+				literal = option.display.left(1);
+				option.display = option.display.substr(1);
+				option.insert_text = option.insert_text.substr(1);
+			}
 			String quote = single_quote ? "'" : "\"";
-			option.display = option.display.unquote().quote(quote);
-			option.insert_text = option.insert_text.unquote().quote(quote);
+			option.display = literal + (option.display.unquote().quote(quote));
+			option.insert_text = literal + (option.insert_text.unquote().quote(quote));
 		}
 
 		if (option.display.length() == 0) {

@@ -62,9 +62,9 @@ class GraphNode : public GraphElement {
 	};
 
 	struct _MinSizeCache {
-		int min_size;
-		bool will_stretch;
-		int final_size;
+		int min_size = 0;
+		bool will_stretch = false;
+		int final_size = 0;
 	};
 
 	HBoxContainer *titlebar_hbox = nullptr;
@@ -80,17 +80,17 @@ class GraphNode : public GraphElement {
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
-
-		ThemeStyleboxData panel{"panel"};
-		ThemeStyleboxData titlebar{"titlebar"};
+		Ref<StyleBox> panel;
+		Ref<StyleBox> panel_selected;
+		Ref<StyleBox> titlebar;
+		Ref<StyleBox> titlebar_selected;
 		Ref<StyleBox> slot;
 
 		int separation = 0;
 		int port_h_offset = 0;
-		
+
 		Ref<Texture2D> port;
 		Ref<Texture2D> resizer;
-
 		Color resizer_color;
 		Ref<ColorRole> resizer_color_role;
 	} theme_cache;
@@ -112,15 +112,6 @@ protected:
 	bool _get(const StringName &p_name, Variant &r_ret) const;
 	void _get_property_list(List<PropertyInfo> *p_list) const;
 
-	bool _has_current_panel_with_state(State p_state) const;
-	bool _has_current_panel() const;
-	Ref<StyleBox> _get_current_panel_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_panel() const;
-
-	bool _has_current_titlebar_with_state(State p_state) const;
-	bool _has_current_titlebar() const;
-	Ref<StyleBox> _get_current_titlebar_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_titlebar() const;
 public:
 	void set_title(const String &p_title);
 	String get_title() const;
@@ -176,8 +167,6 @@ public:
 
 	virtual Vector<int> get_allowed_size_flags_horizontal() const override;
 	virtual Vector<int> get_allowed_size_flags_vertical() const override;
-
-
 
 	GraphNode();
 };

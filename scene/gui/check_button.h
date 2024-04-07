@@ -32,37 +32,23 @@
 #define CHECK_BUTTON_H
 
 #include "scene/gui/button.h"
-#include "scene/resources/text_paragraph.h"
 
 class CheckButton : public Button {
 	GDCLASS(CheckButton, Button);
 
-
-	Ref<TextParagraph> text_icon_buf;
-	Ref<TextParagraph> text_icon_bg_1_buf;
-	Ref<TextParagraph> text_icon_bg_2_buf;
-
 	struct ThemeCache {
 		int h_separation = 0;
 		int check_v_offset = 0;
-		int icon_max_width;
-		int text_icon_font_size;
-		Ref<Font> text_icon_font;
+		Ref<StyleBox> normal_style;
 
-		ThemeIconData check_icon{ "check_icon" };
-		ThemeColorData check_icon_color{"check_icon_color"};
-		ThemeColorRoleData check_icon_color_role{"check_icon_color_role"};
-
-		ThemeStrData text_check_icon{"text_check_icon"};
-		ThemeColorData text_check_icon_color{"text_check_icon_color"};
-		ThemeColorRoleData text_check_icon_color_role{"text_check_icon_color_role"};
-
-
-		ThemeStrData text_check_icon_bg_1{"text_check_icon_bg_1"};
-		ThemeStrData text_check_icon_bg_2{"text_check_icon_bg_2"};
-		ThemeColorData text_check_icon_bg_color{"text_check_icon_bg_color"};
-		ThemeColorRoleData text_check_icon_bg_color_role{"text_check_icon_bg_color_role"};
-
+		Ref<Texture2D> checked;
+		Ref<Texture2D> unchecked;
+		Ref<Texture2D> checked_disabled;
+		Ref<Texture2D> unchecked_disabled;
+		Ref<Texture2D> checked_mirrored;
+		Ref<Texture2D> unchecked_mirrored;
+		Ref<Texture2D> checked_disabled_mirrored;
+		Ref<Texture2D> unchecked_disabled_mirrored;
 	} theme_cache;
 
 protected:
@@ -72,31 +58,7 @@ protected:
 	void _notification(int p_what);
 	static void _bind_methods();
 
-	bool _has_current_check_icon_with_state(State p_state) const;
-	bool _has_current_check_icon() const;
-	Ref<Texture2D> _get_current_check_icon_with_state(State p_state) const;
-	Ref<Texture2D> _get_current_check_icon() const;
-
-	bool _has_current_check_icon_color() const;
-	Color _get_current_check_icon_color() const;
-
-	bool _has_current_text_check_icon() const;
-	String _get_current_text_check_icon() const;
-
-	bool _has_current_text_check_icon_bg_1() const;
-	String _get_current_text_check_icon_bg_1() const;
-
-	bool _has_current_text_check_icon_bg_2() const;
-	String _get_current_text_check_icon_bg_2() const;
-
-	bool _has_current_text_check_icon_color() const;
-	Color _get_current_text_check_icon_color() const;
-
-	bool _has_current_text_check_icon_bg_color() const;
-	Color _get_current_text_check_icon_bg_color() const;
-
 public:
-
 	CheckButton(const String &p_text = String());
 	~CheckButton();
 };

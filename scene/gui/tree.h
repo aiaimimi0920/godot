@@ -524,51 +524,59 @@ private:
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
 
-		ThemeStyleboxData default_stylebox{"default_stylebox"};
+		Ref<StyleBox> panel_style;
+		Ref<StyleBox> focus_style;
 
 		Ref<Font> font;
 		Ref<Font> tb_font;
 		int font_size = 0;
 		int tb_font_size = 0;
 
-		ThemeStyleboxData selected{"selected"};
-		ThemeStyleboxData cursor{"cursor"};
+		Ref<StyleBox> selected;
+		Ref<StyleBox> selected_focus;
+		Ref<StyleBox> cursor;
+		Ref<StyleBox> cursor_unfocus;
 		Ref<StyleBox> button_pressed;
-		ThemeStyleboxData title_button{"title_button"};
-		ThemeStyleboxData custom_button{"custom_button"};
+		Ref<StyleBox> title_button;
+		Ref<StyleBox> title_button_hover;
+		Ref<StyleBox> title_button_pressed;
+		Ref<StyleBox> custom_button;
+		Ref<StyleBox> custom_button_hover;
+		Ref<StyleBox> custom_button_pressed;
 
 		Color title_button_color;
-		Ref<ColorRole> title_button_color_role;
-		
-		ThemeIconData checked{"checked"};
-		ThemeIconData indeterminate{"indeterminate"};
+		Ref<ColorRole> title_button_color;
+
+		Ref<Texture2D> checked;
+		Ref<Texture2D> unchecked;
+		Ref<Texture2D> checked_disabled;
+		Ref<Texture2D> unchecked_disabled;
+		Ref<Texture2D> indeterminate;
+		Ref<Texture2D> indeterminate_disabled;
 		Ref<Texture2D> arrow;
 		Ref<Texture2D> arrow_collapsed;
 		Ref<Texture2D> arrow_collapsed_mirrored;
 		Ref<Texture2D> select_arrow;
 		Ref<Texture2D> updown;
 
-		ThemeColorData font_color{"font_color"};
-		ThemeColorRoleData font_color_role{"font_color_role"};
-
+		Color font_color;
+		Ref<ColorRole> font_color_role;
+		Color font_selected_color;
+		Ref<ColorRole> font_selected_color_role;
+		Color font_disabled_color;
+		Ref<ColorRole> font_disabled_color_role;
 		Color guide_color;
 		Ref<ColorRole> guide_color_role;
-
 		Color drop_position_color;
 		Ref<ColorRole> drop_position_color_role;
-
 		Color relationship_line_color;
 		Ref<ColorRole> relationship_line_color_role;
-
 		Color parent_hl_line_color;
 		Ref<ColorRole> parent_hl_line_color_role;
-
 		Color children_hl_line_color;
 		Ref<ColorRole> children_hl_line_color_role;
-
 		Color custom_button_font_highlight;
 		Ref<ColorRole> custom_button_font_highlight_role;
-
 		Color font_outline_color;
 		Ref<ColorRole> font_outline_color_role;
 
@@ -695,46 +703,6 @@ protected:
 
 	void _notification(int p_what);
 	static void _bind_methods();
-
-	bool _has_current_default_stylebox_with_state(State p_state) const;
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
-
-	bool _has_current_selected_with_state(State p_state) const;
-	bool _has_current_selected() const;
-	Ref<StyleBox> _get_current_selected_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_selected() const;
-
-	bool _has_current_cursor_with_state(State p_state) const;
-	bool _has_current_cursor() const;
-	Ref<StyleBox> _get_current_cursor_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_cursor() const;
-
-	bool _has_current_title_button_with_state(State p_state) const;
-	bool _has_current_title_button() const;
-	Ref<StyleBox> _get_current_title_button_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_title_button() const;
-
-	bool _has_current_custom_button_with_state(State p_state) const;
-	bool _has_current_custom_button() const;
-	Ref<StyleBox> _get_current_custom_button_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_custom_button() const;
-
-	bool _has_current_checked_icon_with_state(State p_state) const;
-	bool _has_current_checked_icon() const;
-	Ref<Texture2D> _get_current_checked_icon_with_state(State p_state) const;
-	Ref<Texture2D> _get_current_checked_icon() const;
-
-	bool _has_current_indeterminate_icon_with_state(State p_state) const;
-	bool _has_current_indeterminate_icon() const;
-	Ref<Texture2D> _get_current_indeterminate_icon_with_state(State p_state) const;
-	Ref<Texture2D> _get_current_indeterminate_icon() const;
-
-	bool _has_current_font_color_with_state(State p_state) const;
-	bool _has_current_font_color() const;
-	Color _get_current_font_color_with_state(State p_state) const;
-	Color _get_current_font_color() const;
 
 public:
 	virtual void gui_input(const Ref<InputEvent> &p_event) override;

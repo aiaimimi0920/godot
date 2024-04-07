@@ -388,6 +388,8 @@ void Slider::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "tick_count", PROPERTY_HINT_RANGE, "0,4096,1"), "set_ticks", "get_ticks");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "ticks_on_borders"), "set_ticks_on_borders", "get_ticks_on_borders");
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, Slider, default_color_scheme);
+
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, Slider, slider_style, "slider");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, Slider, grabber_area_style, "grabber_area");
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, Slider, grabber_area_hl_style, "grabber_area_highlight");

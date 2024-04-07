@@ -318,7 +318,6 @@ bool Control::_set(const StringName &p_name, const Variant &p_value) {
 			String dname = name.get_slicec('/', 1);
 			data.theme_constant_override.erase(dname);
 			_notify_theme_override_changed();
-
 		} else if (name.begins_with("theme_override_color_roles/")) {
 			String dname = name.get_slicec('/', 1);
 			if (data.theme_color_role_override.has(dname)) {
@@ -1469,15 +1468,11 @@ void Control::_set_global_position(const Point2 &p_point) {
 
 void Control::set_global_position(const Point2 &p_point, bool p_keep_offsets) {
 	ERR_MAIN_THREAD_GUARD;
-
-	Transform2D global_transform_cache = get_global_transform();
-	if (p_point == global_transform_cache.get_origin()) {
-		return; // Edge case, but avoids calculation.
-	}
-
-	Point2 internal_position = global_transform_cache.affine_inverse().xform(p_point);
-
-	set_position(internal_position + data.pos_cache, p_keep_offsets);
+	// (parent_global_transform * T(new_position) * internal_transform).origin == new_global_position
+	// (T(new_position) * internal_transform).origin == new_position_in_parent_space
+	// new_position == new_position_in_parent_space - internal_transform.origin
+	Point2 position_in_parent_space = data.parent_canvas_item ? data.parent_canvas_item->get_global_transform().affine_inverse().xform(p_point) : p_point;
+	set_position(position_in_parent_space - _get_internal_transform().get_origin(), p_keep_offsets);
 }
 
 Point2 Control::get_global_position() const {
@@ -1720,8 +1715,7 @@ Size2 Control::get_custom_minimum_size() const {
 
 void Control::_update_minimum_size_cache() {
 	Size2 minsize = get_minimum_size();
-	minsize.x = MAX(minsize.x, data.custom_minimum_size.x);
-	minsize.y = MAX(minsize.y, data.custom_minimum_size.y);
+	minsize = minsize.max(data.custom_minimum_size);
 
 	data.minimum_size_cache = minsize;
 	data.minimum_size_valid = true;
@@ -2646,7 +2640,7 @@ Ref<StyleBox> Control::get_theme_stylebox(const StringName &p_name, const String
 	Ref<StyleBox> style = data.theme_owner->get_theme_item_in_types(Theme::DATA_TYPE_STYLEBOX, p_name, theme_types);
 	data.theme_style_cache[p_theme_type][p_name] = style;
 
-	if (style.is_valid()) {
+	if (style.is_valid() && style->get_default_color_scheme().is_null()) {
 		const StringName targe_color_role_scheme = String("default_color_scheme");
 		const Ref<ColorScheme> color_scheme = get_theme_color_scheme(targe_color_role_scheme, p_theme_type);
 		if (color_scheme.is_valid()) {
@@ -2751,7 +2745,6 @@ Color Control::get_theme_color(const StringName &p_name, const StringName &p_the
 	return target_color;
 }
 
-
 int Control::get_theme_constant(const StringName &p_name, const StringName &p_theme_type) const {
 	ERR_READ_THREAD_GUARD_V(0);
 	if (!data.initialized) {
@@ -2775,7 +2768,6 @@ int Control::get_theme_constant(const StringName &p_name, const StringName &p_th
 	data.theme_constant_cache[p_theme_type][p_name] = constant;
 	return constant;
 }
-
 
 Ref<ColorRole> Control::get_theme_color_role(const StringName &p_name, const StringName &p_theme_type) const {
 	ERR_READ_THREAD_GUARD_V(Ref<ColorRole>());
@@ -2803,8 +2795,6 @@ Ref<ColorRole> Control::get_theme_color_role(const StringName &p_name, const Str
 	Color color = get_theme_color(targe_color_name, p_theme_type);
 	return color_role;
 }
-
-
 
 Ref<ColorScheme> Control::get_theme_color_scheme(const StringName &p_name, const StringName &p_theme_type) const {
 	ERR_READ_THREAD_GUARD_V(Ref<ColorScheme>());
@@ -2839,7 +2829,6 @@ Ref<ColorScheme> Control::get_theme_color_scheme(const StringName &p_name, const
 	Color color = get_theme_color(targe_color_name, p_theme_type);
 	return color_scheme;
 }
-
 
 String Control::get_theme_str(const StringName &p_name, const StringName &p_theme_type) const {
 	ERR_READ_THREAD_GUARD_V(String());
@@ -3068,7 +3057,6 @@ void Control::add_theme_icon_override(const StringName &p_name, const Ref<Textur
 
 void Control::add_theme_style_override(const StringName &p_name, const Ref<StyleBox> &p_style) {
 	ERR_MAIN_THREAD_GUARD;
-
 	ERR_FAIL_COND(!p_style.is_valid());
 
 	if (data.theme_style_override.has(p_name)) {
@@ -3270,6 +3258,7 @@ bool Control::has_theme_str_override(const StringName &p_name) const {
 	const String *str = data.theme_str_override.getptr(p_name);
 	return str != nullptr;
 }
+
 /// Default theme properties.
 
 float Control::get_theme_default_base_scale() const {
@@ -3664,49 +3653,6 @@ void Control::_notification(int p_notification) {
 	}
 }
 
-State Control::get_current_state() const {
-	const bool rtl = is_layout_rtl();
-	State cur_state;
-	if (rtl) {
-		cur_state = State::NormalNoneRTL;
-	} else {
-		cur_state = State::NormalNoneLTR;
-	}
-	return cur_state;
-}
-
-State Control::get_current_state_with_focus() const {
-	const bool rtl = is_layout_rtl();
-	State cur_state;
-	if (rtl) {
-		if(has_focus()){
-			cur_state = State::FocusNoneRTL;
-		}else{
-			cur_state = State::NormalNoneRTL;
-		}
-		
-	} else {
-		if(has_focus()){
-			cur_state = State::FocusNoneLTR;
-		}else{
-			cur_state = State::NormalNoneLTR;
-		}
-	}
-	return cur_state;
-}
-
-
-State Control::get_current_focus_state() const {
-	const bool rtl = is_layout_rtl();
-	State cur_state;
-	if (rtl) {
-		cur_state = State::FocusNoneRTL;
-	} else {
-		cur_state = State::FocusNoneLTR;
-	}
-	return cur_state;
-}
-
 void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("accept_event"), &Control::accept_event);
 	ClassDB::bind_method(D_METHOD("get_minimum_size"), &Control::get_minimum_size);
@@ -4084,6 +4030,8 @@ void Control::_bind_methods() {
 
 Control::Control() {
 	data.theme_owner = memnew(ThemeOwner(this));
+
+	set_physics_interpolation_mode(Node::PHYSICS_INTERPOLATION_MODE_OFF);
 }
 
 Control::~Control() {
@@ -4107,7 +4055,6 @@ Control::~Control() {
 	for (KeyValue<StringName, Ref<ColorRole>> &E : data.theme_color_role_override) {
 		E.value->disconnect_changed(callable_mp(this, &Control::_notify_theme_override_changed));
 	}
-
 
 	// Then override maps can be simply cleared.
 	data.theme_icon_override.clear();

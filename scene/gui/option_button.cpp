@@ -60,11 +60,7 @@ Size2 OptionButton::get_minimum_size() const {
 	}
 
 	if (has_theme_icon(SNAME("arrow"))) {
-		Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
-		Size2 padding = Size2(0, 0);
-		if (style.is_valid()) {
-			padding = style->get_minimum_size();
-		}
+		const Size2 padding = _get_current_stylebox()->get_minimum_size();
 		const Size2 arrow_size = theme_cache.arrow_icon->get_size();
 
 		Size2 content_size = minsize - padding;
@@ -98,7 +94,26 @@ void OptionButton::_notification(int p_what) {
 			RID ci = get_canvas_item();
 			Color clr = Color(1, 1, 1);
 			if (theme_cache.modulate_arrow) {
-				clr = _get_current_font_color();
+				switch (get_draw_mode()) {
+					case DRAW_PRESSED:
+						clr = theme_cache.font_pressed_color;
+						break;
+					case DRAW_HOVER:
+						clr = theme_cache.font_hover_color;
+						break;
+					case DRAW_HOVER_PRESSED:
+						clr = theme_cache.font_hover_pressed_color;
+						break;
+					case DRAW_DISABLED:
+						clr = theme_cache.font_disabled_color;
+						break;
+					default:
+						if (has_focus()) {
+							clr = theme_cache.font_focus_color;
+						} else {
+							clr = theme_cache.font_color;
+						}
+				}
 			}
 
 			Size2 size = get_size();
@@ -440,14 +455,9 @@ void OptionButton::_refresh_size_cache() {
 	cache_refresh_pending = false;
 
 	if (fit_to_longest_item) {
-		if (_has_current_default_stylebox_with_state(State::NormalNoneLTR)) {
-			Ref<StyleBox> style = _get_current_default_stylebox_with_state(State::NormalNoneLTR);
-			if (style.is_valid()) {
-				_cached_size = style->get_minimum_size();
-				for (int i = 0; i < get_item_count(); i++) {
-					_cached_size = _cached_size.max(get_minimum_size_for_text_and_icon(popup->get_item_xl_text(i), get_item_icon(i)));
-				}
-			}
+		_cached_size = theme_cache.normal->get_minimum_size();
+		for (int i = 0; i < get_item_count(); i++) {
+			_cached_size = _cached_size.max(get_minimum_size_for_text_and_icon(popup->get_item_xl_text(i), get_item_icon(i)));
 		}
 	}
 	update_minimum_size();
@@ -582,7 +592,23 @@ void OptionButton::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("item_selected", PropertyInfo(Variant::INT, "index")));
 	ADD_SIGNAL(MethodInfo("item_focused", PropertyInfo(Variant::INT, "index")));
 
+	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, OptionButton, normal);
+
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, OptionButton, font_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_focus_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, OptionButton, font_focus_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_pressed_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, OptionButton, font_pressed_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_hover_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, OptionButton, font_hover_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_hover_pressed_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, OptionButton, font_hover_pressed_color_role);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, OptionButton, font_disabled_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_ROLE, OptionButton, font_disabled_color_role);
+
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, OptionButton, h_separation);
+
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_ICON, OptionButton, arrow_icon, "arrow");
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, OptionButton, arrow_margin);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, OptionButton, modulate_arrow);

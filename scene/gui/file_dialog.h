@@ -113,8 +113,6 @@ private:
 	bool is_invalidating = false;
 
 	struct ThemeCache {
-		Ref<ColorScheme> default_color_scheme;
-
 		Ref<Texture2D> parent_folder;
 		Ref<Texture2D> forward_folder;
 		Ref<Texture2D> back_folder;
@@ -124,14 +122,21 @@ private:
 		Ref<Texture2D> file;
 		Ref<Texture2D> create_folder;
 
-		Ref<ColorRole> folder_icon_color_role;
 		Color folder_icon_color;
+		Ref<ColorRole> folder_icon_color_role;
+		Color file_icon_color;
+		Ref<ColorRole> file_icon_color_role;
+		Color file_disabled_color;
+		Ref<ColorRole> file_disabled_color_role;
 
-		ThemeColorRoleData file_icon_color_role{ "file_icon_color_role" };
-		ThemeColorData file_icon_color{ "file_icon_color" };
-
-		ThemeColorRoleData icon_color_role{ "icon_color_role" };
-		ThemeColorData icon_color{ "icon_color" };
+		Color icon_normal_color;
+		Ref<ColorRole> icon_normal_color_role;
+		Color icon_hover_color;
+		Ref<ColorRole> icon_hover_color_role;
+		Color icon_focus_color;
+		Ref<ColorRole> icon_focus_color_role;
+		Color icon_pressed_color;
+		Ref<ColorRole> icon_pressed_color_role;
 	} theme_cache;
 
 	struct Option {
@@ -174,6 +179,7 @@ private:
 
 	virtual void shortcut_input(const Ref<InputEvent> &p_event) override;
 
+	void _native_popup();
 	void _native_dialog_cb(bool p_ok, const Vector<String> &p_files, int p_filter, const Dictionary &p_selected_options);
 
 	bool _is_open_should_be_disabled();
@@ -192,16 +198,6 @@ protected:
 	bool _get(const StringName &p_name, Variant &r_ret) const;
 	void _get_property_list(List<PropertyInfo> *p_list) const;
 	static void _bind_methods();
-
-	bool _has_current_file_icon_color_with_state(State p_state) const;
-	bool _has_current_file_icon_color() const;
-	Color _get_current_file_icon_color_with_state(State p_state) const;
-	Color _get_current_file_icon_color() const;
-
-	bool _has_current_icon_color_with_state(State p_state) const;
-	bool _has_current_icon_color() const;
-	Color _get_current_icon_color_with_state(State p_state) const;
-	Color _get_current_icon_color() const;
 
 public:
 	virtual void set_visible(bool p_visible) override;

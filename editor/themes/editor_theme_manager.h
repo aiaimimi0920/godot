@@ -53,13 +53,8 @@ class EditorThemeManager {
 		String preset;
 		String spacing_preset;
 
-		Color default_color_scheme_color;
-		Ref<ColorScheme> default_color_scheme;
-
 		Color base_color;
-		Ref<ColorRole> base_color_role;
 		Color accent_color;
-		Ref<ColorRole> accent_color_role;
 		float contrast = 1.0;
 		float icon_saturation = 1.0;
 
@@ -94,74 +89,40 @@ class EditorThemeManager {
 		int forced_even_separation = 0;
 
 		Color mono_color;
-		Ref<ColorRole> mono_color_role;
 		Color dark_color_1;
-		Ref<ColorRole> dark_color_1_role;
 		Color dark_color_2;
-		Ref<ColorRole> dark_color_2_role;
 		Color dark_color_3;
-		Ref<ColorRole> dark_color_3_role;
 		Color contrast_color_1;
-		Ref<ColorRole> contrast_color_1_role;
 		Color contrast_color_2;
-		Ref<ColorRole> contrast_color_2_role;
 		Color highlight_color;
-		Ref<ColorRole> highlight_color_role;
 		Color highlight_disabled_color;
-		Ref<ColorRole> highlight_disabled_color_role;
 		Color success_color;
-		Ref<ColorRole> success_color_role;
 		Color warning_color;
-		Ref<ColorRole> warning_color_role;
 		Color error_color;
-		Ref<ColorRole> error_color_role;
 		Color extra_border_color_1;
-		Ref<ColorRole> extra_border_color_1_role;
 		Color extra_border_color_2;
-		Ref<ColorRole> extra_border_color_2_role;
 
 		Color font_color;
-		Ref<ColorRole> font_color_role;
-
 		Color font_focus_color;
-		Ref<ColorRole> font_focus_color_role;
 		Color font_hover_color;
-		Ref<ColorRole> font_hover_color_role;
 		Color font_pressed_color;
-		Ref<ColorRole> font_pressed_color_role;
-
 		Color font_hover_pressed_color;
-		Ref<ColorRole> font_hover_pressed_color_role;
 		Color font_disabled_color;
-		Ref<ColorRole> font_disabled_color_role;
 		Color font_readonly_color;
-		Ref<ColorRole> font_readonly_color_role;
 		Color font_placeholder_color;
-		Ref<ColorRole> font_placeholder_color_role;
 		Color font_outline_color;
-		Ref<ColorRole> font_outline_color_role;
 
 		Color icon_normal_color;
-		Ref<ColorRole> icon_normal_color_role;
 		Color icon_focus_color;
-		Ref<ColorRole> icon_focus_color_role;
 		Color icon_hover_color;
-		Ref<ColorRole> icon_hover_color_role;
 		Color icon_pressed_color;
-		Ref<ColorRole> icon_pressed_color_role;
 		Color icon_disabled_color;
-		Ref<ColorRole> icon_disabled_color_role;
 
 		Color shadow_color;
-		Ref<ColorRole> shadow_color_role;
 		Color selection_color;
-		Ref<ColorRole> selection_color_role;
 		Color disabled_border_color;
-		Ref<ColorRole> disabled_border_color_role;
 		Color disabled_bg_color;
-		Ref<ColorRole> disabled_bg_color_role;
 		Color separator_color;
-		Ref<ColorRole> separator_color_role;
 
 		Ref<StyleBoxFlat> base_style;
 		Ref<StyleBoxEmpty> base_empty_style;

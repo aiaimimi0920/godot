@@ -210,9 +210,7 @@ void EditorSettingsDialog::_update_icons() {
 	shortcut_search_box->set_clear_button_enabled(true);
 
 	restart_close_button->set_icon(shortcuts->get_editor_theme_icon(SNAME("Close")));
-	ThemeIntData cur_theme_data;
-	cur_theme_data.set_data_name("default_stylebox");
-	restart_container->add_theme_style_override("panel", shortcuts->get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("Tree")));
+	restart_container->add_theme_style_override("panel", shortcuts->get_theme_stylebox(SNAME("panel"), SNAME("Tree")));
 	restart_icon->set_texture(shortcuts->get_editor_theme_icon(SNAME("StatusWarning")));
 	restart_label->add_theme_color_override("font_color", shortcuts->get_theme_color(SNAME("warning_color"), EditorStringName(Editor)));
 }
@@ -454,8 +452,8 @@ void EditorSettingsDialog::_update_shortcuts() {
 
 		TreeItem *section = shortcuts->create_item(root);
 
-		const String item_name = EditorPropertyNameProcessor::get_singleton()->process_name(section_name, name_style);
-		const String tooltip = EditorPropertyNameProcessor::get_singleton()->process_name(section_name, tooltip_style);
+		const String item_name = EditorPropertyNameProcessor::get_singleton()->process_name(section_name, name_style, E);
+		const String tooltip = EditorPropertyNameProcessor::get_singleton()->process_name(section_name, tooltip_style, E);
 
 		section->set_text(0, item_name);
 		section->set_tooltip_text(0, tooltip);
@@ -791,6 +789,7 @@ EditorSettingsDialog::EditorSettingsDialog() {
 	top_hbox->add_child(clear_all_search);
 
 	shortcuts = memnew(Tree);
+	shortcuts->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
 	shortcuts->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	shortcuts->set_columns(2);
 	shortcuts->set_hide_root(true);

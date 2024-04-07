@@ -550,62 +550,56 @@ private:
 	/* Visual. */
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
+
 		float base_scale = 1.0;
 
 		/* Search */
-		Color search_result_color;
+		Color search_result_color = Color(1, 1, 1);
 		Ref<ColorRole> search_result_color_role;
-		Color search_result_border_color;
+		Color search_result_border_color = Color(1, 1, 1);
 		Ref<ColorRole> search_result_border_color_role;
 
 		/* Caret */
-		int caret_width = 0;
-		Color caret_color;
+		int caret_width = 1;
+		Color caret_color = Color(1, 1, 1);
 		Ref<ColorRole> caret_color_role;
-		Color caret_background_color;
+		Color caret_background_color = Color(0, 0, 0);
 		Ref<ColorRole> caret_background_color_role;
 
 		/* Selection */
-		Color font_selected_color;
+		Color font_selected_color = Color(0, 0, 0, 0);
 		Ref<ColorRole> font_selected_color_role;
-		Color selection_color;
+		Color selection_color = Color(1, 1, 1);
 		Ref<ColorRole> selection_color_role;
 
 		/* Other visuals */
-		ThemeStyleboxData default_stylebox{ "default_stylebox" };
+		Ref<StyleBox> style_normal;
+		Ref<StyleBox> style_focus;
 		Ref<StyleBox> style_readonly;
-		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
 
 		Ref<Texture2D> tab_icon;
 		Ref<Texture2D> space_icon;
 
 		Ref<Font> font;
 		int font_size = 16;
-
-
-		Color font_color;
+		Color font_color = Color(1, 1, 1);
 		Ref<ColorRole> font_color_role;
-
-		Color font_readonly_color;
+		Color font_readonly_color = Color(1, 1, 1);
 		Ref<ColorRole> font_readonly_color_role;
-
-		Color font_placeholder_color;
+		Color font_placeholder_color = Color(1, 1, 1, 0.6);
 		Ref<ColorRole> font_placeholder_color_role;
 
-		Color outline_color;
-		Ref<ColorRole> outline_color_role;
-
 		int outline_size = 0;
+		Color outline_color = Color(1, 1, 1);
+		Ref<ColorRole> outline_color_role;
 
 		int line_spacing = 1;
 
-		Color background_color;
+		Color background_color = Color(1, 1, 1);
 		Ref<ColorRole> background_color_role;
-
-		Color current_line_color;
+		Color current_line_color = Color(1, 1, 1);
 		Ref<ColorRole> current_line_color_role;
-
-		Color word_highlighted_color;
+		Color word_highlighted_color = Color(1, 1, 1);
 		Ref<ColorRole> word_highlighted_color_role;
 	} theme_cache;
 
@@ -708,15 +702,6 @@ protected:
 	GDVIRTUAL1(_paste, int)
 	GDVIRTUAL1(_paste_primary_clipboard, int)
 
-	bool _has_current_default_stylebox_with_state(State p_state) const;
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
-	bool _has_current_focus_default_stylebox() const;
-	Ref<StyleBox> _get_current_focus_default_stylebox() const;
-
-	bool _has_current_state_layer_stylebox() const;
-	Ref<StyleBox> _get_current_state_layer_stylebox() const;
 public:
 	/* General overrides. */
 	virtual void unhandled_key_input(const Ref<InputEvent> &p_event) override;
@@ -920,6 +905,7 @@ public:
 	void select_all();
 	void select_word_under_caret(int p_caret = -1);
 	void add_selection_for_next_occurrence();
+	void skip_selection_for_next_occurrence();
 	void select(int p_from_line, int p_from_column, int p_to_line, int p_to_column, int p_caret = 0);
 
 	bool has_selection(int p_caret = -1) const;

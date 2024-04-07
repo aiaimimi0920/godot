@@ -100,6 +100,7 @@ class PopupMenu : public Popup {
 	RID global_menu;
 	RID system_menu;
 	NativeMenu::SystemMenus system_menu_id = NativeMenu::INVALID_MENU_ID;
+	bool prefer_native = false;
 
 	bool close_allowed = false;
 	bool activated_by_keyboard = false;
@@ -152,9 +153,10 @@ class PopupMenu : public Popup {
 	float gamepad_event_delay_ms = DEFAULT_GAMEPAD_EVENT_DELAY_MS;
 
 	struct ThemeCache {
-		Ref<ColorScheme> default_color_scheme;
-		ThemeStyleboxData default_stylebox{ "default_stylebox" };
-		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
+		Ref<ColorScheme> popup_default_color_scheme;
+
+		Ref<StyleBox> panel_style;
+		Ref<StyleBox> hover_style;
 
 		Ref<StyleBox> separator_style;
 		Ref<StyleBox> labeled_separator_left;
@@ -167,17 +169,29 @@ class PopupMenu : public Popup {
 		int item_end_padding = 0;
 		int icon_max_width = 0;
 
-		ThemeIconData icon{ "icon" };
-		ThemeIconData radio_icon{ "radio_icon" };
-		ThemeIconData submenu{ "submenu" };
+		Ref<Texture2D> checked;
+		Ref<Texture2D> checked_disabled;
+		Ref<Texture2D> unchecked;
+		Ref<Texture2D> unchecked_disabled;
+		Ref<Texture2D> radio_checked;
+		Ref<Texture2D> radio_checked_disabled;
+		Ref<Texture2D> radio_unchecked;
+		Ref<Texture2D> radio_unchecked_disabled;
+
+		Ref<Texture2D> submenu;
+		Ref<Texture2D> submenu_mirrored;
 
 		Ref<Font> font;
-		int font_size;
+		int font_size = 0;
 		Ref<Font> font_separator;
 		int font_separator_size = 0;
 
-		ThemeColorData font_color{ "font_color" };
-		ThemeColorRoleData font_color_role{ "font_color_role" };
+		Color font_color;
+		Ref<ColorRole> font_color_role;
+		Color font_hover_color;
+		Ref<ColorRole> font_hover_color_role;
+		Color font_disabled_color;
+		Ref<ColorRole> font_disabled_color_role;
 		Color font_accelerator_color;
 		Ref<ColorRole> font_accelerator_color_role;
 		int font_outline_size = 0;
@@ -213,37 +227,6 @@ protected:
 	bool _property_can_revert(const StringName &p_name) const { return property_helper.property_can_revert(p_name); }
 	bool _property_get_revert(const StringName &p_name, Variant &r_property) const { return property_helper.property_get_revert(p_name, r_property); }
 	static void _bind_methods();
-
-	bool _has_current_default_stylebox_with_state(State p_state) const;
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
-
-	bool _has_current_focus_default_stylebox() const;
-	Ref<StyleBox> _get_current_focus_default_stylebox() const;
-
-	bool _has_current_state_layer_stylebox() const;
-	Ref<StyleBox> _get_current_state_layer_stylebox() const;
-
-	bool _has_current_icon_with_state(State p_state) const;
-	bool _has_current_icon() const;
-	Ref<Texture2D> _get_current_icon_with_state(State p_state) const;
-	Ref<Texture2D> _get_current_icon() const;
-	bool _has_current_radio_icon_with_state(State p_state) const;
-	bool _has_current_radio_icon() const;
-	Ref<Texture2D> _get_current_radio_icon_with_state(State p_state) const;
-	Ref<Texture2D> _get_current_radio_icon() const;
-
-	bool _has_current_submenu_with_state(State p_state) const;
-	bool _has_current_submenu() const;
-	Ref<Texture2D> _get_current_submenu_with_state(State p_state) const;
-	Ref<Texture2D> _get_current_submenu() const;
-
-	bool _has_current_font_color_with_state(State p_state) const;
-	bool _has_current_font_color() const;
-	Color _get_current_font_color_with_state(State p_state) const;
-	Color _get_current_font_color() const;
-
 
 #ifndef DISABLE_DEPRECATED
 	void _add_shortcut_bind_compat_36493(const Ref<Shortcut> &p_shortcut, int p_id = -1, bool p_global = false);
@@ -349,6 +332,9 @@ public:
 	void set_item_count(int p_count);
 	int get_item_count() const;
 
+	void set_prefer_native_menu(bool p_enabled);
+	bool is_prefer_native_menu() const;
+
 	void scroll_to_item(int p_idx);
 
 	bool activate_item_by_event(const Ref<InputEvent> &p_event, bool p_for_global_only = false);
@@ -384,6 +370,7 @@ public:
 	bool get_allow_search() const;
 
 	virtual void popup(const Rect2i &p_bounds = Rect2i()) override;
+	virtual void set_visible(bool p_visible) override;
 
 	void take_mouse_focus();
 

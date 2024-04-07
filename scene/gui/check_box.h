@@ -32,7 +32,6 @@
 #define CHECK_BOX_H
 
 #include "scene/gui/button.h"
-#include "scene/resources/text_paragraph.h"
 
 class CheckBox : public Button {
 	GDCLASS(CheckBox, Button);
@@ -42,19 +41,16 @@ class CheckBox : public Button {
 	struct ThemeCache {
 		int h_separation = 0;
 		int check_v_offset = 0;
-		int icon_max_width;
-		int text_icon_font_size;
-		Ref<Font> text_icon_font;
+		Ref<StyleBox> normal_style;
 
-		ThemeIconData check_icon{ "check_icon" };
-		ThemeIconData radio_check_icon{ "radio_check_icon" };
-		ThemeColorData check_icon_color{"check_icon_color"};
-		ThemeColorRoleData check_icon_color_role{"check_icon_color_role"};
-
-		ThemeStrData text_check_icon{"text_check_icon"};
-		ThemeStrData text_radio_check_icon{"text_radio_check_icon"};
-		ThemeColorData text_check_icon_color{"text_check_icon_color"};
-		ThemeColorRoleData text_check_icon_color_role{"text_check_icon_color_role"};
+		Ref<Texture2D> checked;
+		Ref<Texture2D> unchecked;
+		Ref<Texture2D> radio_checked;
+		Ref<Texture2D> radio_unchecked;
+		Ref<Texture2D> checked_disabled;
+		Ref<Texture2D> unchecked_disabled;
+		Ref<Texture2D> radio_checked_disabled;
+		Ref<Texture2D> radio_unchecked_disabled;
 	} theme_cache;
 
 protected:
@@ -66,30 +62,7 @@ protected:
 
 	bool is_radio();
 
-	bool _has_current_check_icon_with_state(State p_state) const;
-	bool _has_current_check_icon() const;
-	Ref<Texture2D> _get_current_check_icon_with_state(State p_state) const;
-	Ref<Texture2D> _get_current_check_icon() const;
-
-	bool _has_current_radio_check_icon_with_state(State p_state) const;
-	bool _has_current_radio_check_icon() const;
-	Ref<Texture2D> _get_current_radio_check_icon_with_state(State p_state) const;
-	Ref<Texture2D> _get_current_radio_check_icon() const;
-
-	bool _has_current_check_icon_color() const;
-	Color _get_current_check_icon_color() const;
-
-	bool _has_current_text_check_icon() const;
-	String _get_current_text_check_icon() const;
-
-	bool _has_current_text_radio_check_icon() const;
-	String _get_current_text_radio_check_icon() const;
-
-	bool _has_current_text_check_icon_color() const;
-	Color _get_current_text_check_icon_color() const;
-
 public:
-
 	CheckBox(const String &p_text = String());
 	~CheckBox();
 };

@@ -30,9 +30,7 @@
 
 #include "texture_button.h"
 
-#include "core/string/translation.h"
 #include "core/typedefs.h"
-#include "scene/theme/theme_db.h"
 
 #include <stdlib.h>
 
@@ -60,20 +58,6 @@ Size2 TextureButton::get_minimum_size() const {
 		}
 	}
 
-	if (!ignore_texture_size) {
-		if (text_icon_normal.is_empty()) {
-			if (text_icon_pressed.is_empty()) {
-				if (text_icon_hover.is_empty()) {
-				} else {
-					rscale = rscale.max(Size2(theme_cache.text_icon_font_size, theme_cache.text_icon_font_size));
-				}
-			} else {
-				rscale = rscale.max(Size2(theme_cache.text_icon_font_size, theme_cache.text_icon_font_size));
-			}
-		} else {
-			rscale = rscale.max(Size2(theme_cache.text_icon_font_size, theme_cache.text_icon_font_size));
-		}
-	}
 	return rscale.abs();
 }
 
@@ -119,8 +103,8 @@ bool TextureButton::has_point(const Point2 &p_point) const {
 			point *= scale;
 
 			// finally, we need to check if the point is inside a rectangle with a position >= 0,0 and a size <= mask_size
-			rect.position = Point2(MAX(0, _texture_region.position.x), MAX(0, _texture_region.position.y));
-			rect.size = Size2(MIN(mask_size.x, _texture_region.size.x), MIN(mask_size.y, _texture_region.size.y));
+			rect.position = Point2().max(_texture_region.position);
+			rect.size = mask_size.min(_texture_region.size);
 		}
 
 		if (!rect.has_point(point)) {
@@ -137,36 +121,8 @@ bool TextureButton::has_point(const Point2 &p_point) const {
 void TextureButton::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_DRAW: {
-			bool cur_pressed = is_pressed();
-			const RID ci = get_canvas_item();
-			const Size2 container_size = get_size();
-
-			const Ref<StyleBox> style = _get_current_default_stylebox();
-			{ // Draws the stylebox in the current state.
-				if(style.is_valid()){
-					style->draw(ci, Rect2(Point2(), container_size));
-				}
-
-				if (is_draw_state_layer_enabled()) {
-					if (_has_current_state_layer_stylebox()) {
-						const Ref<StyleBox> state_layer_style = _get_current_state_layer_stylebox();
-						if(state_layer_style.is_valid()){
-							state_layer_style->draw(ci, Rect2(Point2(), container_size));
-						}
-					}
-				}
-
-				if (has_focus()) {
-					if (_has_current_focus_default_stylebox()) {
-						Ref<StyleBox> style2 = _get_current_focus_default_stylebox();
-						if(style2.is_valid()){
-							style2->draw(ci, Rect2(Point2(), container_size));
-						}
-					}
-				}
-			}
-
 			DrawMode draw_mode = get_draw_mode();
+
 			Ref<Texture2D> texdraw;
 
 			switch (draw_mode) {
@@ -212,79 +168,14 @@ void TextureButton::_notification(int p_what) {
 				} break;
 			}
 
-			String text_icon;
-			String code_text_icon;
-			switch (draw_mode) {
-				case DRAW_NORMAL: {
-					if (!text_icon_normal.is_empty()) {
-						text_icon = text_icon_normal;
-						code_text_icon = code_text_icon_normal;
-					}
-				} break;
-				case DRAW_HOVER_PRESSED:
-				case DRAW_PRESSED: {
-					if (text_icon_pressed.is_empty()) {
-						if (text_icon_hover.is_empty()) {
-							if (text_icon_normal.is_empty()) {
-								text_icon = text_icon_normal;
-								code_text_icon = code_text_icon_normal;
-							}
-						} else {
-							text_icon = text_icon_hover;
-							code_text_icon = code_text_icon_hover;
-						}
-					} else {
-						text_icon = text_icon_pressed;
-						code_text_icon = code_text_icon_pressed;
-					}
-				} break;
-				case DRAW_HOVER: {
-					if (text_icon_hover.is_empty()) {
-						if (!text_icon_pressed.is_empty() && is_pressed()) {
-							text_icon = text_icon_pressed;
-							code_text_icon = code_text_icon_pressed;
-						} else if (!text_icon_normal.is_empty()) {
-							text_icon = text_icon_normal;
-							code_text_icon = code_text_icon_normal;
-						}
-					} else {
-						text_icon = text_icon_hover;
-						code_text_icon = code_text_icon_hover;
-					}
-				} break;
-				case DRAW_DISABLED: {
-					if (text_icon_disabled.is_empty()) {
-						if (!text_icon_normal.is_empty()) {
-							text_icon = text_icon_normal;
-							code_text_icon = code_text_icon_normal;
-						}
-					} else {
-						text_icon = text_icon_disabled;
-						code_text_icon = code_text_icon_disabled;
-					}
-				} break;
-			}
-
-			Color text_icon_font_color = _get_current_text_icon_color();
-			Color focus_text_icon_font_color = _get_current_focus_text_icon_color();
-
 			Point2 ofs;
 			Size2 size;
-
-			bool draw_focus = false;
-
-			if (texdraw.is_valid()) {
-				draw_focus = (has_focus() && focused.is_valid());
-			} else {
-				draw_focus = (has_focus() && !text_icon_focused.is_empty());
-			}
+			bool draw_focus = (has_focus() && focused.is_valid());
 
 			// If no other texture is valid, try using focused texture.
-			bool draw_focus_only = draw_focus && (!texdraw.is_valid() || text_icon.is_empty());
+			bool draw_focus_only = draw_focus && !texdraw.is_valid();
 			if (draw_focus_only) {
 				texdraw = focused;
-				text_icon = text_icon_focused;
-				code_text_icon = code_text_icon_focused;
 			}
 
 			if (texdraw.is_valid()) {
@@ -347,83 +238,12 @@ void TextureButton::_notification(int p_what) {
 				} else {
 					draw_texture_rect_region(texdraw, Rect2(ofs, size), _texture_region);
 				}
-			} else if (!text_icon.is_empty()) {
-				int max_width = theme_cache.icon_max_width;
-				int cur_min_size = 0;
-				size = Size2(theme_cache.text_icon_font_size, theme_cache.text_icon_font_size);
-				switch (stretch_mode) {
-					case STRETCH_KEEP:
-						size = Size2(theme_cache.text_icon_font_size, theme_cache.text_icon_font_size);
-						if (max_width > 0) {
-							size = size.max(Size2(max_width, max_width));
-						}
-						ofs = Size2(0, 0);
-						break;
-					case STRETCH_SCALE:
-					case STRETCH_TILE:
-						size = get_size();
-						cur_min_size = MIN(size.width, size.height);
-						size = Size2(cur_min_size, cur_min_size);
-						if (max_width > 0) {
-							size = size.max(Size2(max_width, max_width));
-						}
-						ofs = (get_size() - size) / 2;
-						break;
-					case STRETCH_KEEP_CENTERED:
-						size = Size2(theme_cache.text_icon_font_size, theme_cache.text_icon_font_size);
-						if (max_width > 0) {
-							size = size.max(Size2(max_width, max_width));
-						}
-
-						ofs = (get_size() - size) / 2;
-						break;
-					case STRETCH_KEEP_ASPECT_CENTERED:
-					case STRETCH_KEEP_ASPECT:
-					case STRETCH_KEEP_ASPECT_COVERED: {
-						size = get_size();
-						cur_min_size = MIN(size.width, size.height);
-						size = Size2(cur_min_size, cur_min_size);
-						if (max_width > 0) {
-							size = size.max(Size2(max_width, max_width));
-						}
-						if (stretch_mode == STRETCH_KEEP_ASPECT_CENTERED || stretch_mode == STRETCH_KEEP_ASPECT_COVERED) {
-							ofs = (get_size() - size) / 2;
-						} else {
-							ofs = Size2(0, 0);
-						}
-					} break;
-				}
-
-				text_icon_buf->clear();
-				text_icon_buf->set_width(size.width);
-				Ref<Font> font = theme_cache.text_icon_font;
-				text_icon_buf->add_string(code_text_icon, font, size.width, "");
-
-				_position_rect = Rect2(ofs, size);
-
-				// size.width *= hflip ? -1.0f : 1.0f;
-				// size.height *= vflip ? -1.0f : 1.0f;
-
-				if (draw_focus_only) {
-					// Do nothing, we only needed to calculate the rectangle.
-				} else {
-					text_icon_buf->draw(ci, ofs, text_icon_font_color);
-				}
 			} else {
 				_position_rect = Rect2();
 			}
 
 			if (draw_focus) {
-				if (focused.is_valid()) {
-					draw_texture_rect(focused, Rect2(ofs, size), false);
-				} else if (!text_icon_focused.is_empty()) {
-					text_icon_focus_buf->clear();
-					text_icon_focus_buf->set_width(size.width);
-					Ref<Font> font = theme_cache.text_icon_font;
-					text_icon_focus_buf->add_string(code_text_icon_focused, font, size.width, "");
-
-					text_icon_focus_buf->draw(ci, ofs, focus_text_icon_font_color);
-				}
+				draw_texture_rect(focused, Rect2(ofs, size), false);
 			};
 		} break;
 	}
@@ -435,13 +255,6 @@ void TextureButton::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_texture_hover", "texture"), &TextureButton::set_texture_hover);
 	ClassDB::bind_method(D_METHOD("set_texture_disabled", "texture"), &TextureButton::set_texture_disabled);
 	ClassDB::bind_method(D_METHOD("set_texture_focused", "texture"), &TextureButton::set_texture_focused);
-
-	ClassDB::bind_method(D_METHOD("set_text_icon_normal", "text_icon"), &TextureButton::set_text_icon_normal);
-	ClassDB::bind_method(D_METHOD("set_text_icon_pressed", "text_icon"), &TextureButton::set_text_icon_pressed);
-	ClassDB::bind_method(D_METHOD("set_text_icon_hover", "text_icon"), &TextureButton::set_text_icon_hover);
-	ClassDB::bind_method(D_METHOD("set_text_icon_disabled", "text_icon"), &TextureButton::set_text_icon_disabled);
-	ClassDB::bind_method(D_METHOD("set_text_icon_focused", "text_icon"), &TextureButton::set_text_icon_focused);
-
 	ClassDB::bind_method(D_METHOD("set_click_mask", "mask"), &TextureButton::set_click_mask);
 	ClassDB::bind_method(D_METHOD("set_ignore_texture_size", "ignore"), &TextureButton::set_ignore_texture_size);
 	ClassDB::bind_method(D_METHOD("set_stretch_mode", "mode"), &TextureButton::set_stretch_mode);
@@ -455,13 +268,6 @@ void TextureButton::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_texture_hover"), &TextureButton::get_texture_hover);
 	ClassDB::bind_method(D_METHOD("get_texture_disabled"), &TextureButton::get_texture_disabled);
 	ClassDB::bind_method(D_METHOD("get_texture_focused"), &TextureButton::get_texture_focused);
-
-	ClassDB::bind_method(D_METHOD("get_text_icon_normal"), &TextureButton::get_text_icon_normal);
-	ClassDB::bind_method(D_METHOD("get_text_icon_pressed"), &TextureButton::get_text_icon_pressed);
-	ClassDB::bind_method(D_METHOD("get_text_icon_hover"), &TextureButton::get_text_icon_hover);
-	ClassDB::bind_method(D_METHOD("get_text_icon_disabled"), &TextureButton::get_text_icon_disabled);
-	ClassDB::bind_method(D_METHOD("get_text_icon_focused"), &TextureButton::get_text_icon_focused);
-
 	ClassDB::bind_method(D_METHOD("get_click_mask"), &TextureButton::get_click_mask);
 	ClassDB::bind_method(D_METHOD("get_ignore_texture_size"), &TextureButton::get_ignore_texture_size);
 	ClassDB::bind_method(D_METHOD("get_stretch_mode"), &TextureButton::get_stretch_mode);
@@ -472,13 +278,6 @@ void TextureButton::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture_hover", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture_hover", "get_texture_hover");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture_disabled", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture_disabled", "get_texture_disabled");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture_focused", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture_focused", "get_texture_focused");
-
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_icon_normal"), "set_text_icon_normal", "get_text_icon_normal");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_icon_pressed"), "set_text_icon_pressed", "get_text_icon_pressed");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_icon_hover"), "set_text_icon_hover", "get_text_icon_hover");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_icon_disabled"), "set_text_icon_disabled", "get_text_icon_disabled");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text_icon_focused"), "set_text_icon_focused", "get_text_icon_focused");
-
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture_click_mask", PROPERTY_HINT_RESOURCE_TYPE, "BitMap"), "set_click_mask", "get_click_mask");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "ignore_texture_size", PROPERTY_HINT_RESOURCE_TYPE, "bool"), "set_ignore_texture_size", "get_ignore_texture_size");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "stretch_mode", PROPERTY_HINT_ENUM, "Scale,Tile,Keep,Keep Centered,Keep Aspect,Keep Aspect Centered,Keep Aspect Covered"), "set_stretch_mode", "get_stretch_mode");
@@ -492,18 +291,6 @@ void TextureButton::_bind_methods() {
 	BIND_ENUM_CONSTANT(STRETCH_KEEP_ASPECT);
 	BIND_ENUM_CONSTANT(STRETCH_KEEP_ASPECT_CENTERED);
 	BIND_ENUM_CONSTANT(STRETCH_KEEP_ASPECT_COVERED);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, TextureButton, default_color_scheme);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, TextureButton, default_stylebox);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_STYLEBOX, TextureButton, state_layer_stylebox);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT, TextureButton, text_icon_font);
-	BIND_THEME_ITEM(Theme::DATA_TYPE_FONT_SIZE, TextureButton, text_icon_font_size);
-
-	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, TextureButton, icon_max_width);
-
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR_ROLE, TextureButton, text_icon_color_role);
-	BIND_THEME_ITEM_MULTI(Theme::DATA_TYPE_COLOR, TextureButton, text_icon_color);
 }
 
 void TextureButton::set_texture_normal(const Ref<Texture2D> &p_normal) {
@@ -633,206 +420,4 @@ bool TextureButton::is_flipped_v() const {
 	return vflip;
 }
 
-bool TextureButton::_has_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Ref<StyleBox> TextureButton::_get_current_default_stylebox() const {
-	State cur_state = get_current_state();
-	Ref<StyleBox> style;
-
-	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
-			style = theme_cache.default_stylebox.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-bool TextureButton::_has_current_focus_default_stylebox() const {
-	State cur_state = get_current_focus_state();
-	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Ref<StyleBox> TextureButton::_get_current_focus_default_stylebox() const {
-	State cur_state = get_current_focus_state();
-	Ref<StyleBox> style;
-
-	for (const State &E : theme_cache.default_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.default_stylebox.get_state_data_name(E))) {
-			style = theme_cache.default_stylebox.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-bool TextureButton::_has_current_state_layer_stylebox() const {
-	State cur_state = get_current_state_with_focus();
-	for (const State &E : theme_cache.state_layer_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.state_layer_stylebox.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Ref<StyleBox> TextureButton::_get_current_state_layer_stylebox() const {
-	State cur_state = get_current_state_with_focus();
-	Ref<StyleBox> style;
-
-	for (const State &E : theme_cache.state_layer_stylebox.get_search_order(cur_state)) {
-		if (has_theme_stylebox(theme_cache.state_layer_stylebox.get_state_data_name(E))) {
-			style = theme_cache.state_layer_stylebox.get_data(E);
-			break;
-		}
-	}
-	return style;
-}
-
-bool TextureButton::_has_current_text_icon_color() const {
-	State cur_state = get_current_state();
-	for (const State &E : theme_cache.text_icon_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_icon_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color TextureButton::_get_current_text_icon_color() const {
-	State cur_state = get_current_state();
-	Color cur_text_icon_color;
-
-	for (const State &E : theme_cache.text_icon_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_icon_color.get_state_data_name(E))) {
-			cur_text_icon_color = theme_cache.text_icon_color.get_data(E);
-			break;
-		}
-	}
-	return cur_text_icon_color;
-}
-
-bool TextureButton::_has_current_focus_text_icon_color() const {
-	State cur_state = get_current_focus_state();
-	for (const State &E : theme_cache.text_icon_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_icon_color.get_state_data_name(E))) {
-			return true;
-		}
-	}
-	return false;
-}
-
-Color TextureButton::_get_current_focus_text_icon_color() const {
-	State cur_state = get_current_focus_state();
-	Color cur_text_icon_color;
-
-	for (const State &E : theme_cache.text_icon_color.get_search_order(cur_state)) {
-		if (has_theme_color(theme_cache.text_icon_color.get_state_data_name(E))) {
-			cur_text_icon_color = theme_cache.text_icon_color.get_data(E);
-			break;
-		}
-	}
-	return cur_text_icon_color;
-}
-
-String TextureButton::_get_trans_text(const String &p_text_icon) {
-	Ref<Font> font = theme_cache.text_icon_font;
-	String local_name = font->get_path().get_file().get_basename();
-	Ref<Translation> trans = TranslationServer::get_singleton()->get_translation_object(local_name);
-	String result_text = "";
-	if (trans.is_valid()) {
-		result_text = trans->get_message(p_text_icon);
-		if (!result_text.is_empty()) {
-			result_text = String::chr(("0x" + result_text.to_lower()).hex_to_int());
-		}
-	} else {
-		result_text = "";
-	}
-	return result_text;
-}
-
-void TextureButton::set_text_icon_normal(const String &p_text_icon_normal) {
-	if (text_icon_normal != p_text_icon_normal) {
-		text_icon_normal = p_text_icon_normal;
-		code_text_icon_normal = _get_trans_text(text_icon_normal);
-		queue_redraw();
-		update_minimum_size();
-	}
-}
-
-String TextureButton::get_text_icon_normal() const {
-	return text_icon_normal;
-}
-
-void TextureButton::set_text_icon_pressed(const String &p_text_icon_pressed) {
-	if (text_icon_pressed != p_text_icon_pressed) {
-		text_icon_pressed = p_text_icon_pressed;
-		code_text_icon_pressed = _get_trans_text(text_icon_pressed);
-		queue_redraw();
-		update_minimum_size();
-	}
-}
-
-String TextureButton::get_text_icon_pressed() const {
-	return text_icon_pressed;
-}
-
-void TextureButton::set_text_icon_hover(const String &p_text_icon_hover) {
-	if (text_icon_hover != p_text_icon_hover) {
-		text_icon_hover = p_text_icon_hover;
-		code_text_icon_hover = _get_trans_text(text_icon_hover);
-		queue_redraw();
-		update_minimum_size();
-	}
-}
-
-String TextureButton::get_text_icon_hover() const {
-	return text_icon_hover;
-}
-
-void TextureButton::set_text_icon_disabled(const String &p_text_icon_disabled) {
-	if (text_icon_disabled != p_text_icon_disabled) {
-		text_icon_disabled = p_text_icon_disabled;
-		code_text_icon_disabled = _get_trans_text(text_icon_disabled);
-		queue_redraw();
-		update_minimum_size();
-	}
-}
-
-String TextureButton::get_text_icon_disabled() const {
-	return text_icon_disabled;
-}
-
-void TextureButton::set_text_icon_focused(const String &p_text_icon_focused) {
-	if (text_icon_focused != p_text_icon_focused) {
-		text_icon_focused = p_text_icon_focused;
-		code_text_icon_focused = _get_trans_text(text_icon_focused);
-		queue_redraw();
-		update_minimum_size();
-	}
-}
-
-String TextureButton::get_text_icon_focused() const {
-	return text_icon_focused;
-}
-
-TextureButton::TextureButton() {
-	text_icon_buf.instantiate();
-	text_icon_buf->set_break_flags(TextServer::BREAK_MANDATORY | TextServer::BREAK_TRIM_EDGE_SPACES);
-
-	text_icon_focus_buf.instantiate();
-	text_icon_focus_buf->set_break_flags(TextServer::BREAK_MANDATORY | TextServer::BREAK_TRIM_EDGE_SPACES);
-}
+TextureButton::TextureButton() {}

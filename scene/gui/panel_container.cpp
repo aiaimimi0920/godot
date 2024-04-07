@@ -44,8 +44,7 @@ Size2 PanelContainer::get_minimum_size() const {
 		}
 
 		Size2 minsize = c->get_combined_minimum_size();
-		ms.width = MAX(ms.width, minsize.width);
-		ms.height = MAX(ms.height, minsize.height);
+		ms = ms.max(minsize);
 	}
 
 	if (theme_cache.panel_style.is_valid()) {
@@ -103,6 +102,7 @@ void PanelContainer::_notification(int p_what) {
 }
 
 void PanelContainer::_bind_methods() {
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR_SCHEME, PanelContainer, default_color_scheme);
 	BIND_THEME_ITEM_CUSTOM(Theme::DATA_TYPE_STYLEBOX, PanelContainer, panel_style, "panel");
 }
 

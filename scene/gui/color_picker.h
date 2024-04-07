@@ -60,6 +60,8 @@ class ColorPresetButton : public BaseButton {
 	Color preset_color;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+
 		Ref<StyleBox> foreground_style;
 
 		Ref<Texture2D> background_icon;
@@ -215,6 +217,8 @@ private:
 	Color last_color;
 
 	struct ThemeCache {
+		Ref<ColorScheme> default_color_scheme;
+		
 		float base_scale = 1.0;
 
 		int content_margin = 0;
@@ -244,7 +248,9 @@ private:
 		Ref<Texture2D> color_okhsl_hue;
 
 		/* Mode buttons */
-		ThemeStyleboxData mode_button_style{"mode_button_style"};
+		Ref<StyleBox> mode_button_normal;
+		Ref<StyleBox> mode_button_pressed;
+		Ref<StyleBox> mode_button_hover;
 	} theme_cache;
 
 	void _copy_color_to_hsv();
@@ -300,11 +306,6 @@ protected:
 	void _notification(int);
 	static void _bind_methods();
 
-	bool _has_current_mode_button_style_with_state(State p_state) const;
-	bool _has_current_mode_button_style() const;
-	Ref<StyleBox> _get_current_mode_button_style_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_mode_button_style() const;	
-
 public:
 #ifdef TOOLS_ENABLED
 	void set_editor_settings(Object *p_editor_settings);
@@ -320,12 +321,11 @@ public:
 	void set_edit_alpha(bool p_show);
 	bool is_editing_alpha() const;
 
-	int get_preset_size();
-
 	void _set_pick_color(const Color &p_color, bool p_update_sliders);
 	void set_pick_color(const Color &p_color);
 	Color get_pick_color() const;
 	void set_old_color(const Color &p_color);
+	Color get_old_color() const;
 
 	void set_display_old_color(bool p_enabled);
 	bool is_displaying_old_color() const;
@@ -378,6 +378,10 @@ public:
 	~ColorPicker();
 };
 
+class ColorPickerPopupPanel : public PopupPanel {
+	virtual void _input_from_window(const Ref<InputEvent> &p_event) override;
+};
+
 class ColorPickerButton : public Button {
 	GDCLASS(ColorPickerButton, Button);
 
@@ -391,7 +395,9 @@ class ColorPickerButton : public Button {
 	bool edit_alpha = true;
 
 	struct ThemeCache {
+		Ref<StyleBox> normal_style;
 		Ref<Texture2D> background_icon;
+
 		Ref<Texture2D> overbright_indicator;
 	} theme_cache;
 

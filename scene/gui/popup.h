@@ -74,6 +74,7 @@ class PopupPanel : public Popup {
 	Panel *panel = nullptr;
 
 	struct ThemeCache {
+		Ref<ColorScheme> panel_default_color_scheme;
 		Ref<StyleBox> panel_style;
 	} theme_cache;
 

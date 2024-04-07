@@ -41,7 +41,7 @@ class MenuBar : public Control {
 
 	bool switch_on_hover = true;
 	bool disable_shortcuts = false;
-	bool is_native = true;
+	bool prefer_native = true;
 	bool flat = false;
 	int start_index = -1;
 
@@ -55,7 +55,7 @@ class MenuBar : public Control {
 		Ref<TextLine> text_buf;
 		bool hidden = false;
 		bool disabled = false;
-		int global_index = -1;
+		RID submenu_rid;
 
 		Menu(const String &p_name) {
 			name = p_name;
@@ -77,19 +77,41 @@ class MenuBar : public Control {
 
 	struct ThemeCache {
 		Ref<ColorScheme> default_color_scheme;
-		ThemeStyleboxData default_stylebox{ "default_stylebox" };
-		ThemeStyleboxData state_layer_stylebox{ "state_layer_stylebox" };
 
+		Ref<StyleBox> normal;
+		Ref<StyleBox> normal_mirrored;
+		Ref<StyleBox> disabled;
+		Ref<StyleBox> disabled_mirrored;
+		Ref<StyleBox> pressed;
+		Ref<StyleBox> pressed_mirrored;
+		Ref<StyleBox> hover;
+		Ref<StyleBox> hover_mirrored;
+		Ref<StyleBox> hover_pressed;
+		Ref<StyleBox> hover_pressed_mirrored;
 
-		ThemeColorData font_color{ "font_color" };
-		ThemeColorRoleData font_color_role{ "font_color_role" };
+		Ref<StyleBox> state_hover_layer;
+		Ref<StyleBox> state_pressed_layer;
+		Ref<StyleBox> state_hover_pressed_layer;
+		Ref<StyleBox> state_focus_layer;
+
 		Ref<Font> font;
 		int font_size = 0;
-
 		int outline_size = 0;
 		Color font_outline_color;
 		Ref<ColorRole> font_outline_color_role;
-		
+
+		Color font_color;
+		Ref<ColorRole> font_color_role;
+		Color font_disabled_color;
+		Ref<ColorRole> font_disabled_color_role;
+		Color font_pressed_color;
+		Ref<ColorRole> font_pressed_color_role;
+		Color font_hover_color;
+		Ref<ColorRole> font_hover_color_role;
+		Color font_hover_pressed_color;
+		Ref<ColorRole> font_hover_pressed_color_role;
+		Color font_focus_color;
+		Ref<ColorRole> font_focus_color_role;
 
 		int h_separation = 0;
 	} theme_cache;
@@ -139,17 +161,7 @@ protected:
 	virtual void remove_child_notify(Node *p_child) override;
 	static void _bind_methods();
 
-
-	bool _has_current_default_stylebox() const;
-	Ref<StyleBox> _get_current_default_stylebox_with_state(State p_state) const;
-	Ref<StyleBox> _get_current_default_stylebox() const;
-	bool _has_current_focus_default_stylebox() const;
-	Ref<StyleBox> _get_current_focus_default_stylebox() const;
-	bool _has_current_state_layer_stylebox() const;
 	Ref<StyleBox> _get_current_state_layer_stylebox() const;
-	bool _has_current_font_color() const;
-	Color _get_current_font_color_with_state(State p_state) const;
-	Color _get_current_font_color() const;
 
 public:
 	virtual void gui_input(const Ref<InputEvent> &p_event) override;

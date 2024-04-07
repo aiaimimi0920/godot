@@ -49,47 +49,6 @@ Color EditorTheme::get_color(const StringName &p_name, const StringName &p_theme
 	}
 }
 
-// Keep in sync with Theme::get_color_role.
-Ref<ColorRole> EditorTheme::get_color_role(const StringName &p_name, const StringName &p_theme_type) const {
-	if (color_role_map.has(p_theme_type) && color_role_map[p_theme_type].has(p_name)) {
-		return color_role_map[p_theme_type][p_name];
-	} else {
-		if (editor_theme_types.has(p_theme_type)) {
-			WARN_PRINT(vformat("Trying to access a non-existing editor theme color role '%s' in '%s'.", p_name, p_theme_type));
-		}
-		return ThemeDB::get_singleton()->get_fallback_color_role();
-	}
-}
-
-// Keep in sync with Theme::get_color_scheme.
-Ref<ColorScheme> EditorTheme::get_color_scheme(const StringName &p_name, const StringName &p_theme_type) const {
-	if (color_scheme_map.has(p_theme_type) && color_scheme_map[p_theme_type].has(p_name) && color_scheme_map[p_theme_type][p_name].is_valid()) {
-		return color_scheme_map[p_theme_type][p_name];
-	} else if (color_scheme_map.has(p_theme_type) && color_scheme_map[p_theme_type].has("default_color_scheme") && color_scheme_map[p_theme_type]["default_color_scheme"].is_valid()) {
-		return color_scheme_map[p_theme_type]["default_color_scheme"];
-	} else if (has_default_color_scheme()) {
-		return default_color_scheme;
-	} else {
-		if (editor_theme_types.has(p_theme_type)) {
-			WARN_PRINT(vformat("Trying to access a non-existing editor theme color scheme '%s' in '%s'.", p_name, p_theme_type));
-		}
-		return ThemeDB::get_singleton()->get_fallback_color_scheme();
-	}
-}
-
-// Keep in sync with Theme::get_str.
-String EditorTheme::get_str(const StringName &p_name, const StringName &p_theme_type) const {
-	if (str_map.has(p_theme_type) && str_map[p_theme_type].has(p_name) && (!str_map[p_theme_type][p_name].is_empty())) {
-		return str_map[p_theme_type][p_name];
-	} else {
-		if (editor_theme_types.has(p_theme_type)) {
-			WARN_PRINT(vformat("Trying to access a non-existing editor theme str '%s' in '%s'.", p_name, p_theme_type));
-		}
-		return String();
-	}
-}
-
-
 // Keep in sync with Theme::get_constant.
 int EditorTheme::get_constant(const StringName &p_name, const StringName &p_theme_type) const {
 	if (constant_map.has(p_theme_type) && constant_map[p_theme_type].has(p_name)) {

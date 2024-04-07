@@ -585,9 +585,7 @@ void ProjectSettingsEditor::_update_theme() {
 	del_button->set_icon(get_editor_theme_icon(SNAME("Remove")));
 	search_box->set_right_icon(get_editor_theme_icon(SNAME("Search")));
 	restart_close_button->set_icon(get_editor_theme_icon(SNAME("Close")));
-	ThemeIntData cur_theme_data;
-	cur_theme_data.set_data_name("default_stylebox");
-	restart_container->add_theme_style_override("panel", get_theme_stylebox(cur_theme_data.get_state_data_name(State::NormalNoneLTR), SNAME("Tree")));
+	restart_container->add_theme_style_override("panel", get_theme_stylebox(SNAME("panel"), SNAME("Tree")));
 	restart_icon->set_texture(get_editor_theme_icon(SNAME("StatusWarning")));
 	restart_label->add_theme_color_override("font_color", get_theme_color(SNAME("warning_color"), EditorStringName(Editor)));
 
@@ -600,14 +598,6 @@ void ProjectSettingsEditor::_update_theme() {
 		String type = Variant::get_type_name(Variant::Type(i));
 		type_box->add_icon_item(get_editor_theme_icon(type), type, i);
 	}
-}
-
-void ProjectSettingsEditor::_input_filter_focused() {
-	set_close_on_escape(false);
-}
-
-void ProjectSettingsEditor::_input_filter_unfocused() {
-	set_close_on_escape(true);
 }
 
 void ProjectSettingsEditor::_notification(int p_what) {
@@ -742,8 +732,8 @@ ProjectSettingsEditor::ProjectSettingsEditor(EditorData *p_data) {
 	action_map_editor->connect("action_removed", callable_mp(this, &ProjectSettingsEditor::_action_removed));
 	action_map_editor->connect("action_renamed", callable_mp(this, &ProjectSettingsEditor::_action_renamed));
 	action_map_editor->connect("action_reordered", callable_mp(this, &ProjectSettingsEditor::_action_reordered));
-	action_map_editor->connect(SNAME("filter_focused"), callable_mp(this, &ProjectSettingsEditor::_input_filter_focused));
-	action_map_editor->connect(SNAME("filter_unfocused"), callable_mp(this, &ProjectSettingsEditor::_input_filter_unfocused));
+	action_map_editor->connect(SNAME("filter_focused"), callable_mp((AcceptDialog *)this, &AcceptDialog::set_close_on_escape).bind(false));
+	action_map_editor->connect(SNAME("filter_unfocused"), callable_mp((AcceptDialog *)this, &AcceptDialog::set_close_on_escape).bind(true));
 	tab_container->add_child(action_map_editor);
 
 	localization_editor = memnew(LocalizationEditor);
