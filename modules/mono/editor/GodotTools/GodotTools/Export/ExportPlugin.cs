@@ -211,6 +211,9 @@ namespace GodotTools.Export
 
             bool embedBuildResults = ((bool)GetOption("dotnet/embed_build_outputs") || platform == OS.Platforms.Android) && platform != OS.Platforms.MacOS;
 
+            string publishOutputTempDir = Path.Combine(Path.GetTempPath(), "godot-publish-dotnet",
+                $"{System.Diagnostics.Process.GetCurrentProcess().Id}-{buildConfig}-{runtimeIdentifier}");
+
             foreach (PublishConfig config in targets)
             {
                 string ridOS = config.RidOS;
@@ -436,7 +439,7 @@ namespace GodotTools.Export
         {
             base._ExportEnd();
 
-            string aotTempDir = Path.Combine(Path.GetTempPath(), $"godot-aot-{System.Environment.ProcessId}");
+            string aotTempDir = Path.Combine(Path.GetTempPath(), $"godot-aot-{System.Diagnostics.Process.GetCurrentProcess().Id}");
 
             if (Directory.Exists(aotTempDir))
                 Directory.Delete(aotTempDir, recursive: true);
