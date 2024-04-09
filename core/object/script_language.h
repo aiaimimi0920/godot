@@ -122,6 +122,7 @@ protected:
 	TypedArray<Dictionary> _get_script_property_list();
 	TypedArray<Dictionary> _get_script_method_list();
 	TypedArray<Dictionary> _get_script_signal_list();
+	TypedArray<Dictionary> _get_script_documentation_list();	
 	Dictionary _get_script_constant_map();
 
 public:

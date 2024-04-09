@@ -76,7 +76,7 @@ Ref<Script> GDScriptLanguage::make_template(const String &p_template, const Stri
 	String processed_template = p_template;
 	bool type_hints = false;
 #ifdef TOOLS_ENABLED
-	type_hints = EDITOR_GET("text_editor/completion/add_type_hints");
+	type_hints = Engine::get_singleton()->is_editor_hint() && EDITOR_GET("text_editor/completion/add_type_hints");
 #endif
 	if (!type_hints) {
 		processed_template = processed_template.replace(": int", "")
@@ -493,7 +493,7 @@ void GDScriptLanguage::get_public_annotations(List<MethodInfo> *p_annotations) c
 
 String GDScriptLanguage::make_function(const String &p_class, const String &p_name, const PackedStringArray &p_args) const {
 #ifdef TOOLS_ENABLED
-	bool th = EditorSettings::get_singleton()->get_setting("text_editor/completion/add_type_hints");
+	bool th = Engine::get_singleton()->is_editor_hint() && EditorSettings::get_singleton()->get_setting("text_editor/completion/add_type_hints");
 #else
 	bool th = false;
 #endif
@@ -844,7 +844,7 @@ static String _make_arguments_hint(const GDScriptParser::FunctionNode *p_functio
 }
 
 static void _get_directory_contents(EditorFileSystemDirectory *p_dir, HashMap<String, ScriptLanguage::CodeCompletionOption> &r_list, const StringName &p_required_type = StringName()) {
-	const String quote_style = EDITOR_GET("text_editor/completion/use_single_quotes") ? "'" : "\"";
+	const String quote_style = (Engine::get_singleton()->is_editor_hint() && EDITOR_GET("text_editor/completion/use_single_quotes")) ? "'" : "\"";
 	const bool requires_type = p_required_type;
 
 	for (int i = 0; i < p_dir->get_file_count(); i++) {
@@ -2694,7 +2694,7 @@ static void _find_call_arguments(GDScriptParser::CompletionContext &p_context, c
 	Variant base = p_base.value;
 	GDScriptParser::DataType base_type = p_base.type;
 
-	const String quote_style = EDITOR_GET("text_editor/completion/use_single_quotes") ? "'" : "\"";
+	const String quote_style = (Engine::get_singleton()->is_editor_hint() && EDITOR_GET("text_editor/completion/use_single_quotes")) ? "'" : "\"";
 	const bool use_string_names = EDITOR_GET("text_editor/completion/add_string_name_literals");
 	const bool use_node_paths = EDITOR_GET("text_editor/completion/add_node_path_literals");
 
@@ -2965,7 +2965,7 @@ static bool _get_subscript_type(GDScriptParser::CompletionContext &p_context, co
 
 static void _find_call_arguments(GDScriptParser::CompletionContext &p_context, const GDScriptParser::Node *p_call, int p_argidx, HashMap<String, ScriptLanguage::CodeCompletionOption> &r_result, bool &r_forced, String &r_arghint) {
 	if (p_call->type == GDScriptParser::Node::PRELOAD) {
-		if (p_argidx == 0 && bool(EDITOR_GET("text_editor/completion/complete_file_paths"))) {
+		if (p_argidx == 0 && Engine::get_singleton()->is_editor_hint() && bool(EDITOR_GET("text_editor/completion/complete_file_paths"))) {
 			_get_directory_contents(EditorFileSystem::get_singleton()->get_filesystem(), r_result);
 		}
 
@@ -3071,7 +3071,7 @@ static void _find_call_arguments(GDScriptParser::CompletionContext &p_context, c
 }
 
 ::Error GDScriptLanguage::complete_code(const String &p_code, const String &p_path, Object *p_owner, List<ScriptLanguage::CodeCompletionOption> *r_options, bool &r_forced, String &r_call_hint) {
-	const String quote_style = EDITOR_GET("text_editor/completion/use_single_quotes") ? "'" : "\"";
+	const String quote_style = (Engine::get_singleton()->is_editor_hint() && EDITOR_GET("text_editor/completion/use_single_quotes")) ? "'" : "\"";
 
 	GDScriptParser parser;
 	GDScriptAnalyzer analyzer(&parser);
@@ -3281,7 +3281,7 @@ static void _find_call_arguments(GDScriptParser::CompletionContext &p_context, c
 			r_forced = true;
 		} break;
 		case GDScriptParser::COMPLETION_RESOURCE_PATH: {
-			if (EDITOR_GET("text_editor/completion/complete_file_paths")) {
+			if (Engine::get_singleton()->is_editor_hint() && EDITOR_GET("text_editor/completion/complete_file_paths")) {
 				_get_directory_contents(EditorFileSystem::get_singleton()->get_filesystem(), options);
 				r_forced = true;
 			}
@@ -3314,7 +3314,7 @@ static void _find_call_arguments(GDScriptParser::CompletionContext &p_context, c
 				break;
 			}
 
-			bool use_type_hint = EditorSettings::get_singleton()->get_setting("text_editor/completion/add_type_hints").operator bool();
+			bool use_type_hint = Engine::get_singleton()->is_editor_hint() && EditorSettings::get_singleton()->get_setting("text_editor/completion/add_type_hints").operator bool();
 
 			List<MethodInfo> virtual_methods;
 			ClassDB::get_virtual_methods(class_name, &virtual_methods);
